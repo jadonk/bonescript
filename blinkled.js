@@ -16,11 +16,11 @@ b.digitalWrite("USR3", b.LOW);
 b.pinMode(ledPin, b.OUTPUT);
 b.pinMode(ledPin2, b.OUTPUT);
 
+// Assume LEDs are off at the start
+var state = b.LOW;
+
 // Call function to toggle LEDs every 100ms
 setInterval(toggleLEDs, 100);
-
-// Assume LEDs are off by default
-var state = b.LOW;
 
 // Define function to change the state of the LEDs
 function toggleLEDs() {
