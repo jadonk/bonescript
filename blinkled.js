@@ -2,7 +2,15 @@
 var b = require('bonescript');
 
 var ledPin = "P8_13";
-var ledPin2 = "USR3";
+var ledPin2 = "USR0";
+
+// Turn off USR1, USR2 and USR3
+b.pinMode("USR1", b.OUTPUT);
+b.digitalWrite("USR1", b.LOW);
+b.pinMode("USR2", b.OUTPUT);
+b.digitalWrite("USR2", b.LOW);
+b.pinMode("USR3", b.OUTPUT);
+b.digitalWrite("USR3", b.LOW);
 
 // Initialize pins as outputs
 b.pinMode(ledPin, b.OUTPUT);
