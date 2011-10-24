@@ -8,7 +8,7 @@ var gpio1 = gpio0+32;
 var gpio2 = gpio1+32;
 var gpio3 = gpio2+32;
 
-bone =
+bone = exports.bone =
 {
     P8_1: { name: "DGND" },
     P8_2: { name: "DGND" },
