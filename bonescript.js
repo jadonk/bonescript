@@ -2,6 +2,7 @@
 //
 // 
 var fs = require('fs');
+var child_process = require('child_process');
 
 var gpio0 = 0;
 var gpio1 = gpio0+32;
@@ -82,6 +83,37 @@ pinMode = exports.pinMode = function(pin, mode)
     
     if(!gpio[n] || !gpio[n].path) {
         gpio[n] = {};
+        
+        // Ensure the pin is in GPIO mode
+        if(pin.mux) {
+            try {
+                var muxfile = fs.openSync(
+                    "/sys/kernel/debug/omap_mux/" + pin.mux, "w"
+                );
+                fs.writeSync(muxfile, "7", null);
+            } catch(ex3) {  
+                console.log("" + ex3);
+                console.log("Unable to configure pinmux for: " + pin.name +
+                    " (" + pin.mux + ")");
+                console.log("Trying: mount -t debugfs none /sys/kernel/debug");
+                //var state = 
+                //    fs.readFileSync("/sys/kernel/debug/omap_mux/" + pin.mux);
+                //console.log("pinmux state: ");
+                //console.log("" + state);
+                child_process.exec("mount -t debugfs none /sys/kernel/debug",
+                    function(error, stderr, stdout) {
+                        var muxfile = fs.open(
+                            "/sys/kernel/debug/omap_mux/" + pin.mux, "w",
+                            function() {
+                                fs.write(muxfile, "7", null);
+                            }
+                        );
+                    }
+                );
+            }
+        }
+        
+        // Export the GPIO controls
         try {
             try {
                 fs.writeFileSync("/sys/class/gpio/export", "" + n);
@@ -114,26 +146,6 @@ pinMode = exports.pinMode = function(pin, mode)
                 }
                 return(true);
             }
-            // Otherwise, it is probably a pinmux issue
-            if(pin.mux) {
-                try {
-                    fs.writeFileSync(
-                        "/sys/kernel/debug/omap_mux/" + pin.mux,
-                        "0x07");
-                    fs.writeFileSync(
-                        "/sys/class/gpio/export", 
-                        "" + n);
-                    fs.writeFileSync(
-                        "/sys/class/gpio/gpio" + n + "/direction",
-                        mode);
-                    gpio[pin.gpio].path = 
-                        "/sys/class/gpio/gpio" + n + "/value";
-                    return(true);
-                } catch(ex3) {
-                    console.log("WARNING: " + ex3);
-                    console.log("Unable to configure pin mux: " + pin.mux);
-                }
-            }
         }
     }
 };
@@ -143,12 +155,6 @@ digitalWrite = exports.digitalWrite = function(pin, value)
     fs.writeFileSync(gpio[pin.gpio].path, "" + value);
 };
 
-// Currently, this implementation causes no events to be
-// serviced in this time.  What I might do in the future is
-// to add node-fibers around loop.  For this to be clean,
-// I'll wait until we update to node >= 0.5.2.
-//
-// https://github.com/laverdet/node-fibers
 delay = exports.delay = function(milliseconds)
 {
     var startTime = new Date().getTime();
@@ -159,8 +165,7 @@ delay = exports.delay = function(milliseconds)
 run = exports.run = function()
 {
     setup();
-    process.nextTick(function repeat() {
-        loop()
-        process.nextTick(repeat);
-    });
+    while(true) {
+        loop();
+    }
 };
