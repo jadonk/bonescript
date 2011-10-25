@@ -1,0 +1,85 @@
+<html>
+<head>
+<title>Processing.js + socket.io demo</title>
+</head>
+<body>
+<h2>Command:</h2>
+<p><button onclick="trigger()">Trigger</button>
+<h2>Status:</h2>
+<p><span id="status">Not yet connected</span></p>
+<h2>Output:</h2>
+<canvas id="canvas1"></canvas>
+<pre>
+<span id="output"><!--%OUTPUT%--></span>
+</pre>
+
+<script src="/socket.io/socket.io.js"></script> 
+<script src="processing.js"></script>
+<script type="text/javascript">
+var graphDataSize = 50;
+var graphData = new Array(graphDataSize);
+var sketchProc = function(p) {
+ p.frameRate(10);
+ p.size(600, 250);
+ 
+ var rangeY = 256;
+ var centerY = p.height / 2;
+ var scaleY = p.height / rangeY;
+ var stepX = p.width / (graphDataSize - 1);
+ 
+ // The draw function will be called frameRate times per second
+ p.draw = function() {
+  // erase background
+  p.background(224);
+
+  // draw axis
+  p.stroke(25);
+  p.strokeWeight(1);
+  p.line(0, centerY, p.width, centerY);
+
+  // draw graph
+  p.stroke(0);
+  p.strokeWeight(3);
+  //p.line(0, centerY+1, p.width, centerY+1);
+  var lastX = 0, nextX = 0, lastY, nextY;
+  for(var point in graphData) {
+   nextY = centerY - (graphData[point] * scaleY);
+   if(point != 0) {
+    p.line(lastX, lastY, nextX, nextY);
+    lastX += stepX;
+   }
+   nextX += stepX;
+   lastY = nextY;
+  }
+ };
+}
+
+var canvas = document.getElementById("canvas1");
+var processing = new Processing(canvas, sketchProc);
+
+var socket = new io.Socket(null, {port: 3001, rememberTransport: false}); 
+socket.connect();
+socket.on('connect', function() {
+ document.getElementById("status").innerHTML="Connected";
+});
+socket.on('message', function(data) {
+ var myData = window.atob(data);
+ for(var i=0; i<graphDataSize; i++) {
+  var b = myData.charCodeAt(i);
+  if(b>=128) {
+   b = b-256;
+  }
+  window.graphData[i] = b;
+ }
+});
+socket.on('disconnect', function() {
+ document.getElementById("status").innerHTML="Disconnected";
+ p.exit();
+});
+
+trigger = function() {
+ socket.send("trigger");
+};
+</script>
+</body>
+</html>
