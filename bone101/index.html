@@ -1,0 +1,531 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"> 
+<head> 
+ <title>BeagleBoard 101</title> 
+ <link rel="stylesheet" type="text/css" media="screen, projection, print" href="slidy.css" /> 
+ <script src="slidy.js" charset="utf-8" type="text/javascript"></script> 
+ <!-- source: http://www.w3.org/Talks/Tools/Slidy2/styles/slidy.css --> 
+ <!-- source: http://www.w3.org/Talks/Tools/Slidy2/scripts/slidy.js -->
+ <link rel="stylesheet" type="text/css" media="screen, projection, print" href="beagle.css" /> 
+ <link rel="icon" href="beagle.ico" type="image/x-icon" />
+ <link rel="shortcut icon" href="beagle.ico" type="image/x-icon" />
+</head>
+<body>
+ <div class="background"> 
+  <img id="head-logo" title="beagleboard logo" alt="beagleboard logo" src="beagle.png" />
+  <img id="head-icon" src="url.png" alt="beagleboard url" />
+ </div> 
+
+ <div class="slide cover"> 
+  <h1>BeagleBoard 101</h1>
+  <p>Slides available at:<a href="http://beagleboard.org/beagleboard101">
+     http://beagleboard.org/beagleboard101
+    </a>
+  </p>
+  <p>
+   This is your introduction to the BeagleBoard where you will learn:
+   <ul>
+    <li>What is a BeagleBoard?</li>
+    <li>How do you get software running on a BeagleBoard?</li>
+    <li>How do you engage the BeagleBoard community?</li>
+    <li>How can you perform native development with the provided
+     Angstrom Distribution Cloud9 IDE demo image?</li>
+    <li>How do you discover other available community and commercial
+     software that might be of interest?</li>
+   </ul>
+  </p>
+ </div>
+
+ <div class="slide"> 
+  <h1>What is the BeagleBoard?</h1> 
+  <h2><a href="/static/flyer.pdf">http://beagleboard.org/static/beagleboard_flyer.pdf</a></h2>
+  <p>The BeagleBoard is an open hardware project featuring two designs:</p>
+  <ul class="incremental"> 
+   <li><b>BeagleBoard-xM:</b> Open software desktop experience with extra MHz and extra memory</li>
+   <li><b>BeagleBone:</b> Hardware I/O focus with single cable development experience</li>
+  </ul>
+  <p>BeagleBoard.org designs have a common philosophy:</p>
+  <ul class="incremental"> 
+   <li><font size="+3" color="orange">B</font>ring your own peripherals
+    <a href="peripheral list">[1]</a>
+   </li> 
+   <li><font size="+3" color="orange">E</font>ntry level cost</li> 
+   <li><font size="+3" color="orange">A</font>RM Cortex-A8 (superscalar)</li> 
+   <li><font size="+3" color="orange">G</font>raphics (and possibly DSP) accelerated</li> 
+   <li><font size="+3" color="orange">L</font>inux and open source community</li> 
+   <li><font size="+3" color="orange">E</font>nvironment for innovators</li> 
+  </ul>
+ </div> 
+
+ <div class="slide">
+  <h1>BeagleBoard-xM Details</h1> 
+  <h2><a href="/hardware-xM">http://beagleboard.org/hardware-xM</a></h2>
+  <img src="4644432552_4d3d5d4d29_o.png" alt="BeagleBoard-xM image" align="center" width="90%" />
+ </div> 
+
+ <div class="slide">
+  <h1>BeagleBone Details</h1> 
+  <h2><a href="/hardware-bone">http://beagleboard.org/hardware-bone</a></h2>
+  <img src="4644432552_4d3d5d4d29_o.png" alt="BeagleBoard-xM image" align="center" width="90%" />
+ </div> 
+
+ <div class="slide">
+  <h1>Some BeagleBoard examples</h1> 
+  <h2>&nbsp;</h2>
+  <ul>
+   <li>Video encoding and playback</li>
+   <li>Perform 3D rendering</li>
+   <li>Stream and process data from peripherals</li>
+  </ul>
+  <p>&nbsp<br /></p>
+  <div align="right">
+   <video controls width="640" height="360" preload autobuffer>
+    <source src="Beagleboard_LinuxTag_2010_demonstration.mp4" type='video/mp4; codecs="avc1.4D401E, mp4a.40.2"' />
+    <source src="Beagleboard_LinuxTag_2010_demonstration.webm" type='video/webm; codecs="vp8.0, vorbis"' />
+    <object type="application/x-shockwave-flash" width="640" height="360">
+     <param name="movie" value="OSplayer.swf?movie=Beagleboard_LinuxTag_2010_demonstration.flv&autoload=on&autoplay=off"></param>
+     <param name="allowFullScreen" value="true"></param>
+     <param name="allowScriptAccess" value="always"></param>
+     <embed src="OSplayer.swf?movie=Beagleboard_LinuxTag_2010_demonstration.flv&autoload=on&autoplay=off"
+      type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="always" width="640" height="360">
+     </embed>
+    </object>
+   </video> 
+  </div>
+ </div>
+
+ <div class="slide">
+  <h1>Getting up and running</h1> 
+  <h2></h2>
+  <ul>
+   <li>Setup an <a href="http://circuitco.com/support">SD card with the factory image</a> and backup your own</li>
+   <ul>
+    <li>Learn to use '<a href="http://linux.die.net/man/1/dd">dd</a>' and '<a href="http://linux.die.net/man/1/gunzip">gzip</a>'</li>
+    <li>Know which /dev/sdX is your SD card through use of '<a href="http://linux.die.net/man/1/dmesg">dmesg</a>'</li>
+    <li><a href="https://wiki.ubuntu.com/Win32DiskImager">Ubuntu Win32DiskImager</a> and <a href="http://http://www.7-zip.org/">7-zip</a> are good if you are stuck in Windows</li>
+    <li>Use <a href="http://www.angstrom-distribution.org/demo/beagleboard/mkcard.txt">mkcard.txt</a> or <a href="https://launchpad.net/linaro-image-tools/">Linaro Image Tools</a>
+     to build your own new SD card image</li>
+    <li>Remember to design for the smallest possible available good blocks</li>
+   </ul>
+   <li>Try multiple pre-built SD card images from 
+    <a href="http://www.angstrom-distribution.org/narcissus">Angstrom</a>,
+    <a href="http://elinux.org/BeagleBoardUbuntu">Ubuntu</a>,
+    <a href="http://releases.linaro.org/">Linaro</a> and
+    <a href="http://www.ti.com/tool/androidsdk-sitara">Rowboat (Android)</a></li>
+   <li>Can also start with Windows Compact Embedded 7, QNX, RISC OS, Puppy Bits, Symbian, Debian, Gentoo, Fedora, ...</li>
+   <li>Check out the <a href="http://beagleboard.org/project">registered projects</a></li>
+   <li>Encourage project owners to supply SD card images</li>
+  </ul>
+ </div>
+
+ <div class="slide">
+  <h1>Classroom setup</h1> 
+  <h2>Equipment is meant to stay in the classroom</h2> 
+  <ul>
+   <li><a href="http://beagleboard.org/hardware-xm">BeagleBoard-xM Rev C</a>
+    <ul>
+     <li>Same as the ESC give-away board</li>
+    </ul>
+   </li>
+   <li><a href="http://boardzoo.com/product_info.php?products_id=1">BeagleBoardToys ULCD Lite</a></li>
+   <li>4GB microSD card with customized Angstrom image
+    <ul>
+     <li>Give-away SD has a factory image, but you can replace it</li>
+     <li><a href="http://www.angstrom-distribution.org/narcissus">On-line image builder tool</a></li>
+     <li><a href="http://beagle.s3.amazonaws.com/esc-20110925-image-beagleboard-sd-4GiB.img.gz">Starting Narcissus image</a></li>
+     <li><a href="http://beagle.s3.amazonaws.com/esc-boston-2011-updates.tgz">Content updates</a></li>
+     <li><a href="http://beagle.s3.amazonaws.com/esc-20110927-final.img.gz">Final SD card image</a></li>
+    </ul>
+   </li>
+   <li>5V 2A power adapter</li>
+   <li>USB keyboard</li>
+   <li>USB mouse</li>
+   <li>USB to serial adapter <i>(optional)</i></li>
+  </ul>
+ </div>
+
+ <div class="slide">
+  <h1>Matrix GUI</h1> 
+  <ul>
+   <li>Just a web browser
+    <ul>
+     <li>Renders HTML code on the board</li>
+     <li>Based on QtWebKit</li>
+    </ul>
+   </li>
+   <li>Modified to launch apps</li>
+   <li>Power/Clocks -> 1GHz</li>
+   <li>Click on Exit to get to desktop</li>
+  </ul>
+  <img src="matrix_gui.png" alt="Matrix GUI" height="50%" align="right" />
+ </div>
+
+ <div class="slide">
+  <h1>Gnome Desktop</h1> 
+  <ul>
+   <li>Just one desktop option
+    <ul>
+     <li>Angstrom Distribution provides several others</li>
+    </ul>
+   </li>
+   <li>Menu bar at top gives list of installed apps</li>
+   <li>Processor speed displayed in the Panel</li>
+   <li>Applications -> Accessories -> Terminal
+    <ul>
+     <li>Restart Matrix GUI with 'matrix_gui /usr/share/matrix/html/menu_main_1.html'</li>
+     <li>Shutdown with 'poweroff'</li>
+    </ul>
+   </li>
+  </ul>
+  <img src="gnome_desktop.png" alt="Gnome Desktop" height="50%" align="right" />
+ </div>
+
+ <div class="slide"> 
+  <h1>Lab - Edit Matrix GUI menu</h1> 
+  <h2>&nbsp;</h2>
+<pre>
+root@beagleboard:~# cd ~/labs/matrix
+root@beagleboard:~/labs/matrix# ls -l
+root@beagleboard:~/labs/matrix# gedit menu_main_1.html
+</pre>
+ <p>Search for "p1" and replace the title with your name.</p>
+<pre>
+root@beagleboard:~/labs/matrix# cat run_matrix_gui
+root@beagleboard:~/labs/matrix# ./run_matrix_gui
+</pre>
+ </div>
+
+ <div class="slide">
+  <h1>Why work with community?</h1> 
+  <h2>&nbsp;</h2>
+  <ul>
+   <li>Faster innovation
+    <ul>
+     <li>Off-cycle development</li>
+     <li>Engage innovators</li>
+     <li>Direct peer interaction</li>
+    </ul>
+   </li>
+   <li>Better solutions
+    <ul>
+     <li>Expert peer review</li>
+     <li>Community support</li>
+     <li>Early feedback</li>
+    </ul>
+   </li>
+  </ul>
+  <img src="why_community.png" alt="Why Community?" height="40%" align="right" />
+ </div> 
+
+ <div class="slide">
+  <h1>Why push code to mainline?</h1> 
+  <h2>&nbsp;</h2>
+  <ul>
+   <li>Stable snapshot development
+    <ul>
+     <li>Increases stability</li>
+     <li>Isolates from community</li>
+     <li>High update cost with reduced support and external contribution</li>
+    </ul>
+   </li>
+   <li>Community synchronized
+    <ul>
+     <li>Increased potential churn</li>
+     <li>Leverages the community</li>
+     <li>Requires defined method for maintaining value-add</li>
+    </ul>
+   </li>
+  </ul>
+  <img src="why_mainline.png" alt="Why Mainline?" height="40%" align="right" />
+ </div> 
+
+ <div class="slide">
+  <h1>Engaging the community</h1> 
+  <h2><a href="http://catb.org/~esr/faqs/smart-questions.html">Ask questions the smart way</a></h2>
+  <ul>
+   <li>Before you ask
+    <ul>
+     <li>Learn about the on-line resources and documentation</li>
+     <li>Try to find the answer yourself</li>
+     <li>Don't assume you are <i>entitled</i> to an answer</li>
+    </ul>
+   </li>
+   <li>Ask in the right way in the right place
+    <ul>
+     <li>Question should be easy to answer for someone who knows</li>
+     <li>Detail your objective, what you tried and the results</li>
+     <li>Use meaningful and specific subject headers</li>
+     <li>Using <a href="http://beagleboard.org/chat">the on-line chat</a> can help you formulate your question for
+      <a href="http://beagleboard.org/discuss">the mailing list</a>
+     </li>
+    </ul>
+   </li>
+   <li>Listen to the answers, even if they <i>seem</i> unhelpful</li>
+   <li>Share useful lessons you learn</li>
+  </ul>
+ </div> 
+
+ <div class="slide">
+  <h1>What do I work with the community on?</h1> 
+  <h2>&nbsp;</h2>
+  <ul>
+   <li>There are <a href="http://beagleboard.org/project">hundreds of projects with BeagleBoard-specific interest</a></li>
+   <li>It is really up to your heart's desire</li>
+   <li>Linux is known for its community</li>
+   <li>Many communities build upon Linux</li>
+   <li>Let's start with the projects required to boot Linux</li>
+  </ul>
+ </div> 
+
+ <div class="slide">
+  <h1>Typical BeagleBoard-xM boot process</h1> 
+  <h2>The five phases</h2>
+  <ol>
+   <li>ROM loads x-load (MLO)
+    <ul>
+     <li>Performs external DRAM configuration</li>
+    </ul>
+   </li>
+   <li>x-load loads u-boot
+    <ul>
+     <li>Default location is /media/mmcblk0p1/u-boot.bin</li>
+    </ul>
+   </li>
+   <li>u-boot executes default environment/commands
+    <ul>
+     <li>Default location is /media/mmcblk0p1/uEnv.txt</li>
+     <li>USERBUTTON will cause search for /media/mmcblk0p1/user.txt</li>
+     <li>By default, 'uenvcmd' is executed</li>
+    </ul>
+   </li>
+   <li>Commands load kernel
+    <ul>
+     <li>Default location is /media/mmcblk0p2/boot/uImage</li>
+    </ul>
+   </li>
+   <li>Kernel reads root file system</li>
+  </ol>
+ </div> 
+
+ <div class="slide">
+  <h1>The default u-boot boot command</h1> 
+  <h2><a href="http://git.denx.de/?p=u-boot/u-boot-ti.git;a=blob;f=include/configs/omap3_beagle.h;h=1369c89e4aa1725b73dce2207a3a99afef66883c;hb=HEAD#l281">omap3_beagle.h#l281</a></h2>
+   <pre>
+281 #define CONFIG_BOOTCOMMAND \
+282  "if mmc rescan ${mmcdev}; then " \
+283   "if userbutton; then " \
+284    "setenv bootenv user.txt;" \
+285   "fi;" \
+286   "echo SD/MMC found on device ${mmcdev};" \
+287   "if run loadbootenv; then " \
+288    "echo Loaded environment from ${bootenv};" \
+289    "run importbootenv;" \
+290   "fi;" \
+291   "if test -n $uenvcmd; then " \
+292    "echo Running uenvcmd ...;" \
+293    "run uenvcmd;" \
+294   "fi;" \
+295   "if run loaduimage; then " \
+296    "run mmcboot;" \
+297   "fi;" \
+298  "fi;" \
+299  "run nandboot;" \
+  </pre>
+ </div> 
+
+ <div class="slide">
+  <h1>Baseline software</h1> 
+  <h2>&nbsp;</h2>
+  <ul>
+   <li><a href="http://gitorious.org/x-loader">X-loader</a>
+   </li>
+   <li><a href="http://git.denx.de/?p=u-boot/u-boot-ti.git;a=summary">U-boot</a>
+   </li>
+   <li><a href="http://git.kernel.org">Linux Kernel</a>
+    <ul>
+     <li><a href="https://github.com/torvalds/linux">Temporary Linux home while git.kernel.org is down</a></li>
+     <li><a href="https://github.com/tmlind/linux">Temporary Linux-OMAP home while git.kernel.org is down</a></li>
+     <li><a href="https://github.com/beagleboard/linux">Future home for BeagleBoard-patched kernels</a></li>
+    </ul>
+   </li>
+   <li><a href="http://git.angstrom-distribution.org/cgi-bin/cgit.cgi/meta-texasinstruments/tree/README">OE-core based BSP</a>
+    <ul>
+     <li>This userspace was created with OE-classic instead</li>
+     <li>The bootloaders and kernel where build using this OE-core BSP</li>
+     <li>I didn't rebuild the DSP or SGX components for this kernel</li>
+     <li>This may move at some point to a TI or beaglboard.org server</li>
+    </ul>
+   </li>
+  </ul>
+ </div> 
+
+ <div class="slide">
+  <h1>Highlighted community projects</h1> 
+  <h2>&nbsp;</h2> 
+  <ul>
+   <li><a href="http://linaro.org">Linaro</a></li>
+   <li><a href="http://yoctoproject.org">Yocto Project</a></li>
+   <li><a href="http://qt.nokia.com">Qt</a></li>
+  </ul>
+ </div>
+
+ <div class="slide">
+  <h1>Linaro</h1>
+  <h2><a href="http://linaro.org">www.linaro.org</a></h2>
+  <ul>
+   <li><a href="http://linaro.org">Linaro</a> is a non-profit formed in June 2010
+    <ul>
+     <li>"to make it easier for ARM partners to deploy the latest
+      technology into optimized Linux based products"</li>
+    </ul>
+   </li>
+   <li>Started by ARM
+    <ul>
+     <li>with Texas Instruments, Freescale, IBM, Samsung and ST Ericsson</li>
+    </ul>
+   </li>
+   <li>Focused on improving core open source tools and components for ARM Cortex-A processors
+    <ul>
+     <li>Compiler, debugger, profiler, kernel and middleware</li>
+     <li>Validation of efforts done with Ubuntu and Android</li>
+    </ul>
+   </li>
+   <li>Includes "landing teams" for SoC vendors</li>
+   <li>The BeagleBoard-xM is one of their release platforms</li>
+  </ul>
+ </div>
+
+ <div class="slide">
+  <h1>Yocto</h1>
+  <h2><a href="http://yoctoproject.org">www.yoctoproject.org</a></h2>
+  <ul>
+   <li><a href="http://yoctoproject.org">Yocto</a> is a Linux Foundation project started in
+    <a href="http://www.marketwire.com/press-release/the-linux-foundation-announces-yocto-project-steering-group-and-release-10-1423707.htm">
+    April 2011</a>
+    <ul>
+     <li>"and is an open source collaboration project that provides templates, tools and methods to help you
+      create custom Linux-based systems for embedded products regardless of the hardware architecture."</li>
+    </ul>
+   </li>
+   <li>The advisory board includes members from several key silicon vendors, embedded Linux suppliers and the OpenEmbedded community
+    <ul>
+     <li>including representation from <a href="http://www.yoctoproject.org/about/governance/advisory-board">
+      Texas Instruments, Intel, Mentor Graphics, MontaVista, TimeSys and Dell</a></li>
+    </ul>
+   </li>
+   <li>Building on OpenEmbedded technology and providing board support package (BSP) development tools for embedded platforms
+    <ul>
+     <li>Committed to support ARM, PPC, MIPS, x86 and x86-64 ISAs</li>
+     <li>Aligned with the OpenEmbedded community through OE-core</li>
+    </ul>
+   </li>
+   <li>The BeagleBoard-xM is their ARM reference platform</li>
+  </ul>
+ </div>
+
+	<div class="slide"> 
+		<h1>Qt</h1> 
+		<h2><a href="http://qt.nokia.com">qt.nokia.com</a></h2>
+		<ul> 
+			<li>Qt C++ framework is just one of the options for creating graphical
+				applications, but it is fast, flexible, crossplatform and well-supported
+				by an open source community</li>
+			<li>Created by Trolltech</li>
+			<li>Acquired by Nokia</li>
+			<li>Passed to the community</li>
+		</ul>
+		<img src="diagram-product-architecture-graphic.png" alt="Qt Architecture" height="50%" align="right" />
+	</div>
+
+	<div class="slide"> 
+		<h1>Qt modules</h1> 
+		<h2><a href="http://qt.nokia.com">qt.nokia.com</a></h2>
+		<img src="QtModularization2.png" alt="Qt modules" height="75%" />
+	</div>
+	
+	<div class="slide"> 
+		<h1>Qt demos</h1> 
+		<h2><a href="http://qt.nokia.com">qt.nokia.com</a></h2>
+		<ul>
+			<li>qtdemo</li>
+			<li>Descriptions not compiled in here</li>
+			<li>Lots of different GUI tools</li> 
+			<li>Many other programming tools, like networking, IPC, 3D, database, etc.</li>
+		</ul>
+		<img src="qtdemo.png" alt="qtdemo" height="50%" align="right" />
+	</div>
+
+	<div class="slide"> 
+		<h1>Qt Creator</h1> 
+		<h2><a href="http://qt.nokia.com">qt.nokia.com</a></h2>
+		<ul>
+			<li>Integrated development environment</li>
+			<ul>
+				<li>Runs on Windows, Mac, or Linux</li>
+				<li>Designer for your GUI</li>
+				<li>C++ editor and debugger</li>
+			</ul>
+			<li>Build your GUI on your PC, then move it over 
+				to the BeagleBoard to add functionality</li>
+			<ul>
+				<li> Angstrom Linux distribution has the compiler and
+					libraries ready to build Qt apps natively on your BeagleBoard</li>
+			</ul>
+			<li>Qt Designer installed on your BeagleBoard. Try it "designer".</li>
+		</ul>
+	</div>
+
+ <div class="slide"> 
+  <h1>Qt Hello World example</h1> 
+  <h2><a href="http://qt.nokia.com">qt.nokia.com</a></h2>
+  <pre>
+ #include &lt;QApplication&gt;
+ #include &lt;QPushButton&gt;
+
+ int main(int argc, char *argv[])
+ {
+     QApplication app(argc, argv);
+
+     QPushButton hello("Hello world!");
+     hello.resize(100, 30);
+
+     hello.show();
+     return app.exec();
+ }
+  </pre>
+ </div>
+
+ <div class="slide"> 
+  <h1>Lab - Qt Hello World</h1> 
+  <h2>&nbsp;</h2>
+  <pre>
+root@beagleboard:~# cd ~/labs/qt/hello
+root@beagleboard:~/labs/qt/hello# . /usr/share/qt4/environment-setup 
+root@beagleboard:~/labs/qt/hello# ls
+root@beagleboard:~/labs/qt/hello# cat hello.cpp
+root@beagleboard:~/labs/qt/hello# qmake2 -project
+root@beagleboard:~/labs/qt/hello# qmake2
+qt_config.prf:7: include(file) requires one argument.
+root@beagleboard:~/labs/qt/hello# make clean
+root@beagleboard:~/labs/qt/hello# make
+root@beagleboard:~/labs/qt/hello# ls
+root@beagleboard:~/labs/qt/hello# ./hello
+  </pre>
+ </div>
+
+ <div class="slide"> 
+  <h1>Thanks!</h1> 
+  <h2>&nbsp;</h2> 
+  <ul>
+   <li>The BeagleBoard-xM works like a desktop computer, but is small, low-power and has
+    the right embedded interfaces to put it just about anywhere</li>
+   <li>There are many options for building up user interfaces and you can get started quickly</li>
+   <li>Working with the community can open up new opportunities and improve results</li>
+   <li>There's a lot to explore!</li>
+  </ul>
+ </div>
+</body>
+</html>
+
