@@ -71,12 +71,12 @@ bone =
 
 var gpio = [];
 
-OUTPUT = "out";
-INPUT = "in";
-HIGH = 1;
-LOW = 0;
+OUTPUT = exports.OUTPUT = "out";
+INPUT = exports.INPUT = "in";
+HIGH = exports.HIGH = 1;
+LOW = exports.LOW = 0;
 
-pinMode = function(pin, mode)
+pinMode = exports.pinMode = function(pin, mode)
 {
     var n = pin.gpio;
     
@@ -138,7 +138,7 @@ pinMode = function(pin, mode)
     }
 };
 
-digitalWrite = function(pin, value)
+digitalWrite = exports.digitalWrite = function(pin, value)
 {
     fs.writeFileSync(gpio[pin.gpio].path, "" + value);
 };
@@ -149,14 +149,14 @@ digitalWrite = function(pin, value)
 // I'll wait until we update to node >= 0.5.2.
 //
 // https://github.com/laverdet/node-fibers
-delay = function(milliseconds)
+delay = exports.delay = function(milliseconds)
 {
     var startTime = new Date().getTime();
     while(new Date().getTime() < startTime + milliseconds) {
     }
 };
 
-exports.run = function()
+run = exports.run = function()
 {
     setup();
     process.nextTick(function repeat() {
