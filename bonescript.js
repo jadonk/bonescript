@@ -100,13 +100,12 @@ pinMode = exports.pinMode = function(pin, mode)
                 //    fs.readFileSync("/sys/kernel/debug/omap_mux/" + pin.mux);
                 //console.log("pinmux state: ");
                 //console.log("" + state);
+                
+                // Configure the pinmux later once mount has run
                 child_process.exec("mount -t debugfs none /sys/kernel/debug",
                     function(error, stderr, stdout) {
-                        var muxfile = fs.open(
-                            "/sys/kernel/debug/omap_mux/" + pin.mux, "w",
-                            function() {
-                                fs.write(muxfile, "7", null);
-                            }
+                        var muxfile = fs.writeFile(
+                            "/sys/kernel/debug/omap_mux/" + pin.mux, "7"
                         );
                     }
                 );
@@ -155,6 +154,12 @@ digitalWrite = exports.digitalWrite = function(pin, value)
     fs.writeFileSync(gpio[pin.gpio].path, "" + value);
 };
 
+// Currently, this implementation causes no events to be
+// serviced in this time.  What I might do in the future is
+// to add node-fibers around loop.  For this to be clean,
+// I'll wait until we update to node >= 0.5.2.
+//
+// https://github.com/laverdet/node-fibers
 delay = exports.delay = function(milliseconds)
 {
     var startTime = new Date().getTime();
@@ -165,7 +170,8 @@ delay = exports.delay = function(milliseconds)
 run = exports.run = function()
 {
     setup();
-    while(true) {
+    process.nextTick(function repeat() {
         loop();
-    }
+        process.nextTick(repeat);
+    });
 };
