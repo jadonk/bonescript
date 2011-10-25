@@ -143,6 +143,12 @@ digitalWrite = function(pin, value)
     fs.writeFileSync(gpio[pin.gpio].path, "" + value);
 };
 
+// Currently, this implementation causes no events to be
+// serviced in this time.  What I might do in the future is
+// to add node-fibers around loop.  For this to be clean,
+// I'll wait until we update to node >= 0.5.2.
+//
+// https://github.com/laverdet/node-fibers
 delay = function(milliseconds)
 {
     var startTime = new Date().getTime();
@@ -153,7 +159,8 @@ delay = function(milliseconds)
 exports.run = function()
 {
     setup();
-    while(1) {
-        loop();
-    }
+    process.nextTick(function repeat() {
+        loop()
+        process.nextTick(repeat);
+    });
 };
