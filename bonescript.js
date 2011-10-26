@@ -97,7 +97,7 @@ bone = exports.bone =
     P9_38: { name: "AIN3" },
     P9_39: { name: "AIN0" },
     P9_40: { name: "AIN1" },
-    P9_41: { name: "CLKOUT2" },
+    P9_41: { name: "CLKOUT2", gpio: gpio0+20, mux: "xdma_event_intr1" },
     P9_42: { name: "ID_1" },
     P9_43: { name: "ID_0" },
     P9_44: { name: "ID_2" },
@@ -106,8 +106,7 @@ bone = exports.bone =
     USR0: { name: "USR0", gpio: gpio1+21, led: "usr0", mux: "gpmc_a5" },
     USR1: { name: "USR1", gpio: gpio1+22, led: "usr1", mux: "gpmc_a6" },
     USR2: { name: "USR2", gpio: gpio1+23, led: "usr2", mux: "gpmc_a7" },
-    USR3: { name: "USR3", gpio: gpio1+24, led: "usr3", mux: "gpmc_a8" },
-    TBD: { }
+    USR3: { name: "USR3", gpio: gpio1+24, led: "usr3", mux: "gpmc_a8" }
 };
 
 var gpio = [];
