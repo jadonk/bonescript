@@ -232,21 +232,39 @@ var loadFile = function(uri, subdir, res, type) {
                 res.end();
                 return;
             }
-            fs.readFile(
-                filename,
-                encoding='utf8',
-                function(err, file) {
-                    if(err) {
-                        res.writeHead(500, {"Content-Type": "text/plain"});
-                        res.write(err + "\n");
+            if(type == "binary") {
+                fs.readFile(
+                    filename,
+                    "binary",
+                    function(err, file) {
+                        if(err) {
+                            res.writeHead(500, {"Content-Type": "text/plain"});
+                            res.write(err + "\n");
+                            res.end();
+                            return;
+                        }
+                        res.writeHead(200);
+                        res.write(file, "binary");
                         res.end();
-                        return;
                     }
-                    res.writeHead(200, {"Content-Type": type});
-                    res.write("" + file);
-                    res.end();
-                }
-            );
+                );
+            } else {
+                fs.readFile(
+                    filename,
+                    encoding='utf8',
+                    function(err, file) {
+                        if(err) {
+                            res.writeHead(500, {"Content-Type": "text/plain"});
+                            res.write(err + "\n");
+                            res.end();
+                            return;
+                        }
+                        res.writeHead(200, {"Content-Type": type});
+                        res.write("" + file);
+                        res.end();
+                    }
+                );
+            }
         }
     );
 };
@@ -265,12 +283,8 @@ exports.Server = function(port, subdir) {
                     loadFile(uri, subdir, res, "text/css");
                 } else if(uri.match(/\.htm(.)$/i)) {
                     loadFile(uri, subdir, res, "text/html");
-                } else if(uri.match(/\.jp(e)g$/i)) {
-                    loadFile(uri, subdir, res, "image/jpeg");
-                } else if(uri.match(/\.png$/i)) {
-                    loadFile(uri, subdir, res, "image/png");
-                } else if(uri.match(/\.ico$/i)) {
-                    loadFile(uri, subdir, res, "image/x-icon");
+                } else if(uri.match(/\.(jpg|png|ico)$/i)) {
+                    loadFile(uri, subdir, res, "binary");
                 } else {
                     loadFile(uri, subdir, res, "text/plain");
                 }
