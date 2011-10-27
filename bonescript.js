@@ -3,6 +3,10 @@
 // 
 var fs = require('fs');
 var child_process = require('child_process');
+var http = require('http');
+var url = require('url');
+var path = require('path');
+var events = require('events');
 
 var gpio0 = 0;
 var gpio1 = gpio0+32;
@@ -206,6 +210,7 @@ delay = exports.delay = function(milliseconds)
     }
 };
 
+// This is where everything is meant to happen
 run = exports.run = function()
 {
     setup();
@@ -213,4 +218,66 @@ run = exports.run = function()
         loop();
         process.nextTick(repeat);
     });
+};
+
+// This is a helper function for web servers
+var loadFile = function(uri, subdir, res, type) {
+    var filename = path.join(subdir, uri);
+    path.exists(
+        filename,
+        function(exists) {
+            if(!exists) {
+                res.writeHead(404, {"Content-Type": "text/plain"});
+                res.write("Error 404: '" + uri + "' Not Found\n");
+                res.end();
+                return;
+            }
+            fs.readFile(
+                filename,
+                encoding='utf8',
+                function(err, file) {
+                    if(err) {
+                        res.writeHead(500, {"Content-Type": "text/plain"});
+                        res.write(err + "\n");
+                        res.end();
+                        return;
+                    }
+                    res.writeHead(200, {"Content-Type": type});
+                    res.write("" + file);
+                    res.end();
+                }
+            );
+        }
+    );
+};
+
+exports.Server = function(port, subdir) {
+    subdir = path.join(process.cwd(), subdir);
+    this.server = http.createServer(
+        function(req, res) {
+            var uri = url.parse(req.url).pathname;
+            if(uri == '/') {
+                loadFile('index.html', subdir, res, "text/html");
+            } else {
+                if(uri.match(/\.js$/i)) {
+                    loadFile(uri, subdir, res, "application/javascript");
+                } else if(uri.match(/\.css$/i)) {
+                    loadFile(uri, subdir, res, "text/css");
+                } else if(uri.match(/\.htm(.)$/i)) {
+                    loadFile(uri, subdir, res, "text/html");
+                } else if(uri.match(/\.jp(e)g$/i)) {
+                    loadFile(uri, subdir, res, "image/jpeg");
+                } else if(uri.match(/\.png$/i)) {
+                    loadFile(uri, subdir, res, "image/png");
+                } else if(uri.match(/\.ico$/i)) {
+                    loadFile(uri, subdir, res, "image/x-icon");
+                } else {
+                    loadFile(uri, subdir, res, "text/plain");
+                }
+            }
+        }
+    );
+    this.begin = function() {
+        this.server.listen(port);
+    };
 };

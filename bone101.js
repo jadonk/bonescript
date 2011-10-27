@@ -1,13 +1,8 @@
 var bb = require('./bonescript');
-var http = require('http');
-
-var server = function(req, res) {
-    res.writeHead(200, {'Content-Type': 'text/plain'});
-    res.end('Hello World\n');
-};
 
 setup = function() {
-    http.createServer(server).listen(80, "0.0.0.0");
+    var server = new bb.Server(80, "bone101");
+    server.begin();
 };
 
 loop = function() {
