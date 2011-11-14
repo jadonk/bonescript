@@ -214,10 +214,12 @@ delay = exports.delay = function(milliseconds)
 run = exports.run = function()
 {
     setup();
-    process.nextTick(function repeat() {
-        loop();
-        process.nextTick(repeat);
-    });
+    if(typeof loop === "function") {
+        process.nextTick(function repeat() {
+            loop();
+            process.nextTick(repeat);
+        });
+    }
 };
 
 // This is a helper function for web servers
