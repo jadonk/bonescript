@@ -8,6 +8,34 @@ var url = require('url');
 var path = require('path');
 var events = require('events');
 
+var myrequire = function(packageName, onfail) {
+    var y = {};
+    try {
+        y = require(packageName);
+        y.exists = true;
+    } catch(ex) {
+        y.exists = false;
+        console.log("'" + packageName + "' not loaded");
+        console.log("If desired, try installing it with:");
+        console.log("  curl http://npmjs.org/install.sh | bash");
+        console.log("  npm install " + packageName);
+        onfail();
+    }
+    return(y);
+};
+
+var socket = myrequire('socket.io', function() {
+    console.log("Dynamic web features not enabled");
+});
+
+var binary = myrequire('binary', function() { });
+var inotify = myrequire('inotify', function() { });
+
+var fibers = myrequire('fibers', function() {
+    console.log("Delay operations loops will consume CPU cycles");
+    console.log("Invoke using 'node-fibers' if node version < 0.5.2");
+});
+
 var gpio0 = 0;
 var gpio1 = gpio0+32;
 var gpio2 = gpio1+32;
@@ -197,30 +225,55 @@ digitalWrite = exports.digitalWrite = function(pin, value)
     fs.writeFileSync(gpio[pin.gpio].path, "" + value);
 };
 
-// Currently, this implementation causes no events to be
-// serviced in this time.  What I might do in the future is
-// to add node-fibers around loop.  For this to be clean,
-// I'll wait until we update to node >= 0.5.2.
-//
-// https://github.com/laverdet/node-fibers
-delay = exports.delay = function(milliseconds)
-{
-    var startTime = new Date().getTime();
-    while(new Date().getTime() < startTime + milliseconds) {
-    }
-};
+// Wait for some time
+if(fibers.exists) {
+    delay = exports.delay = function(milliseconds)
+    {
+        var fiber = Fiber.current;
+        setTimeout(function() {
+            fiber.run();
+        }, milliseconds);
+        yield();
+    };
+} else {
+    delay = exports.delay = function(milliseconds)
+    {
+        var startTime = new Date().getTime();
+        while(new Date().getTime() < startTime + milliseconds) {
+        }
+    };
+}
 
 // This is where everything is meant to happen
-run = exports.run = function()
-{
-    setup();
-    if(typeof loop === "function") {
-        process.nextTick(function repeat() {
-            loop();
-            process.nextTick(repeat);
-        });
-    }
-};
+if(fibers.exists) {
+    run = exports.run = function()
+    {
+        Fiber(function() {
+            var fiber = Fiber.current;
+            setup();
+            if(typeof loop === "function") {
+	            while(true) {
+                    loop();
+                    setTimeout(function() {
+                        fiber.run();
+                    }, 0);
+		            yield();
+		        }
+            }
+        }).run();
+    };
+} else {
+    run = exports.run = function()
+    {
+        setup();
+        if(typeof loop === "function") {
+            process.nextTick(function repeat() {
+                loop();
+                process.nextTick(repeat);
+            });
+        }
+    };
+}
 
 // This is a helper function for web servers
 var loadFile = function(uri, subdir, res, type) {
