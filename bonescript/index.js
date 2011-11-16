@@ -324,7 +324,7 @@ var loadFile = function(uri, subdir, res, type) {
     );
 };
 
-exports.Server = function(port, subdir) {
+exports.Server = function(port, subdir, onconnect) {
     subdir = path.join(process.cwd(), subdir);
     this.server = http.createServer(
         function(req, res) {
@@ -344,8 +344,12 @@ exports.Server = function(port, subdir) {
                     loadFile(uri, subdir, res, "text/plain");
                 }
             }
-        }
+        }        
     );
+    if(socket.exists && (typeof onconnect == 'function')) {
+        var io = socket.listen(this.server);
+        io.sockets.on('connection', onconnect);
+    }
     this.begin = function() {
         this.server.listen(port);
     };
