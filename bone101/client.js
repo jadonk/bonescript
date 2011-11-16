@@ -99,35 +99,43 @@ var init = function() {
             for(var pinname in bone) {
                 $("#" + pinname + "_name").html(bone[pinname].name);
                 if (bone[pinname].mux) {
-                    socket.emit("listMux", pinname, function(muxReadout, pinname) {
-                        // The format read from debugfs looks like this:
-                        // name: mcasp0_axr0.spi1_d1 (0x44e10998/0x998 = 0x0023), b NA, t NA
-                        // mode: OMAP_PIN_OUTPUT | OMAP_MUX_MODE3
-                        // signals: mcasp0_axr0 | ehrpwm0_tripzone | NA | spi1_d1 | mmc2_sdcd_mux1 | NA | NA | gpio3_16
-                        if (muxReadout != "0") {
-                            muxBreakdown = muxReadout.split("\n");
-                            // The muxmode number, '3' in the above example
-                            pinMode = muxBreakdown[1].split("|")[1].substr(-1);
-
-                            muxSelect = "<select style='width: 10em'>\n";
-                            for (muxOption in muxBreakdown[2].split("|")) {
-                                pinFunction = muxBreakdown[2].split("|")[muxOption].replace('signals:', '');
-                                // Select the signal the pin is currently muxed to
-                                if (muxOption == pinMode) {
-                                    muxSelected = "selected=true";
-                                }
-                                else {
-                                    muxSelected = "";
-                                }
-                                muxSelect += "<option " + muxSelected + ">" + muxOption + ": " + pinFunction + "</option>";
-                            }
-                            muxSelect += "</select>\n";
-
-                            $("#" + pinname + "_name").html(muxSelect);
-                            //console.log(pinname + ": " + pinMode);
-                        }
-                    });
+                    socket.emit('listmux', pinname);
                 }
+            }
+        });
+
+        socket.on('listmux', function(data) {
+            // The format read from debugfs looks like this:
+            // name: mcasp0_axr0.spi1_d1 (0x44e10998/0x998 = 0x0023), b NA, t NA
+            // mode: OMAP_PIN_OUTPUT | OMAP_MUX_MODE3
+            // signals: mcasp0_axr0 | ehrpwm0_tripzone | NA | spi1_d1 | mmc2_sdcd_mux1 | NA | NA | gpio3_16
+            var muxReadout = data.readout;
+            var pinname = data.pinname;
+            if (muxReadout != "0") {
+                var muxBreakdown = muxReadout.split("\n");
+                var pinMode = muxBreakdown[1].split("|")[1].substr(-1); // The muxmode number, '3' in the above example
+                var muxSelect = "<select style='width: 10em'>\n";
+                var muxOptions = muxBreakdown[2].split('|');
+                for (muxOption in muxOptions) {
+                    try {
+                        var pinFunction = (''+muxOptions[muxOption]).replace('signals:', '').replace(' ', '');
+                    } catch(ex) {
+                        console.log("Unable to parse " + muxOptions[muxOption] + ": " + ex);
+                        pinFunction = "NA";
+                    }
+                    // Select the signal the pin is currently muxed to
+                    if (muxOption == pinMode) {
+                        muxSelected = "selected=true";
+                    }
+                    else {
+                        muxSelected = "";
+                    }
+                    muxSelect += "<option " + muxSelected + ">" + muxOption + ": " + pinFunction + "</option>";
+                }
+                muxSelect += "</select>\n";
+
+                $("#" + pinname + "_name").html(muxSelect);
+                //console.log(pinname + ": " + pinMode);
             }
         });
 

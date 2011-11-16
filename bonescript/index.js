@@ -357,17 +357,17 @@ if(socket.exists) {
             }
         
             // listen for requests and reads the debugfs entry async
-            socket.on('listMux', function(pinname, fn) {
+            socket.on('listmux', function(pinname) {
                 console.log(pinname + ": " + bone[pinname].mux);
                 path.exists("/sys/kernel/debug/omap_mux/" + bone[pinname].mux, function(exists) {
                     if(exists) {
                         fs.readFile("/sys/kernel/debug/omap_mux/" + bone[pinname].mux, 'utf8', function (err, data) {
-                            fn(data, pinname);
+                            socket.emit('listmux', {'pinname': pinname, 'readout': data});
                         });
                     } else {
                         // default mux
                         console.log(bone[pinname].mux + ": default mux");
-                        fn("0", pinname);
+                        socket.emit('listmux', {'pinname': pinname, 'readout': '0'});
                     }
                 });
             });
