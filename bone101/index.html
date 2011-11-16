@@ -38,13 +38,60 @@
  </div>
 
  <div class="slide"> 
-  <h1>In-browser shells</h1>
-  <h2>&nbsp;</h2>
-  <!-- <div id="shell"></div> -->
-  <ul>
-   <li><a href="/shell.html">BeagleBone BASH shell</a></li>
-   <li><a href="/js_term.html">JavaScript terminal</a></li>
+  <h1>What is the BeagleBoard?</h1> 
+  <h2><a href="http://beagleboard.org/static/flyer_latest.pdf">http://beagleboard.org/static/flyer_latest.pdf</a></h2>
+  <p>BeagleBoard.org is an open hardware project featuring two designs:</p>
+  <ul class="incremental"> 
+   <li><b>BeagleBoard-xM:</b> Open software desktop experience with extra MHz and extra memory</li>
+   <li><b>BeagleBone:</b> Hardware I/O focus with single cable development experience</li>
   </ul>
+  <p>BeagleBoard.org designs have a common philosophy:</p>
+  <ul class="incremental"> 
+   <li><font size="+3" color="orange">B</font>ring your own peripherals
+    <sup><small><a href="peripheral list">[1]</a></small></sup>
+   </li> 
+   <li><font size="+3" color="orange">E</font>ntry level cost</li> 
+   <li><font size="+3" color="orange">A</font>RM Cortex-A8 (superscalar)</li> 
+   <li><font size="+3" color="orange">G</font>raphics (and possibly DSP) accelerated</li> 
+   <li><font size="+3" color="orange">L</font>inux and open source community</li> 
+   <li><font size="+3" color="orange">E</font>nvironment for innovators</li> 
+  </ul>
+ </div> 
+
+ <div class="slide">
+  <h1>BeagleBone Details</h1> 
+  <h2><a href="http://beagleboard.org/bone">http://beagleboard.org/bone</a></h2>
+  <img src="bone_connectors.jpg" alt="BeagleBone image" align="right" width="70%" height="70%" />
+  <ul>
+   <li>720MHz super-scalar ARM Cortex-A8 CPU (1,450 DMIPS)</li>
+   <li>SGX530 3D graphics accelerator</li>
+   <li>Single USB cable for power, debug and device</li>
+   <li>Expansion via USB host and 2 46-pin connectors</li>
+   <li>Neworking via 10/100 Ethernet or USB</li>
+   <li>4GB microSD card with Angstrom Distribution</li>
+  </ul>
+ </div> 
+
+ <div class="slide"> 
+  <h1>Services running on the BeagleBone</h1>
+  <h2>&nbsp;</h2>
+  <ul>
+   <li>Some web-based services running on your board to be explored<ul>
+    <li>Write applications directly in the browser:
+     <span class='dynlink' onclick='location.href="http://"+window.location.hostname+":3000"'>Cloud9 IDE</span>
+    </li>
+    <li><del>Access the Linux shell:
+     <span class='dynlink' onclick='location.href="https://"+window.location.hostname'>GateOne</span>
+    </del></li>
+   </ul></li>
+   <li>On my board, I've hacked in a few more for future releases<ul>
+    <li><a href="/shell.html">BeagleBone BASH shell</a></li>
+    <li><a href="/js_term.html">JavaScript terminal</a></li>
+   </ul></li>
+  </ul>
+  <p align="center">
+   <img src="beaglebone_small.png" height="400px" />
+  </p>
  </div>
 
  <div class="slide"> 
@@ -137,51 +184,6 @@
   <td class='spacer'></td>
   <td id='P8_45_name'></td><td id='P8_45' class='pin'></td><td id='P8_46' class='pin'></td><td id='P8_46_name'></td></tr>
   </table></center>
- </div>
-
- <div class="slide"> 
-  <h1>What is the BeagleBoard?</h1> 
-  <h2><a href="http://beagleboard.org/static/flyer_latest.pdf">http://beagleboard.org/static/flyer_latest.pdf</a></h2>
-  <p>BeagleBoard.org is an open hardware project featuring two designs:</p>
-  <ul class="incremental"> 
-   <li><b>BeagleBoard-xM:</b> Open software desktop experience with extra MHz and extra memory</li>
-   <li><b>BeagleBone:</b> Hardware I/O focus with single cable development experience</li>
-  </ul>
-  <p>BeagleBoard.org designs have a common philosophy:</p>
-  <ul class="incremental"> 
-   <li><font size="+3" color="orange">B</font>ring your own peripherals
-    <sup><small><a href="peripheral list">[1]</a></small></sup>
-   </li> 
-   <li><font size="+3" color="orange">E</font>ntry level cost</li> 
-   <li><font size="+3" color="orange">A</font>RM Cortex-A8 (superscalar)</li> 
-   <li><font size="+3" color="orange">G</font>raphics (and possibly DSP) accelerated</li> 
-   <li><font size="+3" color="orange">L</font>inux and open source community</li> 
-   <li><font size="+3" color="orange">E</font>nvironment for innovators</li> 
-  </ul>
- </div> 
-
- <div class="slide">
-  <h1>BeagleBone Details</h1> 
-  <h2><a href="http://beagleboard.org/bone">http://beagleboard.org/bone</a></h2>
-  <img src="bone_connectors.jpg" alt="BeagleBone image" align="right" width="70%" height="70%" />
- </div> 
-
- <div class="slide"> 
-  <h1>Services running on the BeagleBone</h1>
-  <h2>&nbsp;</h2>
-  <ul>
-   <li>Some web-based services running on your board to be explored<ul>
-    <li>Write applications directly in the browser:
-     <span class='dynlink' onclick='location.href="http://"+window.location.hostname+":3000"'>Cloud9 IDE</span>
-    </li>
-    <li>Access the Linux shell:
-     <span class='dynlink' onclick='location.href="https://"+window.location.hostname'>GateOne</span>
-    </li>
-   </ul></li>
-  </ul>
-  <p align="center">
-   <img src="beaglebone_small.png" height="400px" />
-  </p>
  </div>
 
  <div class="slide">
