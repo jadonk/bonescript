@@ -348,5 +348,6 @@ exports.Server = function(port, subdir) {
     );
     this.begin = function() {
         this.server.listen(port);
+        this.socket = socket.listen(this.server);
     };
 };
