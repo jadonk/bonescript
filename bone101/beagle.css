@@ -88,6 +88,12 @@ div.slide h1 a:link {
   text-decoration: none;
 }
 
+.dynlink {
+  color: #DDA01D;
+  text-decoration: none;
+  cursor: pointer;
+}
+
 div.slide h1 a:visited {
   color: #DDA01D;
   text-decoration: none;
