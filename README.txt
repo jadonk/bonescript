@@ -14,8 +14,8 @@ to provide people with a starting point concept.  You can update this code
 by performing 'git pull' in the Cloud9 IDE command bar at the bottom or by
 performing the same command from the shell in the /var/usr/cloud9 folder.
 
-I expect to have something that provides most of the Arudino functions and is
-generally usable by Summer 2012.  The use of Arudino functions is for both
+I expect to have something that provides most of the Arduino functions and is
+generally usable by Summer 2012.  The use of Arduino functions is for both
 familiarity and because they represent a set of functions that new users have
 been able to comprehend and utilize for interesting things.
 
