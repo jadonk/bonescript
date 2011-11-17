@@ -85,6 +85,14 @@ socket.on('data', function(data) {
   window.graphData[i] = window.graphData[i+1];
  }
  window.graphData[i] = myData;
+ if (myData > rangeHigh) {
+     rangeHigh = myData;
+     window.scaleY = window.height / (window.rangeHigh - window.rangeLow);
+ }
+ if (myData < rangeLow) {
+     rangeLow = myData;
+     window.scaleY = window.height / (window.rangeHigh - window.rangeLow);
+ }
  processing.redraw();
 });
 socket.on('disconnect', function() {
