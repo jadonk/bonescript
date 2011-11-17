@@ -20,15 +20,20 @@
 var graphDataSize = 50;
 var graphData = new Array(graphDataSize);
 var sketchProc = function(p) {
- p.frameRate(10);
  p.size(600, 250);
- 
- var rangeY = 256;
- var centerY = p.height / 2;
- var scaleY = p.height / rangeY;
+
+ // variables referenced elsewhere
+ window.height = p.height;
+
+ // variables that might get updated
+ window.rangeLow = 0;
+ window.rangeHigh = 1;
+ window.scaleY = window.height / (window.rangeHigh - window.rangeLow);
+
+ // local variables
  var stepX = p.width / (graphDataSize - 1);
+ var centerY = window.height / 2;
  
- // The draw function will be called frameRate times per second
  p.draw = function() {
   // erase background
   p.background(224);
@@ -36,7 +41,7 @@ var sketchProc = function(p) {
   // draw axis
   p.stroke(25);
   p.strokeWeight(1);
-  p.line(0, centerY, p.width, centerY);
+  p.line(0, window.centerY, p.width, window.centerY);
 
   // draw graph
   p.stroke(0);
@@ -44,7 +49,7 @@ var sketchProc = function(p) {
   //p.line(0, centerY+1, p.width, centerY+1);
   var lastX = 0, nextX = 0, lastY, nextY;
   for(var point in graphData) {
-   nextY = centerY - (graphData[point] * scaleY);
+   nextY = centerY - ((graphData[point] - window.rangeLow) * scaleY);
    if(point != 0) {
     p.line(lastX, lastY, nextX, nextY);
     lastX += stepX;
@@ -53,6 +58,8 @@ var sketchProc = function(p) {
    lastY = nextY;
   }
  };
+ 
+ p.noLoop();
 }
 
 var canvas = document.getElementById("canvas1");
@@ -62,15 +69,22 @@ var socket = new io.connect();
 socket.on('connect', function() {
  document.getElementById("status").innerHTML="Connected";
 });
-socket.on('message', function(data) {
- var myData = window.atob(data);
- for(var i=0; i<graphDataSize; i++) {
-  var b = myData.charCodeAt(i);
-  if(b>=128) {
-   b = b-256;
-  }
-  window.graphData[i] = b;
+socket.on('rangeLow', function(rangeLow) {
+ window.rangeLow = rangeLow;
+ window.scaleY = window.height / (window.rangeHigh - window.rangeLow);
+});
+socket.on('rangeHigh', function(rangeLow) {
+ window.rangeHigh = rangeHigh;
+ window.scaleY = window.height / (window.rangeHigh - window.rangeLow);
+});
+socket.on('data', function(data) {
+ document.getElementById("output").innerHTML=""+data;
+ var myData = parseFloat(data);
+ for(var i=0; i<graphDataSize-1; i++) {
+  window.graphData[i] = window.graphData[i+1];
  }
+ window.graphData[i] = myData;
+ processing.redraw();
 });
 socket.on('disconnect', function() {
  document.getElementById("status").innerHTML="Disconnected";
@@ -78,7 +92,7 @@ socket.on('disconnect', function() {
 });
 
 trigger = function() {
- socket.send("trigger");
+ socket.emit('trigger');
 };
 </script>
 </body>

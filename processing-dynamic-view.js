@@ -1,42 +1,58 @@
 #!/usr/bin/env node
+var bb = require('./bonescript');
 var fs = require('fs');
 var io = require('socket.io');
-var bb = require('./bonescript');
-
-var server;
 
 setup = function() {
-    server = new bb.Server(8000, "processing-dynamic-view");
-    server.begin(); 
-    server.socket.on('connection', function(client) {
-        sys.puts("New client connected");
+    var onconnect = function(socket) {
+        console.log("New client connected");
+        var rate = 1000;
         
-        var fileTemp0 = 
-            "/sys/devices/platform/omap/omap_i2c.3/i2c-3/3-0077/temp0_input";
+        var fileData = 
+            "/var/lib/cloud9/processing-dynamic-view/data";
+        var fileRangeLow = 
+            "/var/lib/cloud9/processing-dynamic-view/rangeLow";
+        var fileRangeHigh = 
+            "/var/lib/cloud9/processing-dynamic-view/rangeHigh";
+        var fileRate = 
+            "/var/lib/cloud9/processing-dynamic-view/rate";
+
+        var readData = function(fd) {
+            fs.readFile(fileData, function(err, data) {
+                if(err) throw("Unable to read data: " + err);
+                socket.emit('data', "" + data);
+            });
+            setTimeout(readData, rate);
+        };
+        
+        fs.readFile(fileRangeLow, function(err, data) {
+            if(err) throw("Unable to read rangeLow: " + err);
+            socket.emit('rangeLow', "" + data);
+        });
             
-        var sendTemp0 = function(err, data) {
-            client.send(data);
-        };
-    
-        var readTemp0 = function(fd) {
-            fs.readFile(fileTemp0, sendTemp0(err, data));
-            setTimeout(readTemp0, 1000);
-        };
-        
-        // start collecting and sending
-        setTimeout(readTemp0, 1000);
-    
-     
+        fs.readFile(fileRangeHigh, function(err, data) {
+            if(err) throw("Unable to read rangeHigh: " + err);
+            socket.emit('rangeHigh', "" + data);
+        });
+            
+        fs.readFile(fileRate, function(err, data) {
+            if(err) throw("Unable to read rate: " + err);
+            rate = data;
+            setTimeout(readData, rate);
+        });
+            
         // on message
-        client.on('message', function(data) {
-            sys.puts("Got message from client:", data);
+        socket.on('message', function(data) {
+            console.log("Got message from client:", data);
         });
      
         // on disconnect
-        client.on('disconnect', function() {
-            sys.puts("Client disconnected.");
+        socket.on('disconnect', function() {
+            console.log("Client disconnected.");
         }); 
-    }); 
+    }; 
+    var server = new bb.Server(8000, "processing-dynamic-view", onconnect);
+    server.begin(); 
 };
 
 bb.run();
