@@ -7,6 +7,7 @@ setup = function() {
     var onconnect = function(socket) {
         console.log("New client connected");
         var delay = 1000;
+        var scale = 1;
         
         var fileData = 
             "/var/lib/cloud9/processing-dynamic-view/data";
@@ -15,12 +16,19 @@ setup = function() {
         var fileRangeHigh = 
             "/var/lib/cloud9/processing-dynamic-view/rangeHigh";
         var fileRate = 
-            "/var/lib/cloud9/processing-dynamic-view/delay";
+            "/var/lib/cloud9/processing-dynamic-view/delay";       
+        var fileScale =
+            "/var/lib/cloud9/processing-dynamic-view/scale";
 
+        fs.readFile(fileScale, function(err, data) {
+            if(err) throw("Unable to read scale: " + err);
+            scale = data;
+        });
+        
         var readData = function(fd) {
             fs.readFile(fileData, function(err, data) {
                 if(err) throw("Unable to read data: " + err);
-                socket.emit('data', "" + data);
+                socket.emit('data', "" + data / scale);
             });
             setTimeout(readData, delay);
         };
