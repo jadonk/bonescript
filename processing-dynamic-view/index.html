@@ -69,12 +69,13 @@ var socket = new io.connect();
 socket.on('connect', function() {
  document.getElementById("status").innerHTML="Connected";
 });
-socket.on('rangeLow', function(rangeLow) {
- window.rangeLow = parseFloat(rangeLow);
- window.scaleY = window.height / (window.rangeHigh - window.rangeLow);
-});
-socket.on('rangeHigh', function(rangeHigh) {
- window.rangeHigh = parseFloat(rangeHigh);
+socket.on('config', function(config) {
+ try {
+  window.rangeHigh = parseFloat(config.rangeHigh);
+ } catch(ex) {}
+ try {
+  window.rangeLow = parseFloat(config.rangeLow);
+ } catch(ex) {}
  window.scaleY = window.height / (window.rangeHigh - window.rangeLow);
 });
 socket.on('data', function(data) {
