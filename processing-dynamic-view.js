@@ -6,7 +6,7 @@ var io = require('socket.io');
 setup = function() {
     var onconnect = function(socket) {
         console.log("New client connected");
-        var rate = 1000;
+        var delay = 1000;
         
         var fileData = 
             "/var/lib/cloud9/processing-dynamic-view/data";
@@ -15,14 +15,14 @@ setup = function() {
         var fileRangeHigh = 
             "/var/lib/cloud9/processing-dynamic-view/rangeHigh";
         var fileRate = 
-            "/var/lib/cloud9/processing-dynamic-view/rate";
+            "/var/lib/cloud9/processing-dynamic-view/delay";
 
         var readData = function(fd) {
             fs.readFile(fileData, function(err, data) {
                 if(err) throw("Unable to read data: " + err);
                 socket.emit('data', "" + data);
             });
-            setTimeout(readData, rate);
+            setTimeout(readData, delay);
         };
         
         fs.readFile(fileRangeLow, function(err, data) {
@@ -36,9 +36,9 @@ setup = function() {
         });
             
         fs.readFile(fileRate, function(err, data) {
-            if(err) throw("Unable to read rate: " + err);
-            rate = data;
-            setTimeout(readData, rate);
+            if(err) throw("Unable to read delay: " + err);
+            delay = data;
+            setTimeout(readData, delay);
         });
             
         // on message
