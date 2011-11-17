@@ -70,11 +70,11 @@ socket.on('connect', function() {
  document.getElementById("status").innerHTML="Connected";
 });
 socket.on('rangeLow', function(rangeLow) {
- window.rangeLow = rangeLow;
+ window.rangeLow = parseFloat(rangeLow);
  window.scaleY = window.height / (window.rangeHigh - window.rangeLow);
 });
-socket.on('rangeHigh', function(rangeLow) {
- window.rangeHigh = rangeHigh;
+socket.on('rangeHigh', function(rangeHigh) {
+ window.rangeHigh = parseFloat(rangeHigh);
  window.scaleY = window.height / (window.rangeHigh - window.rangeLow);
 });
 socket.on('data', function(data) {
