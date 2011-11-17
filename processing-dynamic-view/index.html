@@ -41,7 +41,7 @@ var sketchProc = function(p) {
   // draw axis
   p.stroke(25);
   p.strokeWeight(1);
-  p.line(0, window.centerY, p.width, window.centerY);
+  p.line(0, centerY, p.width, centerY);
 
   // draw graph
   p.stroke(0);
@@ -49,7 +49,7 @@ var sketchProc = function(p) {
   //p.line(0, centerY+1, p.width, centerY+1);
   var lastX = 0, nextX = 0, lastY, nextY;
   for(var point in graphData) {
-   nextY = centerY - ((graphData[point] - window.rangeLow) * scaleY);
+   nextY = ((window.rangeHigh - graphData[point]) * scaleY);
    if(point != 0) {
     p.line(lastX, lastY, nextX, nextY);
     lastX += stepX;
