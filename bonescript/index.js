@@ -354,3 +354,34 @@ exports.Server = function(port, subdir, onconnect) {
         this.server.listen(port);
     };
 };
+
+exports.Server6 = function(port, subdir, onconnect) {
+    subdir = path.join(process.cwd(), subdir);
+    this.server = http.createServer(
+        function(req, res) {
+            var uri = url.parse(req.url).pathname;
+            if(uri == '/') {
+                loadFile('index.html', subdir, res, "text/html");
+            } else {
+                if(uri.match(/\.js$/i)) {
+                    loadFile(uri, subdir, res, "application/javascript");
+                } else if(uri.match(/\.css$/i)) {
+                    loadFile(uri, subdir, res, "text/css");
+                } else if(uri.match(/\.htm(.)$/i)) {
+                    loadFile(uri, subdir, res, "text/html");
+                } else if(uri.match(/\.(jpg|png|ico)$/i)) {
+                    loadFile(uri, subdir, res, "binary");
+                } else {
+                    loadFile(uri, subdir, res, "text/plain");
+                }
+            }
+        }        
+    );
+    if(socket.exists && (typeof onconnect == 'function')) {
+        var io = socket.listen(this.server);
+        io.sockets.on('connection', onconnect);
+    }
+    this.begin = function() {
+        this.server.listen(port, '::0');
+    };
+};
