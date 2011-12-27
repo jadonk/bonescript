@@ -1,0 +1,44 @@
+body {
+  background-color: white;
+  font-family: verdana, helvetica, sans-serif;
+  color: #333333;
+	font-size: 12px;
+}
+
+a {
+	text-decoration: none;
+}
+
+div.code {
+	border: 1px dotted #7893a9;
+	margin: 2px;
+	padding: 2px;
+	background: #eeeeee;
+	white-space: pre;
+	width:99%;
+	clear: both;
+}
+
+div.footer {
+  	float: right;
+	padding: 2px 5px;
+	dwidth: 98%;	
+  border-top: 1px dashed #585a5e;
+  font-size: 10px;
+  text-align: right;
+}
+
+
+h3 {
+  	font-size: 18px;
+	font-color: black;
+  	padding: 0px 5px;
+  	/*background-color: #7893a9;*/
+} 
+
+img {
+	border: none;
+	padding: 2px;
+}
+}
+
