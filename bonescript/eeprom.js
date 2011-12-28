@@ -31,6 +31,7 @@ var fetchEepromData = function(address) {
                 'r'
             );
         fs.readSync(eepromFile, eepromData, 0, 256, 0);
+        console.log('Reading EEPROM at '+address);
         return(eepromData);
     } catch(ex) {
         console.warn('Unable to open EEPROM at '+address+': '+ex);
@@ -42,7 +43,7 @@ var parseMainEeprom = function(x) {
     var data = {};
     data.header = x.toString('base64', 0, 4);
     if(data.header != 'qlUz7g==') {
-        console.error('Unknown EEPROM format');
+        console.error('Unknown EEPROM format: '+data.header);
         return(null);
     }
     data.boardName = x.toString('ascii', 4, 12);
@@ -56,7 +57,7 @@ var parseCapeEeprom = function(x) {
     var data = {};
     data.header = x.toString('base64', 0, 4);
     if(data.header != 'qlUz7g==') {
-        console.error('Unknown EEPROM format');
+        console.error('Unknown EEPROM format: '+data.header);
         return(null);
     }
     data.formatRev = x.toString('ascii', 4, 6);
@@ -70,10 +71,10 @@ var parseCapeEeprom = function(x) {
     data.partNumber = x.toString('ascii', 58, 74);
     data.numPins = x.toString('ascii', 72, 76);
     data.serialNumber = x.toString('ascii', 76, 88);
-    data.currentVDD_3V3EXP = x.readUint16BE(228);
-    data.currentVDD_5V = x.readUint16BE(230);
-    data.currentSYS_5V = x.readUint16BE(232);
-    data.DCSupplied = x.readUint16BE(234);
+    //data.currentVDD_3V3EXP = x.readUint16BE(228);
+    //data.currentVDD_5V = x.readUint16BE(230);
+    //data.currentSYS_5V = x.readUint16BE(232);
+    //data.DCSupplied = x.readUint16BE(234);
     return(data);
 };
 
