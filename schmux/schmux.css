@@ -1,0 +1,30 @@
+td.pin {
+	width: 1.5em;
+	height: 1.5em;
+	background-color:#EAF2D3;
+	text-align: center;
+}
+
+td.spacer {
+	width: 8em;
+}
+
+td.pin:hover {
+	background-color:#FF0000;
+}
+
+.butt { 
+        color: #fff;
+        background: #bada55;
+        padding: .5em .75em;
+        font-weight: bold;
+        text-decoration: none;
+        border-radius: 5px;
+        margin: .5em .25em;
+        line-height: 1.5em;
+        display: inline-block;
+}
+
+.butt:hover {
+        color: #fff;
+}
