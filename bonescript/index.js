@@ -326,7 +326,7 @@ var loadFile = function(uri, subdir, res, type) {
 
 exports.Server = function(port, subdir, onconnect) {
     subdir = path.join(process.cwd(), subdir);
-    this.handler = function(req, res) {
+    var handler = function(req, res) {
         var uri = url.parse(req.url).pathname;
         if(uri == '/') {
             loadFile('index.html', subdir, res, "text/html");
@@ -345,9 +345,9 @@ exports.Server = function(port, subdir, onconnect) {
         }
     };
     this.server = http.createServer();
-    this.server.addListener('request', this.handler);
+    this.server.addListener('request', handler);
     this.server6 = http.createServer();
-    this.server6.addListener('request', this.handler);
+    this.server6.addListener('request', handler);
     if(socket.exists && (typeof onconnect == 'function')) {
         var io = socket.listen(this.server);
         io.sockets.on('connection', onconnect);
