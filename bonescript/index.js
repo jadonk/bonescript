@@ -344,16 +344,18 @@ exports.Server = function(port, subdir, onconnect) {
             }
         }
     };
+    this.server = http.createServer();
+    this.server.addListener('request', this.handler);
+    this.server6 = http.createServer();
+    this.server6.addListener('request', this.handler);
     if(socket.exists && (typeof onconnect == 'function')) {
         var io = socket.listen(this.server);
         io.sockets.on('connection', onconnect);
+        var io6 = socket.listen(this.server6);
+        io6.sockets.on('connection', onconnect);
     }
     this.begin = function() {
-        this.server = http.createServer();
-	this.server.addListener('request', this.handler);
         this.server.listen(port);
-        this.server6 = http.createServer();
-	this.server6.addListener('request', this.handler);
         this.server6.listen(port, '::0');
     };
 };
