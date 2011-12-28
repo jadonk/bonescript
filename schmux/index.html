@@ -1,0 +1,94 @@
+<html>
+<head>
+    <link rel="stylesheet" href="schmux.css" />
+    <script type=text/javascript src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script type=text/javascript src="/socket.io/socket.io.js"></script>
+    <script type=text/javascript src="schmux-web.js"></script>
+</head>
+<body>
+<table>
+<thead>
+    <tr><td></td><td colspan="2">P9</td><td></td><td></td><td></td><td colspan="2">P8</td><td></td></tr>
+    <tr><td></td><td>1</td><td>2</td><td></td><td></td><td></td><td>1</td><td>2</td><td></td></tr>
+</thead>
+<tfoot>
+    <tr><td></td><td>45</td><td>46</td><td></td><td></td><td></td><td>45</td><td>46</td><td></td></tr>
+</tfoot>
+<tr><td id='P9_1_name'></td><td id='P9_1' class='pin'></td><td id='P9_2' class='pin'></td><td id='P9_2_name'></td>
+<td class='spacer'></td>
+<td id='P8_1_name'></td><td id='P8_1' class='pin'></td><td id='P8_2' class='pin'></td><td id='P8_2_name'></td></tr>
+<tr><td id='P9_3_name'></td><td id='P9_3' class='pin'></td><td id='P9_4' class='pin'></td><td id='P9_4_name'></td>
+<td class='spacer'></td>
+<td id='P8_3_name'></td><td id='P8_3' class='pin'></td><td id='P8_4' class='pin'></td><td id='P8_4_name'></td></tr>
+<tr><td id='P9_5_name'></td><td id='P9_5' class='pin'></td><td id='P9_6' class='pin'></td><td id='P9_6_name'></td>
+<td class='spacer'></td>
+<td id='P8_5_name'></td><td id='P8_5' class='pin'></td><td id='P8_6' class='pin'></td><td id='P8_6_name'></td></tr>
+<tr><td id='P9_7_name'></td><td id='P9_7' class='pin'></td><td id='P9_8' class='pin'></td><td id='P9_8_name'></td>
+<td class='spacer'></td>
+<td id='P8_7_name'></td><td id='P8_7' class='pin'></td><td id='P8_8' class='pin'></td><td id='P8_8_name'></td></tr>
+<tr><td id='P9_9_name'></td><td id='P9_9' class='pin'></td><td id='P9_10' class='pin'></td><td id='P9_10_name'></td>
+<td class='spacer'></td>
+<td id='P8_9_name'></td><td id='P8_9' class='pin'></td><td id='P8_10' class='pin'></td><td id='P8_10_name'></td></tr>
+<tr><td id='P9_11_name'></td><td id='P9_11' class='pin'></td><td id='P9_12' class='pin'></td><td id='P9_12_name'></td>
+<td class='spacer'></td>
+<td id='P8_11_name'></td><td id='P8_11' class='pin'></td><td id='P8_12' class='pin'></td><td id='P8_12_name'></td></tr>
+<tr><td id='P9_13_name'></td><td id='P9_13' class='pin'></td><td id='P9_14' class='pin'></td><td id='P9_14_name'></td>
+<td class='spacer'></td>
+<td id='P8_13_name'></td><td id='P8_13' class='pin'></td><td id='P8_14' class='pin'></td><td id='P8_14_name'></td></tr>
+<tr><td id='P9_15_name'></td><td id='P9_15' class='pin'></td><td id='P9_16' class='pin'></td><td id='P9_16_name'></td>
+<td class='spacer'></td>
+<td id='P8_15_name'></td><td id='P8_15' class='pin'></td><td id='P8_16' class='pin'></td><td id='P8_16_name'></td></tr>
+<tr><td id='P9_17_name'></td><td id='P9_17' class='pin'></td><td id='P9_18' class='pin'></td><td id='P9_18_name'></td>
+<td class='spacer'></td>
+<td id='P8_17_name'></td><td id='P8_17' class='pin'></td><td id='P8_18' class='pin'></td><td id='P8_18_name'></td></tr>
+<tr><td id='P9_19_name'></td><td id='P9_19' class='pin'></td><td id='P9_20' class='pin'></td><td id='P9_20_name'></td>
+<td class='spacer'></td>
+<td id='P8_19_name'></td><td id='P8_19' class='pin'></td><td id='P8_20' class='pin'></td><td id='P8_20_name'></td></tr>
+<tr><td id='P9_21_name'></td><td id='P9_21' class='pin'></td><td id='P9_22' class='pin'></td><td id='P9_22_name'></td>
+<td class='spacer'></td>
+<td id='P8_21_name'></td><td id='P8_21' class='pin'></td><td id='P8_22' class='pin'></td><td id='P8_22_name'></td></tr>
+<tr><td id='P9_23_name'></td><td id='P9_23' class='pin'></td><td id='P9_24' class='pin'></td><td id='P9_24_name'></td>
+<td class='spacer'></td>
+<td id='P8_23_name'></td><td id='P8_23' class='pin'></td><td id='P8_24' class='pin'></td><td id='P8_24_name'></td></tr>
+<tr><td id='P9_25_name'></td><td id='P9_25' class='pin'></td><td id='P9_26' class='pin'></td><td id='P9_26_name'></td>
+<td class='spacer'></td>
+<td id='P8_25_name'></td><td id='P8_25' class='pin'></td><td id='P8_26' class='pin'></td><td id='P8_26_name'></td></tr>
+<tr><td id='P9_27_name'></td><td id='P9_27' class='pin'></td><td id='P9_28' class='pin'></td><td id='P9_28_name'></td>
+<td class='spacer'></td>
+<td id='P8_27_name'></td><td id='P8_27' class='pin'></td><td id='P8_28' class='pin'></td><td id='P8_28_name'></td></tr>
+<tr><td id='P9_29_name'></td><td id='P9_29' class='pin'></td><td id='P9_30' class='pin'></td><td id='P9_30_name'></td>
+<td class='spacer'></td>
+<td id='P8_29_name'></td><td id='P8_29' class='pin'></td><td id='P8_30' class='pin'></td><td id='P8_30_name'></td></tr>
+<tr><td id='P9_31_name'></td><td id='P9_31' class='pin'></td><td id='P9_32' class='pin'></td><td id='P9_32_name'></td>
+<td class='spacer'></td>
+<td id='P8_31_name'></td><td id='P8_31' class='pin'></td><td id='P8_32' class='pin'></td><td id='P8_32_name'></td></tr>
+<tr><td id='P9_33_name'></td><td id='P9_33' class='pin'></td><td id='P9_34' class='pin'></td><td id='P9_34_name'></td>
+<td class='spacer'></td>
+<td id='P8_33_name'></td><td id='P8_33' class='pin'></td><td id='P8_34' class='pin'></td><td id='P8_34_name'></td></tr>
+<tr><td id='P9_35_name'></td><td id='P9_35' class='pin'></td><td id='P9_36' class='pin'></td><td id='P9_36_name'></td>
+<td class='spacer'></td>
+<td id='P8_35_name'></td><td id='P8_35' class='pin'></td><td id='P8_36' class='pin'></td><td id='P8_36_name'></td></tr>
+<tr><td id='P9_37_name'></td><td id='P9_37' class='pin'></td><td id='P9_38' class='pin'></td><td id='P9_38_name'></td>
+<td class='spacer'></td>
+<td id='P8_37_name'></td><td id='P8_37' class='pin'></td><td id='P8_38' class='pin'></td><td id='P8_38_name'></td></tr>
+<tr><td id='P9_39_name'></td><td id='P9_39' class='pin'></td><td id='P9_40' class='pin'></td><td id='P9_40_name'></td>
+<td class='spacer'></td>
+<td id='P8_39_name'></td><td id='P8_39' class='pin'></td><td id='P8_40' class='pin'></td><td id='P8_40_name'></td></tr>
+<tr><td id='P9_41_name'></td><td id='P9_41' class='pin'></td><td id='P9_42' class='pin'></td><td id='P9_42_name'></td>
+<td class='spacer'></td>
+<td id='P8_41_name'></td><td id='P8_41' class='pin'></td><td id='P8_42' class='pin'></td><td id='P8_42_name'></td></tr>
+<tr><td id='P9_43_name'></td><td id='P9_43' class='pin'></td><td id='P9_44' class='pin'></td><td id='P9_44_name'></td>
+<td class='spacer'></td>
+<td id='P8_43_name'></td><td id='P8_43' class='pin'></td><td id='P8_44' class='pin'></td><td id='P8_44_name'></td></tr>
+<tr><td id='P9_45_name'></td><td id='P9_45' class='pin'></td><td id='P9_46' class='pin'></td><td id='P9_46_name'></td>
+<td class='spacer'></td>
+<td id='P8_45_name'></td><td id='P8_45' class='pin'></td><td id='P8_46' class='pin'></td><td id='P8_46_name'></td></tr>
+</table>
+</body>
+
+<br/><br/><br/>
+<a id="i2c1" class="butt butt-small" href="#cta">i2c1</a>
+<a id="i2c2" class="butt butt-small" href="#cta">i2c2</a>
+<a id="spi1" class="butt butt-small" href="#cta">spi1</a>
+
+</html>
