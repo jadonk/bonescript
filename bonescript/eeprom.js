@@ -5,13 +5,17 @@ var util = require('util');
 var readEeproms = function() {
     var data = {};
     var addresses = ['3-0054', '3-0055', '3-0056', '3-0057'];
-    var main = parseMainEeprom(fetchEepromData('1-0050'));
+    var cape = null;
+    var main = null;
+    var raw = fetchEepromData('1-0050');
+    if(raw) {
+        main = parseMainEeprom(raw);
+    }
     if(main) {
         data.main = main;
     }
     for(var address in addresses) {
-        var cape = null;
-        var raw = fetchEepromData(addresses[address]);
+        raw = fetchEepromData(addresses[address]);
         if(raw) {
             cape = parseCapeEeprom(raw);
             if(cape) {
