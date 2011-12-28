@@ -69,12 +69,12 @@ var parseCapeEeprom = function(x) {
     data.version = x.toString('ascii', 38, 42);
     data.manufacturer = x.toString('ascii', 42, 58);
     data.partNumber = x.toString('ascii', 58, 74);
-    data.numPins = x.toString('ascii', 72, 76);
+    data.numPins = parseInt(x[74]) * 16 + parseInt(x[75]);
     data.serialNumber = x.toString('ascii', 76, 88);
-    //data.currentVDD_3V3EXP = x.readUint16BE(228);
-    //data.currentVDD_5V = x.readUint16BE(230);
-    //data.currentSYS_5V = x.readUint16BE(232);
-    //data.DCSupplied = x.readUint16BE(234);
+    data.currentVDD_3V3EXP = parseInt(x[228]) * 16 + parseInt(x[229]);
+    data.currentVDD_5V = parseInt(x[230]) * 16 + parseInt(x[231]);
+    data.currentSYS_5V = parseInt(x[232]) * 16 + parseInt(x[233]);
+    data.DCSupplied = parseInt(x[234]) * 16 + parseInt(x[235]);
     return(data);
 };
 
