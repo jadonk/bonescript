@@ -326,32 +326,34 @@ var loadFile = function(uri, subdir, res, type) {
 
 exports.Server = function(port, subdir, onconnect) {
     subdir = path.join(process.cwd(), subdir);
-    this.server = http.createServer(
-        function(req, res) {
-            var uri = url.parse(req.url).pathname;
-            if(uri == '/') {
-                loadFile('index.html', subdir, res, "text/html");
+    this.handler = function(req, res) {
+        var uri = url.parse(req.url).pathname;
+        if(uri == '/') {
+            loadFile('index.html', subdir, res, "text/html");
+        } else {
+            if(uri.match(/\.js$/i)) {
+                loadFile(uri, subdir, res, "application/javascript");
+            } else if(uri.match(/\.css$/i)) {
+                loadFile(uri, subdir, res, "text/css");
+            } else if(uri.match(/\.htm(.)$/i)) {
+                loadFile(uri, subdir, res, "text/html");
+            } else if(uri.match(/\.(jpg|png|ico)$/i)) {
+                loadFile(uri, subdir, res, "binary");
             } else {
-                if(uri.match(/\.js$/i)) {
-                    loadFile(uri, subdir, res, "application/javascript");
-                } else if(uri.match(/\.css$/i)) {
-                    loadFile(uri, subdir, res, "text/css");
-                } else if(uri.match(/\.htm(.)$/i)) {
-                    loadFile(uri, subdir, res, "text/html");
-                } else if(uri.match(/\.(jpg|png|ico)$/i)) {
-                    loadFile(uri, subdir, res, "binary");
-                } else {
-                    loadFile(uri, subdir, res, "text/plain");
-                }
+                loadFile(uri, subdir, res, "text/plain");
             }
-        }        
-    );
+        }
+    };
     if(socket.exists && (typeof onconnect == 'function')) {
         var io = socket.listen(this.server);
         io.sockets.on('connection', onconnect);
     }
     this.begin = function() {
+        this.server = http.createServer();
+	this.server.addListener('request', this.handler);
         this.server.listen(port);
-        this.server.listen(port, '::0');
+        this.server6 = http.createServer();
+	this.server6.addListener('request', this.handler);
+        this.server6.listen(port, '::0');
     };
 };
