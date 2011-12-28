@@ -353,8 +353,6 @@ exports.Server = function(port, subdir, onconnect) {
         io6.sockets.on('connection', onconnect);
         var io = socket.listen(this.server);
         io.sockets.on('connection', onconnect);
-        var io6 = socket.listen(this.server6);
-        io6.sockets.on('connection', onconnect);
     }
     this.begin = function() {
         this.server6.listen(port, '::0');
