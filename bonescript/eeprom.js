@@ -37,10 +37,16 @@ var eepromData = new buffer.Buffer(256);
 
 var readEeproms = function() {
     var data = {};
-    var addresses = ['3-0054', '3-0055', '3-0056', '3-0057'];
+    var addresses = [
+        '/sys/bus/i2c/drivers/at24/3-0054/eeprom',
+        '/sys/bus/i2c/drivers/at24/3-0055/eeprom',
+        '/sys/bus/i2c/drivers/at24/3-0056/eeprom',
+        '/sys/bus/i2c/drivers/at24/3-0057/eeprom',
+        'eeprom-dump'
+    ];
     var cape = null;
     var main = null;
-    var raw = fetchEepromData('1-0050');
+    var raw = fetchEepromData('/sys/bus/i2c/drivers/at24/1-0050/eeprom');
     if(raw) {
         main = parseMainEeprom(raw);
     }
@@ -61,13 +67,13 @@ var readEeproms = function() {
 
 var fetchEepromData = function(address) {
     try {
+        console.log('Reading EEPROM at '+address);
         var eepromFile =
             fs.openSync(
-                '/sys/bus/i2c/drivers/at24/'+address+'/eeprom',
+                address,
                 'r'
             );
         fs.readSync(eepromFile, eepromData, 0, 256, 0);
-        console.log('Reading EEPROM at '+address);
         return(eepromData);
     } catch(ex) {
         console.warn('Unable to open EEPROM at '+address+': '+ex);
