@@ -2,12 +2,32 @@ var fs = require('fs');
 var buffer = require('buffer');
 var util = require('util');
 
+// Function inspired by https://github.com/joyent/node/blob/master/lib/buffer.js
 if(!buffer.Buffer.prototype.readUint16BE) {
     buffer.Buffer.prototype.readUint16BE = function(offset) {
         var val = 0;
-        val = buffer[offset] << 8;
-        val |= buffer[offset + 1];
-        return val;
+        val = this[offset] << 8;
+        val |= this[offset + 1];
+        return(val);
+    };
+}
+
+// Function inspired by https://github.com/joyent/node/blob/master/lib/buffer.js
+if(!buffer.Buffer.prototype.hexSlice) {
+    var toHex = function(n) {
+        if (n < 16) return '0' + n.toString(16);
+        return n.toString(16);
+    }
+    buffer.Buffer.prototype.hexSlice = function(start, end) {
+        var len = this.length;
+        if (!start || start < 0) start = 0;
+        if (!end || end < 0 || end > len) end = len;
+
+        var out = '';
+        for (var i = start; i < end; i++) {
+            out += toHex(this[i]);
+        }
+        return(out);
     };
 }
 
@@ -61,22 +81,22 @@ var fetchEepromData = function(address) {
 
 var parseMainEeprom = function(x) {
     var data = {};
-    data.header = x.toString('base64', 0, 4);
-    if(data.header != 'qlUz7g==') {
+    data.header = x.hexSlice(0, 4);
+    if(data.header != 'aa5533ee') {
         console.error('Unknown EEPROM format: '+data.header);
         return(null);
     }
     data.boardName = x.toString('ascii', 4, 12).trim();
     data.version = x.toString('ascii', 12, 16).trim();
     data.serialNumber = x.toString('ascii', 16, 28).trim();
-    data.configOption = x.toString('base64', 28, 60);
+    data.configOption = x.hexSlice(28, 60);
     return(data);
 };
 
 var parseCapeEeprom = function(x) {
     var data = {};
-    data.header = x.toString('base64', 0, 4);
-    if(data.header != 'qlUz7g==') {
+    data.header = x.hexSlice(0, 4);
+    if(data.header != 'aa5533ee') {
         console.error('Unknown EEPROM format: '+data.header);
         return(null);
     }
