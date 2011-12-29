@@ -3,33 +3,11 @@ var buffer = require('buffer');
 var util = require('util');
 
 if(!buffer.Buffer.prototype.readUint16BE) {
-    var readUInt16 = function(buffer, offset, isBigEndian, noAssert) {
+    buffer.Buffer.prototype.readUint16BE = function(offset) {
         var val = 0;
-
-        if (!noAssert) {
-            assert.ok(typeof (isBigEndian) === 'boolean',
-                'missing or invalid endian');
-
-            assert.ok(offset !== undefined && offset !== null,
-                'missing offset');
-
-            assert.ok(offset + 1 < buffer.length,
-                'Trying to read beyond buffer length');
-        }
-
-        if (isBigEndian) {
-            val = buffer[offset] << 8;
-            val |= buffer[offset + 1];
-        } else {
-            val = buffer[offset];
-            val |= buffer[offset + 1] << 8;
-        }
-
+        val = buffer[offset] << 8;
+        val |= buffer[offset + 1];
         return val;
-    }
-
-    buffer.Buffer.prototype.readUInt16BE = function(offset, noAssert) {
-        return readUInt16(this, offset, true, noAssert);
     };
 }
 
