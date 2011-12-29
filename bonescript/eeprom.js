@@ -66,9 +66,9 @@ var parseMainEeprom = function(x) {
         console.error('Unknown EEPROM format: '+data.header);
         return(null);
     }
-    data.boardName = x.toString('ascii', 4, 12);
-    data.version = x.toString('ascii', 12, 16);
-    data.serialNumber = x.toString('ascii', 16, 28);
+    data.boardName = x.toString('ascii', 4, 12).trim();
+    data.version = x.toString('ascii', 12, 16).trim();
+    data.serialNumber = x.toString('ascii', 16, 28).trim();
     data.configOption = x.toString('base64', 28, 60);
     return(data);
 };
@@ -85,12 +85,12 @@ var parseCapeEeprom = function(x) {
         console.error('Unknown EEPROM format revision: '+data.formatRev);
         return(null);
     }
-    data.boardName = x.toString('ascii', 6, 38);
-    data.version = x.toString('ascii', 38, 42);
-    data.manufacturer = x.toString('ascii', 42, 58);
-    data.partNumber = x.toString('ascii', 58, 74);
+    data.boardName = x.toString('ascii', 6, 38).trim();
+    data.version = x.toString('ascii', 38, 42).trim();
+    data.manufacturer = x.toString('ascii', 42, 58).trim();
+    data.partNumber = x.toString('ascii', 58, 74).trim();
     data.numPins = x.readUint16BE(74);
-    data.serialNumber = x.toString('ascii', 76, 88);
+    data.serialNumber = x.toString('ascii', 76, 88).trim();
     data.currentVDD_3V3EXP = x.readUint16BE(228);
     data.currentVDD_5V = x.readUint16BE(230);
     data.currentSYS_5V = x.readUint16BE(232);
