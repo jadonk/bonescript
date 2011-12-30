@@ -1,6 +1,7 @@
 var fs = require('fs');
 var buffer = require('buffer');
 var util = require('util');
+bone = require('./bone').bone;
 
 // Function inspired by https://github.com/joyent/node/blob/master/lib/buffer.js
 if(!buffer.Buffer.prototype.readUint16BE) {
@@ -115,7 +116,23 @@ var parseCapeEeprom = function(x) {
     data.currentVDD_5V = x.readUint16BE(238);
     data.currentSYS_5V = x.readUint16BE(240);
     data.DCSupplied = x.readUint16BE(242);
+    data.eeprom = {};
+    for(pin in bone) {
+        if(bone[pin].eeprom) {
+            var pinOffset = bone[pin].eeprom;
+            var pinData = x.readUint16BE(pinOffset);
+            var pinObject = {};
+            pinObject.used = (pinData & 0x8000) >> 15;
+            if(pinData) {
+                pinObject.direction = ((pinData & 0x4000) >> 14) ? 'in' : 'out';
+                pinObject.pullup = (pinData & 0x3000) >> 12;
+                pinObject.mode = (pinData & 0x0007);
+                pinObject.data = x.hexSlice(pinOffset, pinOffset+2);
+                data.eeprom[bone[pin].name] = pinObject;
+            }
+        }
+    }
     return(data);
 };
 
-console.log(readEeproms());
+console.log(util.inspect(readEeproms(), true, null));
