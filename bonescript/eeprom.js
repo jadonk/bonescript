@@ -142,8 +142,8 @@ var parseCapeEeprom = function(x) {
                 }
         
                 pinObject.data = x.hexSlice(pinOffset, pinOffset+2);
-                data.eeprom[pin] = pinObject;
             }
+            data.eeprom[pin] = pinObject;
         }
     }
     return(data);
