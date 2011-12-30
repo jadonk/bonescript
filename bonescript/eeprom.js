@@ -122,10 +122,10 @@ var parseCapeEeprom = function(x) {
             var pinOffset = bone[pin].eeprom;
             var pinData = x.readUint16BE(pinOffset);
             var pinObject = {};
-            pinObject.used = (pinData & 0x8000) >> 15;
+            pinObject.used = (pinData & 0x8000) >> 15 ? 'used' : 'available';;
             if(pinData) {
                 pinObject.direction = ((pinData & 0x4000) >> 14) ? 'in' : 'out';
-                pinObject.pullup = (pinData & 0x3000) >> 12;
+                pinObject.pullup = (pinData & 0x3000) >> 12 ? 'pullup' : 'pulldown';
                 pinObject.mode = (pinData & 0x0007);
                 pinObject.data = x.hexSlice(pinOffset, pinOffset+2);
                 data.eeprom[bone[pin].name] = pinObject;
