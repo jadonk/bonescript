@@ -140,8 +140,8 @@ var parseCapeEeprom = function(x) {
                 default:
                     console.error('Unknown direction value: '+direction);
                 }
-		pinObject.slew = (pinData & 0x40) ? 'slow' : 'fast';
-		pinObject.rx = (pinData & 0x20) ? 'enabled' : 'disabled';
+                pinObject.slew = (pinData & 0x40) ? 'slow' : 'fast';
+                pinObject.rx = (pinData & 0x20) ? 'enabled' : 'disabled';
                 var pullup = (pinData & 0x18) >> 3;
                 switch(pullup) {
                 case 1:
@@ -155,6 +155,13 @@ var parseCapeEeprom = function(x) {
                     console.error('Unknown pullup value: '+pullup);
                 }
                 pinObject.mode = (pinData & 0x0007);
+                try {
+                    // read mux from debugfs
+                    muxReadout= fs.readFileSync('/sys/kernel/debug/omap_mux/'+bone[pin].mux, 'ascii');
+                    pinObject.function = muxReadout.split("\n")[2].split("|")[pinObject.mode].replace('signals:', '').trim();
+                } catch(ex) {
+                    console.warn('Unable to read pin mux function name');
+                }
                 data.eeprom[pin] = pinObject;
             }
         }
