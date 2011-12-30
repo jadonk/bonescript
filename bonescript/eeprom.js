@@ -1,4 +1,5 @@
 var fs = require('fs');
+var path = require('path');
 var buffer = require('buffer');
 var util = require('util');
 bone = require('./bone').bone;
@@ -122,14 +123,27 @@ var parseCapeEeprom = function(x) {
             var pinOffset = bone[pin].eeprom;
             var pinData = x.readUint16BE(pinOffset);
             var pinObject = {};
-            pinObject.used = (pinData & 0x8000) >> 15;
+            pinObject.used = (pinData & 0x8000) >> 15 ? 'used' : 'available';
             if(pinData) {
                 pinObject.direction = ((pinData & 0x4000) >> 14) ? 'in' : 'out';
-                pinObject.pullup = (pinData & 0x3000) >> 12;
+                pinObject.pullup = (pinData & 0x3000) >> 12 ? 'pullup' : 'pulldown';
                 pinObject.mode = (pinData & 0x0007);
+
+                pinObject.function = {};
+                if(pinObject.used == "used") {
+                   try {
+                        // read mux from debugfs
+                        muxReadout= fs.readFileSync("/sys/kernel/debug/omap_mux/" + bone[pin].mux, 'utf8');
+                        pinObject.function = muxReadout.split("\n")[2].split("|")[pinObject.mode].replace('signals:', '').trim();
+                    } catch(ex) {
+                        //default mux
+                        pinObject.function = bone[pin].name;
+                    }
+                }
+        
                 pinObject.data = x.hexSlice(pinOffset, pinOffset+2);
-                data.eeprom[bone[pin].name] = pinObject;
             }
+            data.eeprom[pin] = pinObject;
         }
     }
     return(data);
