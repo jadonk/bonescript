@@ -128,7 +128,7 @@ var parseCapeEeprom = function(x) {
                 pinObject.pullup = (pinData & 0x3000) >> 12 ? 'pullup' : 'pulldown';
                 pinObject.mode = (pinData & 0x0007);
                 pinObject.data = x.hexSlice(pinOffset, pinOffset+2);
-                data.eeprom[bone[pin].name] = pinObject;
+                data.eeprom[pin] = pinObject;
             }
         }
     }
