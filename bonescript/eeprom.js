@@ -123,7 +123,7 @@ var parseCapeEeprom = function(x) {
             var pinOffset = bone[pin].eeprom;
             var pinData = x.readUint16BE(pinOffset);
             var pinObject = {};
-            pinObject.used = (pinData & 0x8000) >> 15 ? 'used' : 'available';;
+            pinObject.used = (pinData & 0x8000) >> 15 ? 'used' : 'available';
             if(pinData) {
                 pinObject.direction = ((pinData & 0x4000) >> 14) ? 'in' : 'out';
                 pinObject.pullup = (pinData & 0x3000) >> 12 ? 'pullup' : 'pulldown';
