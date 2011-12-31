@@ -3,6 +3,8 @@ var buffer = require('buffer');
 var util = require('util');
 bone = require('./bone').bone;
 
+var debug = true;
+
 // Function inspired by https://github.com/joyent/node/blob/master/lib/buffer.js
 if(!buffer.Buffer.prototype.readUint16BE) {
     buffer.Buffer.prototype.readUint16BE = function(offset) {
@@ -119,16 +121,41 @@ var parseCapeEeprom = function(x) {
     data.eeprom = {};
     for(pin in bone) {
         if(bone[pin].eeprom) {
-            var pinOffset = bone[pin].eeprom;
+            var pinOffset = bone[pin].eeprom * 2 + 88;
             var pinData = x.readUint16BE(pinOffset);
             var pinObject = {};
-            pinObject.used = (pinData & 0x8000) >> 15;
-            if(pinData) {
-                pinObject.direction = ((pinData & 0x4000) >> 14) ? 'in' : 'out';
-                pinObject.pullup = (pinData & 0x3000) >> 12;
+            var used = (pinData & 0x8000) >> 15;
+            if(used || debug) {
+                pinObject.used = used ? 'used' : 'available';
+                if(debug) pinObject.data = x.hexSlice(pinOffset, pinOffset+2);
+                var direction = (pinData & 0x6000) >> 13;
+                switch(direction) {
+                case 1:
+                    pinObject.direction = 'in';
+                case 2:
+                    pinObject.direction = 'out';
+                case 3:
+                    pinObject.direction = 'bidir';
+                case 0:
+                default:
+                    console.error('Unknown direction value: '+direction);
+                }
+		pinObject.slew = (pinData & 0x40) ? 'slow' : 'fast';
+		pinObject.rx = (pinData & 0x20) ? 'enabled' : 'disabled';
+                var pullup = (pinData & 0x18) >> 3;
+                switch(pullup) {
+                case 1:
+                    pinObject.pullup = 'disabled';
+                case 2:
+                    pinObject.pullup = 'pullup';
+                case 0:
+                    pinObject.pullup = 'pulldown';
+                case 3:
+                default:
+                    console.error('Unknown pullup value: '+pullup);
+                }
                 pinObject.mode = (pinData & 0x0007);
-                pinObject.data = x.hexSlice(pinOffset, pinOffset+2);
-                data.eeprom[bone[pin].name] = pinObject;
+                data.eeprom[pin] = pinObject;
             }
         }
     }
