@@ -68,7 +68,7 @@ var readEeproms = function() {
 
 var fetchEepromData = function(address) {
     try {
-        console.log('Reading EEPROM at '+address);
+        console.warn('Reading EEPROM at '+address);
         var eepromFile =
             fs.openSync(
                 address,
