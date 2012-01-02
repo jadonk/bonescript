@@ -33,7 +33,7 @@ exports.bone =
     P8_26: { name: "GPIO1_29", gpio: gpio1+29, mux: "gpmc_csn0", eeprom: 37 },
     P8_27: { name: "GPIO2_22", gpio: gpio2+22, mux: "lcd_vsync", eeprom: 57 },
     P8_28: { name: "GPIO2_24", gpio: gpio2+24, mux: "lcd_pclk", eeprom: 59 },
-    P8_29: { name: "GPIO2_23", gpio: gpio2+23, mux: "lcd_hclk", eeprom: 58 },
+    P8_29: { name: "GPIO2_23", gpio: gpio2+23, mux: "lcd_vsync", eeprom: 58 },
     P8_30: { name: "GPIO2_25", gpio: gpio2+25, mux: "lcd_ac_bias_en", eeprom: 60 },
     P8_31: { name: "UART5_CTSN", gpio: gpio0+10, mux: "lcd_data14", eeprom: 7 },
     P8_32: { name: "UART5_RTSN", gpio: gpio0+11, mux: "lcd_data15", eeprom: 8 },
