@@ -153,9 +153,9 @@ var parseMainEeprom = function(x) {
         console.error('Unknown EEPROM format: '+data.header);
         return(null);
     }
-    data.boardName = x.toString('ascii', 4, 12).trim();
-    data.version = x.toString('ascii', 12, 16).trim();
-    data.serialNumber = x.toString('ascii', 16, 28).trim();
+    data.boardName = x.toString('ascii', 4, 12).trim().replace(/^\x00+|\x00+$/g, '');
+    data.version = x.toString('ascii', 12, 16).trim().replace(/^\x00+|\x00+$/g, '');
+    data.serialNumber = x.toString('ascii', 16, 28).trim().replace(/^\x00+|\x00+$/g, '');
     data.configOption = x.hexSlice(28, 60);
     return(data);
 };
@@ -172,12 +172,12 @@ var parseCapeEeprom = function(x) {
         console.error('Unknown EEPROM format revision: '+data.formatRev);
         return(null);
     }
-    data.boardName = x.toString('ascii', 6, 38).trim();
-    data.version = x.toString('ascii', 38, 42).trim();
-    data.manufacturer = x.toString('ascii', 42, 58).trim();
-    data.partNumber = x.toString('ascii', 58, 74).trim();
+    data.boardName = x.toString('ascii', 6, 38).trim().replace(/^\x00+|\x00+$/g, '');
+    data.version = x.toString('ascii', 38, 42).trim().replace(/^\x00+|\x00+$/g, '');
+    data.manufacturer = x.toString('ascii', 42, 58).trim().replace(/^\x00+|\x00+$/g, '');
+    data.partNumber = x.toString('ascii', 58, 74).trim().replace(/^\x00+|\x00+$/g, '');
     data.numPins = x.readUint16BE(74);
-    data.serialNumber = x.toString('ascii', 76, 88).trim();
+    data.serialNumber = x.toString('ascii', 76, 88).trim().replace(/^\x00+|\x00+$/g, '');
     data.currentVDD_3V3EXP = x.readUint16BE(236);
     data.currentVDD_5V = x.readUint16BE(238);
     data.currentSYS_5V = x.readUint16BE(240);
@@ -240,7 +240,7 @@ var parseCapeEeprom = function(x) {
 };
 
 var fillEepromData = function(data) {
-    eepromData.fill(0);
+    eepromData.fill();
     eepromData.write('aa5533ee', 0, 4, encoding='hex');
     eepromData.write('A0', 4, 2);
     eepromData.write(data.boardName, 6, 32);
