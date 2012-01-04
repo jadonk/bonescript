@@ -102,28 +102,26 @@ var eepromData = new buffer.Buffer(244);
 
 var readEeproms = function() {
     var data = {};
-    var addresses = [
-        '/sys/bus/i2c/drivers/at24/3-0054/eeprom',
-        '/sys/bus/i2c/drivers/at24/3-0055/eeprom',
-        '/sys/bus/i2c/drivers/at24/3-0056/eeprom',
-        '/sys/bus/i2c/drivers/at24/3-0057/eeprom',
-        'eeprom-dump'
+    var files = [
+        { type: 'main', file: '/sys/bus/i2c/drivers/at24/1-0050/eeprom' },
+        { type: 'main', file: '/sys/bus/i2c/drivers/at24/1-0051/eeprom' },
+        { type: 'cape', file: '/sys/bus/i2c/drivers/at24/3-0054/eeprom' },
+        { type: 'cape', file: '/sys/bus/i2c/drivers/at24/3-0055/eeprom' },
+        { type: 'cape', file: '/sys/bus/i2c/drivers/at24/3-0056/eeprom' },
+        { type: 'cape', file: '/sys/bus/i2c/drivers/at24/3-0057/eeprom' },
+        { type: 'cape', file: 'eeprom-dump' }
     ];
-    var cape = null;
-    var main = null;
-    var raw = fetchEepromData('/sys/bus/i2c/drivers/at24/1-0050/eeprom');
-    if(raw) {
-        main = parseMainEeprom(raw);
-    }
-    if(main) {
-        data.main = main;
-    }
-    for(var address in addresses) {
-        raw = fetchEepromData(addresses[address]);
+    for(var file in files) {
+        var raw = fetchEepromData(files[file].file);
+	var parsed = null;
         if(raw) {
-            cape = parseCapeEeprom(raw);
-            if(cape) {
-                data[addresses[address]] = cape;
+            if(files[file].type == 'main') {
+                parsed = parseMainEeprom(raw);
+            } else {
+                parsed = parseCapeEeprom(raw);
+            }
+            if(parsed) {
+                data[files[file].file] = parsed;
             }
         }
     }
@@ -239,7 +237,7 @@ var parseCapeEeprom = function(x) {
     return(data);
 };
 
-var fillEepromData = function(data) {
+var fillCapeEepromData = function(data) {
     eepromData.fill();
     eepromData.write('aa5533ee', 0, 4, encoding='hex');
     eepromData.write('A0', 4, 2);
@@ -271,6 +269,7 @@ var fillEepromData = function(data) {
                 break;
             default:
                 console.error('Unknown direction value: '+pinObject.direction);
+                pinData |= 0x2000;
             }
             if(pinObject.slew == 'fast') pinData |= 0x40;
             if(pinObject.rx == 'enabled') pinData |= 0x20;
@@ -298,7 +297,7 @@ var eeproms = readEeproms();
 var eepromsString = util.inspect(eeproms, true, null);
 console.log(eepromsString);
 fs.writeFileSync('my-eeproms.json', eepromsString);
-fillEepromData(eeproms['eeprom-dump'])
+fillCapeEepromData(eeproms['eeprom-dump'])
 console.log(util.inspect(eepromData, true, null));
 fs.writeFileSync('my-eeprom-dump', eepromData);
 
