@@ -111,17 +111,8 @@ if(!buffer.Buffer.prototype.hexWrite) {
 
 var eepromData = new buffer.Buffer(244);
 
-var readEeproms = function() {
+var readEeproms = function(files) {
     var data = {};
-    var files = [
-        { type: 'main', file: '/sys/bus/i2c/drivers/at24/1-0050/eeprom' },
-        { type: 'main', file: '/sys/bus/i2c/drivers/at24/1-0051/eeprom' },
-        { type: 'cape', file: '/sys/bus/i2c/drivers/at24/3-0054/eeprom' },
-        { type: 'cape', file: '/sys/bus/i2c/drivers/at24/3-0055/eeprom' },
-        { type: 'cape', file: '/sys/bus/i2c/drivers/at24/3-0056/eeprom' },
-        { type: 'cape', file: '/sys/bus/i2c/drivers/at24/3-0057/eeprom' },
-        { type: 'cape', file: 'eeprom-dump' }
-    ];
     for(var file in files) {
         var raw = fetchEepromData(files[file].file);
 	var parsed = null;
@@ -319,7 +310,15 @@ var fillCapeEepromData = function(data) {
     return(eepromData);
 };
 
-var eeproms = readEeproms();
+var eeproms = readEeproms([
+    { type: 'main', file: '/sys/bus/i2c/drivers/at24/1-0050/eeprom' },
+    { type: 'main', file: '/sys/bus/i2c/drivers/at24/1-0051/eeprom' },
+    { type: 'cape', file: '/sys/bus/i2c/drivers/at24/3-0054/eeprom' },
+    { type: 'cape', file: '/sys/bus/i2c/drivers/at24/3-0055/eeprom' },
+    { type: 'cape', file: '/sys/bus/i2c/drivers/at24/3-0056/eeprom' },
+    { type: 'cape', file: '/sys/bus/i2c/drivers/at24/3-0057/eeprom' },
+    { type: 'cape', file: 'eeprom-dump' }
+]);;
 var eepromsString = util.inspect(eeproms, true, null);
 console.log(eepromsString);
 fs.writeFileSync('my-eeproms.json', eepromsString);
