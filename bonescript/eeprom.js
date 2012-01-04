@@ -227,10 +227,10 @@ var parseCapeEeprom = function(x) {
                 pinObject.mode = (pinData & 0x0007);
                 try {
                     // read mux from debugfs
-                    muxReadout= fs.readFileSync('/sys/kernel/debug/omap_mux/'+bone[pin].mux, 'ascii');
+                    var muxReadout= fs.readFileSync('/sys/kernel/debug/omap_mux/'+bone[pin].mux, 'ascii');
                     pinObject.function = muxReadout.split("\n")[2].split("|")[pinObject.mode].replace('signals:', '').trim();
                 } catch(ex) {
-                    console.warn('Unable to read pin mux function name');
+                    console.warn('Unable to read pin mux function name: '+bone[pin].mux);
                 }
                 data.mux[pin] = pinObject;
             }
