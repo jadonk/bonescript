@@ -66,35 +66,46 @@ if(!buffer.Buffer.prototype.writeUint16BE) {
 // Function derived from https://github.com/joyent/node/blob/master/lib/buffer.js
 // fill(value, start=0, end=buffer.length)
 if(!buffer.Buffer.prototype.fill) {
-    buffer.Buffer.prototype.fill = function(value, start, end) {
-    value || (value = 0);
-    start || (start = 0);
-    end || (end = this.length);
+    buffer.Buffer.prototype.fill = function (value, start, end) {
+        value || (value = 0);
+        start || (start = 0);
+        end || (end = this.length);
 
-    if (typeof value === 'string') {
-        value = value.charCodeAt(0);
-    }
-    if (!(typeof value === 'number') || isNaN(value)) {
-        throw new Error('value is not a number');
-    }
+        for(var i=start; i<end; i++) {
+            this[i] = value;
+        }
+    };
+}
 
-    if (end < start) throw new Error('end < start');
+// Function derived from https://github.com/joyent/node/blob/master/lib/buffer.js
+if(!buffer.Buffer.prototype.hexWrite) {
+    buffer.Buffer.prototype.hexWrite = function(string, offset, length) {
+        offset = +offset || 0;
+        var remaining = this.length - offset;
+        if(!length) {
+            length = remaining;
+        } else {
+            length = +length;
+            if (length > remaining) {
+                length = remaining;
+            }
+        }
 
-    // Fill 0 bytes; we're done
-    if (end === start) return 0;
-    if (this.length == 0) return 0;
+        // must be an even number of digits
+        var strLen = string.length;
+        if(strLen % 2) {
+            throw new Error('Invalid hex string');
+        }
+        if(length > strLen / 2) {
+            length = strLen / 2;
+        }
 
-    if (start < 0 || start >= this.length) {
-        throw new Error('start out of bounds');
-    }
-
-    if (end < 0 || end > this.length) {
-        throw new Error('end out of bounds');
-    }
-
-    return this.parent.fill(value,
-                            start + this.offset,
-                            end + this.offset);
+        for(var i=0; i<length; i++) {
+            var byte = parseInt(string.substr(i * 2, 2), 16);
+            if (isNaN(byte)) throw new Error('Invalid hex string');
+            this[offset + i] = byte;
+        }
+        return i;
     };
 }
 
@@ -239,14 +250,29 @@ var parseCapeEeprom = function(x) {
 
 var fillCapeEepromData = function(data) {
     eepromData.fill();
-    eepromData.write('aa5533ee', 0, 4, encoding='hex');
-    eepromData.write('A0', 4, 2);
-    eepromData.write(data.boardName, 6, 32);
-    eepromData.write(data.version, 38, 4);
-    eepromData.write(data.manufacturer, 42, 16);
-    eepromData.write(data.partNumber, 58, 16);
-    eepromData.writeUint16BE(data.numPins, 74);
-    eepromData.write(data.serialNumber, 76, 12);
+    eepromData.hexWrite('aa5533ee', 0, 4);
+    eepromData.write('A0', 4, encoding='ascii');
+    if(data.boardName.length > 32) {
+        data.boardName.length = 32;
+    }
+    eepromData.write(data.boardName, 6, encoding='ascii');
+    if(data.version.length > 4) {
+        data.version.length = 4;
+    }
+    eepromData.write(data.version, 38, encoding='ascii');
+    if(data.manufacturer.length > 16) {
+        data.manufacturer.length = 16;
+    }
+    eepromData.write(data.manufacturer, 42, encoding='ascii');
+    if(data.partNumber.length > 16) {
+        data.partNumber.length = 16;
+    }
+    eepromData.write(data.partNumber, 58, encoding='ascii');
+    eepromData.writeUint16BE(data.numPins, 74, 'ascii');
+    if(data.serialNumber.length > 12) {
+        data.serialNumber.length = 12;
+    }
+    eepromData.write(data.serialNumber, 76, encoding='ascii');
     eepromData.writeUint16BE(data.currentVDD_3V3EXP, 236);
     eepromData.writeUint16BE(data.currentVDD_5V, 238);
     eepromData.writeUint16BE(data.currentSYS_5V, 240);
@@ -300,4 +326,3 @@ fs.writeFileSync('my-eeproms.json', eepromsString);
 fillCapeEepromData(eeproms['eeprom-dump'])
 console.log(util.inspect(eepromData, true, null));
 fs.writeFileSync('my-eeprom-dump', eepromData);
-
