@@ -1,3 +1,24 @@
+// Functions derived from https://github.com/joyent/node/blob/master/lib/buffer.js are:
+//
+// Copyright Joyent, Inc. and other Node contributors. All rights reserved.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to
+// deal in the Software without restriction, including without limitation the
+// rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+// sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+// IN THE SOFTWARE.
+
 var fs = require('fs');
 var buffer = require('buffer');
 var util = require('util');
@@ -5,7 +26,7 @@ bone = require('./bone').bone;
 
 var debug = true;
 
-// Function inspired by https://github.com/joyent/node/blob/master/lib/buffer.js
+// Function derived from https://github.com/joyent/node/blob/master/lib/buffer.js
 if(!buffer.Buffer.prototype.readUint16BE) {
     buffer.Buffer.prototype.readUint16BE = function(offset) {
         var val = 0;
@@ -15,7 +36,7 @@ if(!buffer.Buffer.prototype.readUint16BE) {
     };
 }
 
-// Function inspired by https://github.com/joyent/node/blob/master/lib/buffer.js
+// Function derived from https://github.com/joyent/node/blob/master/lib/buffer.js
 if(!buffer.Buffer.prototype.hexSlice) {
     var toHex = function(n) {
         if (n < 16) return '0' + n.toString(16);
@@ -34,11 +55,46 @@ if(!buffer.Buffer.prototype.hexSlice) {
     };
 }
 
-// Function inspired by https://github.com/joyent/node/blob/master/lib/buffer.js
+// Function derived from https://github.com/joyent/node/blob/master/lib/buffer.js
 if(!buffer.Buffer.prototype.writeUint16BE) {
     buffer.Buffer.prototype.writeUint16BE = function(value, offset) {
         this[offset] = (value & 0xff00) >>> 8;
         this[offset + 1] = value & 0x00ff;
+    };
+}
+
+// Function derived from https://github.com/joyent/node/blob/master/lib/buffer.js
+// fill(value, start=0, end=buffer.length)
+if(!buffer.Buffer.prototype.fill) {
+    buffer.Buffer.prototype.fill = function(value, start, end) {
+    value || (value = 0);
+    start || (start = 0);
+    end || (end = this.length);
+
+    if (typeof value === 'string') {
+        value = value.charCodeAt(0);
+    }
+    if (!(typeof value === 'number') || isNaN(value)) {
+        throw new Error('value is not a number');
+    }
+
+    if (end < start) throw new Error('end < start');
+
+    // Fill 0 bytes; we're done
+    if (end === start) return 0;
+    if (this.length == 0) return 0;
+
+    if (start < 0 || start >= this.length) {
+        throw new Error('start out of bounds');
+    }
+
+    if (end < 0 || end > this.length) {
+        throw new Error('end out of bounds');
+    }
+
+    return this.parent.fill(value,
+                            start + this.offset,
+                            end + this.offset);
     };
 }
 
