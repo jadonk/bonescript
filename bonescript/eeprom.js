@@ -322,12 +322,15 @@ var defaultEepromFiles = {
     'eeprom-dump': { type: 'cape' },
 };
 
-var eeproms = readEeproms(defaultEepromFiles);
-var eepromsString = util.inspect(eeproms, true, null);
-console.log(eepromsString);
-fs.writeFileSync('my-eeproms.json', eepromsString);
-if(eeproms['eeprom-dump']) {
-    fillCapeEepromData(eeproms['eeprom-dump'])
-    console.log(util.inspect(eepromData, true, null));
-    fs.writeFileSync('my-eeprom-dump', eepromData);
+// Only run this section when run as a stand-alone application
+if(!module.parent) {
+    var eeproms = readEeproms(defaultEepromFiles);
+    var eepromsString = util.inspect(eeproms, true, null);
+    console.log(eepromsString);
+    fs.writeFileSync('my-eeproms.json', eepromsString);
+    if(eeproms['eeprom-dump']) {
+        fillCapeEepromData(eeproms['eeprom-dump'])
+        console.log(util.inspect(eepromData, true, null));
+        fs.writeFileSync('my-eeprom-dump', eepromData);
+    }
 }
