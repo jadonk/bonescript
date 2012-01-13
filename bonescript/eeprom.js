@@ -440,7 +440,7 @@ if(!module.parent) {
             }
         }
         var eeproms = readEeproms(eepromsToRead);
-        var eepromsString = JSON.stringify(eeproms, null, '\t');
+        var eepromsString = JSON.stringify(eeproms, null, 2);
         if(destinationJSON == '') {
             console.log(eepromsString);
         } else {
