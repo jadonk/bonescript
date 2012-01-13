@@ -24,7 +24,7 @@ var buffer = require('buffer');
 var util = require('util');
 bone = require('./bone').bone;
 
-var debug = true;
+var debug = false;
 
 // Function derived from https://github.com/joyent/node/blob/master/lib/buffer.js
 if(!buffer.Buffer.prototype.readUint16BE) {
@@ -290,7 +290,7 @@ var fillCapeEepromData = function(data) {
                 console.error('Unknown direction value: '+pinObject.direction);
                 pinData |= 0x2000;
             }
-            if(pinObject.slew == 'fast') pinData |= 0x40;
+            if(pinObject.slew == 'slow') pinData |= 0x40;
             if(pinObject.rx == 'enabled') pinData |= 0x20;
             var pullup = (pinData & 0x18) >> 3;
             switch(pinObject.pullup) {
@@ -319,18 +319,136 @@ var defaultEepromFiles = {
     '/sys/bus/i2c/drivers/at24/3-0055/eeprom': { type: 'cape' },
     '/sys/bus/i2c/drivers/at24/3-0056/eeprom': { type: 'cape' },
     '/sys/bus/i2c/drivers/at24/3-0057/eeprom': { type: 'cape' },
-    'eeprom-dump': { type: 'cape' },
+    'test-bone.eeprom': { type: 'bone' },
+    'test-cape.eeprom': { type: 'cape' },
+};
+
+//   test process:
+//     $ node eeprom.js
+//     $ node eeprom.js -w test-eeproms.json
+//     $ echo "a18bf9b65d676cd0a6e07b13fa06a362  test-cape.eeprom" | md5sum -c
+//     $ node eeprom.js -rmy-eeproms.json cape:test-cape.eeprom
+//     $ node eeprom.js -r cape:test-cape.eeprom verify-eeproms.json
+//     $ diff my-eeproms.json verify-eeproms.json
+//     $ node eeprom.js -wmy-eeproms.json test-cape.eeprom verify-cape.eeprom
+//     $ echo "a18bf9b65d676cd0a6e07b13fa06a362  verify-cape.eeprom" | md5sum -c
+var printUsage = function() {
+   var usageString =
+       'Print usage:\n' +
+       '\n' +
+       '  node bonescript/eeprom.js -h\n' +
+       '\n' +
+       '\n' +
+       'Read eeproms and write the output to a JSON-compatible file:\n' +
+       '\n' +
+       '  node bonescript/eeprom.js [-r [type:source.eeprom ...] destination.json] \n' +
+       '\n' +
+       '    type               : the word "bone" or "cape"\n' +
+       '    source.eeprom      : source eeprom file\n' +
+       '\n' +
+       '\n' +
+       'Read JSON eeproms file and write the output to eeprom(s):\n' +
+       '\n' +
+       '  node bonescript/eeprom.js -w source.json [[source-eeprom] destination.eeprom]\n' +
+       '\n' +
+       '    source.json        : source JSON file containing one or more eeprom structures\n' +
+       '    destination.eeprom : where to write the output,\n' +
+       '                         must either match eeprom structure name or\n' +
+       '                         provide a source-eeprom parameter\n' +
+       '    source-eeprom      : which eeprom structure to use as source\n';
+   console.error(usageString);
 };
 
 // Only run this section when run as a stand-alone application
 if(!module.parent) {
-    var eeproms = readEeproms(defaultEepromFiles);
-    var eepromsString = util.inspect(eeproms, true, null);
-    console.log(eepromsString);
-    fs.writeFileSync('my-eeproms.json', eepromsString);
-    if(eeproms['eeprom-dump']) {
-        fillCapeEepromData(eeproms['eeprom-dump'])
-        console.log(util.inspect(eepromData, true, null));
-        fs.writeFileSync('my-eeprom-dump', eepromData);
+    var eeproms = {};
+    var destinationJSON = '';
+    process.argv.shift();
+    process.argv.shift();
+    if((process.argv.length > 0) && (process.argv[0].match(/^-w/i))) {
+        // Write EEPROMs
+        var sourceJSON = process.argv.shift().substr(2);
+        var sourceEeprom = '';
+        var destinationEeprom = '';
+        if(sourceJSON == '') {
+            sourceJSON = process.argv.shift();
+        }
+        if(process.argv.length > 2) {
+            printUsage();
+            throw('Too many arguments');
+        } else if(process.argv.length > 0) {
+            sourceEeprom = destinationEeprom = process.argv.pop();
+            if(process.argv.length > 0) {
+                sourceEeprom = process.argv.pop();
+            }
+        }
+        try {
+            console.warn('Reading '+sourceJSON);
+            var jsonFile = fs.readFileSync(sourceJSON, 'ascii');
+            console.warn('Parsing '+sourceJSON);
+            if(debug) console.warn(jsonFile);
+            eeproms = JSON.parse(jsonFile);
+        } catch(ex) {
+            throw('Unable to parse '+sourceJSON+': '+ex);
+        }
+        // If source file isn't nested, make it
+        if(eeproms.type) {
+            if(destinationEeprom == '') {
+                printUsage();
+                throw('Destination must be specified if not part of the JSON file');
+            }
+            eeproms[destinationEeprom] = eeproms;
+        }
+        for(x in eeproms) {
+            if((sourceEeprom == '') || (x == sourceEeprom)) {
+                console.warn('Writing eeprom '+x);
+                if(eeproms[x].type != 'cape') {
+                    throw('Only type "cape" is currently handled');
+                }
+                fillCapeEepromData(eeproms[x]);
+                if(debug) console.log(util.inspect(eepromData, true, null));
+                if(destinationEeprom == '') {
+                    fs.writeFileSync(x, eepromData);
+                } else {
+                    console.warn('Writing to file '+destinationEeprom);
+                    fs.writeFileSync(destinationEeprom, eepromData);
+                }
+            } else {
+                console.warn('Skipping eeprom '+x);
+            }
+        }
+    } else if(process.argv.length == 0 ||
+              ((process.argv.length > 0) && (process.argv[0].match(/^-r/i)))) {
+        // Read EEPROMs
+        var destinationJSON = '';
+        var eepromsToRead = defaultEepromFiles;
+        if(process.argv.length > 0) {
+            destinationJSON = process.argv.shift().substr(2);
+            if(destinationJSON == '') {
+                destinationJSON = process.argv.pop();
+            }
+        }
+        if(process.argv.length > 0) {
+            eepromsToRead = {};
+            while(process.argv.length > 0) {
+                var eepromFile = process.argv.shift().split(':');
+                if(eepromFile.length != 2) {
+                    printUsage();
+                    throw('Source eeproms must be of the format <type>:<file>');
+                }
+                eepromsToRead[eepromFile[1]] = { type: eepromFile[2] };
+            }
+        }
+        var eeproms = readEeproms(eepromsToRead);
+        var eepromsString = JSON.stringify(eeproms, null, '\t');
+        if(destinationJSON == '') {
+            console.log(eepromsString);
+        } else {
+            console.warn('Writing JSON file to '+destinationJSON);
+            fs.writeFileSync(destinationJSON, eepromsString);
+        }
+    } else {
+        printUsage();
+        return(0);
     }
 }
