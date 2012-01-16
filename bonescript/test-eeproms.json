@@ -26,126 +26,147 @@
         "used": "used",
         "direction": "out",
         "pullup": "disabled",
+        "mode": 0,
         "function": "lcd_vsync"
       },
       "P8_28": {
         "used": "used",
         "direction": "out",
         "pullup": "disabled",
+        "mode": 0,
         "function": "lcd_pclk"
       },
       "P8_29": {
         "used": "used",
         "direction": "out",
         "pullup": "disabled",
+        "mode": 0,
         "function": "lcd_hsync"
       },
       "P8_30": {
         "used": "used",
         "direction": "out",
         "pullup": "disabled",
-        "function": "lcd_en"
+        "mode": 0,
+        "function": "lcd_ac_bias_en"
       },
       "P8_31": {
         "used": "used",
         "direction": "out",
         "pullup": "disabled",
+        "mode": 0,
         "function": "lcd_data14"
       },
       "P8_32": {
         "used": "used",
         "direction": "out",
         "pullup": "disabled",
+        "mode": 0,
         "function": "lcd_data15"
       },
       "P8_33": {
         "used": "used",
         "direction": "out",
         "pullup": "disabled",
+        "mode": 0,
         "function": "lcd_data13"
       },
       "P8_34": {
         "used": "used",
         "direction": "out",
         "pullup": "disabled",
+        "mode": 0,
         "function": "lcd_data11"
       },
       "P8_35": {
         "used": "used",
         "direction": "out",
         "pullup": "disabled",
+        "mode": 0,
         "function": "lcd_data12"
       },
       "P8_36": {
         "used": "used",
         "direction": "out",
         "pullup": "disabled",
+        "mode": 0,
         "function": "lcd_data10"
       },
       "P8_37": {
         "used": "used",
         "direction": "out",
         "pullup": "disabled",
+        "mode": 0,
         "function": "lcd_data8"
       },
       "P8_38": {
         "used": "used",
         "direction": "out",
         "pullup": "disabled",
+        "mode": 0,
         "function": "lcd_data9"
       },
       "P8_39": {
         "used": "used",
         "direction": "out",
         "pullup": "disabled",
+        "mode": 0,
         "function": "lcd_data6"
       },
       "P8_40": {
         "used": "used",
         "direction": "out",
         "pullup": "disabled",
+        "mode": 0,
         "function": "lcd_data7"
       },
       "P8_41": {
         "used": "used",
         "direction": "out",
         "pullup": "disabled",
+        "mode": 0,
         "function": "lcd_data4"
       },
       "P8_42": {
         "used": "used",
         "direction": "out",
         "pullup": "disabled",
+        "mode": 0,
         "function": "lcd_data5"
       },
       "P8_43": {
         "used": "used",
         "direction": "out",
         "pullup": "disabled",
+        "mode": 0,
         "function": "lcd_data2"
       },
       "P8_44": {
         "used": "used",
         "direction": "out",
         "pullup": "disabled",
+        "mode": 0,
         "function": "lcd_data3"
       },
       "P8_45": {
         "used": "used",
         "direction": "out",
         "pullup": "disabled",
+        "mode": 0,
         "function": "lcd_data0"
       },
       "P8_46": {
         "used": "used",
         "direction": "out",
         "pullup": "disabled",
+        "mode": 0,
         "function": "lcd_data1"
       },
       "P9_14": {
         "used": "used",
         "direction": "out",
         "pullup": "disabled",
+        "mode": 6,
         "function": "ehrpwm1a"
       },
       "P9_15": {
