@@ -1,12 +1,12 @@
 {
-  "test-dvi-cape.eeprom": {
+  "test-lcd-cape.eeprom": {
     "type": "cape",
     "header": "aa5533ee",
     "formatRev": "A0",
-    "boardName": "BeagleBone DVI Adapter",
+    "boardName": "BeagleBone LCD Cape",
     "version": "01",
     "manufacturer": "BeagleBoardToys",
-    "partNumber": "DVI01",
+    "partNumber": "LCD01",
     "numPins": 2,
     "serialNumber": "52114P130000",
     "currentVDD_3V3EXP": 2,
@@ -158,24 +158,43 @@
       },
       "P9_16": {
         "used": "used"
+        "direction": "in",
+        "rx": "enabled",
+        "pullup": "pullup",
+        "mode": 7,
+        "function": "gpio1_19"
       },
       "P9_23": {
         "used": "used"
+        "direction": "in",
+        "rx": "enabled",
+        "pullup": "pullup",
+        "mode": 7,
+        "function": "gpio1_17"
       },
       "P9_37": {
         "used": "used"
+        "function": "ain2"
       },
       "P9_38": {
         "used": "used"
+        "function": "ain3"
       },
       "P9_39": {
         "used": "used"
+        "function": "ain0"
       },
       "P9_40": {
         "used": "used"
+        "function": "ain1"
       },
       "P9_42": {
         "used": "used"
+        "direction": "in",
+        "rx": "enabled",
+        "pullup": "pullup",
+        "mode": 7,
+        "function": "gpio0_7"
       }
     }
   }
