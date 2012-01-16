@@ -7,7 +7,7 @@
     "version": "01",
     "manufacturer": "BeagleBoardToys",
     "partNumber": "LCD01",
-    "numPins": 2,
+    "numPins": 30,
     "serialNumber": "52114P130000",
     "currentVDD_3V3EXP": 2,
     "currentVDD_5V": 2,
@@ -157,7 +157,7 @@
         "function": "gpio1_16"
       },
       "P9_16": {
-        "used": "used"
+        "used": "used",
         "direction": "in",
         "rx": "enabled",
         "pullup": "pullup",
@@ -165,7 +165,7 @@
         "function": "gpio1_19"
       },
       "P9_23": {
-        "used": "used"
+        "used": "used",
         "direction": "in",
         "rx": "enabled",
         "pullup": "pullup",
@@ -173,23 +173,23 @@
         "function": "gpio1_17"
       },
       "P9_37": {
-        "used": "used"
+        "used": "used",
         "function": "ain2"
       },
       "P9_38": {
-        "used": "used"
+        "used": "used",
         "function": "ain3"
       },
       "P9_39": {
-        "used": "used"
+        "used": "used",
         "function": "ain0"
       },
       "P9_40": {
-        "used": "used"
+        "used": "used",
         "function": "ain1"
       },
       "P9_42": {
-        "used": "used"
+        "used": "used",
         "direction": "in",
         "rx": "enabled",
         "pullup": "pullup",
