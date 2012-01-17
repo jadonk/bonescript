@@ -223,11 +223,11 @@
     "type": "cape",
     "header": "aa5533ee",
     "formatRev": "A0",
-    "boardName": "BeagleBone DVI-D Cape with Audio",
+    "boardName": "BeagleBone DVI-D Cape",
     "version": "01",
     "manufacturer": "BeagleBoardToys",
     "partNumber": "DVI01",
-    "numPins": 26,
+    "numPins": 21,
     "serialNumber": "52114P130000",
     "currentVDD_3V3EXP": 2,
     "currentVDD_5V": 2,
@@ -373,53 +373,6 @@
         "pullup": "disabled",
         "mode": 0,
         "function": "lcd_data1"
-      },
-      "P9_25": {
-        "used": "used",
-        "direction": "in",
-        "rx": "enabled",
-        "pullup": "disabled",
-        "mode": 2,
-        "function": "mcasp0_axr3"
-      },
-      "P9_28": {
-        "used": "used",
-        "direction": "out",
-        "pullup": "disabled",
-        "mode": 2,
-        "function": "mcasp0_axr2"
-      },
-      "P9_29": {
-        "used": "used",
-        "direction": "in",
-        "rx": "enabled",
-        "pullup": "disabled",
-        "mode": 0,
-        "function": "mcasp0_fsx"
-      },
-      "P9_31": {
-        "used": "used",
-        "direction": "in",
-        "rx": "enabled",
-        "pullup": "disabled",
-        "mode": 0,
-        "function": "mcasp_aclkx"
-      },
-      "P9_41": {
-        "used": "used",
-        "direction": "in",
-        "rx": "enabled",
-        "pullup": "disabled",
-        "mode": 0,
-        "function": "mcasp_aclkx"
-      },
-      "P9_42": {
-        "used": "used",
-        "direction": "in",
-        "rx": "enabled",
-        "pullup": "disabled",
-        "mode": 0,
-        "function": "mcasp_aclkx"
       }
     }
   }
