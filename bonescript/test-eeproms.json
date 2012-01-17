@@ -232,7 +232,7 @@
     "currentVDD_3V3EXP": 2,
     "currentVDD_5V": 2,
     "currentSYS_5V": 2,
-    "DCSupplied": 2000,
+    "DCSupplied": 0,
     "mux": {
       "P8_27": {
         "used": "used",
