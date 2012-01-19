@@ -440,12 +440,16 @@ if(!module.parent) {
             }
         }
         var eeproms = readEeproms(eepromsToRead);
-        var eepromsString = JSON.stringify(eeproms, null, 2);
-        if(destinationJSON == '') {
-            console.log(eepromsString);
+        if(eeproms == {}) {
+            console.warn('No valid EEPROM contents found');
         } else {
-            console.warn('Writing JSON file to '+destinationJSON);
-            fs.writeFileSync(destinationJSON, eepromsString);
+            var eepromsString = JSON.stringify(eeproms, null, 2);
+            if(destinationJSON == '') {
+                console.log(eepromsString);
+            } else {
+                console.warn('Writing JSON file to '+destinationJSON);
+                fs.writeFileSync(destinationJSON, eepromsString);
+            }
         }
     } else {
         printUsage();
