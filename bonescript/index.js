@@ -220,6 +220,49 @@ var loadFile = function(uri, subdir, res, type) {
     );
 };
 
+var addSocketListeners = function() {};
+if(socket.exists) {
+    addSocketListeners = function(server, onconnect) {
+        var io = socket.listen(server);
+        io.sockets.on('connection', function(socket) {
+            console.log("New client connected");
+
+            // on message
+            socket.on('message', function(data) {
+                console.log("Got message from client:", data);
+            });
+
+            // on disconnect
+            socket.on('disconnect', function() {
+                console.log("Client disconnected.");
+            });
+        
+            // listen for requests and reads the debugfs entry async
+            socket.on('listMux', function(pinname, fn) {
+                console.log(pinname + ": " + bone[pinname].mux);
+                path.exists("/sys/kernel/debug/omap_mux/" + bone[pinname].mux, function(exists) {
+                    if(exists) {
+                        fs.readFile("/sys/kernel/debug/omap_mux/" + bone[pinname].mux, 'utf8', function (err, data) {
+                            fn(data, pinname);
+                        });
+                    } else {
+                        // default mux
+                        console.log(bone[pinname].mux + ": default mux");
+                        fn("0", pinname);
+                    }
+                });
+            });
+
+            // call user-provided on-connect function
+            if(typeof onconnect == 'function')
+                onconnect(socket);
+
+            // provide client basic platform information
+            socket.emit('init', { 'platform': bone });
+        });
+    };
+}
+
 exports.Server = function(port, subdir, onconnect) {
     subdir = path.join(process.cwd(), subdir);
     var handler = function(req, res) {
@@ -242,14 +285,10 @@ exports.Server = function(port, subdir, onconnect) {
     };
     this.server6 = http.createServer();
     this.server6.addListener('request', handler);
+    addSocketListeners(this.server6, onconnect);
     this.server = http.createServer();
     this.server.addListener('request', handler);
-    if(socket.exists && (typeof onconnect == 'function')) {
-        var io6 = socket.listen(this.server6);
-        io6.sockets.on('connection', onconnect);
-        var io = socket.listen(this.server);
-        io.sockets.on('connection', onconnect);
-    }
+    addSocketListeners(this.server, onconnect);
     this.begin = function() {
         this.server6.listen(port, '::0');
         this.server.listen(port);
