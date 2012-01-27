@@ -6,6 +6,11 @@ var pconfig = require('./weatherstation/bmp085-pressure');
 
 
 setup = function() {
+    try {
+        fs.writeFileSync('/sys/class/i2c-adapter/i2c-3/new_device', 'bmp085 0x77', encoding='ascii');
+    } catch(ex) {
+        console.log('bmp085 driver load failed.');
+    }
     var onconnect = function(socket) {
         console.log("New client connected");
         var pdelay = pconfig.pressureConfig.delay;
