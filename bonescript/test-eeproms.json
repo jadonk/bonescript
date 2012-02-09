@@ -375,5 +375,93 @@
         "function": "lcd_data1"
       }
     }
+  },
+ "TowerTech-TT3201-CAN-Cape.eeprom": {
+    "type": "cape",
+    "header": "aa5533ee",
+    "formatRev": "A0",
+    "boardName": "TT3201 CAN Cape",
+    "version": "01",
+    "manufacturer": "TowerTech",
+    "partNumber": "TT3201-001",
+    "numPins": 30,
+    "serialNumber": "12050100002",
+    "currentVDD_3V3EXP": 1,
+    "currentVDD_5V": 0,
+    "currentSYS_5V": 0,
+    "DCSupplied": 0,
+    "mux": {
+      "P9_26": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "pulldown",
+        "mode": 2,
+        "function": "d_can1_tx"
+      },
+      "P9_24": {
+        "used": "used",
+        "direction": "in",
+        "rx": "enabled",
+        "pullup": "pullup",
+        "mode": 2,
+        "function": "d_can1_rx"
+      },
+      "P9_27": {
+        "used": "used",
+        "direction": "in",
+        "rx": "enabled",
+        "pullup": "pullup",
+        "mode": 7,
+        "function": "gpio3_19"
+      },
+      "P9_25": {
+        "used": "used",
+        "direction": "in",
+        "rx": "enabled",
+        "pullup": "pullup",
+        "mode": 7,
+        "function": "gpio3_21"
+      },
+      "P9_42": {
+        "used": "used",
+        "direction": "out",
+        "rx": "enabled",
+        "pullup": "pullup",
+        "mode": 2,
+        "function": "spi1_cs1"
+      },
+      "P9_28": {
+        "used": "used",
+        "direction": "out",
+        "rx": "enabled",
+        "pullup": "pullup",
+        "mode": 3,
+        "function": "spi1_cs0"
+      },
+      "P9_31": {
+        "used": "used",
+        "direction": "out",
+        "rx": "enabled",
+        "pullup": "pullup",
+        "mode": 3,
+        "function": "spi1_sclk"
+      },
+      "P9_29": {
+        "used": "used",
+        "direction": "out",
+        "rx": "enabled",
+        "pullup": "pullup",
+        "mode": 3,
+        "function": "spi1_d0"
+      },
+      "P9_30": {
+        "used": "used",
+        "direction": "in",
+        "rx": "enabled",
+        "pullup": "pullup",
+        "mode": 3,
+        "function": "spi1_d1"
+      }
+    }
   }
 }
