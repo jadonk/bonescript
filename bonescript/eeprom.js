@@ -119,10 +119,10 @@ var readEeproms = function(files) {
         if(raw) {
             if(files[file].type == 'bone') {
                 parsed = parseMainEeprom(raw);
-                parsed.type = 'bone';
+                if(parsed) parsed.type = 'bone';
             } else {
                 parsed = parseCapeEeprom(raw);
-                parsed.type = 'cape';
+                if(parsed) parsed.type = 'cape';
             }
             if(parsed) {
                 data[file] = parsed;
