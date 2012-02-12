@@ -111,7 +111,7 @@ if(!buffer.Buffer.prototype.hexWrite) {
 
 var eepromData = new buffer.Buffer(244);
 
-var readEeproms = function(files) {
+var readEeproms = exports.readEeproms = function(files) {
     var data = {};
     for(var file in files) {
         var raw = fetchEepromData(file);
@@ -241,7 +241,7 @@ var parseCapeEeprom = function(x) {
     return(data);
 };
 
-var fillCapeEepromData = function(data) {
+var fillCapeEepromData = exports.fillCapeEepromData = function(data) {
     eepromData.fill();
     eepromData.hexWrite('aa5533ee', 0, 4);
     eepromData.write('A0', 4, encoding='ascii');
