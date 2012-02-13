@@ -12,7 +12,7 @@ Note on code state
 There is actually very little here right now, but I'm sharing this framework
 to provide people with a starting point concept.  You can update this code
 by performing 'git pull' in the Cloud9 IDE command bar at the bottom or by
-performing the same command from the shell in the /var/usr/cloud9 folder.
+performing the same command from the shell in the /var/lib/cloud9 folder.
 
 I expect to have something that provides most of the Arduino functions and is
 generally usable by Summer 2012.  The use of Arduino functions is for both
