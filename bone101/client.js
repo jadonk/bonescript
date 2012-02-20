@@ -17,12 +17,12 @@ for(url in scriptUrls) {
 var init = function() {
     try {
         $, io;
-        var socket = new io.connect();
+        var socket = new io.connect('');
         var $result = $('#result');
         var $textarea = $('textarea').focus();
         var view = function(s) {
             $textarea.val($textarea.val() + s);
-            $textarea.scrollTop($textarea.scrollTop() + 9e6);
+            $textarea.scrollTop($textarea[0].scrollHeight);
             $textarea[0].selectionStart = $textarea[0].textLength;
         };
         var state = 'disconnected';
@@ -46,7 +46,7 @@ var init = function() {
                     $textarea[0].selectionStart = $textarea[0].textLength;
                 }
                 setTimeout(function () {
-                    var c = ($textarea.val().split('\n').slice(-2)[0].replace(ps, ''));
+                    var c = $textarea.val().split('\n').slice(-2)[0];
                     if(c.replace(/( |\n)+/g, '') === '') {
                         view('\n');
                     } else if(c.replace(/( |\n)+/g, '') === 'clear') {
@@ -65,3 +65,4 @@ var init = function() {
     }
 };
 
+init();

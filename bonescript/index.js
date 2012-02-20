@@ -222,44 +222,44 @@ var loadFile = function(uri, subdir, res, type) {
 
 // most heavily borrowed from https://github.com/itchyny/browsershell
 var spawn = function(socket) {
-    var send = (function () {
-        var stream = '';
-        var timer;
-        var len = 0;
-        return function(data) {
-            // add data to the stream
-            stream += data.toString();
-            ++len;
+    var stream = '';
+    var timer;
+    var len = 0;
+    var c;
 
-            // clear any existing timeout if it exists
-            if(timer) clearTimeout(timer);
+    var send = function (data) {
+       // add data to the stream
+       stream += data.toString();
+       ++len;
 
-            // set new timeout
-            timer = setTimeout(function () {
-                socket.emit('shell', stream);
-                stream = '';
-                len = 0;
-            }, 100);
+       // clear any existing timeout if it exists
+       if(timer) clearTimeout(timer);
 
-            // send data if over threshold
-            if(len > 1000)
-            {
-                clearTimeout(timer);
-                socket.emit('shell', stream);
-                stream = '';
-                len = 0;
-            }
-        };
-    })();
+       // set new timeout
+       timer = setTimeout(function () {
+           socket.emit('shell', stream);
+           stream = '';
+           len = 0;
+       }, 100);
 
-    var receive = (function (msg) {
-        var c;
+       // send data if over threshold
+       if(len > 1000)
+       {
+           clearTimeout(timer);
+           socket.emit('shell', stream);
+           stream = '';
+           len = 0;
+       }
+    };
+
+    var receive = function (msg) {
         if(!c) {
             try {
-                c = child_process.spawn('bash', []);
+                console.log('Spawning bash');
+                c = child_process.spawn('/bin/bash', ['--login']);
                 c.stdout.on('data', send);
                 c.stderr.on('data', send);
-                socket.emit('shell', '$');
+                socket.emit('shell', '$ ');
                 c.on('exit', function() {
                     socket.emit('shell', send('\nexited\n'));
                     c = undefined;
@@ -271,11 +271,14 @@ var spawn = function(socket) {
             }
         }
         if(c) {
-            c.write(msg + '\n', encoding='utf-8');
+            if(msg) {
+                c.stdin.write(msg + '\n', encoding='utf-8');
+            }
         } else {
             console.log('Unable to invoke child process');
         }
-    })();
+    };
+    receive();
 
     return(receive);
 };
@@ -287,7 +290,6 @@ if(socket.exists) {
         io.sockets.on('connection', function(socket) {
             var sessionId = socket.sessionId;
             console.log('Client connected: ' + sessionId);
-            socket.broadcast('connect', 'connected: ' + sessionId);
 
             // on message
             socket.on('message', function(data) {
