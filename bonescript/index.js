@@ -220,12 +220,74 @@ var loadFile = function(uri, subdir, res, type) {
     );
 };
 
+// most heavily borrowed from https://github.com/itchyny/browsershell
+var spawn = function(socket) {
+    var send = (function () {
+        var stream = '';
+        var timer;
+        var len = 0;
+        return function(data) {
+            // add data to the stream
+            stream += data.toString();
+            ++len;
+
+            // clear any existing timeout if it exists
+            if(timer) clearTimeout(timer);
+
+            // set new timeout
+            timer = setTimeout(function () {
+                socket.emit('shell', stream);
+                stream = '';
+                len = 0;
+            }, 100);
+
+            // send data if over threshold
+            if(len > 1000)
+            {
+                clearTimeout(timer);
+                socket.emit('shell', stream);
+                stream = '';
+                len = 0;
+            }
+        };
+    })();
+
+    var receive = (function (msg) {
+        var c;
+        if(!c) {
+            try {
+                c = child_process.spawn('bash', []);
+                c.stdout.on('data', send);
+                c.stderr.on('data', send);
+                socket.emit('shell', '$');
+                c.on('exit', function() {
+                    socket.emit('shell', send('\nexited\n'));
+                    c = undefined;
+                });
+            } catch(ex) {
+                c = undefined;
+                send('Error invoking bash');
+                console.log('Error invoking bash');
+            }
+        }
+        if(c) {
+            c.write(msg + '\n', encoding='utf-8');
+        } else {
+            console.log('Unable to invoke child process');
+        }
+    })();
+
+    return(receive);
+};
+
 var addSocketListeners = function() {};
 if(socket.exists) {
     addSocketListeners = function(server, onconnect) {
         var io = socket.listen(server);
         io.sockets.on('connection', function(socket) {
-            console.log("New client connected");
+            var sessionId = socket.sessionId;
+            console.log('Client connected: ' + sessionId);
+            socket.broadcast('connect', 'connected: ' + sessionId);
 
             // on message
             socket.on('message', function(data) {
@@ -234,7 +296,7 @@ if(socket.exists) {
 
             // on disconnect
             socket.on('disconnect', function() {
-                console.log("Client disconnected.");
+                console.log("Client disconnected:" + sessionId);
             });
         
             // listen for requests and reads the debugfs entry async
@@ -251,6 +313,13 @@ if(socket.exists) {
                         fn("0", pinname);
                     }
                 });
+            });
+
+            // listen for shell commands
+            var myshell = spawn(socket);
+            socket.on('shell', function(shellMsg) {
+                console.log('shell: ' + shellMsg);
+                myshell(shellMsg);
             });
 
             // call user-provided on-connect function
