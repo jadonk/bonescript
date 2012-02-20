@@ -263,8 +263,10 @@ var spawn = function(command, socket) {
             stream += data.toString();
             ++len;
 
-            // clear any existing timeout if it exists
-            if(timer) clearTimeout(timer);
+    var send = function (data) {
+       // add data to the stream
+       stream += data.toString();
+       ++len;
 
             // set new timeout
             timer = setTimeout(function () {
@@ -294,7 +296,6 @@ if(socket.exists) {
         io.sockets.on('connection', function(socket) {
             var sessionId = socket.sessionId;
             console.log('Client connected: ' + sessionId);
-            socket.broadcast('connect', 'connected: ' + sessionId);
 
             // on message
             socket.on('message', function(data) {
