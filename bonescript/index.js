@@ -41,6 +41,8 @@ OUTPUT = exports.OUTPUT = "out";
 INPUT = exports.INPUT = "in";
 HIGH = exports.HIGH = 1;
 LOW = exports.LOW = 0;
+LSBFIRST = 1;  // used in: shiftOut(dataPin, clockPin, bitOrder, val)
+MSBFIRST = 0;
 
 var gpio = [];
 
@@ -57,7 +59,8 @@ pinMode = exports.pinMode = function(pin, mode)
                 var muxfile = fs.openSync(
                     "/sys/kernel/debug/omap_mux/" + pin.mux, "w"
                 );
-                fs.writeSync(muxfile, "7", null);
+                if(mode == OUTPUT)  fs.writeSync(muxfile, "7", null);
+                    else fs.writeSync(muxfile, "27", null);
             } catch(ex3) {  
                 console.log("" + ex3);
                 console.log("Unable to configure pinmux for: " + pin.name +
@@ -71,9 +74,8 @@ pinMode = exports.pinMode = function(pin, mode)
                 // Configure the pinmux later once mount has run
                 child_process.exec("mount -t debugfs none /sys/kernel/debug",
                     function(error, stderr, stdout) {
-                        var muxfile = fs.writeFile(
-                            "/sys/kernel/debug/omap_mux/" + pin.mux, "7"
-                        );
+                        if(mode == OUTPUT) var muxfile = fs.writeFile("/sys/kernel/debug/omap_mux/" + pin.mux, "7");
+                            else var muxfile = fs.writeFile("/sys/kernel/debug/omap_mux/" + pin.mux, "27");
                     }
                 );
             }
@@ -118,7 +120,37 @@ pinMode = exports.pinMode = function(pin, mode)
 
 digitalWrite = exports.digitalWrite = function(pin, value)
 {
-    fs.writeFileSync(gpio[pin.gpio].path, "" + value);
+    fs.writeFileSync(gpio[pin.gpio].path, "" + value, null);
+};
+
+digitalRead = exports.digitalRead = function(pin)
+{
+    return fs.readFileSync(gpio[pin.gpio].path, null);
+};
+
+analogRead = exports.analogRead = function(pin)
+{
+    return fs.readFileSync("/sys/bus/platform/devices/tsc/ain" + (pin+1), null);
+}; 
+
+shiftOut = exports.shiftOut = function(dataPin, clockPin, bitOrder, val)
+{
+  var i;
+  var bit;
+  for (i = 0; i < 8; i++)  
+  {
+    if (bitOrder == LSBFIRST) 
+    {
+         bit = val & (1 << i);
+    } else
+    {
+         bit = val & (1 << (7 - i));
+    }
+
+    digitalWrite(dataPin, bit);
+    digitalWrite(clockPin, HIGH);
+    digitalWrite(clockPin, LOW);            
+  }
 };
 
 // Wait for some time
@@ -148,7 +180,7 @@ if(fibers.exists) {
             var fiber = Fiber.current;
             setup();
             if(typeof loop === "function") {
-	            while(true) {
+                while(true) {
                     loop();
                     setTimeout(function() {
                         fiber.run();
