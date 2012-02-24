@@ -6,7 +6,7 @@
     "boardName": "BeagleBone LCD Cape",
     "version": "01",
     "manufacturer": "BeagleBoardToys",
-    "partNumber": "LCD01",
+    "partNumber": "BB-BONE-LCD7-01",
     "numPins": 30,
     "serialNumber": "52114P130000",
     "currentVDD_3V3EXP": 2,
