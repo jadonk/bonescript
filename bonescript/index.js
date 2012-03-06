@@ -83,16 +83,17 @@ pinMode = exports.pinMode = function(pin, mode)
         
         // Export the GPIO controls
         try {
-            try {
-                fs.writeFileSync("/sys/class/gpio/export", "" + n);
-            } catch(ex2) {
-                // TODO: If the file is already exported, can we know who did
-                // did it so that we aren't opening it twice?  In general, this
-                // shouldn't be an error until we have some better resource
-                // management.
-                //console.log(ex2);
-                //console.log("Unable to export gpio: " + n);
-            }
+              var exists = path.existsSync("/sys/class/gpio/gpio" + n);
+              if(exists) {
+                      console.log("gpio: " + n + " already exported.");
+                  } else {
+                      try {
+                          fs.writeFileSync("/sys/class/gpio/export", "" + n,null);
+                      } catch(ex2) {
+                          console.log(ex2);
+                          console.log("Unable to export gpio: " + n);
+                      }
+                  }
             fs.writeFileSync("/sys/class/gpio/gpio" + n + "/direction",
                 mode);
             gpio[n].path = "/sys/class/gpio/gpio" + n + "/value";
