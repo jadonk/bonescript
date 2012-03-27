@@ -220,12 +220,48 @@ var loadFile = function(uri, subdir, res, type) {
     );
 };
 
+var spawn = function(command, socket) {
+    sessionId = socket.sessionId;
+    var send = (function () {
+        var stream = '';
+        var timer;
+        var len = 0;
+        return function(data) {
+            stream += data.toString();
+            ++len;
+
+            // clear any existing timeout if it exists
+            if(timer) clearTimeout(timer);
+
+            // set new timeout
+            timer = setTimeout(function () {
+                socket.emit('shell', stream);
+                stream = '';
+                len = 0;
+            });
+
+            // send data if over threshold
+            if(len > 1000)
+            {
+                clearTimeout(timer);
+                socket.emit('shell', stream);
+                stream = '';
+                len = 0;
+            }
+        };
+    })();
+    //try {
+    //    var c = child_process.spawn(
+};
+
 var addSocketListeners = function() {};
 if(socket.exists) {
     addSocketListeners = function(server, onconnect) {
         var io = socket.listen(server);
         io.sockets.on('connection', function(socket) {
-            console.log("New client connected");
+            var sessionId = socket.sessionId;
+            console.log('Client connected: ' + sessionId);
+            socket.broadcast('connect', 'connected: ' + sessionId);
 
             // on message
             socket.on('message', function(data) {
@@ -234,7 +270,7 @@ if(socket.exists) {
 
             // on disconnect
             socket.on('disconnect', function() {
-                console.log("Client disconnected.");
+                console.log("Client disconnected:" + sessionId);
             });
         
             // listen for requests and reads the debugfs entry async
@@ -251,6 +287,15 @@ if(socket.exists) {
                         fn("0", pinname);
                     }
                 });
+            });
+
+            // listen for shell commands
+            // based on https://github.com/itchyny/browsershell
+            var openspawn;
+            socket.emit('shell', 'login');
+            socket.on('shell', function(shellMsg) {
+                socket.broadcast('shell', shellMsg);
+
             });
 
             // call user-provided on-connect function
