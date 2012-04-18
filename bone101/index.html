@@ -9,324 +9,85 @@
  <script src="autoadvance.js" charset="utf-8" type="text/javascript"></script> 
  <!-- source: http://www.w3.org/Talks/Tools/Slidy2/styles/slidy.css --> 
  <!-- source: http://www.w3.org/Talks/Tools/Slidy2/scripts/slidy.js -->
- <link rel="stylesheet" type="text/css" media="screen, projection, print" href="beagle.css" /> 
  <link rel="icon" href="favicon.ico" type="image/x-icon" />
  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 </head>
 <body>
  <div class="background"> 
-  <img id="head-logo" title="beagleboard logo" alt="beagleboard logo" src="beagle.png" />
-  <img id="head-icon" src="url.png" alt="beagleboard url" />
- </div> 
-
- <div class="slide cover"> 
-  <h1>BeagleBone 101</h1>
-  <p>Latest slides available at:<a href="http://beagleboard.org/beagleboard101">
-     http://beagleboard.org/beagleboard101
-    </a>
-  </p>
-  <p>
-   This is your introduction to the BeagleBone where you will learn:
-   <ul>
-    <li>What is a BeagleBone?</li>
-    <li>How do you get software running on a BeagleBone?</li>
-    <li>How do you engage the BeagleBoard.org community?</li>
-    <li><del>How can you perform native development with the provided
-     Angstrom Distribution Cloud9 IDE demo image?</del> (coming soon!)</li>
-    <li>How do you discover other available community and commercial
-     software that might be of interest?</li>
-   </ul>
-  </p>
- </div>
-
- <div class="slide"> 
-  <h1>What is the BeagleBoard?</h1> 
-  <h2><a href="http://beagleboard.org/static/flyer_latest.pdf">http://beagleboard.org/static/flyer_latest.pdf</a></h2>
-  <p>BeagleBoard.org is an open hardware project featuring two designs:</p>
-  <ul class="incremental"> 
-   <li><b>BeagleBoard-xM:</b> Open software desktop experience with extra MHz and extra memory</li>
-   <li><b>BeagleBone:</b> Hardware I/O focus with single cable development experience</li>
-  </ul>
-  <p>BeagleBoard.org designs have a common philosophy:</p>
-  <ul class="incremental"> 
-   <li><font size="+3" color="orange">B</font>ring your own peripherals
-    <sup><small><a href="peripheral list">[1]</a></small></sup>
-   </li> 
-   <li><font size="+3" color="orange">E</font>ntry level cost</li> 
-   <li><font size="+3" color="orange">A</font>RM Cortex-A8 (superscalar)</li> 
-   <li><font size="+3" color="orange">G</font>raphics (and possibly DSP) accelerated</li> 
-   <li><font size="+3" color="orange">L</font>inux and open source community</li> 
-   <li><font size="+3" color="orange">E</font>nvironment for innovators</li> 
-  </ul>
  </div> 
 
  <div class="slide">
-  <h1>BeagleBone Details</h1> 
-  <h2><a href="http://beagleboard.org/bone">http://beagleboard.org/bone</a></h2>
-  <img src="bone_connectors.jpg" alt="BeagleBone image" align="center" width="70%" height="80%" />
- </div> 
-
- <div class="slide"> 
-  <h1>Services running on the BeagleBone</h1>
-  <h2>&nbsp;</h2>
-  <ul>
-   <li>Some web-based services running on your board to be explored<ul>
-    <li>Write applications directly in the browser:
-     <span class='dynlink' onclick='location.href="http://"+window.location.hostname+":3000"'>Cloud9 IDE</span>
-    </li>
-    <li>Access the Linux shell:
-     <span class='dynlink' onclick='location.href="https://"+window.location.hostname'>GateOne</span>
-    </li>
-   </ul></li>
-  </ul>
-  <p align="center">
-   <img src="beaglebone_small.png" height="400px" />
-  </p>
+  <h1></h1> 
+  <h2></h2>
+  <iframe src="http://192.168.7.2:8000/" align="center" width="100%" height="90%"></iframe>
  </div>
 
  <div class="slide">
-  <h1>Programming an SD card</h1> 
-  <h2>&nbsp;</h2>
-  <ul>
-   <li>First, make sure you have an appropriately size microSD card and an adapter for your PC</li>
-   <li>Linux and Mac OS X
-    <ul>
-     <li>Learn to use '<a href="http://linux.die.net/man/1/dd">dd</a>' and '<a href="http://linux.die.net/man/1/gunzip">gzip</a>'</li>
-     <li>Know which /dev/sdX or /dev/diskX is your SD card through use of '<a href="http://linux.die.net/man/1/dmesg">dmesg</a>'</li>
-     <li>Example<br /><pre>zcat XXX.img.gz | sudo dd of=/dev/sdX bs=64M</pre></li>
-    </ul>
-   </li>
-   <li>Windows
-    <ul>
-     <li>Use <a href="http://http://www.7-zip.org/">7-zip</a> to decompress the XXX.img.gz file</li>
-     <li>Use <a href="https://wiki.ubuntu.com/Win32DiskImager">Ubuntu Win32DiskImager</a> to write it to your microSD card</li>
-    </ul>
-   </li>
-  </ul>
-  <p align="center">
-   <img src="imager.png" height="150px" />
-  </p>
+  <h1></h1> 
+  <h2></h2>
+  <iframe src="http://192.168.7.2:3000/" align="center" width="100%" height="90%"></iframe>
  </div>
 
  <div class="slide">
-  <h1>Finding pre-configured SD card images</h1> 
-  <h2>&nbsp;</h2>
-  <ul>
-   <li>Checkout these sources for BeagleBoard/BeagleBoard-xM Linux images (that may likely soon include BeagleBone images):
-    <ul>
-     <li><a href="http://www.angstrom-distribution.org/narcissus">Angstrom Narcissus Image Assembler</a></li>
-     <li><a href="http://elinux.org/BeagleBoardUbuntu">BeagleBoard Ubuntu</a></li>
-     <li><a href="http://www.ti.com/tool/androidsdk-sitara">Rowboat (Android)</a></li>
-     <li><a href="http://releases.linaro.org/">Linaro</a></li>
-    </ul>
-   <li>Can might also find images for Windows Compact Embedded 7, QNX, RISC OS, Puppy Bits, Symbian, Debian, Gentoo, Fedora, ...</li>
-   <li>Check out the <a href="http://beagleboard.org/project">registered projects</a></li>
-   <li>Encourage project owners to supply SD card images</li>
-  </ul>
- </div>
-
- <div class="slide">
-  <h1>Why work with community?</h1> 
-  <h2>&nbsp;</h2>
-  <ul>
-   <li>Faster innovation
-    <ul>
-     <li>Off-cycle development</li>
-     <li>Engage innovators</li>
-     <li>Direct peer interaction</li>
-    </ul>
-   </li>
-   <li>Better solutions
-    <ul>
-     <li>Expert peer review</li>
-     <li>Community support</li>
-     <li>Early feedback</li>
-    </ul>
-   </li>
-  </ul>
-  <img src="why_community.png" alt="Why Community?" height="40%" align="right" />
+  <h1></h1> 
+  <h2></h2>
+  <img src="Slide1.JPG" align="center" width="100%" height="90%" />
  </div> 
 
  <div class="slide">
-  <h1>Why push code to mainline?</h1> 
-  <h2>&nbsp;</h2>
-  <ul>
-   <li>Stable snapshot development
-    <ul>
-     <li>Increases stability</li>
-     <li>Isolates from community</li>
-     <li>High update cost with reduced support and external contribution</li>
-    </ul>
-   </li>
-   <li>Community synchronized
-    <ul>
-     <li>Increased potential churn</li>
-     <li>Leverages the community</li>
-     <li>Requires defined method for maintaining value-add</li>
-    </ul>
-   </li>
-  </ul>
-  <img src="why_mainline.png" alt="Why Mainline?" height="40%" align="right" />
+  <h1></h1> 
+  <h2></h2>
+  <img src="Slide2.JPG" align="center" width="100%" height="90%" />
  </div> 
 
  <div class="slide">
-  <h1>Engaging the community</h1> 
-  <h2><a href="http://catb.org/~esr/faqs/smart-questions.html">Ask questions the smart way</a></h2>
-  <ul>
-   <li>Before you ask
-    <ul>
-     <li>Learn about the on-line resources and documentation</li>
-     <li>Try to find the answer yourself</li>
-     <li>Don't assume you are <i>entitled</i> to an answer</li>
-    </ul>
-   </li>
-   <li>Ask in the right way in the right place
-    <ul>
-     <li>Question should be easy to answer for someone who knows</li>
-     <li>Detail your objective, what you tried and the results</li>
-     <li>Use meaningful and specific subject headers</li>
-     <li>Using <a href="http://beagleboard.org/chat">the on-line chat</a> can help you formulate your question for
-      <a href="http://beagleboard.org/discuss">the mailing list</a>
-     </li>
-    </ul>
-   </li>
-   <li>Listen to the answers, even if they <i>seem</i> unhelpful</li>
-   <li>Share useful lessons you learn</li>
-  </ul>
+  <h1></h1> 
+  <h2></h2>
+  <img src="Slide3.JPG" align="center" width="100%" height="90%" />
  </div> 
 
  <div class="slide">
-  <h1>What do I work with the community on?</h1> 
-  <h2>&nbsp;</h2>
-  <ul>
-   <li>There are <a href="http://beagleboard.org/project">hundreds of projects with BeagleBoard-specific interest</a></li>
-   <li>It is really up to your heart's desire</li>
-   <li>Linux is known for its community</li>
-   <li>Many communities build upon Linux</li>
-   <li>Let's start with the projects required to boot Linux</li>
-  </ul>
+  <h1></h1> 
+  <h2></h2>
+  <img src="Slide4.JPG" align="center" width="100%" height="90%" />
  </div> 
 
  <div class="slide">
-  <h1>Typical BeagleBone boot process</h1> 
-  <h2>The five phases</h2>
-  <ol>
-   <li>ROM loads u-boot SPL (MLO)
-    <ul>
-     <li>Default location is /media/mmcblk0p1/MLO</li>
-     <li>Performs external DRAM configuration</li>
-    </ul>
-   </li>
-   <li>u-boot SPL (MLO) loads u-boot
-    <ul>
-     <li>Default location is /media/mmcblk0p1/u-boot.img</li>
-    </ul>
-   </li>
-   <li>u-boot executes default environment/commands
-    <ul>
-     <li>Default location is /media/mmcblk0p1/uEnv.txt</li>
-     <li>By default, 'uenvcmd' variable is executed</li>
-    </ul>
-   </li>
-   <li>Commands load kernel
-    <ul>
-     <li>Default location is /media/mmcblk0p1/uImage</li>
-    </ul>
-   </li>
-   <li>Kernel reads root file system</li>
-  </ol>
+  <h1></h1> 
+  <h2></h2>
+  <img src="Slide5.JPG" align="center" width="100%" height="90%" />
  </div> 
 
  <div class="slide">
-  <h1>Baseline software</h1> 
-  <h2><a href="http://beagleboard.org/linux">http://beagleboard.org/linux</a></h2>
-  <ul>
-   <li><a href="http://git.denx.de/?p=u-boot/u-boot-ti.git;a=summary">U-boot</a>
-    <ul>
-     <li><a href="https://github.com/beagleboard/u-boot">BeagleBoard-patched u-boots</a></li>
-    </ul>
-   </li>
-   <li><a href="http://git.kernel.org/?p=linux/kernel/git/torvalds/linux.git;a=summary">Linux Kernel</a>
-    <ul>
-     <li><a href="https://github.com/beagleboard/linux">BeagleBoard-patched kernels</a></li>
-    </ul>
-   </li>
-   <li><a href="http://git.angstrom-distribution.org/cgi-bin/cgit.cgi/meta-texasinstruments/tree/README">OE-core based BSP</a>
-   </li>
-  </ul>
+  <h1></h1> 
+  <h2></h2>
+  <img src="Slide6.JPG" align="center" width="100%" height="90%" />
  </div> 
 
  <div class="slide">
-  <h1>Highlighted community projects</h1> 
-  <h2>&nbsp;</h2> 
-  <ul>
-   <li><a href="http://arowboat.org">Android Rowboat</a></li>
-   <li><a href="http://linaro.org">Linaro</a></li>
-   <li><a href="http://yoctoproject.org">Yocto Project</a></li>
-  </ul>
- </div>
+  <h1></h1> 
+  <h2></h2>
+  <img src="Slide7.JPG" align="center" width="100%" height="90%" />
+ </div> 
 
  <div class="slide">
-  <h1>Linaro</h1>
-  <h2><a href="http://linaro.org">www.linaro.org</a></h2>
-  <ul>
-   <li><a href="http://linaro.org">Linaro</a> is a non-profit formed in June 2010
-    <ul>
-     <li>"to make it easier for ARM partners to deploy the latest
-      technology into optimized Linux based products"</li>
-    </ul>
-   </li>
-   <li>Started by ARM
-    <ul>
-     <li>with Texas Instruments, Freescale, IBM, Samsung and ST Ericsson</li>
-    </ul>
-   </li>
-   <li>Focused on improving core open source tools and components for ARM Cortex-A processors
-    <ul>
-     <li>Compiler, debugger, profiler, kernel and middleware</li>
-     <li>Validation of efforts done with Ubuntu and Android</li>
-    </ul>
-   </li>
-   <li>Includes "landing teams" for SoC vendors</li>
-   <li>The BeagleBoard-xM is one of their release platforms</li>
-  </ul>
- </div>
+  <h1></h1> 
+  <h2></h2>
+  <img src="Slide8.JPG" align="center" width="100%" height="90%" />
+ </div> 
 
  <div class="slide">
-  <h1>Yocto</h1>
-  <h2><a href="http://yoctoproject.org">www.yoctoproject.org</a></h2>
-  <ul>
-   <li><a href="http://yoctoproject.org">Yocto</a> is a Linux Foundation project started in
-    <a href="http://www.marketwire.com/press-release/the-linux-foundation-announces-yocto-project-steering-group-and-release-10-1423707.htm">
-    April 2011</a>
-    <ul>
-     <li>"and is an open source collaboration project that provides templates, tools and methods to help you
-      create custom Linux-based systems for embedded products regardless of the hardware architecture."</li>
-    </ul>
-   </li>
-   <li>The advisory board includes members from several key silicon vendors, embedded Linux suppliers and the OpenEmbedded community
-    <ul>
-     <li>including representation from <a href="http://www.yoctoproject.org/about/governance/advisory-board">
-      Texas Instruments, Intel, Mentor Graphics, MontaVista, TimeSys and Dell</a></li>
-    </ul>
-   </li>
-   <li>Building on OpenEmbedded technology and providing board support package (BSP) development tools for embedded platforms
-    <ul>
-     <li>Committed to support ARM, PPC, MIPS, x86 and x86-64 ISAs</li>
-     <li>Aligned with the OpenEmbedded community through OE-core</li>
-    </ul>
-   </li>
-   <li>The BeagleBoard-xM is their ARM reference platform</li>
-  </ul>
- </div>
+  <h1></h1> 
+  <h2></h2>
+  <img src="Slide9.JPG" align="center" width="100%" height="90%" />
+ </div> 
 
- <div class="slide"> 
-  <h1>Thanks!</h1> 
-  <h2>&nbsp;</h2> 
-  <ul>
-   <li>There's more to come.  Please join us in improving this project for the benefit of both yourself and others.</li>
-  </ul>
- </div>
+ <div class="slide">
+  <h1></h1> 
+  <h2></h2>
+  <img src="Slide10.JPG" align="center" width="100%" height="90%" />
+ </div> 
+
 </body>
 </html>
 
