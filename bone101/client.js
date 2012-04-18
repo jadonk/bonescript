@@ -1,7 +1,8 @@
 var scriptUrls = [
     '/socket.io/socket.io.js',
     '/jquery.js',
-    '/slidy.js'                     // http://www.w3.org/Talks/Tools/Slidy2/scripts/slidy.js
+    '/slidy.js',                    // http://www.w3.org/Talks/Tools/Slidy2/scripts/slidy.js
+    '/autoadvance.js'
 ];
 
 // based loosely on http://stackoverflow.com/questions/950087/include-javascript-file-inside-javascript-file

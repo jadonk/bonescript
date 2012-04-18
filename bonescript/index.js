@@ -253,40 +253,67 @@ var loadFile = function(uri, subdir, res, type) {
     );
 };
 
-var spawn = function(command, socket) {
-    sessionId = socket.sessionId;
-    var send = (function () {
-        var stream = '';
-        var timer;
-        var len = 0;
-        return function(data) {
-            stream += data.toString();
-            ++len;
+// most heavily borrowed from https://github.com/itchyny/browsershell
+var spawn = function(socket) {
+    var stream = '';
+    var timer;
+    var len = 0;
+    var c;
 
     var send = function (data) {
        // add data to the stream
        stream += data.toString();
        ++len;
 
-            // set new timeout
-            timer = setTimeout(function () {
-                socket.emit('shell', stream);
-                stream = '';
-                len = 0;
-            });
+       // clear any existing timeout if it exists
+       if(timer) clearTimeout(timer);
 
-            // send data if over threshold
-            if(len > 1000)
-            {
-                clearTimeout(timer);
-                socket.emit('shell', stream);
-                stream = '';
-                len = 0;
+       // set new timeout
+       timer = setTimeout(function () {
+           socket.emit('shell', stream);
+           stream = '';
+           len = 0;
+       }, 100);
+
+       // send data if over threshold
+       if(len > 1000)
+       {
+           clearTimeout(timer);
+           socket.emit('shell', stream);
+           stream = '';
+           len = 0;
+       }
+    };
+
+    var receive = function (msg) {
+        if(!c) {
+            try {
+                console.log('Spawning bash');
+                c = child_process.spawn('/bin/bash', ['--login']);
+                c.stdout.on('data', send);
+                c.stderr.on('data', send);
+                socket.emit('shell', '$ ');
+                c.on('exit', function() {
+                    socket.emit('shell', send('\nexited\n'));
+                    c = undefined;
+                });
+            } catch(ex) {
+                c = undefined;
+                send('Error invoking bash');
+                console.log('Error invoking bash');
             }
-        };
-    })();
-    //try {
-    //    var c = child_process.spawn(
+        }
+        if(c) {
+            if(msg) {
+                c.stdin.write(msg + '\n', encoding='utf-8');
+            }
+        } else {
+            console.log('Unable to invoke child process');
+        }
+    };
+    receive();
+
+    return(receive);
 };
 
 var addSocketListeners = function() {};
@@ -324,12 +351,10 @@ if(socket.exists) {
             });
 
             // listen for shell commands
-            // based on https://github.com/itchyny/browsershell
-            var openspawn;
-            socket.emit('shell', 'login');
+            var myshell = spawn(socket);
             socket.on('shell', function(shellMsg) {
-                socket.broadcast('shell', shellMsg);
-
+                console.log('shell: ' + shellMsg);
+                myshell(shellMsg);
             });
 
             // call user-provided on-connect function
