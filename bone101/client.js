@@ -59,6 +59,8 @@ var init = function() {
                         socket.emit('shell', c);
                     }
                 }, 20);
+            } else {
+                $textarea.scrollTop($textarea[0].scrollHeight);
             }
         });
     } catch(ex) {
