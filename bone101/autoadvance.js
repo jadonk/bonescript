@@ -1,5 +1,5 @@
 autoAdvanceTimeout = null;
-autoAdvanceDuration = 400;
+autoAdvanceDuration = 10000;
 
 autoAdvance = function() {
  if(w3c_slidy.slide_number < w3c_slidy.slides.length - 1) {
@@ -16,7 +16,8 @@ disableAutoAdvance = function() {
  autoAdvanceTimeout = null;
 };
 
-enableAutoAdvance = function() {
+enableAutoAdvance = function(duration) {
+ if(duration) autoAdvanceDuration = duration;
  autoAdvanceTimeout = setTimeout(autoAdvance, autoAdvanceDuration);
 };
 
@@ -29,4 +30,4 @@ onAutoAdvanceKeyPress = function(event) {
 
 document.addEventListener("keypress", onAutoAdvanceKeyPress, false);
 
-enableAutoAdvance();
+//enableAutoAdvance();
