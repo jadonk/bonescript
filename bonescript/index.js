@@ -334,6 +334,24 @@ if(socket.exists) {
                 console.log("Client disconnected:" + sessionId);
             });
         
+            // send expansion pin info
+            socket.emit('muxstruct', bone);
+
+            // send eeprom info
+            var EepromFiles = {
+                '/sys/bus/i2c/drivers/at24/1-0050/eeprom': { type: 'bone' },
+                '/sys/bus/i2c/drivers/at24/3-0054/eeprom': { type: 'cape' },
+                '/sys/bus/i2c/drivers/at24/3-0055/eeprom': { type: 'cape' },
+                '/sys/bus/i2c/drivers/at24/3-0056/eeprom': { type: 'cape' },
+                '/sys/bus/i2c/drivers/at24/3-0057/eeprom': { type: 'cape' },
+            };
+            var eeproms = eeprom.readEeproms(EepromFiles);
+            if(eeproms == {}) {
+                console.warn('No valid EEPROM contents found');
+            } else {
+                socket.emit('eeproms', eeproms);
+            }
+        
             // listen for requests and reads the debugfs entry async
             socket.on('listMux', function(pinname, fn) {
                 console.log(pinname + ": " + bone[pinname].mux);
