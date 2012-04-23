@@ -1,6 +1,9 @@
 var scriptUrls = [
     '/socket.io/socket.io.js',
     '/jquery.js',
+    '/jquery.svg.js',
+    '/schmux-web.js',
+    '/eeprom-web.js',
     '/slidy.js',                    // http://www.w3.org/Talks/Tools/Slidy2/scripts/slidy.js
     '/autoadvance.js'
 ];
