@@ -7,6 +7,7 @@ var http = require('http');
 var url = require('url');
 var path = require('path');
 var events = require('events');
+var eeprom = require('./eeprom');
 bone = require('./bone').bone;
 
 var myrequire = function(packageName, onfail) {
