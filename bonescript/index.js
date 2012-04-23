@@ -290,7 +290,7 @@ var spawn = function(socket) {
         if(!c) {
             try {
                 console.log('Spawning bash');
-                c = child_process.spawn('/bin/bash', ['-i'], {customFds: -1});
+                c = child_process.spawn('/bin/bash', ['-i'], {customFds: [-1, -1, -1]});
                 c.stdout.on('data', send);
                 c.stderr.on('data', send);
                 c.on('exit', function() {
