@@ -7,21 +7,6 @@ var scriptUrls = [
     '/autoadvance.js'
 ];
 
-// based loosely on http://stackoverflow.com/questions/950087/include-javascript-file-inside-javascript-file
-for(url in scriptUrls) {
-    var head = document.getElementsByTagName('head')[0];
-    var script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = scriptUrls[url];
-    head.appendChild(script);
-}
-
-// Todo: These 4 should come from bonescript as well
-var gpio0 = 0;
-var gpio1 = gpio0+32;
-var gpio2 = gpio1+32;
-var gpio3 = gpio2+32;
-
 // Placeholder to get filled in from bonescript via socket.io
 bone =
 {
@@ -165,7 +150,19 @@ var init = function() {
     }
 };
 
-$(document).ready(function() {
-    init();
+// based loosely on http://stackoverflow.com/questions/950087/include-javascript-file-inside-javascript-file
+var loadScripts = function() {
+    var url = scriptUrls.shift();
+    if(url) {
+        var head = document.getElementsByTagName('head')[0];
+        var script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = url;
+        var scriptObj = head.appendChild(script);
+        scriptObj.onload = loadScripts;
+    } else {
+        init();
+    }
 };
 
+loadScripts();
