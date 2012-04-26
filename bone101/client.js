@@ -25,34 +25,29 @@ function clearPin(pinname) {
 // based loosely on https://github.com/itchyny/browsershell/blob/master/main.js
 var init = function() {
     try {
-        $, io;
-        var socket = new io.connect('');
-        var $result = $('#result');
-        var $textarea = $('textarea').focus();
+        var socket = io.connect('');
+        var $textarea = $('#shell').focus();
         var view = function(s) {
             $textarea.val($textarea.val() + s);
-            $textarea.scrollTop($textarea[0].scrollHeight);
-            $textarea[0].selectionStart = $textarea[0].textLength;
+            //$textarea.scrollTop($textarea.scrollHeight;
+            $textarea.scrollTop(9999999);
+            $textarea.selectionStart = $textarea.textLength;
         };
-        var state = 'disconnected';
         socket.on('connect', function() {
-            state = 'connected';
             view('connected\n');
         });
-        socket.on('disconnect', function(m) {
+        socket.on('disconnect', function() {
             view('disconnected\n');
-            init();
         });
         socket.on('shell', function(m) {
             view(m + '\n');
         });
         $textarea.keydown(function(e) {
             if(e.keyCode === 13) {
-                var $textarea = $(this);
-                if($textarea[0].selectionStart != $textarea[0].textLength) {
+                if($textarea.selectionStart != $textarea.textLength) {
                     e.preventDefault();
                     $textarea.val($textarea.val() + '\n');
-                    $textarea[0].selectionStart = $textarea[0].textLength;
+                    $textarea.selectionStart = $textarea.textLength;
                 }
                 setTimeout(function () {
                     var c = $textarea.val().split('\n').slice(-2)[0];
@@ -68,7 +63,7 @@ var init = function() {
                     }
                 }, 20);
             } else {
-                $textarea.scrollTop($textarea[0].scrollHeight);
+                view('');
             }
         });
 
