@@ -27,9 +27,9 @@ var init = function() {
     try {
         var socket = io.connect('');
         var $textarea = $('#shell').focus();
-        var view = function(s) {
+        var view = function(s, e) {
+            if(e) e.preventDefault();
             $textarea.val($textarea.val() + s);
-            //$textarea.scrollTop($textarea.scrollHeight;
             $textarea.scrollTop(9999999);
             $textarea.selectionStart = $textarea.textLength;
         };
@@ -45,9 +45,7 @@ var init = function() {
         $textarea.keydown(function(e) {
             if(e.keyCode === 13) {
                 if($textarea.selectionStart != $textarea.textLength) {
-                    e.preventDefault();
-                    $textarea.val($textarea.val() + '\n');
-                    $textarea.selectionStart = $textarea.textLength;
+                    view('\n');
                 }
                 setTimeout(function () {
                     var c = $textarea.val().split('\n').slice(-2)[0];
