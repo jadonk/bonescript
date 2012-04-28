@@ -297,6 +297,10 @@ var spawn = function(socket) {
                     socket.emit('shell', send('\nexited\n'));
                     c = undefined;
                 });
+                socket.on('disconnect', function () {
+                    console.log('Killing bash');
+                    c.kill('SIGHUP');
+                });
             } catch(ex) {
                 c = undefined;
                 send('Error invoking bash');

@@ -1,9 +1,15 @@
+var cssUrls = [
+    '/schmux.css',
+    '/jquery.terminal.css'          // http://terminal.jcubic.pl/js/jquery.terminal.css
+];
+
 var scriptUrls = [
     '/socket.io/socket.io.js',
     '/jquery.js',
     '/jquery.svg.js',
+    '/jquery.terminal.js',          // http://terminal.jcubic.pl/js/jquery.terminal-0.4.12.min.js
+    '/jquery.mousewheel.js',        // http://terminal.jcubic.pl/js/jquery.mousewheel-min.js
     '/eeprom-web.js',
-    '/slidy.js',                    // http://www.w3.org/Talks/Tools/Slidy2/scripts/slidy.js
     '/autoadvance.js'
 ];
 
@@ -14,55 +20,77 @@ bone =
     P8_2: { name: "DGND" },
 };
 
-function printPin(pinname) {
+var printPin = function(pinname) {
     $("#" + pinname).css("background-color", "#000000");
 }
 
-function clearPin(pinname) {
+var clearPin = function(pinname) {
     $("#" + pinname).css("background-color", "#EAF2D3");
 }
 
-// based loosely on https://github.com/itchyny/browsershell/blob/master/main.js
+//var slidyDisable = function() {
+//  document.removeEventListener('keydown', w3c_slidy.key_down);
+//  document.removeEventListener('keypress', w3c_slidy.key_press);
+//};
+//
+//var slidyEnable = function() {
+//  w3c_slidy.add_listener(document, 'keydown', w3c_slidy.key_down);
+//  w3c_slidy.add_listener(document, 'keypress', w3c_slidy.key_press);
+//}
+
 var init = function() {
-    try {
+    //try {
         var socket = io.connect('');
-        var $textarea = $('#shell').focus();
-        var view = function(s, e) {
-            if(e) e.preventDefault();
-            $textarea.val($textarea.val() + s);
-            $textarea.scrollTop(9999999);
-            $textarea.selectionStart = $textarea.textLength;
-        };
+        var view = false;
+        try {
+            $('#shell').terminal(
+                function(command, term) {
+                    socket.emit('shell', command);
+                    if(!view) {
+                        view = function(s) {
+                           term.echo(s);
+                        };
+                    }
+                },
+                {
+                    greetings: "BeagleBone bash shell",
+                    name: "bash",
+                    height: 400,
+                    prompt: 'bash>'
+                }
+            );
+        } catch(ex) {
+            console.log("Unable to open shell terminal window due to " + ex);
+        }
+        try {
+            $('#js_term').terminal(
+                function(command, term) {
+                    if (command !== '') {
+                        var result = window.eval("(" + command + ")");
+                        if (result !== undefined) {
+                            term.echo(String(result));
+                        }
+                    } else {
+                        term.echo('');
+                    }
+                }, {
+                    greetings: 'Javascript Interpreter',
+                    name: 'js_demo',
+                    height: 400,
+                    prompt: 'js>'
+                }
+            );
+        } catch(ex) {
+            console.log("Unable to open javascript terminal window due to " + ex);
+        }
         socket.on('connect', function() {
-            view('connected\n');
+            if(view) view('Connected\n');
         });
         socket.on('disconnect', function() {
-            view('disconnected\n');
+            if(view) view('Disconnected\n');
         });
         socket.on('shell', function(m) {
-            view(m + '\n');
-        });
-        $textarea.keydown(function(e) {
-            if(e.keyCode === 13) {
-                if($textarea.selectionStart != $textarea.textLength) {
-                    view('\n');
-                }
-                setTimeout(function () {
-                    var c = $textarea.val().split('\n').slice(-2)[0];
-                    if(c.replace(/( |\n)+/g, '') === '') {
-                        view('\n');
-                    } else if(c.replace(/( |\n)+/g, '') === 'clear') {
-                        $textarea.val('');
-                        view('\n');
-                    } else if(c.replace(/( |\n)+/g, '') === 'connect') {
-                        init();
-                    } else {
-                        socket.emit('shell', c);
-                    }
-                }, 20);
-            } else {
-                view('');
-            }
+            if(view) view(m);
         });
 
         //setup handler for receiving the strict with all the expansion pins from the server
@@ -138,9 +166,9 @@ var init = function() {
             }
         );
 
-    } catch(ex) {
-        setTimeout(init, 100);
-    }
+    //} catch(ex) {
+    //    setTimeout(init, 100);
+    //}
 };
 
 // based loosely on http://stackoverflow.com/questions/950087/include-javascript-file-inside-javascript-file
@@ -158,4 +186,19 @@ var loadScripts = function() {
     }
 };
 
-loadScripts();
+var loadCss = function() {
+    var url = cssUrls.shift();
+    if(url) {
+        var head = document.getElementsByTagName('head')[0];
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = url;
+        var linkObj = head.appendChild(link);
+        loadCss();
+    } else {
+        loadScripts();
+    }
+};
+
+loadCss();
