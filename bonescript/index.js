@@ -47,14 +47,17 @@ MSBFIRST = 0;
 
 var gpio = [];
 
-pinMode = exports.pinMode = function(pin, mode)
+pinMode = exports.pinMode = function(pin, direction, pullup, slew, mux, callback)
 {
     var n = pin.gpio;
+    
+    pullup = pullup || 'disabled';
+    slew = slew || 'fast';
+    mux = mux || 7; // default to GPIO mode
     
     if(!gpio[n] || !gpio[n].path) {
         gpio[n] = {};
         
-        // Ensure the pin is in GPIO mode
         if(pin.mux) {
             try {
                 var muxfile = fs.openSync(
@@ -63,7 +66,7 @@ pinMode = exports.pinMode = function(pin, mode)
                 if(mode == OUTPUT)  fs.writeSync(muxfile, "7", null);
                     else fs.writeSync(muxfile, "27", null);
             } catch(ex3) {  
-                console.log("" + ex3);
+                console.log("pinMode assignment error: " + ex3);
                 console.log("Unable to configure pinmux for: " + pin.name +
                     " (" + pin.mux + ")");
                 console.log("Trying: mount -t debugfs none /sys/kernel/debug");
@@ -73,12 +76,15 @@ pinMode = exports.pinMode = function(pin, mode)
                 //console.log("" + state);
                 
                 // Configure the pinmux later once mount has run
-                child_process.exec("mount -t debugfs none /sys/kernel/debug",
+                var mountProc = child_process.exec(
+                    "mount -t debugfs none /sys/kernel/debug",
                     function(error, stderr, stdout) {
-                        if(mode == OUTPUT) var muxfile = fs.writeFile("/sys/kernel/debug/omap_mux/" + pin.mux, "7");
-                            else var muxfile = fs.writeFile("/sys/kernel/debug/omap_mux/" + pin.mux, "27");
+                        if(error) throw("pinMode assignment error: " + error);
                     }
                 );
+                mountProc.on('exit', function() {
+                    pinMode(pin, direction, pullup, slew, mux, callback);
+                });
             }
         }
         
@@ -119,23 +125,63 @@ pinMode = exports.pinMode = function(pin, mode)
         }
     }
 };
+if(socket) socket.on('pinMode', function(m) {
+    var callback = function(resp) {
+        socket.emit('pinMode', resp);
+    };
+    try {
+        pinMode(m.pin, m.direction, m.pullup, m.slew, m.mux, callback);
+    } catch(ex) {
+        console.log('Error handing pinMode message: ' + ex);
+    }
+});
 
-digitalWrite = exports.digitalWrite = function(pin, value)
+digitalWrite = exports.digitalWrite = function(pin, value, callback)
 {
     fs.writeFileSync(gpio[pin.gpio].path, "" + value, null);
 };
+if(socket) socket.on('digitalWrite', function(m) {
+    var callback = function(resp) {
+        socket.emit('digitalWrite', resp);
+    };
+    try {
+        digitalWrite(m.pin, m.value, callback);
+    } catch(ex) {
+        console.log('Error handing digitalWrite message: ' + ex);
+    }
+});
 
-digitalRead = exports.digitalRead = function(pin)
+digitalRead = exports.digitalRead = function(pin, callback)
 {
     return fs.readFileSync(gpio[pin.gpio].path, null);
 };
+if(socket) socket.on('digitalRead', function(m) {
+    var callback = function(resp) {
+        socket.emit('digitalRead', resp);
+    };
+    try {
+        digitalRead(m.pin, callback);
+    } catch(ex) {
+        console.log('Error handing digitalRead message: ' + ex);
+    }
+});
 
-analogRead = exports.analogRead = function(pin)
+analogRead = exports.analogRead = function(pin, callback)
 {
     return fs.readFileSync("/sys/bus/platform/devices/tsc/ain" + (pin+1), null);
 }; 
+if(socket) socket.on('analogRead', function(m) {
+    var callback = function(resp) {
+        socket.emit('analogRead', resp);
+    };
+    try {
+        analogRead(m.pin, callback);
+    } catch(ex) {
+        console.log('Error handing analogRead message: ' + ex);
+    }
+});
 
-shiftOut = exports.shiftOut = function(dataPin, clockPin, bitOrder, val)
+shiftOut = exports.shiftOut = function(dataPin, clockPin, bitOrder, val, callback)
 {
   var i;
   var bit;
@@ -154,16 +200,26 @@ shiftOut = exports.shiftOut = function(dataPin, clockPin, bitOrder, val)
     digitalWrite(clockPin, LOW);            
   }
 };
+if(socket) socket.on('shiftOut', function(m) {
+    var callback = function(resp) {
+        socket.emit('shiftOut', resp);
+    };
+    try {
+        shiftOut(m.dataPin, m.clockPin, m.bitOrder, m.val, callback);
+    } catch(ex) {
+        console.log('Error handing shiftOut message: ' + ex);
+    }
+});
 
 // Wait for some time
 if(fibers.exists) {
-    delay = exports.delay = function(milliseconds)
-    {
+    delay = exports.delay = function(milliseconds) {
         var fiber = Fiber.current;
-        setTimeout(function() {
+        var run = function() {
             fiber.run();
-        }, milliseconds);
-        yield();
+        };
+        setTimeout(run, milliseconds);
+        yield(null);
     };
 } else {
     delay = exports.delay = function(milliseconds)
@@ -187,7 +243,7 @@ if(fibers.exists) {
                     setTimeout(function() {
                         fiber.run();
                     }, 0);
-		            yield();
+		            yield(null);
 		        }
             }
         }).run();
@@ -197,10 +253,11 @@ if(fibers.exists) {
     {
         setup();
         if(typeof loop === "function") {
-            process.nextTick(function repeat() {
+            var repeat = function repeat() {
                 loop();
                 process.nextTick(repeat);
-            });
+            };
+            repeat();
         }
     };
 }
