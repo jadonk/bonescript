@@ -19,8 +19,8 @@ $(document).ready(function() {
             
         $("#eeprom").html(bonestring);
     });
-
-})
+    socket.emit('eeproms','');
+});
 
 function printPin(eeproms, eeprom) {
     var pinString = "";
@@ -29,9 +29,9 @@ function printPin(eeproms, eeprom) {
         capename = eeproms[eeprom].boardName;
         capebuilder = eeproms[eeprom].manufacturer;
         $('#cape' + address).svg({onLoad: drawBone});
-	$('#cape' + address).width(scale*90 + 'px');
-	$('#cape' + address).height(scale*87 + 'px');
-        for (pin in eeproms[eeprom].mux){
+	    $('#cape' + address).width(scale*90 + 'px');
+	    $('#cape' + address).height(scale*87 + 'px');
+        for(var pin in eeproms[eeprom].mux) {
             if(eeproms[eeprom].mux[pin].used == "used") {
                 colourPin($('#cape' + address).svg('get'), pin, eeproms[eeprom].mux[pin].function);
             }

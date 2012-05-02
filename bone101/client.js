@@ -80,8 +80,8 @@ var init = function() {
                     prompt: 'js>'
                 }
             );
-        } catch(ex) {
-            console.log("Unable to open javascript terminal window due to " + ex);
+        } catch(ex2) {
+            console.log("Unable to open javascript terminal window due to " + ex2);
         }
         socket.on('connect', function() {
             if(view) view('Connected\n');
@@ -93,51 +93,38 @@ var init = function() {
             if(view) view(m);
         });
 
-        //setup handler for receiving the strict with all the expansion pins from the server
-        socket.on('muxstruct', function (data) {
-            bone = data;
-            for(var pinname in bone) {
-                $("#" + pinname + "_name").html(bone[pinname].name);
-                if (bone[pinname].mux) {
-                    socket.emit('listmux', pinname);
-                }
-            }
-        });
-
-        socket.on('listmux', function(data) {
-            // The format read from debugfs looks like this:
-            // name: mcasp0_axr0.spi1_d1 (0x44e10998/0x998 = 0x0023), b NA, t NA
-            // mode: OMAP_PIN_OUTPUT | OMAP_MUX_MODE3
-            // signals: mcasp0_axr0 | ehrpwm0_tripzone | NA | spi1_d1 | mmc2_sdcd_mux1 | NA | NA | gpio3_16
-            var muxReadout = data.readout;
-            var pinname = data.pinname;
-            if (muxReadout != "0") {
-                var muxBreakdown = muxReadout.split("\n");
-                var pinMode = muxBreakdown[1].split("|")[1].substr(-1); // The muxmode number, '3' in the above example
+        socket.on('getPinMode', function(data) {
+            var pinname = data.pin;
+            if(data.options) {
                 var muxSelect = "<select style='width: 10em'>\n";
-                var muxOptions = muxBreakdown[2].split('|');
-                for (muxOption in muxOptions) {
-                    try {
-                        var pinFunction = (''+muxOptions[muxOption]).replace('signals:', '').replace(' ', '');
-                    } catch(ex) {
-                        console.log("Unable to parse " + muxOptions[muxOption] + ": " + ex);
-                        pinFunction = "NA";
-                    }
+                for(var option in data.options) {
+                    var pinFunction = data.options[option];
+                    var muxSelected = "";
                     // Select the signal the pin is currently muxed to
-                    if (muxOption == pinMode) {
+                    if(option == data.mux) {
                         muxSelected = "selected=true";
                     }
-                    else {
-                        muxSelected = "";
-                    }
-                    muxSelect += "<option " + muxSelected + ">" + muxOption + ": " + pinFunction + "</option>";
+                    muxSelect += "<option " + muxSelected + ">" + option + ": " + pinFunction + "</option>";
                 }
                 muxSelect += "</select>\n";
-
                 $("#" + pinname + "_name").html(muxSelect);
                 //console.log(pinname + ": " + pinMode);
             }
         });
+        
+        //setup handler for receiving the strict with all the expansion pins from the server
+        socket.on('init', function (data) {
+            bone = data.platform;
+            for(var pinname in bone) {
+                $("#" + pinname + "_name").html(bone[pinname].name);
+                if(bone[pinname].mux) {
+                    socket.emit('getPinMode', {"pin":bone[pinname]});
+                }
+            }
+        });
+        
+        // Ask for the initialization data
+        socket.emit('init','');
 
         $("#i2c1").hover(
             function () {

@@ -47,6 +47,92 @@ MSBFIRST = 0;
 
 var gpio = [];
 
+getPinMode = exports.getPinMode = function(pin, callback) {
+    var muxFile = '/sys/kernel/debug/omap_mux/' + pin.mux;
+    console.log('getPinMode(' + pin.key + '): ' + muxFile);
+    var parseMux = function(readout) {
+        var mode = {};
+        // The format read from debugfs looks like this:
+        // name: mcasp0_axr0.spi1_d1 (0x44e10998/0x998 = 0x0023), b NA, t NA
+        // mode: OMAP_PIN_OUTPUT | OMAP_MUX_MODE3
+        // signals: mcasp0_axr0 | ehrpwm0_tripzone | NA | spi1_d1 | mmc2_sdcd_mux1 | NA | NA | gpio3_16
+        var breakdown = '';
+        try {
+            breakdown = readout.split('\n');
+        } catch(ex) {
+            console.log('Unable to parse mux readout "' + readout + '": ' + ex);
+            return(mode);
+        }
+        try {        
+            // Parse the muxmode number, '3' in the above example
+            mode.mux = breakdown[1].split('|')[1].substr(-1);
+            // Parse the mux register value, ' 0x0023' in the above example
+            var pinData = parseInt(breakdown[0].split('=')[1].substr(7));
+            mode.slew = (pinData & 0x40) ? 'slow' : 'fast';
+            mode.rx = (pinData & 0x20) ? 'enabled' : 'disabled';
+            var pullup = (pinData & 0x18) >> 3;
+            switch(pullup) {
+            case 1:
+                mode.pullup = 'disabled';
+                break;
+            case 2:
+                mode.pullup = 'pullup';
+                break;
+            case 0:
+                mode.pullup = 'pulldown';
+                break;
+            case 3:
+            default:
+                console.error('Unknown pullup value: '+pullup);
+            }
+        } catch(ex2) {
+            console.log('Unable to parse mux mode "' + breakdown + '": ' + ex2);
+        }
+        try {
+            mode.options = breakdown[2].split('|');
+            for(var option in mode.options) {
+                var x = ''+mode.options[option];
+                try {
+                    mode.options[option] = x.replace(/ /g, '').replace('signals:', '');
+                } catch(ex) {
+                    console.log('Unable to parse option "' + x + '": ' + ex);
+                    mode.options[option] = 'NA';
+                }
+            }
+        } catch(ex3) {
+            console.log('Unable to parse options "' + breakdown + '": ' + ex3);
+            mode.options = null;
+        }
+        return(mode);
+    };
+    var readMux = function(err, data) {
+        var mode = parseMux(data);
+        mode.pin = pin.key;
+        callback(mode);
+    };
+    if(callback) {
+        path.exists(muxFile, function(exists) {
+            if(exists) {
+                fs.readFile(muxFile, 'utf8', readMux);
+            } else {
+                // default mux
+                callback({'pin': pin.key});
+                console.log('getPinMode(' + pin.key + '): no valid mux data');
+            }
+        });
+    } else {
+        try {
+            var data = fs.readFileSync(muxFile, 'utf8');
+            var mode = parseMux(data);
+            mode.pin = pin.key;
+            return(mode);
+        } catch(ex) {
+            console.log('getPinMode(' + pin.key + '): ' + ex);
+            return({'pin': pin.key});
+        }
+    }
+};
+
 pinMode = exports.pinMode = function(pin, direction, pullup, slew, mux, callback)
 {
     var n = pin.gpio;
@@ -63,7 +149,7 @@ pinMode = exports.pinMode = function(pin, direction, pullup, slew, mux, callback
                 var muxfile = fs.openSync(
                     "/sys/kernel/debug/omap_mux/" + pin.mux, "w"
                 );
-                if(mode == OUTPUT)  fs.writeSync(muxfile, "7", null);
+                if(direction == OUTPUT) fs.writeSync(muxfile, "7", null);
                     else fs.writeSync(muxfile, "27", null);
             } catch(ex3) {  
                 console.log("pinMode assignment error: " + ex3);
@@ -125,61 +211,21 @@ pinMode = exports.pinMode = function(pin, direction, pullup, slew, mux, callback
         }
     }
 };
-if(socket) socket.on('pinMode', function(m) {
-    var callback = function(resp) {
-        socket.emit('pinMode', resp);
-    };
-    try {
-        pinMode(m.pin, m.direction, m.pullup, m.slew, m.mux, callback);
-    } catch(ex) {
-        console.log('Error handing pinMode message: ' + ex);
-    }
-});
 
 digitalWrite = exports.digitalWrite = function(pin, value, callback)
 {
     fs.writeFileSync(gpio[pin.gpio].path, "" + value, null);
 };
-if(socket) socket.on('digitalWrite', function(m) {
-    var callback = function(resp) {
-        socket.emit('digitalWrite', resp);
-    };
-    try {
-        digitalWrite(m.pin, m.value, callback);
-    } catch(ex) {
-        console.log('Error handing digitalWrite message: ' + ex);
-    }
-});
 
 digitalRead = exports.digitalRead = function(pin, callback)
 {
     return fs.readFileSync(gpio[pin.gpio].path, null);
 };
-if(socket) socket.on('digitalRead', function(m) {
-    var callback = function(resp) {
-        socket.emit('digitalRead', resp);
-    };
-    try {
-        digitalRead(m.pin, callback);
-    } catch(ex) {
-        console.log('Error handing digitalRead message: ' + ex);
-    }
-});
 
 analogRead = exports.analogRead = function(pin, callback)
 {
     return fs.readFileSync("/sys/bus/platform/devices/tsc/ain" + (pin+1), null);
 }; 
-if(socket) socket.on('analogRead', function(m) {
-    var callback = function(resp) {
-        socket.emit('analogRead', resp);
-    };
-    try {
-        analogRead(m.pin, callback);
-    } catch(ex) {
-        console.log('Error handing analogRead message: ' + ex);
-    }
-});
 
 shiftOut = exports.shiftOut = function(dataPin, clockPin, bitOrder, val, callback)
 {
@@ -200,16 +246,6 @@ shiftOut = exports.shiftOut = function(dataPin, clockPin, bitOrder, val, callbac
     digitalWrite(clockPin, LOW);            
   }
 };
-if(socket) socket.on('shiftOut', function(m) {
-    var callback = function(resp) {
-        socket.emit('shiftOut', resp);
-    };
-    try {
-        shiftOut(m.dataPin, m.clockPin, m.bitOrder, m.val, callback);
-    } catch(ex) {
-        console.log('Error handing shiftOut message: ' + ex);
-    }
-});
 
 // Wait for some time
 if(fibers.exists) {
@@ -381,6 +417,7 @@ var addSocketListeners = function() {};
 if(socket.exists) {
     addSocketListeners = function(server, onconnect) {
         var io = socket.listen(server);
+        console.log('Listening for new socket.io clients');
         io.sockets.on('connection', function(socket) {
             var sessionId = socket.sessionId;
             console.log('Client connected: ' + sessionId);
@@ -394,39 +431,34 @@ if(socket.exists) {
             socket.on('disconnect', function() {
                 console.log("Client disconnected:" + sessionId);
             });
-        
-            // send expansion pin info
-            socket.emit('muxstruct', bone);
 
             // send eeprom info
-            var EepromFiles = {
-                '/sys/bus/i2c/drivers/at24/1-0050/eeprom': { type: 'bone' },
-                '/sys/bus/i2c/drivers/at24/3-0054/eeprom': { type: 'cape' },
-                '/sys/bus/i2c/drivers/at24/3-0055/eeprom': { type: 'cape' },
-                '/sys/bus/i2c/drivers/at24/3-0056/eeprom': { type: 'cape' },
-                '/sys/bus/i2c/drivers/at24/3-0057/eeprom': { type: 'cape' },
-            };
-            var eeproms = eeprom.readEeproms(EepromFiles);
-            if(eeproms == {}) {
-                console.warn('No valid EEPROM contents found');
-            } else {
-                socket.emit('eeproms', eeproms);
-            }
+            socket.on('eeproms', function() {
+                var EepromFiles = {
+                    '/sys/bus/i2c/drivers/at24/1-0050/eeprom': { type: 'bone' },
+                    '/sys/bus/i2c/drivers/at24/3-0054/eeprom': { type: 'cape' },
+                    '/sys/bus/i2c/drivers/at24/3-0055/eeprom': { type: 'cape' },
+                    '/sys/bus/i2c/drivers/at24/3-0056/eeprom': { type: 'cape' },
+                    '/sys/bus/i2c/drivers/at24/3-0057/eeprom': { type: 'cape' },
+                };
+                var eeproms = eeprom.readEeproms(EepromFiles);
+                if(eeproms == {}) {
+                    console.warn('No valid EEPROM contents found');
+                } else {
+                    socket.emit('eeproms', eeproms);
+                }
+            });
         
             // listen for requests and reads the debugfs entry async
-            socket.on('listmux', function(pinname) {
-                console.log(pinname + ": " + bone[pinname].mux);
-                path.exists("/sys/kernel/debug/omap_mux/" + bone[pinname].mux, function(exists) {
-                    if(exists) {
-                        fs.readFile("/sys/kernel/debug/omap_mux/" + bone[pinname].mux, 'utf8', function (err, data) {
-                            socket.emit('listmux', {'pinname': pinname, 'readout': data});
-                        });
-                    } else {
-                        // default mux
-                        console.log(bone[pinname].mux + ": default mux");
-                        socket.emit('listmux', {'pinname': pinname, 'readout': '0'});
-                    }
-                });
+            socket.on('getPinMode', function(m) {
+                var callback = function(resp) {
+                    socket.emit('getPinMode', resp);
+                };
+                try {
+                    getPinMode(m.pin, callback);
+                } catch(ex) {
+                    console.log('Error handing getPinMode message: ' + ex);
+                }
             });
 
             // listen for shell commands
@@ -436,12 +468,73 @@ if(socket.exists) {
                 myshell(shellMsg);
             });
 
+            socket.on('pinMode', function(m) {
+                var callback = function(resp) {
+                    socket.emit('pinMode', resp);
+                };
+                try {
+                    pinMode(m.pin, m.direction, m.pullup, m.slew, m.mux, callback);
+                } catch(ex) {
+                    console.log('Error handing pinMode message: ' + ex);
+                }
+            });
+
+            socket.on('digitalWrite', function(m) {
+                var callback = function(resp) {
+                    socket.emit('digitalWrite', resp);
+                };
+                try {
+                    digitalWrite(m.pin, m.value, callback);
+                } catch(ex) {
+                    console.log('Error handing digitalWrite message: ' + ex);
+                }
+            });
+            
+            socket.on('digitalRead', function(m) {
+                var callback = function(resp) {
+                    socket.emit('digitalRead', resp);
+                };
+                try {
+                    digitalRead(m.pin, callback);
+                } catch(ex) {
+                    console.log('Error handing digitalRead message: ' + ex);
+                }
+            });
+
+            socket.on('analogRead', function(m) {
+                var callback = function(resp) {
+                    socket.emit('analogRead', resp);
+                };
+                try {
+                    analogRead(m.pin, callback);
+                } catch(ex) {
+                    console.log('Error handing analogRead message: ' + ex);
+                }
+            });
+            
+            socket.on('shiftOut', function(m) {
+                var callback = function(resp) {
+                    socket.emit('shiftOut', resp);
+                };
+                try {
+                    shiftOut(m.dataPin, m.clockPin, m.bitOrder, m.val, callback);
+                } catch(ex) {
+                    console.log('Error handing shiftOut message: ' + ex);
+                }
+            });
+            
+            socket.on('echo', function(data) {
+                socket.emit('echo', data);
+            });
+
+            // provide client basic platform information
+            socket.on('init', function() {
+                socket.emit('init', { 'platform': bone });
+            });
+
             // call user-provided on-connect function
             if(typeof onconnect == 'function')
                 onconnect(socket);
-
-            // provide client basic platform information
-            socket.emit('init', { 'platform': bone });
         });
     };
 }

@@ -3,7 +3,7 @@ var gpio1 = gpio0+32;
 var gpio2 = gpio1+32;
 var gpio3 = gpio2+32;
 
-exports.bone =
+var bone =
 {
     P8_1: { name: "DGND" },
     P8_2: { name: "DGND" },
@@ -102,3 +102,9 @@ exports.bone =
     USR2: { name: "USR2", gpio: gpio1+23, led: "usr2", mux: "gpmc_a7" },
     USR3: { name: "USR3", gpio: gpio1+24, led: "usr3", mux: "gpmc_a8" }
 };
+
+for(var x in bone) {
+    bone[x].key = x;
+}
+
+exports.bone = bone;
