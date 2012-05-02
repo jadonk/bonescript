@@ -26,7 +26,7 @@ var myrequire = function(packageName, onfail) {
     return(y);
 };
 
-var socket = myrequire('socket.io', function() {
+var socketio = myrequire('socket.io', function() {
     console.log("Dynamic web features not enabled");
 });
 
@@ -135,96 +135,124 @@ getPinMode = exports.getPinMode = function(pin, callback) {
 
 pinMode = exports.pinMode = function(pin, direction, pullup, slew, mux, callback)
 {
-    var n = pin.gpio;
-    
     pullup = pullup || 'disabled';
     slew = slew || 'fast';
     mux = mux || 7; // default to GPIO mode
     
-    if(!gpio[n] || !gpio[n].path) {
-        gpio[n] = {};
-        
-        if(pin.mux) {
-            try {
-                var muxfile = fs.openSync(
-                    "/sys/kernel/debug/omap_mux/" + pin.mux, "w"
-                );
-                if(direction == OUTPUT) fs.writeSync(muxfile, "7", null);
-                    else fs.writeSync(muxfile, "27", null);
-            } catch(ex3) {  
-                console.log("pinMode assignment error: " + ex3);
-                console.log("Unable to configure pinmux for: " + pin.name +
-                    " (" + pin.mux + ")");
-                console.log("Trying: mount -t debugfs none /sys/kernel/debug");
-                //var state = 
-                //    fs.readFileSync("/sys/kernel/debug/omap_mux/" + pin.mux);
-                //console.log("pinmux state: ");
-                //console.log("" + state);
-                
-                // Configure the pinmux later once mount has run
-                var mountProc = child_process.exec(
-                    "mount -t debugfs none /sys/kernel/debug",
-                    function(error, stderr, stdout) {
-                        if(error) throw("pinMode assignment error: " + error);
-                    }
-                );
-                mountProc.on('exit', function() {
-                    pinMode(pin, direction, pullup, slew, mux, callback);
-                });
-            }
+    if(!pin.mux) {
+        console.log('Invalid pin object for pinMode: ' + pin);
+        throw('Invalid pin object for pinMode: ' + pin);
+    }
+
+    var muxFile = '/sys/kernel/debug/omap_mux/' + pin.mux;
+    var gpioFile = '/sys/class/gpio/gpio' + pin.gpio + '/value';
+    
+    // Handle case where pin is allocated as a gpio-led
+    if(pin.led) {
+        if((direction != OUTPUT) || (mux != 7)) {                    
+            console.log('pinMode only supports GPIO output for LEDs: ' + pin);
+            if(callback) callback(false);
+            return(false);
         }
-        
-        // Export the GPIO controls
-        try {
-              var exists = path.existsSync("/sys/class/gpio/gpio" + n);
-              if(exists) {
-                      console.log("gpio: " + n + " already exported.");
-                  } else {
-                      try {
-                          fs.writeFileSync("/sys/class/gpio/export", "" + n,null);
-                      } catch(ex2) {
-                          console.log(ex2);
-                          console.log("Unable to export gpio: " + n);
-                      }
-                  }
-            fs.writeFileSync("/sys/class/gpio/gpio" + n + "/direction",
-                mode);
-            gpio[n].path = "/sys/class/gpio/gpio" + n + "/value";
-            return(true);
-        } catch(ex) {
-            // Perhaps we couldn't open it because it was allocated as an LED
+        gpioFile = '/sys/class/leds/beaglebone::' + pin.led + '/brightness';
+    }
+
+    // Figure out the desired value
+    var pinData = 0;
+    if(slew == 'slow') pinData |= 0x40;
+    if(direction != OUTPUT) pinData |= 0x20;
+    switch(pullup) {
+    case 'disabled':
+        pinData |= 0x08;
+        break;
+    case 'pullup':
+        pinData |= 0x10;
+        break;
+    default:
+        break;
+    }
+    pinData |= (mux & 0x07);
+    
+    try {
+        var fd = fs.openSync(muxFile, 'w');
+        fs.writeSync(fd, pinData.toString(16), null);
+    } catch(ex) {
+        console.error('Unable to configure mux for pin ' + pin + ': ' + ex);
+        gpio[n] = {};
+        if(callback) callback(false);
+        return(false);
+    }
+
+    // Enable GPIO, if not already done
+    var n = pin.gpio;
+    if(mux == 7) {
+        if(!gpio[n] || !gpio[n].path) {
+            gpio[n] = {'path': gpioFile};
+    
             if(pin.led) {
                 fs.writeFileSync(
                     "/sys/class/leds/beaglebone::" + pin.led + "/trigger",
                     "gpio");
-                if(mode == OUTPUT) {                    
-                    gpio[n].path =
-                        "/sys/class/leds/beaglebone::" + pin.led +
-                        "/brightness";
+            } else {    
+                // Export the GPIO controls
+                var exists = path.existsSync(gpioFile);
+                if(exists) {
+                    console.log("gpio: " + n + " already exported.");
                 } else {
-                    gpio[n].path =
-                        "/sys/class/leds/beaglebone::" + pin.led +
-                        "/gpio";
+                    try {
+                        fs.writeFileSync("/sys/class/gpio/export", "" + n, null);
+                        fs.writeFileSync("/sys/class/gpio/gpio" + n + "/direction",
+                            direction, null);
+                    } catch(ex) {
+                        console.error('Unable to export gpio ' + n + ': ' + ex);
+                        gpio[n] = {};
+                        if(callback) callback(false);
+                        return(false);
+                    }
                 }
-                return(true);
             }
         }
+    } else {
+        gpio[n] = {};
     }
+    
+    if(callback) callback(true);
+    return(true);
 };
 
 digitalWrite = exports.digitalWrite = function(pin, value, callback)
 {
-    fs.writeFileSync(gpio[pin.gpio].path, "" + value, null);
+    if(callback) {
+        fs.writeFile(gpio[pin.gpio].path, '' + value, null, callback);
+    } else {
+        fs.writeFileSync(gpio[pin.gpio].path, '' + value, null);
+    }
+    return(true);
 };
 
 digitalRead = exports.digitalRead = function(pin, callback)
 {
-    return fs.readFileSync(gpio[pin.gpio].path, null);
+    if(callback) {
+        var readFile = function(err, data) {
+            callback({'value':data});
+        };
+        fs.readFile(gpio[pin.gpio].path, null, readFile);
+        return(true);
+    }
+    return(fs.readFileSync(gpio[pin.gpio].path, null));
 };
 
 analogRead = exports.analogRead = function(pin, callback)
 {
-    return fs.readFileSync("/sys/bus/platform/devices/tsc/ain" + (pin+1), null);
+    var ainFile = '/sys/bus/platform/devices/tsc/ain' + (pin.ain+1);
+    if(callback) {
+        var readFile = function(err, data) {
+            callback({'value':data});
+        };
+        fs.readFile(ainFile, null, readFile);
+        return(true);
+    }
+    return(fs.readFileSync(ainFile, null));
 }; 
 
 shiftOut = exports.shiftOut = function(dataPin, clockPin, bitOrder, val, callback)
@@ -414,9 +442,9 @@ var spawn = function(socket) {
 };
 
 var addSocketListeners = function() {};
-if(socket.exists) {
+if(socketio.exists) {
     addSocketListeners = function(server, onconnect) {
-        var io = socket.listen(server);
+        var io = socketio.listen(server);
         console.log('Listening for new socket.io clients');
         io.sockets.on('connection', function(socket) {
             var sessionId = socket.sessionId;
