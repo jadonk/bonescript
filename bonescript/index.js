@@ -236,10 +236,10 @@ digitalRead = exports.digitalRead = function(pin, callback)
         var readFile = function(err, data) {
             callback({'value':data});
         };
-        fs.readFile(gpio[pin.gpio].path, null, readFile);
+        fs.readFile(gpio[pin.gpio].path, readFile);
         return(true);
     }
-    return(fs.readFileSync(gpio[pin.gpio].path, null));
+    return(fs.readFileSync(gpio[pin.gpio].path));
 };
 
 analogRead = exports.analogRead = function(pin, callback)
@@ -249,10 +249,10 @@ analogRead = exports.analogRead = function(pin, callback)
         var readFile = function(err, data) {
             callback({'value':data});
         };
-        fs.readFile(ainFile, null, readFile);
+        fs.readFile(ainFile, readFile);
         return(true);
     }
-    return(fs.readFileSync(ainFile, null));
+    return(fs.readFileSync(ainFile));
 }; 
 
 shiftOut = exports.shiftOut = function(dataPin, clockPin, bitOrder, val, callback)
