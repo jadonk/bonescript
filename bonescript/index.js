@@ -8,6 +8,7 @@ var url = require('url');
 var path = require('path');
 var events = require('events');
 var eeprom = require('./eeprom');
+var misc = require('./misc');
 bone = require('./bone').bone;
 
 var myrequire = function(packageName, onfail) {
@@ -44,6 +45,9 @@ HIGH = exports.HIGH = 1;
 LOW = exports.LOW = 0;
 LSBFIRST = 1;  // used in: shiftOut(dataPin, clockPin, bitOrder, val)
 MSBFIRST = 0;
+CHANGE = exports.CHANGE = "both";
+RISING = exports.RISING = "rising";
+FALLING = exports.FALLING = "falling";
 
 var gpio = [];
 
@@ -51,6 +55,7 @@ getPinMode = exports.getPinMode = function(pin, callback) {
     var muxFile = '/sys/kernel/debug/omap_mux/' + pin.mux;
     console.log('getPinMode(' + pin.key + '): ' + muxFile);
     var parseMux = function(readout) {
+        //console.log('' + readout);
         var mode = {};
         // The format read from debugfs looks like this:
         // name: mcasp0_axr0.spi1_d1 (0x44e10998/0x998 = 0x0023), b NA, t NA
@@ -66,8 +71,9 @@ getPinMode = exports.getPinMode = function(pin, callback) {
         try {        
             // Parse the muxmode number, '3' in the above example
             mode.mux = breakdown[1].split('|')[1].substr(-1);
-            // Parse the mux register value, ' 0x0023' in the above example
-            var pinData = parseInt(breakdown[0].split('=')[1].substr(7));
+            // Parse the mux register value, '0x0023' in the above example
+            var pinData = parseInt(breakdown[0].split('=')[1].substr(1,6));
+            //console.log('pinData = ' + pinData);
             mode.slew = (pinData & 0x40) ? 'slow' : 'fast';
             mode.rx = (pinData & 0x20) ? 'enabled' : 'disabled';
             var pullup = (pinData & 0x18) >> 3;
@@ -273,6 +279,11 @@ shiftOut = exports.shiftOut = function(dataPin, clockPin, bitOrder, val, callbac
     digitalWrite(clockPin, HIGH);
     digitalWrite(clockPin, LOW);            
   }
+};
+
+attachInterrupt = exports.attachInterrupt = function(pin, handler, mode) {
+    var gpioFile = '/sys/class/gpio/gpio' + pin.gpio + '/value';
+    fs.watchFile(gpioFile, handler);
 };
 
 // Wait for some time
