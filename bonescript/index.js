@@ -283,7 +283,14 @@ shiftOut = exports.shiftOut = function(dataPin, clockPin, bitOrder, val, callbac
 
 attachInterrupt = exports.attachInterrupt = function(pin, handler, mode) {
     var gpioFile = '/sys/class/gpio/gpio' + pin.gpio + '/value';
-    fs.watchFile(gpioFile, handler);
+    var gpioPoll = new misc.Pollpri(gpioFile);
+    gpio[pin.gpio].handler = handler;
+    var gpioHandler = function(err, data) {
+        gpioPoll.pollpri(gpioHandler);
+        var value = digitalRead(pin);
+        handler(pin, value);
+    };
+    gpioPoll.pollpri(gpioHandler);
 };
 
 // Wait for some time

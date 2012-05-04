@@ -3,8 +3,8 @@ var bb = require('./bonescript');
 var outputPin = bone.P8_3;
 var inputPin = bone.P8_5;
 
-var handler = function(data) {
-    console.log('inputPin changed: ' + data);
+var handler = function(pin, value) {
+    console.log('inputPin ' + pin.key + ' changed to: ' + value);
 };
 
 setup = function() {
