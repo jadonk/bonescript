@@ -9,6 +9,8 @@
 #include <stdio.h>
 #include <errno.h>
 
+#define PRINTF
+
 using namespace std;
 using namespace node;
 using namespace v8;
@@ -51,7 +53,7 @@ public:
     }
     
     static Handle<Value> New(const Arguments &args) {
-        printf("Entered New\n");
+        PRINTF("Entered New\n");
         HandleScope scope;
         const char *usage = "usage: new Pollpri(path)";
         if(args.Length() != 1) {
@@ -62,12 +64,12 @@ public:
         p->Wrap(args.This());
         p->path = (char *)malloc(path.length() + 1);
         strncpy(p->path, *path, path.length() + 1);
-        printf("Leaving New\n");
+        PRINTF("Leaving New\n");
         return(args.This());
     }
 
     static Handle<Value> pollpri(const Arguments& args) {
-        printf("Entered pollpri\n");
+        PRINTF("Entered pollpri\n");
         HandleScope scope;
         const char *usage = "usage: pollpri(cb)";
         if(args.Length() != 1) {
@@ -84,12 +86,12 @@ public:
         
         eio_custom(pollpri_thread, EIO_PRI_DEFAULT, pollpri_after, pr);
         ev_ref(EV_DEFAULT_UC);
-        printf("Leaving pollpri\n");
+        PRINTF("Leaving pollpri\n");
         return(Undefined());
     }
     
     static int pollpri_thread(eio_req *req) {
-        printf("Entered pollpri_thread\n");
+        PRINTF("Entered pollpri_thread\n");
         struct pollpri_request * pr = (struct pollpri_request *)req->data;
         Pollpri *p = pr->p;
         int epfd = p->epfd;
@@ -97,17 +99,17 @@ public:
         if(!fd) {
             fd = open(p->path, O_RDWR | O_NONBLOCK);
             pr->p->fd = fd;
-            printf("open(%s) returned %d: %s\n", p->path, fd, strerror(errno));
+            PRINTF("open(%s) returned %d: %s\n", p->path, fd, strerror(errno));
         }
         if(!epfd) {
             epfd = epoll_create(1);
             pr->p->epfd = epfd;
-            printf("epoll_create(1) returned %d: %s\n", epfd, strerror(errno));
+            PRINTF("epoll_create(1) returned %d: %s\n", epfd, strerror(errno));
             struct epoll_event ev;
             ev.events = EPOLLPRI;
             ev.data.fd = fd;
             int n = epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &ev);
-            printf("epoll_ctl(%d) returned %d (%d): %s\n", fd, n, epfd, strerror(errno));
+            PRINTF("epoll_ctl(%d) returned %d (%d): %s\n", fd, n, epfd, strerror(errno));
         }
         //ev_io pollpri_watcher;
         //ev_init(&pollpri_watcher, pollpri_event);
@@ -115,18 +117,33 @@ public:
         //ev_io_set(&pollpri_watcher, epfd, EV_READ | EV_WRITE);
         //ev_io_start(EV_DEFAULT_ &pollpri_watcher);
         struct epoll_event events;
-        printf("Calling epoll_wait\n");
-        sleep(1);
-        int m = epoll_wait(epfd, &events, 1, -1);
-        printf("epoll_wait(%d) returned %d: %s\n", epfd, m, strerror(errno));
+        int m = 0;
+        while(m <= 0) {
+            PRINTF("Calling epoll_wait\n");
+            m = epoll_wait(epfd, &events, 1, -1);
+            PRINTF("epoll_wait(%d) returned %d: %s\n", epfd, m, strerror(errno));
+            //struct pollfd pfd;
+            //pfd.fd = fd;
+            //pfd.events = POLLPRI;
+            //m = poll(&fdset, 1, -1)
+            if(m > 0) {
+                char buf;
+                int q;
+                q = lseek(fd, 0, SEEK_SET);
+                PRINTF("seek %d bytes: %s\n", q, strerror(errno));
+                q = read(fd, &buf, 1);
+                PRINTF("read %d bytes: %s\n", q, strerror(errno));
+                PRINTF("buf = 0x%x\n", buf);
+            }
+        }
         //close(epfd);
         //close(fd);
-        printf("Leaving pollpri_thread\n");
+        PRINTF("Leaving pollpri_thread\n");
         return(0);
     }
     
     static int pollpri_after(eio_req *req) {
-        printf("Entered pollpri_after\n");
+        PRINTF("Entered pollpri_after\n");
         HandleScope scope;
         ev_unref(EV_DEFAULT_UC);
         struct pollpri_request * pr = (struct pollpri_request *)req->data;
@@ -138,7 +155,7 @@ public:
         //close(pr->p->epfd);
         //close(pr->p->fd);
         free(pr);
-        printf("Leaving pollpri_after\n");
+        PRINTF("Leaving pollpri_after\n");
         return(0);
     }
     
