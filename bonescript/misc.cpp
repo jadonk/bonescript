@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <errno.h>
 
-#define PRINTF
+#define PRINTF printf
 
 using namespace std;
 using namespace node;
@@ -96,6 +96,7 @@ public:
         Pollpri *p = pr->p;
         int epfd = p->epfd;
         int fd = p->fd;
+        char buf = 0;
         if(!fd) {
             fd = open(p->path, O_RDWR | O_NONBLOCK);
             pr->p->fd = fd;
@@ -118,24 +119,17 @@ public:
         //ev_io_start(EV_DEFAULT_ &pollpri_watcher);
         struct epoll_event events;
         int m = 0;
-        while(m <= 0) {
-            PRINTF("Calling epoll_wait\n");
-            m = epoll_wait(epfd, &events, 1, -1);
-            PRINTF("epoll_wait(%d) returned %d: %s\n", epfd, m, strerror(errno));
-            //struct pollfd pfd;
-            //pfd.fd = fd;
-            //pfd.events = POLLPRI;
-            //m = poll(&fdset, 1, -1)
-            if(m > 0) {
-                char buf;
-                int q;
-                q = lseek(fd, 0, SEEK_SET);
-                PRINTF("seek %d bytes: %s\n", q, strerror(errno));
-                q = read(fd, &buf, 1);
-                PRINTF("read %d bytes: %s\n", q, strerror(errno));
-                PRINTF("buf = 0x%x\n", buf);
-            }
-        }
+        m = lseek(fd, 0, SEEK_SET);
+        PRINTF("seek %d bytes: %s\n", m, strerror(errno));
+        m = read(fd, &buf, 1);
+        PRINTF("read %d bytes (0x%x): %s\n", m, buf, strerror(errno));
+        PRINTF("Calling epoll_wait\n");
+        m = epoll_wait(epfd, &events, 1, -1);
+        PRINTF("epoll_wait(%d) returned %d: %s\n", epfd, m, strerror(errno));
+        //struct pollfd pfd;
+        //pfd.fd = fd;
+        //pfd.events = POLLPRI;
+        //m = poll(&fdset, 1, -1)
         //close(epfd);
         //close(fd);
         PRINTF("Leaving pollpri_thread\n");
