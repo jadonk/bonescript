@@ -303,11 +303,6 @@ attachInterrupt = exports.attachInterrupt = function(pin, handler, mode) {
         handler(pin, value);
     };
     gpioPoll.on('ping', gpioHandler);
-    var gpioPing = function() {
-        gpioPoll.ping();
-        gpioPoll.pollpri(gpioPing);
-    };
-    gpioPoll.pollpri(gpioPing);
 };
 
 // Wait for some time

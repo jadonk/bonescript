@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <errno.h>
 
-#define PRINTF printf
+#define PRINTF
 
 using namespace std;
 using namespace node;
@@ -206,7 +206,6 @@ public:
             PRINTF("EV_WRITE\n");
         }
         
-#if 0
         int m = 0;
         char buf[64];
         m = lseek(p->fd, 0, SEEK_SET);
@@ -214,8 +213,6 @@ public:
         m = read(p->fd, &buf, 63);
         buf[m] = 0;
         PRINTF("read(%d) %d bytes (%s): %s\n", p->fd, m, buf, strerror(errno));
-#endif
-        char * buf = "0\n";
 
         Local<Value> emit_v = handle_->Get(String::NewSymbol("emit"));
         assert(emit_v->IsFunction());
