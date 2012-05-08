@@ -8,7 +8,6 @@ var url = require('url');
 var path = require('path');
 var events = require('events');
 var eeprom = require('./eeprom');
-var misc = require('./misc');
 bone = require('./bone').bone;
 
 var myrequire = function(packageName, onfail) {
@@ -38,6 +37,21 @@ var fibers = myrequire('fibers', function() {
     console.log("Delay operations loops will consume CPU cycles");
     console.log("Invoke using 'node-fibers' if node version < 0.5.2");
 });
+
+var misc = myrequire('./misc', function () {
+    console.log("Miscellaneous C++ functions not built");
+    console.log("If desired, try building them with:");
+    console.log("  cd bonescript");
+    console.log("  node-waf configure build");
+    throw("./misc is currently required");
+});
+
+if(misc.exists) {
+    // Pollpri inherits from EventEmitter
+    for(var x in events.EventEmitter.prototype) {
+        misc.Pollpri.prototype[x] = events.EventEmitter.prototype[x];
+    }
+}
 
 OUTPUT = exports.OUTPUT = "out";
 INPUT = exports.INPUT = "in";
@@ -285,12 +299,15 @@ attachInterrupt = exports.attachInterrupt = function(pin, handler, mode) {
     var gpioFile = '/sys/class/gpio/gpio' + pin.gpio + '/value';
     var gpioPoll = new misc.Pollpri(gpioFile);
     gpio[pin.gpio].handler = handler;
-    var gpioHandler = function(err, data) {
-        gpioPoll.pollpri(gpioHandler);
-        var value = digitalRead(pin);
+    var gpioHandler = function(value) {
         handler(pin, value);
     };
-    gpioPoll.pollpri(gpioHandler);
+    gpioPoll.on('ping', gpioHandler);
+    var gpioPing = function() {
+        gpioPoll.ping();
+        gpioPoll.pollpri(gpioPing);
+    };
+    gpioPoll.pollpri(gpioPing);
 };
 
 // Wait for some time

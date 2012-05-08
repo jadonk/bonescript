@@ -15,8 +15,17 @@ using namespace std;
 using namespace node;
 using namespace v8;
 
-extern "C" void pollpri_event(ev_io* req, int revents);
+
 extern "C" void init(Handle<Object>);
+static void pollpri_event(EV_P_ ev_io * req, int revents);
+
+static void pollpri_prepare_cb(EV_P_ ev_prepare * w, int revents) {
+
+}
+
+#define QUOTE(name, ...) #name
+#define STR(macro) QUOTE(macro)
+#define TEST_EV_DEFAULT_NAME STR(EV_DEFAULT_)
 
 class Pollpri: ObjectWrap {
 private:
@@ -31,6 +40,7 @@ public:
     static Persistent<FunctionTemplate> ct;
     
     static void Init(Handle<Object> target) {
+        PRINTF("Entering Init\n");
         HandleScope scope;
         Local<FunctionTemplate> t = FunctionTemplate::New(New);
         ct = Persistent<FunctionTemplate>::New(t);
@@ -38,25 +48,36 @@ public:
         ct->SetClassName(String::NewSymbol("Pollpri"));
     
         NODE_SET_PROTOTYPE_METHOD(ct, "pollpri", pollpri);
+        NODE_SET_PROTOTYPE_METHOD(ct, "ping", ping);
         
         target->Set(String::NewSymbol("Pollpri"), ct->GetFunction());
+
+        PRINTF("EV_DEFAULT_ = %s\n", TEST_EV_DEFAULT_NAME);
+        PRINTF("Leaving Init\n");
+    }
+    
+    Handle<Value> Emit(const Arguments& args) {
+        HandleScope scope;
+        
     }
 
     Pollpri() {
+        PRINTF("Entering Pollpri constructor\n");
         epfd = 0;
         fd = 0;
     }
     
     ~Pollpri() {
+        PRINTF("Entering Pollpri destructor\n");
         if(epfd) close(epfd);
         if(fd) close(fd);
     }
     
-    static Handle<Value> New(const Arguments &args) {
+    static Handle<Value> New(const Arguments& args) {
         PRINTF("Entered New\n");
         HandleScope scope;
         const char *usage = "usage: new Pollpri(path)";
-        if(args.Length() != 1) {
+        if(!args.IsConstructCall() || args.Length() != 1) {
             return ThrowException(Exception::Error(String::New(usage)));
         }
         String::Utf8Value path(args[0]);
@@ -64,6 +85,35 @@ public:
         p->Wrap(args.This());
         p->path = (char *)malloc(path.length() + 1);
         strncpy(p->path, *path, path.length() + 1);
+        
+        // Open file to watch
+        int fd = open(p->path, O_RDWR | O_NONBLOCK);
+        PRINTF("open(%s) returned %d: %s\n", p->path, fd, strerror(errno));
+        
+        // Create epoll event
+        int epfd = epoll_create(1);
+        PRINTF("epoll_create(1) returned %d: %s\n", epfd, strerror(errno));
+        struct epoll_event ev;
+        ev.events = EPOLLPRI;
+        ev.data.fd = fd;
+        int n = epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &ev);
+        PRINTF("epoll_ctl(%d) returned %d (%d): %s\n", fd, n, epfd, strerror(errno));
+        
+        // Setup event watcher
+        struct ev_io * pollpri_watcher = 
+            (struct ev_io *)malloc(sizeof(struct ev_io));
+        ev_init(pollpri_watcher, pollpri_event);
+        pollpri_watcher->data = p;
+        ev_io_set(pollpri_watcher, epfd, EV_READ | EV_WRITE);
+        ev_io_start(EV_DEFAULT_ pollpri_watcher);
+        //struct ev_prepare * pollpri_prepare = 
+        //    (struct ev_prepare *)malloc(sizeof(struct ev_prepare));
+        //ev_prepare_init(pollpri_prepare, pollpri_prepare_cb);
+        //ev_prepare_start(EV_DEFAULT_UC_ pollpri_prepare);
+        
+        p->epfd = epfd;
+        p->fd = fd;        
+        
         PRINTF("Leaving New\n");
         return(args.This());
     }
@@ -77,66 +127,56 @@ public:
         }
         Local<Function> cb = Local<Function>::Cast(args[0]);
         
-        pollpri_request* pr = 
-            (pollpri_request *)malloc(sizeof(struct pollpri_request));
+        struct pollpri_request * pr = 
+            (struct pollpri_request *)malloc(sizeof(struct pollpri_request));
         Pollpri* p = ObjectWrap::Unwrap<Pollpri>(args.This());
         
         pr->p = p;
         pr->cb = Persistent<Function>::New(cb);
         
-        eio_custom(pollpri_thread, EIO_PRI_DEFAULT, pollpri_after, pr);
-        ev_ref(EV_DEFAULT_UC);
+        //eio_custom(pollpri_thread, EIO_PRI_DEFAULT, pollpri_after, pr);
+        //ev_ref(EV_DEFAULT_UC);
         PRINTF("Leaving pollpri\n");
         return(Undefined());
     }
     
-    static int pollpri_thread(eio_req *req) {
+    static int pollpri_thread(eio_req* req) {
         PRINTF("Entered pollpri_thread\n");
         struct pollpri_request * pr = (struct pollpri_request *)req->data;
         Pollpri *p = pr->p;
         int epfd = p->epfd;
         int fd = p->fd;
-        char buf = 0;
-        if(!fd) {
-            fd = open(p->path, O_RDWR | O_NONBLOCK);
-            pr->p->fd = fd;
-            PRINTF("open(%s) returned %d: %s\n", p->path, fd, strerror(errno));
+        char buf[64];
+        
+        // Wait for epoll events
+        if(epfd) {
+            int m = 0;
+            m = lseek(fd, 0, SEEK_SET);
+            PRINTF("seek(%d) %d bytes: %s\n", fd, m, strerror(errno));
+            m = read(fd, &buf, 63);
+            buf[m] = 0;
+            PRINTF("read(%d) %d bytes (%s): %s\n", fd, m, buf, strerror(errno));
+        
+            // Wait for epoll event
+            //struct epoll_event events;
+            //PRINTF("Calling epoll_wait\n");
+            //m = epoll_wait(epfd, &events, 1, -1);
+            //PRINTF("epoll_wait(%d) returned %d: %s\n", epfd, m, strerror(errno));
+            
+            // Wait for poll event
+            //struct pollfd pfd;
+            //pfd.fd = fd;
+            //pfd.events = POLLPRI;
+            //m = poll(&fdset, 1, -1)        
         }
-        if(!epfd) {
-            epfd = epoll_create(1);
-            pr->p->epfd = epfd;
-            PRINTF("epoll_create(1) returned %d: %s\n", epfd, strerror(errno));
-            struct epoll_event ev;
-            ev.events = EPOLLPRI;
-            ev.data.fd = fd;
-            int n = epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &ev);
-            PRINTF("epoll_ctl(%d) returned %d (%d): %s\n", fd, n, epfd, strerror(errno));
-        }
-        //ev_io pollpri_watcher;
-        //ev_init(&pollpri_watcher, pollpri_event);
-        //pollpri_watcher.data = pr;
-        //ev_io_set(&pollpri_watcher, epfd, EV_READ | EV_WRITE);
-        //ev_io_start(EV_DEFAULT_ &pollpri_watcher);
-        struct epoll_event events;
-        int m = 0;
-        m = lseek(fd, 0, SEEK_SET);
-        PRINTF("seek %d bytes: %s\n", m, strerror(errno));
-        m = read(fd, &buf, 1);
-        PRINTF("read %d bytes (0x%x): %s\n", m, buf, strerror(errno));
-        PRINTF("Calling epoll_wait\n");
-        m = epoll_wait(epfd, &events, 1, -1);
-        PRINTF("epoll_wait(%d) returned %d: %s\n", epfd, m, strerror(errno));
-        //struct pollfd pfd;
-        //pfd.fd = fd;
-        //pfd.events = POLLPRI;
-        //m = poll(&fdset, 1, -1)
+        
         //close(epfd);
         //close(fd);
         PRINTF("Leaving pollpri_thread\n");
         return(0);
     }
     
-    static int pollpri_after(eio_req *req) {
+    static int pollpri_after(eio_req* req) {
         PRINTF("Entered pollpri_after\n");
         HandleScope scope;
         ev_unref(EV_DEFAULT_UC);
@@ -146,25 +186,70 @@ public:
         argv[1] = String::New(pr->p->path);
         pr->cb->Call(Context::GetCurrent()->Global(), 2, argv);
         pr->cb.Dispose();
-        //close(pr->p->epfd);
-        //close(pr->p->fd);
         free(pr);
         PRINTF("Leaving pollpri_after\n");
         return(0);
     }
+
+    void Event(int revents) {
+        HandleScope scope;
+        if(revents & EV_ERROR) {
+            PRINTF("EV_ERROR\n");
+            return;
+        }
+        if(revents & EV_READ) {
+            PRINTF("EV_READ\n");
+        }
+        if(revents & EV_WRITE) {
+            PRINTF("EV_WRITE\n");
+        }
+    }
     
+    static Handle<Value> ping(const Arguments& args) {
+        HandleScope scope;
+        Pollpri* p = ObjectWrap::Unwrap<Pollpri>(args.This());
+        
+        int m = 0;
+        char buf[64];
+        m = lseek(p->fd, 0, SEEK_SET);
+        PRINTF("seek(%d) %d bytes: %s\n", p->fd, m, strerror(errno));
+        m = read(p->fd, &buf, 63);
+        buf[m] = 0;
+        PRINTF("read(%d) %d bytes (%s): %s\n", p->fd, m, buf, strerror(errno));
+        
+        Local<Value> emit_v = args.This()->Get(String::NewSymbol("emit"));
+        assert(emit_v->IsFunction());
+        Local<Function> emit_f = emit_v.As<Function>();
+        
+        Handle<Value> argv[2];
+        argv[0] = String::New("ping");
+        argv[1] = String::New(buf);
+        
+        TryCatch tc;
+        
+        emit_f->Call(args.This(), 2, argv);
+
+        if(tc.HasCaught()) {
+            FatalException(tc);
+        }
+        
+        return(Undefined());
+    }
+
+    static void pollpri_event(EV_P_ ev_io * req, int revents) {
+        PRINTF("Entered pollpri_event\n");
+        struct pollpri_request * pr = (struct pollpri_request *)req->data;
+        pr->p->Event(revents);
+        PRINTF("Leaving pollpri_event\n");
+    }
 };
 
 Persistent<FunctionTemplate> Pollpri::ct;
 
 extern "C" {
     void init(Handle<Object> target) {
+        PRINTF("Calling Init\n");
         Pollpri::Init(target);
-    }
-    
-    void pollpri_event(ev_io* req, int revents) {
-        printf("Entered pollpri_event\n");
-        printf("Leaving pollpri_event\n");
     }
     
     NODE_MODULE(pollpri, init);
