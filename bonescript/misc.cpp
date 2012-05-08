@@ -32,6 +32,8 @@ private:
     int fd, epfd;
     char *path;
 public:
+    ev_io event_watcher, *ew;
+
     struct pollpri_request {
         Pollpri *p;
         Persistent<Function> cb;
@@ -65,6 +67,9 @@ public:
         PRINTF("Entering Pollpri constructor\n");
         epfd = 0;
         fd = 0;
+        ev_init(&event_watcher, pollpri_event);
+        event_watcher.data = this;
+        ew = &event_watcher;
     }
     
     ~Pollpri() {
@@ -100,12 +105,8 @@ public:
         PRINTF("epoll_ctl(%d) returned %d (%d): %s\n", fd, n, epfd, strerror(errno));
         
         // Setup event watcher
-        struct ev_io * pollpri_watcher = 
-            (struct ev_io *)malloc(sizeof(struct ev_io));
-        ev_init(pollpri_watcher, pollpri_event);
-        pollpri_watcher->data = p;
-        ev_io_set(pollpri_watcher, epfd, EV_READ | EV_WRITE);
-        ev_io_start(EV_DEFAULT_ pollpri_watcher);
+        ev_io_set(p->ew, epfd, EV_READ | EV_WRITE);
+        ev_io_start(EV_DEFAULT_ p->ew);
         //struct ev_prepare * pollpri_prepare = 
         //    (struct ev_prepare *)malloc(sizeof(struct ev_prepare));
         //ev_prepare_init(pollpri_prepare, pollpri_prepare_cb);
@@ -143,7 +144,7 @@ public:
     static int pollpri_thread(eio_req* req) {
         PRINTF("Entered pollpri_thread\n");
         struct pollpri_request * pr = (struct pollpri_request *)req->data;
-        Pollpri *p = pr->p;
+        Pollpri * p = pr->p;
         int epfd = p->epfd;
         int fd = p->fd;
         char buf[64];
@@ -191,8 +192,9 @@ public:
         return(0);
     }
 
-    void Event(int revents) {
+    void Event(Pollpri * p, int revents) {
         HandleScope scope;
+        PRINTF("fd = %d, epfd = %d\n", fd, epfd);
         if(revents & EV_ERROR) {
             PRINTF("EV_ERROR\n");
             return;
@@ -202,6 +204,33 @@ public:
         }
         if(revents & EV_WRITE) {
             PRINTF("EV_WRITE\n");
+        }
+        
+#if 0
+        int m = 0;
+        char buf[64];
+        m = lseek(p->fd, 0, SEEK_SET);
+        PRINTF("seek(%d) %d bytes: %s\n", p->fd, m, strerror(errno));
+        m = read(p->fd, &buf, 63);
+        buf[m] = 0;
+        PRINTF("read(%d) %d bytes (%s): %s\n", p->fd, m, buf, strerror(errno));
+#endif
+        char * buf = "0\n";
+
+        Local<Value> emit_v = handle_->Get(String::NewSymbol("emit"));
+        assert(emit_v->IsFunction());
+        Local<Function> emit_f = emit_v.As<Function>();
+        
+        Handle<Value> argv[2];
+        argv[0] = String::New("ping");
+        argv[1] = String::New(buf);
+        
+        TryCatch tc;
+        
+        emit_f->Call(handle_, 2, argv);
+
+        if(tc.HasCaught()) {
+            FatalException(tc);
         }
     }
     
@@ -238,8 +267,8 @@ public:
 
     static void pollpri_event(EV_P_ ev_io * req, int revents) {
         PRINTF("Entered pollpri_event\n");
-        struct pollpri_request * pr = (struct pollpri_request *)req->data;
-        pr->p->Event(revents);
+        Pollpri *p = static_cast<Pollpri*>(req->data);
+        p->Event(p, revents);
         PRINTF("Leaving pollpri_event\n");
     }
 };
