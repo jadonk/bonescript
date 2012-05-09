@@ -34,15 +34,18 @@ public:
     
     static void Init(Handle<Object> target) {
         PRINTF("Entering Init\n");
+        PRINTF("EV_DEFAULT_ = %s\n", TEST_EV_DEFAULT_NAME);
         HandleScope scope;
+        
         Local<FunctionTemplate> t = FunctionTemplate::New(New);
         ct = Persistent<FunctionTemplate>::New(t);
         ct->InstanceTemplate()->SetInternalFieldCount(1);
         ct->SetClassName(String::NewSymbol("Pollpri"));
-    
         target->Set(String::NewSymbol("Pollpri"), ct->GetFunction());
+        
+        target->Set(String::NewSymbol("delay"), 
+            FunctionTemplate::New(delay)->GetFunction());
 
-        PRINTF("EV_DEFAULT_ = %s\n", TEST_EV_DEFAULT_NAME);
         PRINTF("Leaving Init\n");
     }
     
@@ -61,7 +64,19 @@ public:
         if(fd) close(fd);
         ev_io_stop(EV_DEFAULT_ &event_watcher);
     }
-    
+
+    static Handle<Value> delay(const Arguments& args) {
+        PRINTF("Entered delay\n");
+        HandleScope scope;
+        const char *usage = "usage: new delay(duration)";
+        if((args.Length() != 1) || !args[0]->IsNumber()) {
+            return ThrowException(Exception::Error(String::New(usage)));
+        }
+        int duration = args[0]->NumberValue();
+        usleep(duration*1000);
+        return(Undefined());
+    }
+
     static Handle<Value> New(const Arguments& args) {
         PRINTF("Entered New\n");
         HandleScope scope;
@@ -156,5 +171,5 @@ extern "C" {
         Pollpri::Init(target);
     }
     
-    NODE_MODULE(pollpri, init);
+    NODE_MODULE(pollpri, init)
 }

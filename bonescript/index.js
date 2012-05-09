@@ -17,10 +17,7 @@ var myrequire = function(packageName, onfail) {
         y.exists = true;
     } catch(ex) {
         y.exists = false;
-        console.log("'" + packageName + "' not loaded");
-        console.log("If desired, try installing it with:");
-        console.log("  curl http://npmjs.org/install.sh | bash");
-        console.log("  npm install " + packageName);
+        console.log("Optional package '" + packageName + "' not loaded");
         onfail();
     }
     return(y);
@@ -30,18 +27,16 @@ var socketio = myrequire('socket.io', function() {
     console.log("Dynamic web features not enabled");
 });
 
-var binary = myrequire('binary', function() { });
-var inotify = myrequire('inotify', function() { });
-
-var fibers = myrequire('fibers', function() {
-    console.log("Delay operations loops will consume CPU cycles");
-    console.log("Invoke using 'node-fibers' if node version < 0.5.2");
-});
+//var fibers = myrequire('fibers', function() {
+//    console.log("Delay operations loops will consume CPU cycles");
+//    console.log("Invoke using 'node-fibers' if node version < 0.5.2");
+//});
+var fibers = {exists: false};
 
 var misc = myrequire('./misc', function () {
     console.log("Miscellaneous C++ functions not built");
-    console.log("If desired, try building them with:");
-    console.log("  cd bonescript");
+    console.log("To build them from a shell window:");
+    console.log("  cd /var/lib/cloud9/bonescript");
     console.log("  node-waf configure build");
     throw("./misc is currently required");
 });
@@ -297,6 +292,7 @@ shiftOut = exports.shiftOut = function(dataPin, clockPin, bitOrder, val, callbac
 
 attachInterrupt = exports.attachInterrupt = function(pin, handler, mode) {
     var gpioFile = '/sys/class/gpio/gpio' + pin.gpio + '/value';
+    fs.writeFileSync('/sys/class/gpio/gpio' + pin.gpio + '/edge', mode);
     var gpioPoll = new misc.Pollpri(gpioFile);
     gpio[pin.gpio].handler = handler;
     var gpioHandler = function(value) {
@@ -315,6 +311,8 @@ if(fibers.exists) {
         setTimeout(run, milliseconds);
         yield(null);
     };
+//} else if(misc.exists) {
+//    delay = exports.delay = misc.delay;
 } else {
     delay = exports.delay = function(milliseconds)
     {
