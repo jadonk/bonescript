@@ -302,7 +302,7 @@ attachInterrupt = exports.attachInterrupt = function(pin, handler, mode) {
     var gpioHandler = function(value) {
         handler(pin, value);
     };
-    gpioPoll.on('ping', gpioHandler);
+    gpioPoll.on('edge', gpioHandler);
 };
 
 // Wait for some time

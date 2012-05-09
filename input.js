@@ -17,13 +17,17 @@ setup = function() {
     attachInterrupt(inputPin, handler, CHANGE);
 };
 
+var nextState = LOW;
+var toggleGPIO = function() {
+    console.log('Setting ' + outputPin.key + 
+        ((nextState == HIGH) ? ' HIGH' : ' LOW'));
+    digitalWrite(outputPin, nextState);
+    nextState = (nextState == HIGH) ? LOW : HIGH;
+};
+
+setInterval(toggleGPIO, 1000);
+
 loop = function() {
-    console.log('Setting ' + outputPin.key + ' HIGH');
-    digitalWrite(outputPin, HIGH);
-    delay(1000);
-    console.log('Setting ' + outputPin.key + ' LOW');
-    digitalWrite(outputPin, LOW);
-    delay(1000);
 };
 
 bb.run();
