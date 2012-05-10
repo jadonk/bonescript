@@ -11,6 +11,8 @@ var handler = function(pin, value) {
 };
 
 setup = function() {
+    console.log('Please connect ' + inputPin.key + ' to ' + outputPin.key +
+        ' with a 1kohm resistor');
     pinMode(inputPin, INPUT);
     pinMode(outputPin, OUTPUT);
     attachInterrupt(inputPin, handler, CHANGE);

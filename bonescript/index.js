@@ -148,7 +148,7 @@ getPinMode = exports.getPinMode = function(pin, callback) {
     }
 };
 
-pinMode = exports.pinMode = function(pin, direction, pullup, slew, mux, callback)
+pinMode = exports.pinMode = function(pin, direction, mux, pullup, slew, callback)
 {
     pullup = pullup || 'disabled';
     slew = slew || 'fast';
@@ -212,7 +212,9 @@ pinMode = exports.pinMode = function(pin, direction, pullup, slew, mux, callback
                 // Export the GPIO controls
                 var exists = path.existsSync(gpioFile);
                 if(exists) {
-                    console.log("gpio: " + n + " already exported.");
+                    //console.log("gpio: " + n + " already exported.");
+                    fs.writeFileSync("/sys/class/gpio/gpio" + n + "/direction",
+                        direction, null);
                 } else {
                     try {
                         fs.writeFileSync("/sys/class/gpio/export", "" + n, null);
@@ -529,7 +531,7 @@ if(socketio.exists) {
                     socket.emit('pinMode', resp);
                 };
                 try {
-                    pinMode(m.pin, m.direction, m.pullup, m.slew, m.mux, callback);
+                    pinMode(m.pin, m.direction, m.mux, m.pullup, m.slew, callback);
                 } catch(ex) {
                     console.log('Error handing pinMode message: ' + ex);
                 }
