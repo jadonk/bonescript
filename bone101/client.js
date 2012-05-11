@@ -62,24 +62,34 @@ var init = function() {
         } catch(ex) {
             console.log("Unable to open shell terminal window due to " + ex);
         }
-        try {
-            $('#js_term').terminal(
-                function(command, term) {
-                    if (command !== '') {
-                        var result = window.eval("(" + command + ")");
-                        if (result !== undefined) {
-                            term.echo(String(result));
-                        }
-                    } else {
-                        term.echo('');
-                    }
-                }, {
-                    greetings: 'Javascript Interpreter',
-                    name: 'js_demo',
-                    height: 400,
-                    prompt: 'js>'
+        var js_term = {};
+        var dir = function(obj) {
+            var y = [];
+            for(var x in obj) {
+                if(obj.hasOwnProperty(x)) {
+                    y.push(x);
                 }
-            );
+            }
+            return y.join(', ');
+        }                
+        js_term.term = function(command, term) {
+            if (command !== '') {
+                var result = eval(command);
+                if (result !== undefined) {
+                    term.echo(String(result));
+                }
+            } else {
+                term.echo('');
+            }
+        };
+        js_term.args = {
+                greetings: 'Javascript Interpreter',
+                name: 'js_demo',
+                height: 400,
+                prompt: 'js>'
+        };
+        try {
+            $('#js_term').terminal(js_term.term, js_term.args);
         } catch(ex2) {
             console.log("Unable to open javascript terminal window due to " + ex2);
         }

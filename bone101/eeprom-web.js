@@ -3,7 +3,7 @@ $(document).ready(function() {
     var socket = new io.connect(); 
 
     //setup handler for receiving the strict with all the expansion pins from the server
-    socket.on('eeproms', function (data) {
+    socket.on('getEeproms', function (data) {
         eeproms = data;
         var boneversion = eeproms['/sys/bus/i2c/drivers/at24/1-0050/eeprom'].version.substr(2);
         var boneserial = eeproms['/sys/bus/i2c/drivers/at24/1-0050/eeprom'].serialNumber;
@@ -19,7 +19,7 @@ $(document).ready(function() {
             
         $("#eeprom").html(bonestring);
     });
-    socket.emit('eeproms','');
+    socket.emit('getEeproms','');
 });
 
 function printPin(eeproms, eeprom) {

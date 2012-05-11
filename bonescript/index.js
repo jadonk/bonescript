@@ -303,6 +303,23 @@ attachInterrupt = exports.attachInterrupt = function(pin, handler, mode) {
     gpioPoll.on('edge', gpioHandler);
 };
 
+getEeproms = exports.getEeproms = function (callback) {
+    var EepromFiles = {
+        '/sys/bus/i2c/drivers/at24/1-0050/eeprom': { type: 'bone' },
+        '/sys/bus/i2c/drivers/at24/3-0054/eeprom': { type: 'cape' },
+        '/sys/bus/i2c/drivers/at24/3-0055/eeprom': { type: 'cape' },
+        '/sys/bus/i2c/drivers/at24/3-0056/eeprom': { type: 'cape' },
+        '/sys/bus/i2c/drivers/at24/3-0057/eeprom': { type: 'cape' },
+    };
+    var eeproms = eeprom.readEeproms(EepromFiles);
+    if(eeproms == {}) {
+        console.warn('No valid EEPROM contents found');
+    }
+    if(callback) {
+        callback(eeproms);
+    }
+};
+
 // Wait for some time
 if(fibers.exists) {
     delay = exports.delay = function(milliseconds) {
@@ -313,8 +330,6 @@ if(fibers.exists) {
         setTimeout(run, milliseconds);
         yield(null);
     };
-//} else if(misc.exists) {
-//    delay = exports.delay = misc.delay;
 } else {
     delay = exports.delay = function(milliseconds)
     {
@@ -491,25 +506,22 @@ if(socketio.exists) {
             });
 
             // send eeprom info
-            socket.on('eeproms', function() {
-                var EepromFiles = {
-                    '/sys/bus/i2c/drivers/at24/1-0050/eeprom': { type: 'bone' },
-                    '/sys/bus/i2c/drivers/at24/3-0054/eeprom': { type: 'cape' },
-                    '/sys/bus/i2c/drivers/at24/3-0055/eeprom': { type: 'cape' },
-                    '/sys/bus/i2c/drivers/at24/3-0056/eeprom': { type: 'cape' },
-                    '/sys/bus/i2c/drivers/at24/3-0057/eeprom': { type: 'cape' },
+            socket.on('getEeproms', function(m) {
+                var callback = function(resp) {
+                    if(m.seq) resp.seq = m.seq;
+                    socket.emit('getEeproms', resp);
                 };
-                var eeproms = eeprom.readEeproms(EepromFiles);
-                if(eeproms == {}) {
-                    console.warn('No valid EEPROM contents found');
-                } else {
-                    socket.emit('eeproms', eeproms);
+                try {
+                    getEeproms(callback);
+                } catch(ex) {
+                    console.log('Error handing getEeproms message: ' + ex);
                 }
             });
         
             // listen for requests and reads the debugfs entry async
             socket.on('getPinMode', function(m) {
                 var callback = function(resp) {
+                    if(m.seq) resp.seq = m.seq;
                     socket.emit('getPinMode', resp);
                 };
                 try {
@@ -528,6 +540,7 @@ if(socketio.exists) {
 
             socket.on('pinMode', function(m) {
                 var callback = function(resp) {
+                    if(m.seq) resp.seq = m.seq;
                     socket.emit('pinMode', resp);
                 };
                 try {
@@ -539,6 +552,7 @@ if(socketio.exists) {
 
             socket.on('digitalWrite', function(m) {
                 var callback = function(resp) {
+                    if(m.seq) resp.seq = m.seq;
                     socket.emit('digitalWrite', resp);
                 };
                 try {
@@ -550,6 +564,7 @@ if(socketio.exists) {
             
             socket.on('digitalRead', function(m) {
                 var callback = function(resp) {
+                    if(m.seq) resp.seq = m.seq;
                     socket.emit('digitalRead', resp);
                 };
                 try {
@@ -561,6 +576,7 @@ if(socketio.exists) {
 
             socket.on('analogRead', function(m) {
                 var callback = function(resp) {
+                    if(m.seq) resp.seq = m.seq;
                     socket.emit('analogRead', resp);
                 };
                 try {
@@ -572,6 +588,7 @@ if(socketio.exists) {
             
             socket.on('shiftOut', function(m) {
                 var callback = function(resp) {
+                    if(m.seq) resp.seq = m.seq;
                     socket.emit('shiftOut', resp);
                 };
                 try {
@@ -582,12 +599,15 @@ if(socketio.exists) {
             });
             
             socket.on('echo', function(data) {
+                if(m.seq) resp.seq = m.seq;
                 socket.emit('echo', data);
             });
 
             // provide client basic platform information
-            socket.on('init', function() {
-                socket.emit('init', { 'platform': bone });
+            socket.on('init', function(m) {
+                var resp = {'platform': bone};
+                if(m.seq) resp.seq = m.seq;
+                socket.emit('init', resp);
             });
 
             // call user-provided on-connect function
