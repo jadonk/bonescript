@@ -598,6 +598,18 @@ if(socketio.exists) {
                 }
             });
             
+            socket.on('attachInterrupt', function(m) {
+                var handler = function(resp) {
+                    if(m.seq) resp.seq = m.seq;
+                    socket.emit('attachInterrupt', resp);
+                };
+                try {
+                    shiftOut(m.pin, handler, m.mode);
+                } catch(ex) {
+                    console.log('Error handing attachInterrupt message: ' + ex);
+                }
+            });
+            
             socket.on('echo', function(data) {
                 if(m.seq) resp.seq = m.seq;
                 socket.emit('echo', data);
