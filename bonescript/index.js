@@ -43,7 +43,9 @@ CHANGE = exports.CHANGE = "both";
 RISING = exports.RISING = "rising";
 FALLING = exports.FALLING = "falling";
 
+// Keep track of allocated resources
 var gpio = [];
+var pwm = [];
 
 getPinMode = exports.getPinMode = function(pin, callback) {
     var muxFile = '/sys/kernel/debug/omap_mux/' + pin.mux;
@@ -133,8 +135,7 @@ getPinMode = exports.getPinMode = function(pin, callback) {
     }
 };
 
-pinMode = exports.pinMode = function(pin, direction, mux, pullup, slew, callback)
-{
+pinMode = exports.pinMode = function(pin, direction, mux, pullup, slew, callback) {
     pullup = pullup || 'disabled';
     slew = slew || 'fast';
     mux = mux || 7; // default to GPIO mode
@@ -222,8 +223,7 @@ pinMode = exports.pinMode = function(pin, direction, mux, pullup, slew, callback
     return(true);
 };
 
-digitalWrite = exports.digitalWrite = function(pin, value, callback)
-{
+digitalWrite = exports.digitalWrite = function(pin, value, callback) {
     if(callback) {
         fs.writeFile(gpio[pin.gpio].path, '' + value, null, callback);
     } else {
@@ -232,8 +232,7 @@ digitalWrite = exports.digitalWrite = function(pin, value, callback)
     return(true);
 };
 
-digitalRead = exports.digitalRead = function(pin, callback)
-{
+digitalRead = exports.digitalRead = function(pin, callback) {
     if(callback) {
         var readFile = function(err, data) {
             callback({'value':data});
@@ -244,8 +243,7 @@ digitalRead = exports.digitalRead = function(pin, callback)
     return(fs.readFileSync(gpio[pin.gpio].path));
 };
 
-analogRead = exports.analogRead = function(pin, callback)
-{
+analogRead = exports.analogRead = function(pin, callback) {
     var ainFile = '/sys/bus/platform/devices/tsc/ain' + (pin.ain+1);
     if(callback) {
         var readFile = function(err, data) {
@@ -257,8 +255,7 @@ analogRead = exports.analogRead = function(pin, callback)
     return(fs.readFileSync(ainFile));
 }; 
 
-shiftOut = exports.shiftOut = function(dataPin, clockPin, bitOrder, val, callback)
-{
+shiftOut = exports.shiftOut = function(dataPin, clockPin, bitOrder, val, callback) {
   var i;
   var bit;
   for (i = 0; i < 8; i++)  
@@ -320,6 +317,43 @@ attachInterrupt = exports.attachInterrupt = function(pin, handler, mode) {
     }
 };
 
+// See http://processors.wiki.ti.com/index.php/AM335x_PWM_Driver's_Guide
+analogWrite = exports.analogWrite = function(pin, value, freq, callback) {
+    freq = freq || 1000;
+    var curMode = getPinMode(pin);
+    if(curMode.direction != OUTPUT) {
+        throw(pin.key + ' must be configured as OUTPUT for analogWrite()');
+    }
+    if(!pin.pwm) {
+        throw(pin.key + ' does not support analogWrite()');
+    }
+    if(pwm[pin.pwm.path] && pwm[pin.pwm.path].key) {
+        if(pwm[pin.pwm.path].key != pin.key) {
+            throw(pin.key + ' requires pwm ' + pin.pwm.name +
+                ' but it is already in use by ' +
+                pwm[pin.pwm].key
+            );
+         }
+    } else {
+        pwm[pin.pwm.path].key = pin.key;
+        pwm[pin.pwm.path].freq = freq;
+        pinMode(pin, OUTPUT, pin.pwm.muxmode, 'disabled', 'fast');
+        var path = '/sys/class/pwm/' + pin.pwm.path;
+        fs.writeFileSync(path+'/request', '1');
+        fs.writeFileSync(path+'/period_freq', freq);
+        fs.writeFileSync(path+'/polarity', '1');
+        fs.writeFileSync(path+'/run', '1');
+    }
+    if(pwm[pin.pwm.path].freq != freq) {
+        fs.writeFileSync(path+'/run', '0');
+        fs.writeFileSync(path+'/duty_percent', 0);
+        fs.writeFileSync(path+'/period_freq', freq);
+        fs.writeFileSync(path+'/run', '1');
+        pwm[pin.pwm.path].freq = freq;
+    }
+    fs.writeFileSync(path+'/duty_percent', value/255);
+};
+
 getEeproms = exports.getEeproms = function(callback) {
     var EepromFiles = {
         '/sys/bus/i2c/drivers/at24/1-0050/eeprom': { type: 'bone' },
@@ -359,8 +393,7 @@ if(fibers.exists) {
 
 // This is where everything is meant to happen
 if(fibers.exists) {
-    run = exports.run = function()
-    {
+    run = exports.run = function() {
         Fiber(function() {
             var fiber = Fiber.current;
             setup();
@@ -376,8 +409,7 @@ if(fibers.exists) {
         }).run();
     };
 } else {
-    run = exports.run = function()
-    {
+    run = exports.run = function() {
         setup();
         if(typeof loop === "function") {
             var repeat = function repeat() {
