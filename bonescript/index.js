@@ -208,7 +208,15 @@ pinMode = exports.pinMode = function(pin, direction, mux, pullup, slew, callback
                         fs.writeFileSync("/sys/class/gpio/gpio" + n + "/direction",
                             direction, null);
                     } catch(ex) {
-                        console.error('Unable to export gpio ' + n + ': ' + ex);
+                        console.error('Unable to export gpio-' + n + ': ' + ex);
+                        var gpioUsers = fs.readFileSync('/sys/kernel/debug/gpio', 'utf-8');
+                        gpioUsers = gpioUsers.split('\n');
+                        for(var x in gpioUsers) {
+                            var y = gpioUsers[x].match(/gpio-(\d+)\s+\((\S+)\s*\)/);
+                            if(y && y[1] == n) {
+                                console.error('gpio-' + n + ' consumed by ' + y[2]);
+                            }
+                        }
                         gpio[n] = {};
                         if(callback) callback(false);
                         return(false);
@@ -352,11 +360,11 @@ analogWrite = exports.analogWrite = function(pin, value, freq, callback) {
         pwm[pin.pwm.path].freq = freq;
         pinMode(pin, OUTPUT, pin.pwm.muxmode, 'disabled', 'fast');
 
-	// Clear up any unmanaged usage
+        // Clear up any unmanaged usage
         fs.writeFileSync(path+'/run', '0');
         fs.writeFileSync(path+'/request', '0');
 
-	// Allocate and configure the PWM
+        // Allocate and configure the PWM
         fs.writeFileSync(path+'/request', '1');
         fs.writeFileSync(path+'/period_freq', freq);
         fs.writeFileSync(path+'/polarity', '0');
@@ -421,8 +429,8 @@ if(fibers.exists) {
                     setTimeout(function() {
                         fiber.run();
                     }, 0);
-		            yield(null);
-		        }
+                    yield(null);
+                }
             }
         }).run();
     };
