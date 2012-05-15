@@ -361,7 +361,6 @@ analogWrite = exports.analogWrite = function(pin, value, freq, callback) {
         pinMode(pin, OUTPUT, pin.pwm.muxmode, 'disabled', 'fast');
 
         // Clear up any unmanaged usage
-        fs.writeFileSync(path+'/run', '0');
         fs.writeFileSync(path+'/request', '0');
 
         // Allocate and configure the PWM
@@ -662,6 +661,8 @@ exports.Server = function(port, subdir, onconnect) {
                 loadFile(uri, subdir, res, "text/html");
             } else if(uri.match(/\.(jpg|png|ico)$/i)) {
                 loadFile(uri, subdir, res, "binary");
+            } else if(uri.match(/\.svg(.)$/i)) {
+                loadFile(uri, subdir, res, "image/svg+xml");
             } else {
                 loadFile(uri, subdir, res, "text/plain");
             }
