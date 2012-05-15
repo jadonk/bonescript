@@ -49,7 +49,7 @@ var pwm = [];
 
 getPinMode = exports.getPinMode = function(pin, callback) {
     var muxFile = '/sys/kernel/debug/omap_mux/' + pin.mux;
-    console.log('getPinMode(' + pin.key + '): ' + muxFile);
+    //console.log('getPinMode(' + pin.key + '): ' + muxFile);
     var parseMux = function(readout) {
         //console.log('' + readout);
         var mode = {};
@@ -139,6 +139,7 @@ pinMode = exports.pinMode = function(pin, direction, mux, pullup, slew, callback
     pullup = pullup || 'disabled';
     slew = slew || 'fast';
     mux = mux || 7; // default to GPIO mode
+    //console.log('pinmode(' + [pin.key, direction, mux, pullup, slew].join(',') + ')');
     
     if(!pin.mux) {
         console.log('Invalid pin object for pinMode: ' + pin);
@@ -247,12 +248,14 @@ analogRead = exports.analogRead = function(pin, callback) {
     var ainFile = '/sys/bus/platform/devices/tsc/ain' + (pin.ain+1);
     if(callback) {
         var readFile = function(err, data) {
-            callback({'value':data});
+            var value = data / pin.scale;
+            callback({'value': value});
         };
         fs.readFile(ainFile, readFile);
         return(true);
     }
-    return(fs.readFileSync(ainFile));
+    var data = fs.readFileSync(ainFile)/4096
+    return(data/pin.scale);
 }; 
 
 shiftOut = exports.shiftOut = function(dataPin, clockPin, bitOrder, val, callback) {
@@ -320,10 +323,12 @@ attachInterrupt = exports.attachInterrupt = function(pin, handler, mode) {
 // See http://processors.wiki.ti.com/index.php/AM335x_PWM_Driver's_Guide
 analogWrite = exports.analogWrite = function(pin, value, freq, callback) {
     freq = freq || 1000;
-    var curMode = getPinMode(pin);
-    if(curMode.direction != OUTPUT) {
-        throw(pin.key + ' must be configured as OUTPUT for analogWrite()');
-    }
+    var path = '/sys/class/pwm/' + pin.pwm.path;
+    //var curMode = getPinMode(pin);
+    // Not yet possible to implement this test
+    //if(curMode.direction != OUTPUT) {
+    //    throw(pin.key + ' must be configured as OUTPUT for analogWrite()');
+    //}
     if(!pin.pwm) {
         throw(pin.key + ' does not support analogWrite()');
     }
@@ -335,23 +340,29 @@ analogWrite = exports.analogWrite = function(pin, value, freq, callback) {
             );
          }
     } else {
+        pwm[pin.pwm.path] = {};
         pwm[pin.pwm.path].key = pin.key;
         pwm[pin.pwm.path].freq = freq;
         pinMode(pin, OUTPUT, pin.pwm.muxmode, 'disabled', 'fast');
-        var path = '/sys/class/pwm/' + pin.pwm.path;
+
+	// Clear up any unmanaged usage
+        fs.writeFileSync(path+'/run', '0');
+        fs.writeFileSync(path+'/request', '0');
+
+	// Allocate and configure the PWM
         fs.writeFileSync(path+'/request', '1');
         fs.writeFileSync(path+'/period_freq', freq);
-        fs.writeFileSync(path+'/polarity', '1');
+        fs.writeFileSync(path+'/polarity', '0');
         fs.writeFileSync(path+'/run', '1');
     }
     if(pwm[pin.pwm.path].freq != freq) {
         fs.writeFileSync(path+'/run', '0');
-        fs.writeFileSync(path+'/duty_percent', 0);
+        fs.writeFileSync(path+'/duty_percent', '0');
         fs.writeFileSync(path+'/period_freq', freq);
         fs.writeFileSync(path+'/run', '1');
         pwm[pin.pwm.path].freq = freq;
     }
-    fs.writeFileSync(path+'/duty_percent', value/255);
+    fs.writeFileSync(path+'/duty_percent', Math.round(value*100));
 };
 
 getEeproms = exports.getEeproms = function(callback) {

@@ -8,8 +8,8 @@ setup = function() {
 };
 
 loop = function() {
-    var val = analogRead(inputPin);
-    analogWrite(outputPin, val / 4);
+    var value = parseInt(analogRead(inputPin)) / 4096;
+    analogWrite(outputPin, value);
 };
 
 bb.run();
