@@ -8,7 +8,7 @@ setup = function() {
 };
 
 loop = function() {
-    var value = parseInt(analogRead(inputPin)) / 4096;
+    var value = analogRead(inputPin);
     analogWrite(outputPin, value);
 };
 

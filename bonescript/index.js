@@ -248,14 +248,21 @@ analogRead = exports.analogRead = function(pin, callback) {
     var ainFile = '/sys/bus/platform/devices/tsc/ain' + (pin.ain+1);
     if(callback) {
         var readFile = function(err, data) {
-            var value = data / pin.scale;
+            var value = parseInt(data) / pin.scale;
             callback({'value': value});
         };
         fs.readFile(ainFile, readFile);
         return(true);
     }
-    var data = fs.readFileSync(ainFile)/4096
-    return(data/pin.scale);
+    var data = parseInt(fs.readFileSync(ainFile));
+    if(isNaN(data)) {
+        throw('analogRead(' + pin.key + ') returned ' + data);
+    }
+    data = data / pin.scale;
+    if(isNaN(data)) {
+        throw('analogRead(' + pin.key + ') scaled to ' + data);
+    }
+    return(data);
 }; 
 
 shiftOut = exports.shiftOut = function(dataPin, clockPin, bitOrder, val, callback) {
