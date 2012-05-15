@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+$INSTALLED_NODES = nvm ls | grep -v current: | sort -u
+for version in INSTALLED_NODES; do
+  nvm use $version
+  node-waf configure build
+  if [ -e build/default/createpair.node ]; then
+    cp build/default/createpair.node "lib/createpair.$version.node"
+  elif [ -e build/default/createpair.node ]; then
+    cp build/default/createpair.node "lib/createpair.$version.node"
+  fi
+done

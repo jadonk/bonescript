@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+version=`node -v`
+node-waf configure build
+if [ -f build/Release/createpair.node ]; then
+  cp build/Release/createpair.node "lib/createpair.$version.node"
+elif [ -f build/default/createpair.node ]; then
+  cp build/default/createpair.node "lib/createpair.$version.node"
+fi

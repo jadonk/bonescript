@@ -9,6 +9,7 @@ var path = require('path');
 var events = require('events');
 var eeprom = require('./eeprom');
 bone = require('./bone').bone;
+var fork = require('fork');
 
 var myrequire = function(packageName, onfail) {
     var y = {};
@@ -32,21 +33,6 @@ var socketio = myrequire('socket.io', function() {
 //    console.log("Invoke using 'node-fibers' if node version < 0.5.2");
 //});
 var fibers = {exists: false};
-
-var misc = myrequire('./misc', function () {
-    console.log("Miscellaneous C++ functions not built");
-    console.log("To build them from a shell window:");
-    console.log("  cd /var/lib/cloud9/bonescript");
-    console.log("  node-waf configure build");
-    throw("./misc is currently required");
-});
-
-if(misc.exists) {
-    // Pollpri inherits from EventEmitter
-    for(var x in events.EventEmitter.prototype) {
-        misc.Pollpri.prototype[x] = events.EventEmitter.prototype[x];
-    }
-}
 
 OUTPUT = exports.OUTPUT = "out";
 INPUT = exports.INPUT = "in";
@@ -295,15 +281,41 @@ shiftOut = exports.shiftOut = function(dataPin, clockPin, bitOrder, val, callbac
 attachInterrupt = exports.attachInterrupt = function(pin, handler, mode) {
     var gpioFile = '/sys/class/gpio/gpio' + pin.gpio + '/value';
     fs.writeFileSync('/sys/class/gpio/gpio' + pin.gpio + '/edge', mode);
-    var gpioPoll = new misc.Pollpri(gpioFile);
-    gpio[pin.gpio].handler = handler;
-    var gpioHandler = function(value) {
-        handler(pin, value);
+    var intHandler = function(m) {
+        handler(pin, m.value);
     };
-    gpioPoll.on('edge', gpioHandler);
+    if(0) {
+        console.log('Forking gpioint.js');
+        var intProc = fork.fork(__dirname + '/gpioint.js');
+        intProc.on('message', intHandler);
+        intProc.send({'pin': pin, 'mode': mode, 'file': gpioFile});
+        gpio[pin.gpio].intProc = intProc;
+    } else if(1) {
+        console.log('Spawning ' + process.execPath + ' ' + __dirname + 
+            '/gpioint.js ' + gpioFile);
+        var intProc = child_process.spawn(
+            process.execPath,
+            [ __dirname + '/gpioint.js', gpioFile ]
+        );
+        intProc.stdout.on('data', function(data) {
+            //console.log('Got data: ' + data);
+            intHandler({'value': data});
+        });
+   } else {
+        var misc = require('./misc');
+        for(var x in events.EventEmitter.prototype) {
+            misc.Pollpri.prototype[x] = events.EventEmitter.prototype[x];
+        }
+        var gpioPoll = new misc.Pollpri(gpioFile);
+        var gpioHandler = function(value) {
+            intHandler({'value': value});
+        };
+        gpioPoll.on('edge', gpioHandler);
+        gpio[pin.gpio].intProc = gpioHandler;
+    }
 };
 
-getEeproms = exports.getEeproms = function (callback) {
+getEeproms = exports.getEeproms = function(callback) {
     var EepromFiles = {
         '/sys/bus/i2c/drivers/at24/1-0050/eeprom': { type: 'bone' },
         '/sys/bus/i2c/drivers/at24/3-0054/eeprom': { type: 'cape' },
@@ -318,6 +330,7 @@ getEeproms = exports.getEeproms = function (callback) {
     if(callback) {
         callback(eeproms);
     }
+    return(eeproms);
 };
 
 // Wait for some time
