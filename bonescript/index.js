@@ -9,7 +9,6 @@ var path = require('path');
 var events = require('events');
 var eeprom = require('./eeprom');
 bone = require('./bone').bone;
-var fork = require('fork');
 
 var myrequire = function(packageName, onfail) {
     var y = {};
@@ -284,9 +283,15 @@ attachInterrupt = exports.attachInterrupt = function(pin, handler, mode) {
     var intHandler = function(m) {
         handler(pin, m.value);
     };
-    if(0) {
-        console.log('Forking gpioint.js');
-        var intProc = fork.fork(__dirname + '/gpioint.js');
+    if(1) {
+        //console.log('Forking gpioint.js');
+        var intProc;
+        if(child_process.fork) {
+            intProc = child_process.fork(__dirname + '/gpioint.js');
+        } else {
+            var fork = require('fork');
+            intProc = fork.fork(__dirname + '/gpioint.js');
+        }
         intProc.on('message', intHandler);
         intProc.send({'pin': pin, 'mode': mode, 'file': gpioFile});
         gpio[pin.gpio].intProc = intProc;
