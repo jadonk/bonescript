@@ -136,7 +136,7 @@ getPinMode = exports.getPinMode = function(pin, callback) {
 };
 
 pinMode = exports.pinMode = function(pin, direction, mux, pullup, slew, callback) {
-    pullup = pullup || 'disabled';
+    pullup = pullup || 'pulldown';
     slew = slew || 'fast';
     mux = mux || 7; // default to GPIO mode
     //console.log('pinmode(' + [pin.key, direction, mux, pullup, slew].join(',') + ')');
