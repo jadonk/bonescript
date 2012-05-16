@@ -108,6 +108,7 @@ var init = function() {
             if(data.options) {
                 var muxSelect = "<select style='width: 10em'>\n";
                 for(var option in data.options) {
+                    if(isNaN(option)) continue;
                     var pinFunction = data.options[option];
                     var muxSelected = "";
                     // Select the signal the pin is currently muxed to
