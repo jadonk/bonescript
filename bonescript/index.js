@@ -292,11 +292,11 @@ shiftOut = exports.shiftOut = function(dataPin, clockPin, bitOrder, val, callbac
   }
 };
 
-attachInterrupt = exports.attachInterrupt = function(pin, handler, mode) {
+attachInterrupt = exports.attachInterrupt = function(pin, mode, callback) {
     var gpioFile = '/sys/class/gpio/gpio' + pin.gpio + '/value';
     fs.writeFileSync('/sys/class/gpio/gpio' + pin.gpio + '/edge', mode);
     var intHandler = function(m) {
-        handler(pin, m.value);
+        callback(pin, m.value);
     };
     if(1) {
         //console.log('Forking gpioint.js');
@@ -568,142 +568,77 @@ if(socketio.exists) {
         var io = socketio.listen(server);
         console.log('Listening for new socket.io clients');
         io.sockets.on('connection', function(socket) {
-            var sessionId = socket.sessionId;
-            console.log('Client connected: ' + sessionId);
-
-            // on message
-            socket.on('message', function(data) {
-                console.log("Got message from client:", data);
-            });
+            console.log('Client connected');
 
             // on disconnect
             socket.on('disconnect', function() {
-                console.log("Client disconnected:" + sessionId);
+                console.log('Client disconnected');
             });
 
-            // send eeprom info
-            socket.on('getEeproms', function(m) {
-                var callback = function(resp) {
-                    if(m && m.seq) resp.seq = m.seq;
-                    socket.emit('getEeproms', resp);
-                };
-                try {
-                    getEeproms(callback);
-                } catch(ex) {
-                    console.log('Error handing getEeproms message: ' + ex);
-                }
-            });
-        
-            // listen for requests and reads the debugfs entry async
-            socket.on('getPinMode', function(m) {
-                var callback = function(resp) {
-                    if(m && m.seq) resp.seq = m.seq;
-                    socket.emit('getPinMode', resp);
-                };
-                try {
-                    getPinMode(m.pin, callback);
-                } catch(ex) {
-                    console.log('Error handing getPinMode message: ' + ex);
-                }
-            });
+            var shell = spawn(socket);
+            var echo = function(data, callback) {
+                console.log(data);
+                callback({'data': data});
+            };
+            var platform = function(callback) {
+                var msg = {'platform': bone};
+                if(callback) callback(msg);
+                return(msg);
+            };
 
-            // listen for shell commands
-            var myshell = spawn(socket);
-            socket.on('shell', function(shellMsg) {
-                console.log('shell: ' + shellMsg);
-                myshell(shellMsg);
-            });
-
-            socket.on('pinMode', function(m) {
+            var myfuncs = {
+                'digitalWrite': { func: digitalWrite, args: [ 'pin', 'value' ] },
+                'digitalRead': { func: digitalRead, args: [ 'pin' ] },
+                'analogRead': { func: analogRead, args: [ 'pin' ] },
+                'analogWrite': { func: analogWrite, args: [ 'pin', 'value', 'freq' ] },
+                'pinMode': { func: pinMode, args: [ 'pin', 'direction', 'mux', 'pullup', 'slew' ] },
+                'shiftOut': { func: shiftOut, args: [ 'dataPin', 'clockPin', 'bitOrder', 'val' ] },
+                'attachInterrupt': { func: attachInterrupt, args: [ 'pin', 'mode' ] },
+                'getPinMode': { func: getPinMode, args: [ 'pin' ] },
+                'getEeproms': { func: getEeproms, args: [] },
+                'platform': { func: platform, args: [] },
+                'shell': { func: shell, args: [ 'command' ] },
+                'echo': { func: echo, args: [ 'data' ] }
+            };
+            var callMyFunc = function(name, m) {
                 var callback = function(resp) {
                     resp = resp || {};
                     if(m && m.seq) resp.seq = m.seq;
-                    socket.emit('pinMode', resp);
+                    socket.emit(name, resp);
                 };
                 try {
-                    pinMode(m.pin, m.direction, m.mux, m.pullup, m.slew, callback);
+                    var callargs = [];
+                    for(var arg in myfuncs[name].args) {
+                        var argname = myfuncs[name].args[arg];
+                        if(m) {
+                            callargs.push(m[argname]);
+                        } else {
+                            callargs.push(undefined);
+                        }
+                    }
+                    callargs.push(callback);
+                    var toeval = name + '(' + callargs + ');';
+                    //console.log('Calling ' + toeval);
+                    myfuncs[name].func.apply(this, callargs);
                 } catch(ex) {
-                    console.log('Error handing pinMode message: ' + ex);
+                    console.log('Error handing ' + name + ' message: ' + ex);
                 }
-            });
-
-            socket.on('digitalWrite', function(m) {
-                var callback = function(resp) {
-                    resp = resp || {};
-                    if(m && m.seq) resp.seq = m.seq;
-                    socket.emit('digitalWrite', resp);
-                };
-                try {
-                    digitalWrite(m.pin, m.value, callback);
-                } catch(ex) {
-                    console.log('Error handing digitalWrite message: ' + ex);
-                }
-            });
-            
-            socket.on('digitalRead', function(m) {
-                var callback = function(resp) {
-                    resp = resp || {};
-                    if(m && m.seq) resp.seq = m.seq;
-                    socket.emit('digitalRead', resp);
-                };
-                try {
-                    digitalRead(m.pin, callback);
-                } catch(ex) {
-                    console.log('Error handing digitalRead message: ' + ex);
-                }
-            });
-
-            socket.on('analogRead', function(m) {
-                var callback = function(resp) {
-                    resp = resp || {};
-                    if(m && m.seq) resp.seq = m.seq;
-                    socket.emit('analogRead', resp);
-                };
-                try {
-                    analogRead(m.pin, callback);
-                } catch(ex) {
-                    console.log('Error handing analogRead message: ' + ex);
-                }
-            });
-            
-            socket.on('shiftOut', function(m) {
-                var callback = function(resp) {
-                    resp = resp || {};
-                    if(m && m.seq) resp.seq = m.seq;
-                    socket.emit('shiftOut', resp);
-                };
-                try {
-                    shiftOut(m.dataPin, m.clockPin, m.bitOrder, m.val, callback);
-                } catch(ex) {
-                    console.log('Error handing shiftOut message: ' + ex);
-                }
-            });
-            
-            socket.on('attachInterrupt', function(m) {
-                var handler = function(resp) {
-                    resp = resp || {};
-                    if(m && m.seq) resp.seq = m.seq;
-                    socket.emit('attachInterrupt', resp);
-                };
-                try {
-                    shiftOut(m.pin, handler, m.mode);
-                } catch(ex) {
-                    console.log('Error handing attachInterrupt message: ' + ex);
-                }
-            });
-            
-            socket.on('echo', function(data) {
-                resp = {'data': data};
-                if(m && m.seq) resp.seq = m.seq;
-                socket.emit('echo', resp);
-            });
-
-            // provide client basic platform information
-            socket.on('init', function(m) {
-                var resp = {'platform': bone};
-                if(m && m.seq) resp.seq = m.seq;
-                socket.emit('init', resp);
-            });
+            }
+            var addSocketX = function(name) {
+                socket.on(name, function(m) { callMyFunc(name, m); });
+            };
+            addSocketX('digitalWrite');
+            addSocketX('digitalRead');
+            addSocketX('analogRead');
+            addSocketX('analogWrite');
+            addSocketX('pinMode');
+            addSocketX('shiftOut');
+            addSocketX('attachInterrupt');
+            addSocketX('getPinMode');
+            addSocketX('getEeproms');
+            addSocketX('platform');
+            addSocketX('echo');
+            addSocketX('shell');
 
             // call user-provided on-connect function
             if(typeof onconnect == 'function')

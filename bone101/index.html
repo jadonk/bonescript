@@ -166,7 +166,21 @@
  </div>
 
  <div class="slide">
-  <h1>Blinking an LED</h1>
+  <h1>Turn on an LED (on-board)</h1>
+  <h2>The "hello world" of hardware</h2>
+  <p>Set pin high: <span class="dynlink" onclick="eval(document.getElementById('led1').innerHTML)">
+   run</span></p>
+  <pre id="led1">
+pinMode(bone.USR3, 'out');
+digitalWrite(bone.USR3, 1);</pre>
+  <p>Set pin low: <span class="dynlink" onclick="eval(document.getElementById('led2').innerHTML)">
+   run</span></p>
+  <pre id="led2">
+digitalWrite(bone.USR3, 0);</pre>
+ </div>
+
+ <div class="slide">
+  <h1>Blinking an LED (external)</h1>
   <h2>The "hello world" of hardware</h2>
   <img align="right" src="blinkled.svg" height="75%" />
   <ul>

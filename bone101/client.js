@@ -50,16 +50,57 @@ var clearPin = function(pinname) {
 var initClient = function() {
     //try {
         var socket = io.connect('');
-        var view = false;
+        var myfuncs = {
+            'digitalWrite': [ 'pin', 'value' ],
+            'digitalRead': [ 'pin' ],
+            'analogRead': [ 'pin' ],
+            'analogWrite': [ 'pin', 'value', 'freq' ],
+            'pinMode': [ 'pin', 'direction', 'mux', 'pullup', 'slew' ],
+            'shiftOut': [ 'dataPin', 'clockPin', 'bitOrder', 'val' ],
+            'attachInterrupt': [ 'pin', 'mode' ],
+            'getPinMode': [ 'pin' ],
+            'getEeproms': [],
+            'platform': [],
+            'shell': [ 'command' ],
+            'echo': [ 'data' ]
+        };
+        for(var x in myfuncs) {
+            socket.on(x, function(data) {
+                seqcall(data);
+            });
+            var myargs = myfuncs[x];
+            var objString = '';
+            for(var y in myargs) {
+                if(isNaN(y)) continue;  // Need to find the source of this bug
+                objString += ' calldata.' + myargs[y] + ' = ' + myargs[y] + ';\n';
+            }
+            myargs.push('callback');
+            var argsString = myargs.join(', ');
+            var handyfunc = x + ' = ' +
+                'function (' + argsString + ') {\n' +
+                ' var calldata = {};\n' +
+                objString +
+                ' if(callback) {\n' +
+                '  seqnum++;\n' +
+                '  callbacks[seqnum] = callback;\n' +
+                '  calldata.seq = seqnum;\n' +
+                ' }\n' +
+                ' socket.emit("' + x + '", calldata);\n' +
+                '};\n';
+            eval(handyfunc);
+        }
+
         try {
+            var addedShellListner = false;
             $('#shell').terminal(
                 function(command, term) {
-                    socket.emit('shell', command);
-                    if(!view) {
-                        view = function(s) {
-                           term.echo(s);
-                        };
+                    if(!addedShellListener) {
+                        socket.on('shell', function(s) {
+                            term.echo(s);
+                        });
+                        addedShellListner = true;
                     }
+                    shell(command);
                 },
                 {
                     greetings: "BeagleBone bash shell",
@@ -82,13 +123,11 @@ var initClient = function() {
             return y.join(', ');
         }                
         js_term.term = function(command, term) {
-            if (command !== '') {
+            if(command !== '') {
                 var result = eval(command);
                 if (result !== undefined) {
                     term.echo(String(result));
                 }
-            } else {
-                term.echo('');
             }
         };
         js_term.args = {
@@ -102,37 +141,8 @@ var initClient = function() {
         } catch(ex2) {
             console.log("Unable to open javascript terminal window due to " + ex2);
         }
-        socket.on('connect', function() {
-            if(view) view('Connected\n');
-        });
-        socket.on('disconnect', function() {
-            if(view) view('Disconnected\n');
-        });
 
-        var myfuncs = ['digitalWrite', 'digitalRead', 'analogRead', 'analogWrite',
-            'pinMode', 'shiftOut', 'attachInterrupt', 'getPinMode',
-            'getEeproms', 'init', 'shell', 'echo'];
-        for(var x in myfuncs) {
-            if(x == myfuncs.length - 1) break; // this is a very odd bug
-            socket.on(myfuncs[x], function(data) {
-                seqcall(data);
-            });
-            var handyfunc = myfuncs[x] + ' = function(data, callback) {\n' +
-                                         ' if(callback) {\n' +
-                                         '  seqnum++;\n' +
-                                         '  callbacks[seqnum] = callback;\n' +
-                                         '  data.seq = seqnum;\n' +
-                                         ' }\n' +
-                                         ' socket.emit("' + myfuncs[x] + '", data);\n' +
-                                         '};\n';
-            eval(handyfunc);
-        }
-
-        socket.on('shell', function(m) {
-            if(view) view(m);
-        });
-
-        socket.on('getPinMode', function(data) {
+        var setMuxSelect = function(data) {
             var pinname = data.pin;
             if(data.options) {
                 var muxSelect = "<select class='mux'>\n";
@@ -150,22 +160,19 @@ var initClient = function() {
                 $("#" + pinname + "_name").html(muxSelect);
                 //console.log(pinname + ": " + pinMode);
             }
-        });
+        };
         
         //setup handler for receiving the strict with all the expansion pins from the server
-        socket.on('init', function(data) {
+        platform(function(data) {
             bone = data.platform;
             for(var pinname in bone) {
                 $("#" + pinname + "_name").html(bone[pinname].name);
                 if(bone[pinname].mux) {
-                    getPinMode({"pin":bone[pinname]});
+                    getPinMode(bone[pinname], setMuxSelect);
                 }
             }
         });
         
-        // Ask for the initialization data
-        init({});
-
         $("#i2c1").hover(
             function () {
                 printPin("P9_17");
@@ -202,7 +209,7 @@ var initClient = function() {
         );
 
     //} catch(ex) {
-    //    setTimeout(init, 100);
+    //    setTimeout(platform, 100);
     //}
 };
 
