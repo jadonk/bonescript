@@ -55,7 +55,7 @@ var init = function() {
                 {
                     greetings: "BeagleBone bash shell",
                     name: "bash",
-                    height: 400,
+                    height: 600,
                     prompt: 'bash>'
                 }
             );
@@ -85,7 +85,7 @@ var init = function() {
         js_term.args = {
                 greetings: 'Javascript Interpreter',
                 name: 'js_demo',
-                height: 400,
+                height: 600,
                 prompt: 'js>'
         };
         try {
@@ -106,7 +106,7 @@ var init = function() {
         socket.on('getPinMode', function(data) {
             var pinname = data.pin;
             if(data.options) {
-                var muxSelect = "<select style='width: 10em'>\n";
+                var muxSelect = "<select class='mux'>\n";
                 for(var option in data.options) {
                     if(isNaN(option)) continue;
                     var pinFunction = data.options[option];

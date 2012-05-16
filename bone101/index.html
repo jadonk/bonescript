@@ -3,7 +3,7 @@
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"> 
 <head> 
- <title>BeagleBoard 101</title> 
+ <title>BeagleBone 101</title> 
  <link rel="stylesheet" type="text/css" media="screen, projection, print" href="slidy.css" /> 
  <script src="client.js" charset="utf-8" type="text/javascript"></script> 
  <link rel="stylesheet" type="text/css" media="screen, projection, print" href="beagle.css" /> 
@@ -18,7 +18,7 @@
  </div> 
 
  <div class="slide cover"> 
-  <h1>BeagleBone 101</h1>
+  <h1>BeagleBoard 101</h1>
   <p>Latest slides available at:<a href="http://beagleboard.org/beagleboard101">
      http://beagleboard.org/beagleboard101
     </a>
@@ -28,25 +28,23 @@
    <ul>
     <li>What is a BeagleBone?</li>
     <li>How do you get software running on a BeagleBone?</li>
-    <li>How do you engage the BeagleBoard.org community?</li>
     <li>How can you perform native development with the provided
      Angstrom Distribution Cloud9 IDE demo image?</li>
-    <li>How do you discover other available community and commercial
-     software that might be of interest?</li>
+    <li>How do you engage the BeagleBoard.org community?</li>
    </ul>
   </p>
  </div>
 
  <div class="slide"> 
-  <h1>What is the BeagleBoard?</h1> 
+  <h1>What is BeagleBoard.org?</h1> 
   <h2><a href="http://beagleboard.org/static/flyer_latest.pdf">http://beagleboard.org/static/flyer_latest.pdf</a></h2>
   <p>BeagleBoard.org is an open hardware project featuring two designs:</p>
-  <ul class="incremental"> 
+  <ul> 
    <li><b>BeagleBoard-xM:</b> Open software desktop experience with extra MHz and extra memory</li>
    <li><b>BeagleBone:</b> Hardware I/O focus with single cable development experience</li>
   </ul>
   <p>BeagleBoard.org designs have a common philosophy:</p>
-  <ul class="incremental"> 
+  <ul> 
    <li><font size="+3" color="orange">B</font>ring your own peripherals
     <sup><small><a href="peripheral list">[1]</a></small></sup>
    </li> 
@@ -59,7 +57,7 @@
  </div> 
 
  <div class="slide">
-  <h1>BeagleBone Details</h1> 
+  <h1>BeagleBone details</h1> 
   <h2><a href="http://beagleboard.org/bone">http://beagleboard.org/bone</a></h2>
   <img src="bone_connectors.jpg" alt="BeagleBone image" align="right" width="70%" height="70%" />
   <ul>
@@ -70,23 +68,119 @@
    <li>Neworking via 10/100 Ethernet or USB</li>
    <li>4GB microSD card with Angstrom Distribution</li>
   </ul>
- </div> 
+ </div>
+ 
+ <div class="slide">
+  <h1>Starting point software</h1>
+  <h2><a href="http://beagleboard.org/project">http://beagleboard.org/project</a></h2>
+  <ul>
+    <li>BeagleBone<ul>
+     <li>Texas Instruments releases:
+      <a href="http://processors.wiki.ti.com/index.php/BeagleBone-Android-DevKit_Guide">
+       Android</a>,
+      <a href="http://software-dl.ti.com/dsps/dsps_public_sw/am_bu/sdk/AM335xSDK/latest/index_FDS.html">
+       Linux</a>,
+      <a href="http://processors.wiki.ti.com/index.php/StarterWare">
+       StarterWare (no OS)</a>
+     </li>
+     <li>Linux: 
+      <a href="http://beagleboard.org/angstrom">Angstrom</a>,
+      <a href="http://elinux.org/BeagleBoardUbuntu">Ubuntu</a>,
+      <a href="http://wiki.debian.org/InstallingDebianOn/TI/BeagleBone">Debian</a>,
+      <a href="http://archlinuxarm.org/platforms/armv7/beaglebone">ArchLinux</a>,
+      <a href="http://dev.gentoo.org/~armin76/arm/beaglebone/install.xml">Gentoo</a>,
+      <a href="http://wiki.sabayon.org/index.php?title=Hitchhikers_Guide_to_the_BeagleBone_(and_ARMv7a)">
+       Sabayon</a>,
+      <a href="http://www.zoobab.com/beaglebone">Buildroot</a>,
+      <a href="http://nerves-project.org/">Erlang</a>,
+      <a href="http://elinux.org/BeagleBoardFedora">Fedora</a>
+     </li>
+     <li>Other:
+      <a href="http://community.qnx.com/sf/wiki/do/viewPage/projects.bsp/wiki/TiAm335Beaglebone">QNX</a>,
+      <a href="http://people.freebsd.org/~dmarion/beaglebone/creating_bootable_sd_card/">FreeBSD</a>
+     </li>
+    </ul></li>
+    <li>BeagleBoard and BeagleBoard-xM<ul>
+     <li>Texas Instruments releases:
+      <a href="http://www.ti.com/tool/androidsdk-sitara">
+       Android (see AM3715)</a>,
+      <a href="http://www.ti.com/tool/LINUXEZSDK-SITARA">
+       Linux</a>,
+      <a href="http://processors.wiki.ti.com/index.php/DVSDK_4.x_FAQ#How_to_build_and_install_DVSDK_4.01_on_BeagleBoard-xM">
+       DVSDK</a>
+     </li>
+     <li>Linux: 
+      <a href="http://beagleboard.org/angstrom">Angstrom</a>,
+      <a href="http://elinux.org/BeagleBoardUbuntu">Ubuntu</a>,
+      <a href="http://elinux.org/BeagleBoardDebian">Debian</a>,
+      <a href="http://archlinuxarm.org/platforms/armv7/beagleboard">ArchLinux</a>
+      (<a href="http://archlinuxarm.org/platforms/armv7/beagleboard-xm">xM</a>),
+      <a href="https://github.com/Jach/squidly/wiki/Beagleboard-Gentoo-Install">
+       Gentoo</a>,
+      <a href="http://elinux.org/BeagleBoardFedora">Fedora</a>
+     </li>
+     <li>Other:
+      <a href="http://support.mpcdata.com/ti/">Windows Embedded</a>,
+      <a href="http://community.qnx.com/sf/wiki/do/viewPage/projects.bsp/wiki/Bspdown_ti_omap_3530_evm">QNX</a>
+      (<a href="http://community.qnx.com/sf/wiki/do/viewPage/projects.bsp/wiki/Bspdown_ti_omap_3730_beagle">xM</a>), 
+      <a href="http://www.riscosopen.org/wiki/documentation/show/How%20to%20get%20started%20with%20a%20BeagleBoard">
+       RISC OS</a>, 
+      <a href="http://code.google.com/p/puppybits/">Puppy Bits</a>, 
+      <a href="http://sourceforge.net/apps/mediawiki/wildducks/index.php?title=Main_Page">Symbian</a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </div>
+ 
+ </div>
+  <div class="slide">
+  <h1>Programming an SD card</h1> 
+  <h2>&nbsp;</h2>
+  <ul>
+   <li>Thanks to booting from SD cards, the platform is very friendly to getting
+    back to a known starting point</li>
+   <li>First, make sure you have an appropriately sized microSD card and an 
+    adapter for your PC</li>
+   <li>Linux and Mac OS X
+    <ul>
+     <li>Learn to use '<a href="http://linux.die.net/man/1/dd">dd</a>' and
+      '<a href="http://linux.die.net/man/1/gunzip">gzip</a>'</li>
+     <li>Know which /dev/sdX or /dev/diskX is your SD card through use of
+      '<a href="http://linux.die.net/man/1/dmesg">dmesg</a>'</li>
+     <li>Example<br /><pre>xzcat XXX.img.xz | sudo dd of=/dev/sdX bs=64M</pre></li>
+    </ul>
+   </li>
+   <li>Windows
+    <ul>
+     <li>Use <a href="http://http://www.7-zip.org/">7-zip</a> 
+      to decompress the XXX.img.gz file</li>
+     <li>Use <a href="https://wiki.ubuntu.com/Win32DiskImager">
+      Ubuntu Win32DiskImager</a> to write it to your microSD card</li>
+    </ul>
+   </li>
+  </ul>
+  <p align="center">
+   <img src="imager.png" height="150px" />
+  </p>
+ </div>
 
  <div class="slide"> 
   <h1>Services running on the BeagleBone</h1>
   <h2>&nbsp;</h2>
   <ul>
    <li>Some web-based services running on your board to be explored<ul>
-    <li>Write applications directly in the browser:
-     <span class='dynlink' onclick='location.href="http://"+window.location.hostname+":3000"'>Cloud9 IDE</span>
+    <li>
+     <span class='dynlink' onclick='location.href="http://"+window.location.hostname+":3000"'>
+      Cloud9 IDE</span>
+      &lt;-- Write applications directly in the browser
     </li>
-    <li><del>Access the Linux shell:
-     <span class='dynlink' onclick='location.href="https://"+window.location.hostname'>GateOne</span>
-    </del></li>
-   </ul></li>
-   <li>On my board, I've hacked in a few more for future releases<ul>
-    <li><a href="/shell.html">BeagleBone BASH shell</a></li>
-    <li><a href="/js_term.html">JavaScript terminal</a></li>
+    <li><a href="/shell.html">Shell</a>
+     &lt;-- Issue commands to bash on the BeagleBone from the browser
+    </li>
+    <li><a href="/js_term.html">JavaScript terminal</a>
+     &lt;-- Interactively execute JavaScript in the browser
+    </li>
    </ul></li>
   </ul>
   <p align="center">
@@ -106,7 +200,7 @@
 
  <div class="slide"> 
   <h1>Pinmux</h1>
-  <center><table>
+  <center><table class="pinmux">
   <thead>
       <tr><td></td><td colspan="2">P9</td><td></td><td></td><td></td><td colspan="2">P8</td><td></td></tr>
       <tr><td></td><td>1</td><td>2</td><td></td><td></td><td></td><td>1</td><td>2</td><td></td></tr>
@@ -187,47 +281,6 @@
  </div>
 
  <div class="slide">
-  <h1>Programming an SD card</h1> 
-  <h2>&nbsp;</h2>
-  <ul>
-   <li>First, make sure you have an appropriately size microSD card and an adapter for your PC</li>
-   <li>Linux and Mac OS X
-    <ul>
-     <li>Learn to use '<a href="http://linux.die.net/man/1/dd">dd</a>' and '<a href="http://linux.die.net/man/1/gunzip">gzip</a>'</li>
-     <li>Know which /dev/sdX or /dev/diskX is your SD card through use of '<a href="http://linux.die.net/man/1/dmesg">dmesg</a>'</li>
-     <li>Example<br /><pre>zcat XXX.img.gz | sudo dd of=/dev/sdX bs=64M</pre></li>
-    </ul>
-   </li>
-   <li>Windows
-    <ul>
-     <li>Use <a href="http://http://www.7-zip.org/">7-zip</a> to decompress the XXX.img.gz file</li>
-     <li>Use <a href="https://wiki.ubuntu.com/Win32DiskImager">Ubuntu Win32DiskImager</a> to write it to your microSD card</li>
-    </ul>
-   </li>
-  </ul>
-  <p align="center">
-   <img src="imager.png" height="150px" />
-  </p>
- </div>
-
- <div class="slide">
-  <h1>Finding pre-configured SD card images</h1> 
-  <h2>&nbsp;</h2>
-  <ul>
-   <li>Checkout these sources for BeagleBoard/BeagleBoard-xM Linux images (that may likely soon include BeagleBone images):
-    <ul>
-     <li><a href="http://www.angstrom-distribution.org/narcissus">Angstrom Narcissus Image Assembler</a></li>
-     <li><a href="http://elinux.org/BeagleBoardUbuntu">BeagleBoard Ubuntu</a></li>
-     <li><a href="http://www.ti.com/tool/androidsdk-sitara">Rowboat (Android)</a></li>
-     <li><a href="http://releases.linaro.org/">Linaro</a></li>
-    </ul>
-   <li>Can might also find images for Windows Compact Embedded 7, QNX, RISC OS, Puppy Bits, Symbian, Debian, Gentoo, Fedora, ...</li>
-   <li>Check out the <a href="http://beagleboard.org/project">registered projects</a></li>
-   <li>Encourage project owners to supply SD card images</li>
-  </ul>
- </div>
-
- <div class="slide">
   <h1>Why work with community?</h1> 
   <h2>&nbsp;</h2>
   <ul>
@@ -273,7 +326,8 @@
 
  <div class="slide">
   <h1>Engaging the community</h1> 
-  <h2><a href="http://catb.org/~esr/faqs/smart-questions.html">Ask questions the smart way</a></h2>
+  <h2><a href="http://catb.org/~esr/faqs/smart-questions.html">Ask questions the 
+   smart way</a></h2>
   <ul>
    <li>Before you ask
     <ul>
@@ -287,7 +341,8 @@
      <li>Question should be easy to answer for someone who knows</li>
      <li>Detail your objective, what you tried and the results</li>
      <li>Use meaningful and specific subject headers</li>
-     <li>Using <a href="http://beagleboard.org/chat">the on-line chat</a> can help you formulate your question for
+     <li>Using <a href="http://beagleboard.org/chat">the on-line chat</a> can 
+      help you formulate your question for
       <a href="http://beagleboard.org/discuss">the mailing list</a>
      </li>
     </ul>
@@ -353,7 +408,7 @@
      <li><a href="https://github.com/beagleboard/linux">BeagleBoard-patched kernels</a></li>
     </ul>
    </li>
-   <li><a href="http://git.angstrom-distribution.org/cgi-bin/cgit.cgi/meta-texasinstruments/tree/README">OE-core based BSP</a>
+   <li><a href="http://git.yoctoproject.org/cgit/cgit.cgi/meta-ti/tree/README">OE-core based BSP</a>
    </li>
   </ul>
  </div> 
@@ -365,6 +420,7 @@
    <li><a href="http://arowboat.org">Android Rowboat</a></li>
    <li><a href="http://linaro.org">Linaro</a></li>
    <li><a href="http://yoctoproject.org">Yocto Project</a></li>
+   <li><a href="http://www.angstrom-distribution.org">Angstrom</a></li>
   </ul>
  </div>
 
@@ -383,7 +439,8 @@
      <li>with Texas Instruments, Freescale, IBM, Samsung and ST Ericsson</li>
     </ul>
    </li>
-   <li>Focused on improving core open source tools and components for ARM Cortex-A processors
+   <li>Focused on improving core open source tools and components for ARM 
+    Cortex-A processors
     <ul>
      <li>Compiler, debugger, profiler, kernel and middleware</li>
      <li>Validation of efforts done with Ubuntu and Android</li>
@@ -398,21 +455,26 @@
   <h1>Yocto</h1>
   <h2><a href="http://yoctoproject.org">www.yoctoproject.org</a></h2>
   <ul>
-   <li><a href="http://yoctoproject.org">Yocto</a> is a Linux Foundation project started in
+   <li><a href="http://yoctoproject.org">Yocto</a> is a Linux Foundation project
+    started in
     <a href="http://www.marketwire.com/press-release/the-linux-foundation-announces-yocto-project-steering-group-and-release-10-1423707.htm">
     April 2011</a>
     <ul>
-     <li>"and is an open source collaboration project that provides templates, tools and methods to help you
-      create custom Linux-based systems for embedded products regardless of the hardware architecture."</li>
+     <li>"and is an open source collaboration project that provides templates, 
+      tools and methods to help you create custom Linux-based systems for 
+      embedded products regardless of the hardware architecture."</li>
     </ul>
    </li>
-   <li>The advisory board includes members from several key silicon vendors, embedded Linux suppliers and the OpenEmbedded community
+   <li>The advisory board includes members from several key silicon vendors, 
+    embedded Linux suppliers and the OpenEmbedded community
     <ul>
-     <li>including representation from <a href="http://www.yoctoproject.org/about/governance/advisory-board">
+     <li>including representation from 
+      <a href="http://www.yoctoproject.org/about/governance/advisory-board">
       Texas Instruments, Intel, Mentor Graphics, MontaVista, TimeSys and Dell</a></li>
     </ul>
    </li>
-   <li>Building on OpenEmbedded technology and providing board support package (BSP) development tools for embedded platforms
+   <li>Building on OpenEmbedded technology and providing board support package 
+    (BSP) development tools for embedded platforms
     <ul>
      <li>Committed to support ARM, PPC, MIPS, x86 and x86-64 ISAs</li>
      <li>Aligned with the OpenEmbedded community through OE-core</li>
@@ -426,7 +488,8 @@
   <h1>Thanks!</h1> 
   <h2>&nbsp;</h2> 
   <ul>
-   <li>There's more to come.  Please join us in improving this project for the benefit of both yourself and others.</li>
+   <li>There's more to come.  Please join us in improving this project for the 
+    benefit of both yourself and others.</li>
   </ul>
  </div>
 </body>

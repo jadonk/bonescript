@@ -1,10 +1,25 @@
-table {
-	font-size: 12pt;
-    line-height: 80%;
+table.pinmux {
+    font-size: 60%;
+    line-height: 120%;
+    padding-top: 0px;
+    padding-bottom: 0px;
 }
+
+table.pinmux td {
+    padding: 0;
+    height: 0.6em;
+}
+
+select.mux {
+    width: 10em;
+    line-height: 60%;
+    font-size: 70%;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
 td.pin {
-	width: 1.0em;
-	height: 1.0em;
+	width: 0.5em;
 	background-color:#EAF2D3;
 	text-align: center;
 }
@@ -15,22 +30,6 @@ td.spacer {
 
 td.pin:hover {
 	background-color:#FF0000;
-}
-
-.butt { 
-        color: #fff;
-        background: #bada55;
-        padding: .5em .75em;
-        font-weight: bold;
-        text-decoration: none;
-        border-radius: 5px;
-        margin: .5em .25em;
-        line-height: 1.5em;
-        display: inline-block;
-}
-
-.butt:hover {
-        color: #fff;
 }
 
 div.capesvg {
