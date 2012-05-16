@@ -110,20 +110,21 @@ var initClient = function() {
         });
 
         var myfuncs = ['digitalWrite', 'digitalRead', 'analogRead', 'analogWrite',
-            'pinMode', 'shiftOut', 'attachInterrupt', 'echo', 'getPinMode', 'init',
-            'getEeproms', 'shell'];
+            'pinMode', 'shiftOut', 'attachInterrupt', 'getPinMode',
+            'getEeproms', 'init', 'shell', 'echo'];
         for(var x in myfuncs) {
+            if(x == myfuncs.length - 1) break; // this is a very odd bug
             socket.on(myfuncs[x], function(data) {
                 seqcall(data);
             });
-            var handyfunc = myfuncs[x] + ' = function(data, callback) {';
-            handyfunc    += ' if(callback) {';
-            handyfunc    += '  seqnum++;';
-            handyfunc    += '  callbacks[seqnum] = callback;';
-            handyfunc    += '  data.seq = seqnum;';
-            handyfunc    += ' }';
-            handyfunc    += ' socket.emit("' + myfuncs[x] + '", data);';
-            handyfunc    += '};';
+            var handyfunc = myfuncs[x] + ' = function(data, callback) {\n' +
+                                         ' if(callback) {\n' +
+                                         '  seqnum++;\n' +
+                                         '  callbacks[seqnum] = callback;\n' +
+                                         '  data.seq = seqnum;\n' +
+                                         ' }\n' +
+                                         ' socket.emit("' + myfuncs[x] + '", data);\n' +
+                                         '};\n';
             eval(handyfunc);
         }
 

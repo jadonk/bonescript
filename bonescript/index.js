@@ -584,7 +584,7 @@ if(socketio.exists) {
             // send eeprom info
             socket.on('getEeproms', function(m) {
                 var callback = function(resp) {
-                    if(m.seq) resp.seq = m.seq;
+                    if(m && m.seq) resp.seq = m.seq;
                     socket.emit('getEeproms', resp);
                 };
                 try {
@@ -597,7 +597,7 @@ if(socketio.exists) {
             // listen for requests and reads the debugfs entry async
             socket.on('getPinMode', function(m) {
                 var callback = function(resp) {
-                    if(m.seq) resp.seq = m.seq;
+                    if(m && m.seq) resp.seq = m.seq;
                     socket.emit('getPinMode', resp);
                 };
                 try {
@@ -616,7 +616,8 @@ if(socketio.exists) {
 
             socket.on('pinMode', function(m) {
                 var callback = function(resp) {
-                    if(m.seq) resp.seq = m.seq;
+                    resp = resp || {};
+                    if(m && m.seq) resp.seq = m.seq;
                     socket.emit('pinMode', resp);
                 };
                 try {
@@ -628,7 +629,8 @@ if(socketio.exists) {
 
             socket.on('digitalWrite', function(m) {
                 var callback = function(resp) {
-                    if(m.seq) resp.seq = m.seq;
+                    resp = resp || {};
+                    if(m && m.seq) resp.seq = m.seq;
                     socket.emit('digitalWrite', resp);
                 };
                 try {
@@ -640,7 +642,8 @@ if(socketio.exists) {
             
             socket.on('digitalRead', function(m) {
                 var callback = function(resp) {
-                    if(m.seq) resp.seq = m.seq;
+                    resp = resp || {};
+                    if(m && m.seq) resp.seq = m.seq;
                     socket.emit('digitalRead', resp);
                 };
                 try {
@@ -652,7 +655,8 @@ if(socketio.exists) {
 
             socket.on('analogRead', function(m) {
                 var callback = function(resp) {
-                    if(m.seq) resp.seq = m.seq;
+                    resp = resp || {};
+                    if(m && m.seq) resp.seq = m.seq;
                     socket.emit('analogRead', resp);
                 };
                 try {
@@ -664,7 +668,8 @@ if(socketio.exists) {
             
             socket.on('shiftOut', function(m) {
                 var callback = function(resp) {
-                    if(m.seq) resp.seq = m.seq;
+                    resp = resp || {};
+                    if(m && m.seq) resp.seq = m.seq;
                     socket.emit('shiftOut', resp);
                 };
                 try {
@@ -676,7 +681,8 @@ if(socketio.exists) {
             
             socket.on('attachInterrupt', function(m) {
                 var handler = function(resp) {
-                    if(m.seq) resp.seq = m.seq;
+                    resp = resp || {};
+                    if(m && m.seq) resp.seq = m.seq;
                     socket.emit('attachInterrupt', resp);
                 };
                 try {
@@ -687,14 +693,15 @@ if(socketio.exists) {
             });
             
             socket.on('echo', function(data) {
-                if(m.seq) resp.seq = m.seq;
-                socket.emit('echo', data);
+                resp = {'data': data};
+                if(m && m.seq) resp.seq = m.seq;
+                socket.emit('echo', resp);
             });
 
             // provide client basic platform information
             socket.on('init', function(m) {
                 var resp = {'platform': bone};
-                if(m.seq) resp.seq = m.seq;
+                if(m && m.seq) resp.seq = m.seq;
                 socket.emit('init', resp);
             });
 
