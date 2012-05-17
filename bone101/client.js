@@ -20,6 +20,15 @@ bone =
     P8_2: { name: "DGND" },
 };
 
+var callbacks = {};
+var seqnum = 0;
+var seqcall = function(data) {
+    if(data.seq && (typeof callbacks[data.seq] == 'function')) {
+        callbacks[data.seq](data);
+        delete callbacks[data.seq];
+    }
+}
+
 var printPin = function(pinname) {
     $("#" + pinname).css("background-color", "#000000");
 }
@@ -38,7 +47,7 @@ var clearPin = function(pinname) {
 //  w3c_slidy.add_listener(document, 'keypress', w3c_slidy.key_press);
 //}
 
-var init = function() {
+var initClient = function() {
     //try {
         var socket = io.connect('');
         var view = false;
@@ -99,6 +108,25 @@ var init = function() {
         socket.on('disconnect', function() {
             if(view) view('Disconnected\n');
         });
+
+        var myfuncs = ['digitalWrite', 'digitalRead', 'analogRead', 'analogWrite',
+            'pinMode', 'shiftOut', 'attachInterrupt', 'echo', 'getPinMode', 'init',
+            'getEeproms', 'shell'];
+        for(var x in myfuncs) {
+            socket.on(myfuncs[x], function(data) {
+                seqcall(data);
+            });
+            var handyfunc = myfuncs[x] + ' = function(data, callback) {';
+            handyfunc    += ' if(callback) {';
+            handyfunc    += '  seqnum++;';
+            handyfunc    += '  callbacks[seqnum] = callback;';
+            handyfunc    += '  data.seq = seqnum;';
+            handyfunc    += ' }';
+            handyfunc    += ' socket.emit("' + myfuncs[x] + '", data);';
+            handyfunc    += '};';
+            eval(handyfunc);
+        }
+
         socket.on('shell', function(m) {
             if(view) view(m);
         });
@@ -124,18 +152,18 @@ var init = function() {
         });
         
         //setup handler for receiving the strict with all the expansion pins from the server
-        socket.on('init', function (data) {
+        socket.on('init', function(data) {
             bone = data.platform;
             for(var pinname in bone) {
                 $("#" + pinname + "_name").html(bone[pinname].name);
                 if(bone[pinname].mux) {
-                    socket.emit('getPinMode', {"pin":bone[pinname]});
+                    getPinMode({"pin":bone[pinname]});
                 }
             }
         });
         
         // Ask for the initialization data
-        socket.emit('init','');
+        init({});
 
         $("#i2c1").hover(
             function () {
@@ -188,7 +216,7 @@ var loadScripts = function() {
         var scriptObj = head.appendChild(script);
         scriptObj.onload = loadScripts;
     } else {
-        init();
+        initClient();
     }
 };
 
