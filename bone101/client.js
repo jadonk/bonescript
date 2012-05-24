@@ -10,7 +10,8 @@ var scriptUrls = [
     '/jquery.terminal.js',          // http://terminal.jcubic.pl/js/jquery.terminal-0.4.12.min.js
     '/jquery.mousewheel.js',        // http://terminal.jcubic.pl/js/jquery.mousewheel-min.js
     '/eeprom-web.js',
-    '/autoadvance.js'
+    '/autoadvance.js',
+    '/processing.js'
 ];
 
 // Placeholder to get filled in from bonescript via socket.io
@@ -49,6 +50,71 @@ var clearPin = function(pinname) {
 
 var initClient = function() {
     //try {
+        var canvas = document.getElementById("canvas1");
+        var graphDataSize = 50;
+        window.graphData = new Array(graphDataSize);
+        for(var i=0; i<graphDataSize; i++) {
+            window.graphData[i] = 0;
+        }
+        var sketchProc = function(p) {
+            p.size(600, 250);
+
+            // variables referenced elsewhere
+            window.height = p.height;
+
+            // variables that might get updated
+            window.rangeLow = 0;
+            window.rangeHigh = 1;
+            window.scaleY = window.height / (window.rangeHigh - window.rangeLow);
+
+            // local variables
+            var stepX = p.width / (graphDataSize - 1);
+            var centerY = window.height / 2;
+
+            p.noLoop();
+            p.draw = function() {
+                // erase background
+                p.background(224);
+
+                // draw axis
+                p.stroke(25);
+                p.strokeWeight(1);
+                p.line(0, centerY, p.width, centerY);
+                
+                // draw graph
+                p.stroke(0);
+                p.strokeWeight(3);
+                //p.line(0, centerY+1, p.width, centerY+1);
+                var lastX = 0, nextX = 0, lastY, nextY;
+                for(var point in window.graphData) {
+                    nextY = ((window.rangeHigh - window.graphData[point]) * scaleY);
+                    if(point != 0) {
+                        p.line(lastX, lastY, nextX, nextY);
+                        lastX += stepX;
+                    }
+                    nextX += stepX;
+                    lastY = nextY;
+                }
+            };
+        }
+        var processing = new Processing(canvas, sketchProc);
+        var graphDraw = function(data) {
+            var myData = parseFloat(data);
+            for(var i=0; i<graphDataSize-1; i++) {
+                window.graphData[i] = window.graphData[i+1];
+            }
+            window.graphData[i] = myData;
+            if (myData > rangeHigh) {
+                rangeHigh = myData;
+                window.scaleY = window.height / (window.rangeHigh - window.rangeLow);
+            }
+            if (myData < rangeLow) {
+                rangeLow = myData;
+                window.scaleY = window.height / (window.rangeHigh - window.rangeLow);
+            }
+            processing.redraw();
+        }
+
         var socket = io.connect('');
         var myfuncs = {
             'digitalWrite': [ 'pin', 'value' ],
