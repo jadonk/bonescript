@@ -1,6 +1,7 @@
 ===============
 Getting started
 ===============
+
 Information on the language is available at http://nodejs.org.
 
 To get started, try running the blinkled.js app.
@@ -18,6 +19,40 @@ I expect to have something that provides most of the Arduino functions and is
 generally usable by Summer 2012.  The use of Arduino functions is for both
 familiarity and because they represent a set of functions that new users have
 been able to comprehend and utilize for interesting things.
+
+
+===========
+Boilerplate
+===========
+
+Currently, some boilerplate is required around all Bonescript applications:
+
+var bb = require('bonescript');
+
+setup = function() {
+  // Your setup function
+}
+
+loop = function() {
+ // Your function to run in a loop
+}
+
+bb.run();
+
+
+===
+API
+===
+
+analogRead(pin, [callback])
+analogWrite(pin, value, [freq], [callback])
+attachInterrupt(pin, mode, [callback])
+digitalRead(pin, [callback])
+digitalWrite(pin, value, [callback])
+getEeproms([callback])
+getPinMode(pin, [callback])
+pinMode(pin, direction, [mux], [pullup], [slew], [callback])
+shiftOut(dataPin, clockPin, bitOrder, val, [callback])
 
 
 ===================
