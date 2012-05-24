@@ -31,7 +31,7 @@ setup = function() {
     pinMode(inputPin, INPUT);
     pinMode(outputPin, OUTPUT);
     digitalWrite(outputPin, LOW);
-    attachInterrupt(inputPin, handler, CHANGE);
+    attachInterrupt(inputPin, CHANGE, handler);
     setTimeout(startToggle, 500);  // give some time for the handler to spawn
 };
 
