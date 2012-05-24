@@ -61,18 +61,30 @@
   <h2><a href="http://beagleboard.org/bone">http://beagleboard.org/bone</a></h2>
   <img src="bone_connectors.jpg" alt="BeagleBone image" align="right" width="70%" height="70%" />
   <ul>
-   <li>720MHz super-scalar ARM Cortex-A8 CPU (1,450 DMIPS)</li>
-   <li>SGX530 3D graphics accelerator</li>
-   <li>Single USB cable for power, debug and device</li>
-   <li>Expansion via USB host and 2 46-pin connectors</li>
-   <li>Neworking via 10/100 Ethernet or USB</li>
-   <li>4GB microSD card with Angstrom Distribution</li>
+   <li>Processor<ul>
+    <li>720MHz super-scalar ARM Cortex-A8&nbsp<font size="-3">(1,450 DMIPS)</font></li>
+    <li>3D graphics</li>
+   </ul></li>
+   </ul></li>
+   <li>Connectivity<ul>
+    <li>USB client: power, debug and device</li>
+    <li>USB host, Ethernet</li>
+    <li>2x46 pin headers<ul>
+     <li>2xI2C, 5xUART, SPI, CAN, GPIO</li>
+    </ul></li>
+   </ul></li>
+   </ul></li>
+   <li>Software<ul>
+    <li>4GB microSD card with Angstrom Distribution</li>
+   </ul></li>
   </ul>
  </div>
  
  <div class="slide">
   <h1>Starting point software</h1>
   <h2><a href="http://beagleboard.org/project">http://beagleboard.org/project</a></h2>
+  <p>Your BeagleBone is currently running the Angstrom Distribution.  Below are links to upgrades
+   for Angstrom and various other starting points you might choose for your project.</p>
   <ul>
     <li>BeagleBone<ul>
      <li>Texas Instruments releases:
@@ -145,7 +157,7 @@
    <li>Linux and Mac OS X
     <ul>
      <li>Learn to use '<a href="http://linux.die.net/man/1/dd">dd</a>' and
-      '<a href="http://linux.die.net/man/1/gunzip">gzip</a>'</li>
+      '<a href="http://linux.die.net/man/1/xzcat">xzcat</a>'</li>
      <li>Know which /dev/sdX or /dev/diskX is your SD card through use of
       '<a href="http://linux.die.net/man/1/dmesg">dmesg</a>'</li>
      <li>Example<br /><pre>xzcat XXX.img.xz | sudo dd of=/dev/sdX bs=64M</pre></li>
@@ -157,7 +169,7 @@
    <li>Windows
     <ul>
      <li>Use <a href="http://http://www.7-zip.org/">7-zip</a> 
-      to decompress the XXX.img.gz file</li>
+      to decompress the XXX.img.xz file</li>
      <li>Use <a href="https://wiki.ubuntu.com/Win32DiskImager">
       Ubuntu Win32DiskImager</a> to write it to your microSD card</li>
     </ul>
@@ -168,7 +180,9 @@
  <div class="slide">
   <h1>Turn on an LED (on-board)</h1>
   <h2>The "hello world" of hardware</h2>
-  <p>The links below are live and will impact the USR3 LED on your BeagleBone.</p>
+  <p>The links below are live and will impact the USR3 LED on your BeagleBone. The exact code used
+   in the browser is below and will send messages to your board using <a href="http://socket.io/">
+   Socket.IO</a>.</p>
   <p>Set pin high: <span class="dynlink" onclick="eval(document.getElementById('led1').innerHTML)">
    run</span></p>
   <pre id="led1">
@@ -180,26 +194,14 @@ digitalWrite(bone.USR3, 1);</pre>
 digitalWrite(bone.USR3, 0);</pre>
  </div>
 
- <div class="slide">
-  <h1>Blinking an LED (external)</h1>
-  <h2>The "hello world" of hardware</h2>
-  <embed src="blinkled.svg" align="right" />
-  <ul>
-   <li>Connect resistor lead to P8_1 (GND)</li>
-   <li>Connect other lead to short LED lead</li>
-   <li>Connect long LED lead to P8_3</li>
-   <li>Launch the
-     <span class='dynlink' onclick='location.href="http://"+window.location.hostname+":3000"'>
-      Cloud9 IDE</span>
-   </li>
-   <li>Run the 'blinkled.js' application</li>
-  </ul>
- </div>
-
  <div class="slide"> 
   <h1>Services running on the BeagleBone</h1>
   <h2>Default web services ready for you to try</h2>
   <img align="right" src="beaglebone_small.png" height="400px" />
+  <p>The interactivity presented on the previous slide is provided through a set of services
+   running on your BeagleBone.  You can experiment with some of these services below.  The
+   immediately following slides will provide you with some dynamic information about your
+   BeagleBone.</p>
   <ul>
    <li>
     <span class='dynlink' onclick='location.href="http://"+window.location.hostname+":3000"'>
@@ -211,10 +213,10 @@ digitalWrite(bone.USR3, 0);</pre>
      Gate One</span>
      <ul><li>Execute ssh (terminal) directly in the browser</li></ul>
    </li>
-   <li><a href="/js_term.html">JavaScript terminal</a>
+   <li><a href="/js_term.html">JavaScript terminal <small>(bone101)</small></a>
     <ul><li>Interactively execute JavaScript in the browser</li></ul>
    </li>
-   <li><a href="/shell.html">Shell</a>
+   <li><a href="/shell.html">Shell <small>(bone101)</small></a>
     <ul><li>Issue commands to bash using JQuery Terminal</li></ul>
    </li>
   </ul>
@@ -231,7 +233,7 @@ digitalWrite(bone.USR3, 0);</pre>
  </div>
 
  <div class="slide"> 
-  <h1>Pinmux</h1>
+  <h1>Expansion header state</h1>
   <center><table class="pinmux">
   <thead>
       <tr><td></td><td colspan="2">P9</td><td></td><td></td><td></td><td colspan="2">P8</td><td></td></tr>
@@ -310,6 +312,22 @@ digitalWrite(bone.USR3, 0);</pre>
   <td class='spacer'></td>
   <td id='P8_45_name'></td><td id='P8_45' class='pin'></td><td id='P8_46' class='pin'></td><td id='P8_46_name'></td></tr>
   </table></center>
+ </div>
+
+ <div class="slide">
+  <h1>Blinking an LED (external)</h1>
+  <h2>The "hello world" of hardware</h2>
+  <embed src="blinkled.svg" align="right" />
+  <ul>
+   <li>Connect resistor lead to P8_1 (GND)</li>
+   <li>Connect other lead to short LED lead</li>
+   <li>Connect long LED lead to P8_3</li>
+   <li>Launch the
+     <span class='dynlink' onclick='location.href="http://"+window.location.hostname+":3000"'>
+      Cloud9 IDE</span>
+   </li>
+   <li>Run the 'blinkled.js' application</li>
+  </ul>
  </div>
 
  <div class="slide">
@@ -453,6 +471,7 @@ digitalWrite(bone.USR3, 0);</pre>
    <li><a href="http://linaro.org">Linaro</a></li>
    <li><a href="http://yoctoproject.org">Yocto Project</a></li>
    <li><a href="http://www.angstrom-distribution.org">Angstrom</a></li>
+   <li><a href="http://github.com/jadonk/bonescript">Bonescript</a></li>
   </ul>
  </div>
 
