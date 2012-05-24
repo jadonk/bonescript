@@ -49,7 +49,7 @@ var clearPin = function(pinname) {
 //}
 
 var initClient = function() {
-    //try {
+    try {
         var canvas = document.getElementById("canvas1");
         var graphDataSize = 50;
         window.graphData = new Array(graphDataSize);
@@ -114,7 +114,11 @@ var initClient = function() {
             }
             processing.redraw();
         }
+    } catch(ex) {
+        console.log('Unable to attach Processing.JS to canvas because ' + ex);
+    }
 
+    try {
         var socket = io.connect('');
         var myfuncs = {
             'digitalWrite': [ 'pin', 'value' ],
@@ -238,45 +242,44 @@ var initClient = function() {
                 }
             }
         });
+    } catch(ex) {
+        console.log("Unable to attach socket functions due to " + ex);
+    }
         
-        $("#i2c1").hover(
-            function () {
-                printPin("P9_17");
-                printPin("P9_18");
-            },
-            function () {
-                clearPin("P9_17");
-                clearPin("P9_18");
-            }
-        );
+    $("#i2c1").hover(
+        function () {
+            printPin("P9_17");
+            printPin("P9_18");
+        },
+        function () {
+            clearPin("P9_17");
+            clearPin("P9_18");
+        }
+    );
 
-        $("#i2c2").hover(
-            function () {
-                printPin("P9_19");
-                printPin("P9_20");
-            },
-            function () {
-                clearPin("P9_19");
-                clearPin("P9_20");
-            }
-        );
+    $("#i2c2").hover(
+        function () {
+            printPin("P9_19");
+            printPin("P9_20");
+        },
+        function () {
+            clearPin("P9_19");
+            clearPin("P9_20");
+        }
+    );
 
-        $("#spi1").hover(
-            function () {
-                printPin("P9_28");
-                printPin("P9_29");
-                printPin("P9_30");
-            },
-            function () {
-                clearPin("P9_28");
-                clearPin("P9_29");
-                clearPin("P9_30");
-            }
-        );
-
-    //} catch(ex) {
-    //    setTimeout(platform, 100);
-    //}
+    $("#spi1").hover(
+        function () {
+            printPin("P9_28");
+            printPin("P9_29");
+            printPin("P9_30");
+        },
+        function () {
+            clearPin("P9_28");
+            clearPin("P9_29");
+            clearPin("P9_30");
+        }
+    );
 };
 
 // based loosely on http://stackoverflow.com/questions/950087/include-javascript-file-inside-javascript-file

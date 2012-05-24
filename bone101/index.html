@@ -168,6 +168,7 @@
  <div class="slide">
   <h1>Turn on an LED (on-board)</h1>
   <h2>The "hello world" of hardware</h2>
+  <p>The links below are live and will impact the USR3 LED on your BeagleBone.</p>
   <p>Set pin high: <span class="dynlink" onclick="eval(document.getElementById('led1').innerHTML)">
    run</span></p>
   <pre id="led1">
@@ -187,6 +188,11 @@ digitalWrite(bone.USR3, 0);</pre>
    <li>Connect resistor lead to P8_1 (GND)</li>
    <li>Connect other lead to short LED lead</li>
    <li>Connect long LED lead to P8_3</li>
+   <li>Launch the
+     <span class='dynlink' onclick='location.href="http://"+window.location.hostname+":3000"'>
+      Cloud9 IDE</span>
+   </li>
+   <li>Run the 'blinkled.js' application</li>
   </ul>
  </div>
 
