@@ -199,7 +199,7 @@ var initClient = function() {
         js_term.args = {
                 greetings: 'Javascript Interpreter',
                 name: 'js_demo',
-                height: 600,
+                height: 300,
                 prompt: 'js>'
         };
         try {
