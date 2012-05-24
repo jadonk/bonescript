@@ -1,4 +1,4 @@
-var bb = require('./bonescript');
+var bb = require('bonescript');
 
 setup = function() {
     var server = new bb.Server(80, "bone101");
