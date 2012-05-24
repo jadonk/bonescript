@@ -47,6 +47,7 @@ API
 analogRead(pin, [callback])
 analogWrite(pin, value, [freq], [callback])
 attachInterrupt(pin, mode, [callback])
+delay(milliseconds, [callback])
 digitalRead(pin, [callback])
 digitalWrite(pin, value, [callback])
 getEeproms([callback])
