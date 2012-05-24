@@ -616,8 +616,6 @@ if(socketio.exists) {
                         }
                     }
                     callargs.push(callback);
-                    var toeval = name + '(' + callargs + ');';
-                    //console.log('Calling ' + toeval);
                     myfuncs[name].func.apply(this, callargs);
                 } catch(ex) {
                     console.log('Error handing ' + name + ' message: ' + ex);
@@ -659,10 +657,10 @@ exports.Server = function(port, subdir, onconnect) {
                 loadFile(uri, subdir, res, "text/css");
             } else if(uri.match(/\.htm(.)$/i)) {
                 loadFile(uri, subdir, res, "text/html");
+            } else if(uri.match(/\.svg$/i)) {
+                loadFile(uri, subdir, res, "image/svg+xml");
             } else if(uri.match(/\.(jpg|png|ico)$/i)) {
                 loadFile(uri, subdir, res, "binary");
-            } else if(uri.match(/\.svg(.)$/i)) {
-                loadFile(uri, subdir, res, "image/svg+xml");
             } else {
                 loadFile(uri, subdir, res, "text/plain");
             }
