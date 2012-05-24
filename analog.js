@@ -1,4 +1,4 @@
-var bb = require('./bonescript');
+var bb = require('bonescript');
 
 var inputPin = bone.P9_39;
 var outputPin = bone.P9_14;

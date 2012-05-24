@@ -1,4 +1,4 @@
-var bb = require('./bonescript');
+var bb = require('bonescript');
 
 var ledPin = bone.P8_3;
 var ledPin2 = bone.USR3;

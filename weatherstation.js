@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-var bb = require('./bonescript');
+var bb = require('bonescript');
 var fs = require('fs');
 var io = require('socket.io');
 var pconfig = require('./weatherstation/bmp085-pressure');
