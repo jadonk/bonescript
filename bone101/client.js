@@ -161,14 +161,14 @@ var initClient = function() {
         }
 
         try {
-            var addedShellListner = false;
+            var addedShellListener = false;
             $('#shell').terminal(
                 function(command, term) {
                     if(!addedShellListener) {
                         socket.on('shell', function(s) {
                             term.echo(s);
                         });
-                        addedShellListner = true;
+                        addedShellListener = true;
                     }
                     shell(command);
                 },
