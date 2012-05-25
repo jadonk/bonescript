@@ -27,17 +27,20 @@ Boilerplate
 
 Currently, some boilerplate is required around all Bonescript applications:
 
-var bb = require('bonescript');
+    var bb = require('bonescript');
 
-setup = function() {
-  // Your setup function
-}
+    setup = function() {
+      // Your setup function
+    }
 
-loop = function() {
- // Your function to run in a loop
-}
+    loop = function() {
+     // Your function to run in a loop
+    }
 
-bb.run();
+    bb.run();
+
+You can also make loop an array of functions such that you can have several
+parallel operations.
 
 
 ===
