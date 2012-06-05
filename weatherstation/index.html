@@ -179,7 +179,7 @@ var thermometerSketchProc = function(p) {
     }    
     p.line((thermometerWidth/2) - thermometerWidth/8,theight,(thermometerWidth/2) - thermometerWidth/8 + extra, theight );
     
-    myText = -30 + i*10;
+    myText = (-30 + i*10)*1.8 + 32;
     p.fill(0, 0, 0);
     p.text(myText, (thermometerWidth/2) - thermometerWidth*0.09 + extra, theight + 4);
     
@@ -189,7 +189,7 @@ var thermometerSketchProc = function(p) {
     p.line((thermometerWidth/2) + thermometerWidth/8,thermometerWidth*1.1 - (thermometerWidth/50) * tmax,(thermometerWidth/2) + thermometerWidth/8 - thermometerWidth/20, thermometerWidth*1.1 - (thermometerWidth/50) * tmax );
     p.strokeWeight(thermometerWidth*0.03);
 }
-  myText = temp + tunit;
+  myText = (temp*1.8 + 32) + tunit;
   p.fill(0, 0, 0);
   p.textSize(Math.round(thermometerWidth*0.09));
   myWidth = p.textWidth(myText);

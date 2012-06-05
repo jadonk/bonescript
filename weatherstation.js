@@ -42,7 +42,7 @@ setup = function() {
         var treadData = function(fd) {
             fs.readFile(tfileData, function(err, data) {
                 if(err) throw("Unable to read data: " + err);
-                socket.emit('tempdata', "" + data / tscale);
+                socket.emit('tempdata', "" + Math.round((data / tscale)*10)/10);
             });
             setTimeout(treadData, tdelay);
         };
