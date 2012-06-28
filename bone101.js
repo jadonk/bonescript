@@ -1,8 +1,8 @@
-var bb = require('bonescript');
+require('bonescript');
 
 setup = function() {
     var server = new bb.Server(0, "bone101");
     server.begin();
 };
 
-bb.run();
+run(setup);

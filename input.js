@@ -1,7 +1,7 @@
-var bb = require('bonescript');
+require('bonescript');
 
-var outputPin = bone.P8_3;
-var inputPin = bone.P8_5;
+outputPin = bone.P8_3;
+inputPin = bone.P8_5;
 
 setup = function() {
     console.log('Please connect ' + inputPin.key + ' to ' + outputPin.key +
@@ -21,4 +21,4 @@ loop = function() {
     delay(500);
 };
 
-bb.run();
+run(setup, loop);

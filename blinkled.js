@@ -1,7 +1,7 @@
-var bb = require('bonescript');
+require('bonescript');
 
-var ledPin = bone.P8_3;
-var ledPin2 = bone.USR3;
+ledPin = bone.P8_3;
+ledPin2 = bone.USR3;
 
 setup = function() {
     pinMode(ledPin, OUTPUT);
@@ -17,4 +17,4 @@ loop = function() {
     delay(1000);
 };
 
-bb.run();
+run(setup, loop);
