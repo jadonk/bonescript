@@ -1,0 +1,7 @@
+# Adjust according to man 5 systemd.exec
+
+[Service]
+ExecStart=/path/to/bin/node /path/to/hello.js
+StandardOutput=syslog
+User=nobody
+Group=nobody
