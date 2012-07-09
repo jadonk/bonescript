@@ -1,10 +1,10 @@
-var bb = require('bonescript');
+require('bonescript');
 
-var ledPin = bone.USR3;
-var outputPin = bone.P8_3;
-var eventPin = bone.P8_5;
-var ainPin = bone.P9_39;
-var pwmPin = bone.P9_14;
+ledPin = bone.USR3;
+outputPin = bone.P8_3;
+eventPin = bone.P8_5;
+ainPin = bone.P9_39;
+pwmPin = bone.P9_14;
 
 setup = function() {
     console.log('Please connect ' + outputPin.key + ' to ' + eventPin.key +
@@ -38,4 +38,4 @@ loop = [
     }
 ];
 
-bb.run();
+run(setup, loop);
