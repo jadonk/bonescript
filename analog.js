@@ -12,4 +12,4 @@ loop = function() {
     analogWrite(outputPin, value);
 };
 
-run(seutp, loop);
+run(setup, loop);
