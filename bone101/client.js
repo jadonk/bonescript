@@ -132,7 +132,8 @@ var initClient = function() {
             'getEeproms': [],
             'platform': [],
             'shell': [ 'command' ],
-            'echo': [ 'data' ]
+            'echo': [ 'data' ],
+            'addLoop': [ 'loopFunc', 'loopDelay' ]
         };
         for(var x in myfuncs) {
             socket.on(x, function(data) {
