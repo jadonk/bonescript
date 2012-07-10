@@ -15,25 +15,20 @@ setup = function() {
     pinMode(eventPin, INPUT);
     digitalWrite(outputPin, LOW);
     attachInterrupt(eventPin, CHANGE, function(pin, value) {
-        console.log(pin.key + ' changed to ' + 
-            ((value == HIGH) ? 'HIGH' : 'LOW'));
+        digitalWrite(ledPin, value);
     });
 };
 
 loop = [
     function() {
-        //console.log("Setting " + outputPin.key + " HIGH");
-        digitalWrite(ledPin, HIGH);
         digitalWrite(outputPin, HIGH);
-        delay(500);
-        digitalWrite(ledPin, LOW);
+        delay(250);
         digitalWrite(outputPin, LOW);
-        delay(500);
+        delay(250);
     },
     function() {
-        //console.log("Reading " + ainPin.key);
         var value = analogRead(ainPin);
         analogWrite(pwmPin, value);
-        delay(100);
+        delay(50);
     }
 ];
