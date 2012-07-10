@@ -21,13 +21,16 @@ familiarity and because they represent a set of functions that new users have
 been able to comprehend and utilize for interesting things.
 
 
-===========
-Boilerplate
-===========
+========
+Template
+========
 
-Currently, some boilerplate is required around all Bonescript applications:
+For a Bonescript application, you must currently manually 'require' the
+bonescript library.  You will then typically define two functions, one called
+'setup' and another one called 'loop'.  Bonescript will execute these
+functions for you:
 
-    var bb = require('bonescript');
+    require('bonescript');
 
     setup = function() {
       // Your setup function
@@ -37,8 +40,6 @@ Currently, some boilerplate is required around all Bonescript applications:
      // Your function to run in a loop
     }
 
-    bb.run();
-
 You can also make loop an array of functions such that you can have several
 parallel operations.
 
@@ -47,16 +48,19 @@ parallel operations.
 API
 ===
 
-analogRead(pin, [callback])
+analogRead(pin, [callback]) -> value
 analogWrite(pin, value, [freq], [callback])
 attachInterrupt(pin, mode, [callback])
 delay(milliseconds, [callback])
-digitalRead(pin, [callback])
+digitalRead(pin, [callback]) -> value
 digitalWrite(pin, value, [callback])
-getEeproms([callback])
-getPinMode(pin, [callback])
+getEeproms([callback]) -> eeproms
+getPinMode(pin, [callback]) -> pinMode
 pinMode(pin, direction, [mux], [pullup], [slew], [callback])
 shiftOut(dataPin, clockPin, bitOrder, val, [callback])
+addLoop(loopFunc, loopDelay, [callback])
+getLoops([callback]) -> loops
+removeLoop(loopid, [callback])
 
 
 ===================
