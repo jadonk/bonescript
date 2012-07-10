@@ -16,5 +16,3 @@ loop = function() {
     digitalWrite(ledPin2, LOW);
     delay(1000);
 };
-
-run(setup, loop);
