@@ -11,5 +11,3 @@ loop = function() {
     var value = analogRead(inputPin);
     analogWrite(outputPin, value);
 };
-
-run(setup, loop);

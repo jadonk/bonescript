@@ -31,5 +31,3 @@ setup = function() {
         }, 5000);
     }, 5000);
 };
-
-run(setup);

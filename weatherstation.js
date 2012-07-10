@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-require('bonescript');
+var bb = require('bonescript');
 var fs = require('fs');
 var io = require('socket.io');
 var pconfig = require('./weatherstation/bmp085-pressure');
@@ -57,5 +57,3 @@ setup = function() {
     server.name = 'weatherstation';
     server.begin();
 };
-
-run(setup);

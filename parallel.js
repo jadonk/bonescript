@@ -37,5 +37,3 @@ loop = [
         delay(100);
     }
 ];
-
-run(setup, loop);

@@ -42,5 +42,3 @@ loop = [
         //mydelay2 *= 0.9;
     }
 ];
-
-run(setup, loop);
