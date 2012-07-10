@@ -4,8 +4,10 @@ outputPin = bone.P8_3;
 inputPin = bone.P8_5;
 outputPin2 = bone.P8_7;
 inputPin2 = bone.P8_9;
-mydelay = 300;
-mydelay2 = 500;
+ledPin = bone.USR3;
+ledPin2 = bone.USR2;
+mydelay = 100;
+mydelay2 = 33;
 
 setup = function() {
     console.log('Please connect ' + inputPin.key + ' to ' + outputPin.key +
@@ -15,14 +17,16 @@ setup = function() {
     pinMode(inputPin, INPUT);
     pinMode(outputPin, OUTPUT);
     digitalWrite(outputPin, LOW);
+    pinMode(ledPin, OUTPUT);
     pinMode(inputPin2, INPUT);
     pinMode(outputPin2, OUTPUT);
     digitalWrite(outputPin2, LOW);
+    pinMode(ledPin2, OUTPUT);
     attachInterrupt(inputPin, CHANGE, function(pin, value) {
-        console.log(pin.key + ' changed to ' + ((value == HIGH) ? 'HIGH' : 'LOW'));
+        digitalWrite(ledPin, value);
     });
     attachInterrupt(inputPin2, CHANGE, function(pin, value) {
-        console.log(pin.key + ' changed to ' + ((value == HIGH) ? 'HIGH' : 'LOW'));
+        digitalWrite(ledPin2, value);
     });
 };
 
@@ -32,13 +36,11 @@ loop = [
         delay(mydelay);
         digitalWrite(outputPin, LOW);
         delay(mydelay);
-        //mydelay *= 0.9;
     },
     function() {
         digitalWrite(outputPin2, HIGH);
         delay(mydelay2);
         digitalWrite(outputPin2, LOW);
         delay(mydelay2);
-        //mydelay2 *= 0.9;
     }
 ];
