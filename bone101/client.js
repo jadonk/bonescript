@@ -96,7 +96,7 @@ var initClient = function() {
                     lastY = nextY;
                 }
             };
-        }
+        };
         var processing = new Processing(canvas, sketchProc);
         var graphDraw = function(data) {
             var myData = parseFloat(data);
@@ -113,7 +113,10 @@ var initClient = function() {
                 window.scaleY = window.height / (window.rangeHigh - window.rangeLow);
             }
             processing.redraw();
-        }
+        };
+        var doAlert = function(m) {
+            alert(JSON.stringify(m));
+        };
     } catch(ex) {
         console.log('Unable to attach Processing.JS to canvas because ' + ex);
     }
