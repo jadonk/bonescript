@@ -133,7 +133,9 @@ var initClient = function() {
             'platform': [],
             'shell': [ 'command' ],
             'echo': [ 'data' ],
-            'addLoop': [ 'loopFunc', 'loopDelay' ]
+            'addLoop': [ 'loopFunc', 'loopDelay' ],
+            'getLoops': [],
+            'removeLoop': [ 'loopid' ]
         };
         for(var x in myfuncs) {
             socket.on(x, function(data) {
@@ -143,6 +145,9 @@ var initClient = function() {
             var objString = '';
             for(var y in myargs) {
                 if(isNaN(y)) continue;  // Need to find the source of this bug
+                objString += ' if(typeof ' + myargs[y] + ' == "function") {\n';
+                objString += '  ' + myargs[y] + ' = ' + myargs[y] + '.toString();\n';
+                objString += ' }\n';
                 objString += ' calldata.' + myargs[y] + ' = ' + myargs[y] + ';\n';
             }
             myargs.push('callback');
