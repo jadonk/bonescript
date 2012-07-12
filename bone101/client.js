@@ -21,12 +21,16 @@ bone =
     P8_2: { name: "DGND" },
 };
 
+var doAlert = function(m) {
+    alert(JSON.stringify(m));
+};
+
 var callbacks = {};
 var seqnum = 0;
 var seqcall = function(data) {
     if(data.seq && (typeof callbacks[data.seq] == 'function')) {
         callbacks[data.seq](data);
-        delete callbacks[data.seq];
+        if(data.oneshot) delete callbacks[data.seq];
     }
 }
 
@@ -114,9 +118,6 @@ var initClient = function() {
             }
             processing.redraw();
         };
-        var doAlert = function(m) {
-            alert(JSON.stringify(m));
-        };
     } catch(ex) {
         console.log('Unable to attach Processing.JS to canvas because ' + ex);
     }
@@ -130,12 +131,14 @@ var initClient = function() {
             'analogWrite': [ 'pin', 'value', 'freq' ],
             'pinMode': [ 'pin', 'direction', 'mux', 'pullup', 'slew' ],
             'shiftOut': [ 'dataPin', 'clockPin', 'bitOrder', 'val' ],
-            'attachInterrupt': [ 'pin', 'mode' ],
+            'attachInterrupt': [ 'pin', 'handler', 'mode' ],
+            'detachInterrupt': [ 'pin' ],
             'getPinMode': [ 'pin' ],
             'getEeproms': [],
             'platform': [],
             'shell': [ 'command' ],
             'echo': [ 'data' ],
+            'doEval': [ 'evalFunc' ],
             'addLoop': [ 'loopFunc', 'loopDelay' ],
             'getLoops': [],
             'removeLoop': [ 'loopid' ]

@@ -193,6 +193,79 @@ digitalWrite(bone.USR3, 1);</pre>
 digitalWrite(bone.USR3, 0);</pre>
  </div>
 
+ <div class="slide">
+  <h1>addLoop/getLoops/removeLoop</h1>
+  <h2>Run something repeatedly</h2>
+  <p>Blink USR3 LED: <span class="dynlink" onclick="eval(document.getElementById('addLoop1').innerHTML)">
+   run</span></p>
+  <pre id="addLoop1">
+pinMode(bone.USR3, 'out');
+addLoop(function() {
+  digitalWrite(bone.USR3, 1);
+  delay(100);
+  digitalWrite(bone.USR3, 0);
+  delay(100);
+});</pre>
+  <p>Halt all loops: <span class="dynlink" onclick="eval(document.getElementById('addLoop2').innerHTML)">
+   run</span></p>
+  <pre id="addLoop2">
+getLoops(function(x) {
+  for(var loop in x.loops) {
+    removeLoop(x.loops[loop].id);
+  }
+});</pre>
+ </div>
+
+ <div class="slide">
+  <h1>setInterval/clearInterval</h1>
+  <h2>Run something repeatedly without invoking a process</h2>
+  <p>Blink USR3 LED: <span class="dynlink" onclick="eval(document.getElementById('setInterval1').innerHTML)">
+   run</span></p>
+  <pre id="setInterval1">
+value = 0;
+pinMode(bone.USR3, 'out');
+interval = setInterval(function() {
+  value = value ? 0 : 1;
+  digitalWrite(bone.USR3, value);
+}, 100);</pre>
+  <p>Halt function: <span class="dynlink" onclick="eval(document.getElementById('setInterval2').innerHTML)">
+   run</span></p>
+  <pre id="setInterval2">
+clearInterval(interval);</pre>
+ </div>
+
+ <div class="slide"> 
+  <h1>attachInterrupt/detachInterrupt</h1>
+  <h2>Detect input changes</h2>
+  <p>Please connect P8-3 to P8-5 with a 1khom resistor</p>
+  <p>Attach interrupt: <span class="dynlink" onclick="eval(document.getElementById('attachInterrupt1').innerHTML)">
+   run</span></p>
+  <pre id="attachInterrupt1">
+pinMode(bone.P8_5, 'in');
+pinMode(bone.P8_3, 'out');
+value = 0;
+digitalWrite(bone.P8_3, value);
+attachInterrupt(bone.P8_5, function(x) {
+  digitalWrite(bone.USR3, x.value);
+}, 'both', doAlert);</pre>
+  <p>Toggle P8-3: <span class="dynlink" onclick="eval(document.getElementById('attachInterrupt2').innerHTML)">
+   run</span></p>
+  <pre id="attachInterrupt2">
+interval2 = setInterval(function() {
+  value = value ? 0 : 1;
+  digitalWrite(bone.P8_3, value);
+}, 1000);</pre>
+  <p>Read P8-5: <span class="dynlink" onclick="eval(document.getElementById('attachInterrupt3').innerHTML)">
+   run</span></p>
+  <pre id="attachInterrupt3">
+digitalRead(bone.P8_5, function(x){alert(x.value);});</pre>
+  <p>Halt function: <span class="dynlink" onclick="eval(document.getElementById('attachInterrupt4').innerHTML)">
+   run</span></p>
+  <pre id="attachInterrupt4">
+clearInterval(interval2);
+detachInterrupt(bone.P8_5, doAlert);</pre>
+ </div>
+
  <div class="slide"> 
   <h1>Services running on the BeagleBone</h1>
   <h2>Default web services ready for you to try</h2>

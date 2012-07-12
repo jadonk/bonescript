@@ -48,19 +48,53 @@ parallel operations.
 API
 ===
 
-analogRead(pin, [callback]) -> value
-analogWrite(pin, value, [freq], [callback])
-attachInterrupt(pin, mode, [callback])
-delay(milliseconds, [callback])
-digitalRead(pin, [callback]) -> value
-digitalWrite(pin, value, [callback])
+
+All functions in the ** categories take an optional callback.
+
+-------------
+New functions**
+-------------
+addLoop(loopFunc, loopDelay)
+getLoops() -> loops
+removeLoop(loopid)
+doEval(evalFunc) -> value
+
+-----------------
+Arduino functions
+-----------------
+Digital I/O, Analog I/O, Advanced I/O and Time:**
+analogRead(pin) -> value
+analogWrite(pin, value, [freq])
+attachInterrupt(pin, handler, mode)
+detachInterrupt(pin)
+delay(milliseconds)
+digitalRead(pin) -> value
+digitalWrite(pin, value)
 getEeproms([callback]) -> eeproms
-getPinMode(pin, [callback]) -> pinMode
-pinMode(pin, direction, [mux], [pullup], [slew], [callback])
-shiftOut(dataPin, clockPin, bitOrder, val, [callback])
-addLoop(loopFunc, loopDelay, [callback])
-getLoops([callback]) -> loops
-removeLoop(loopid, [callback])
+getPinMode(pin) -> pinMode
+pinMode(pin, direction, [mux], [pullup], [slew])
+shiftOut(dataPin, clockPin, bitOrder, val)
+
+Bits/Bytes, Math, Trigonometry and Random Numbers:
+lowByte(value)
+highByte(value)
+bitRead(value, bitnum)
+bitWrite(value, bitnum, bitdata) 
+bitSet(value, bitnum) 
+bitClear(value, bitnum) 
+bit(bitnum)
+min(x, y)
+max(x, y)
+abs(x)
+constrain(x, a, b)
+map(value, fromLow, fromHigh, toLow, toHigh)
+pow(x, y)
+sqrt(x)
+sin(radians)
+cos(radians)
+tan(radians)
+randomSeed(x)
+random([min], max)
 
 
 ===================

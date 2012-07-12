@@ -14,9 +14,9 @@ setup = function() {
     pinMode(pwmPin, OUTPUT);
     pinMode(eventPin, INPUT);
     digitalWrite(outputPin, LOW);
-    attachInterrupt(eventPin, CHANGE, function(pin, value) {
-        digitalWrite(ledPin, value);
-    });
+    attachInterrupt(eventPin, function(x) {
+        digitalWrite(ledPin, x.value);
+    }, CHANGE);
 };
 
 loop = [
