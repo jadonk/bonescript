@@ -47,6 +47,7 @@ setup = function() {
         setTimeout(toggleBlink2, 10000);
     };
     setTimeout(toggleBlink2, 10000);
+    blink2Loop = addLoop(blink2);
 };
 
 loop = function() {
