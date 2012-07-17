@@ -49,18 +49,10 @@ div.background {
   right: auto;
   top: 0;
   bottom: 0;
-  /* width: 4.1em; */
   padding: 0 0 0 0.2em;
   margin: 0 0 0 0;
   border-width: 0;
-  background-color: #dda01d;
 }
-
-/* 
-div.background img {
-  height: 4em;
-}
-*/
 
 /* this rule is hidden from IE which doesn't support + selector */
 div.slide + div[class].slide { page-break-before: always;}
@@ -500,11 +492,12 @@ div.slide.cover {
 /*  background-color: white;*/
   padding-top: 0;
   padding-right: 0;
-/*  padding-left: 3em;*/
+  padding-left: 30%;
   height: 100%;
 }
 
 div.slide.cover h1 {
+  font-size: 200%;
   margin: 0;
   padding: 0.5em;
   color: #DDA01D;
@@ -512,7 +505,11 @@ div.slide.cover h1 {
 }
 
 div.slide.cover h2 {
+  font-size: 100%;
+  padding: 0.1em;
   color: white;
+  margin-top: 1em;
+  margin-left: 0.3em;
 }
 
 div.slide.cover a {
