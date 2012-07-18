@@ -64,43 +64,33 @@
  </div> 
 
  <div class="slide">
-  <h1>BeagleBone hardware details</h1> 
-  <h2><a href="http://beagleboard.org/bone">http://beagleboard.org/bone</a></h2>
-  <img src="bone_connectors.jpg" alt="BeagleBone image" align="right" width="70%" height="70%" />
-  <ul>
-   <li>Processor<ul>
-    <li>720MHz super-scalar ARM Cortex-A8</li>
-    <li>armv7 and NEON SIMD instructions</li>
-    <li>3D graphics accelerator</li>
-   </ul></li>
-   <li>Connectivity<ul>
-    <li>USB client: power, debug and device</li>
-    <li>USB host, Ethernet</li>
-    <li>2x46 pin headers<ul>
-     <li>2xI2C, 5xUART, SPI, CAN, GPIO</li>
-    </ul></li>
-   </ul></li>
-   <li>Software<ul>
-    <li>4GB microSD card with Angstrom Distribution</li>
-   </ul></li>
-  </ul>
- </div>
- 
- <div class="slide">
   <h1>Arduino reignites electronics interest for non-experts</h1>
   <h2>Not the original BeagleBoard inspiration, but should it have been?</h2>
   <a href="http://www.flickr.com/photos/snootlab/6052455554/" title="Arduino Uno by Snootlab, on Flickr">
    <img align="right" src="http://farm7.staticflickr.com/6209/6052455554_a4301347ef_z.jpg" width="640" height="427" alt="Arduino Uno" />
   </a>
   <ul>
-   <li>Removes cognitive barriers to demonstrating hardware interactions</li>
-   <li>Barriers removed include C++ boilerplate such as "int main(int argc, char* argv) ..."</li>
-   <li>Barriers removed include linking to libraries</li>
+   <li>Removes cognitive barriers to demonstrating hardware interactions<ul>
+    <li>Avoids C++ boilerplate such as "int main(int argc, char* argv) ..."</li>
+    <li>Eliminates manual linking to libraries</li>
+   </ul></li>
    <li>Derived from Processing and then Wiring</li>
    <li>Minimal time to Hello-World-for-hardware: toggling of LED</li>
    <li>Lots of examples on interfacing</li>
    <li>Hundreds of "shields", breakout-boards and tools like Fritzing enable step-by-step examples</li>
   </ul>
+ </div>
+ 
+ <div class="slide">
+  <h1>Webcam test</h1>
+  <h2>&nbsp</h2>
+  <object width="420" height="360"
+   classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" 
+   codebase="http://www.apple.com/qtactivex/qtplugin.cab">
+   <param name="src" value="rtsp://beaglebone.local/mystream.sdp" />
+   <param name="autoplay" value="true" />
+   <param name="controller" value="false" />
+  </object>
  </div>
  
  <div class="slide">
@@ -135,16 +125,43 @@
      <a href="http://www.timesys.com/embedded-linux/resources/dev-center/am335x">TimeSys</a>
     </li>
     <li>Other:
-     <a href="http://community.qnx.com/sf/wiki/do/viewPage/projects.bsp/wiki/TiAm335Beaglebone">QNX Neutrino<sup>&copy;</sup></a>,
+     <a href="http://community.qnx.com/sf/wiki/do/viewPage/projects.bsp/wiki/TiAm335Beaglebone">QNX Neutrino</a>,
      <a href="http://people.freebsd.org/~dmarion/beaglebone/creating_bootable_sd_card/">FreeBSD</a>
     </li>
    </ul></li>
    <img align="right" src="imager.png" width="30%" />
    <li>SD card images like get-out-of-jail-free card
     <pre>xzcat XXX.img.xz | sudo dd of=/dev/sdX</pre>
+    <ul>
+     <li>Can be used just as easily for backups</li>
+     <li>Booted from device ROM, so you can't "brick" it</li>
+    </ul>
    </li>
   </ul>
  </div>
+ 
+ <div class="slide">
+  <h1>BeagleBone hardware details</h1> 
+  <h2><a href="http://beagleboard.org/bone">http://beagleboard.org/bone</a></h2>
+  <img src="bone_connectors.jpg" alt="BeagleBone image" align="right" width="70%" height="70%" />
+  <ul>
+   <li>Processor<ul>
+    <li>720MHz super-scalar ARM Cortex-A8</li>
+    <li>armv7 and NEON SIMD instructions</li>
+    <li>3D graphics accelerator</li>
+   </ul></li>
+   <li>Connectivity<ul>
+    <li>USB client: power, debug and device</li>
+    <li>USB host, Ethernet</li>
+    <li>2x46 pin headers<ul>
+     <li>2xI2C, 5xUART, SPI, CAN, GPIO</li>
+    </ul></li>
+   </ul></li>
+   <li>Software<ul>
+    <li>4GB microSD card with Angstrom Distribution</li>
+   </ul></li>
+  </ul>
+ </div> 
 
  <div class="slide">
   <h1>Turn on an LED (on-board)</h1>
