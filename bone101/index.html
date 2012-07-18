@@ -82,18 +82,6 @@
  </div>
  
  <div class="slide">
-  <h1>Webcam test</h1>
-  <h2>&nbsp</h2>
-  <object width="420" height="360"
-   classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" 
-   codebase="http://www.apple.com/qtactivex/qtplugin.cab">
-   <param name="src" value="rtsp://beaglebone.local/mystream.sdp" />
-   <param name="autoplay" value="true" />
-   <param name="controller" value="false" />
-  </object>
- </div>
- 
- <div class="slide">
   <h1>BeagleBone: open hardware expandable computer</h1>
   <h2>Latest ARM open source focused on easy hardware experimentation</h2>
   <ul>
@@ -198,7 +186,7 @@ addLoop(function() {
   <pre id="addLoop2">
 getLoops(function(x) {
   for(var loop in x.loops) {
-    removeLoop(x.loops[loop].id);
+    removeLoop(loop);
   }
 });</pre>
  </div>
@@ -389,216 +377,13 @@ detachInterrupt(bone.P8_5, doAlert);</pre>
   </ul>
  </div>
 
- <div class="slide">
-  <h1>Why work with community?</h1> 
-  <h2>&nbsp;</h2>
-  <ul>
-   <li>Faster innovation
-    <ul>
-     <li>Off-cycle development</li>
-     <li>Engage innovators</li>
-     <li>Direct peer interaction</li>
-    </ul>
-   </li>
-   <li>Better solutions
-    <ul>
-     <li>Expert peer review</li>
-     <li>Community support</li>
-     <li>Early feedback</li>
-    </ul>
-   </li>
-  </ul>
-  <img src="why_community.png" alt="Why Community?" height="40%" align="right" />
- </div> 
-
- <div class="slide">
-  <h1>Why push code to mainline?</h1> 
-  <h2>&nbsp;</h2>
-  <ul>
-   <li>Stable snapshot development
-    <ul>
-     <li>Increases stability</li>
-     <li>Isolates from community</li>
-     <li>High update cost with reduced support and external contribution</li>
-    </ul>
-   </li>
-   <li>Community synchronized
-    <ul>
-     <li>Increased potential churn</li>
-     <li>Leverages the community</li>
-     <li>Requires defined method for maintaining value-add</li>
-    </ul>
-   </li>
-  </ul>
-  <img src="why_mainline.png" alt="Why Mainline?" height="40%" align="right" />
- </div> 
-
- <div class="slide">
-  <h1>Engaging the community</h1> 
-  <h2><a href="http://catb.org/~esr/faqs/smart-questions.html">Ask questions the 
-   smart way</a></h2>
-  <ul>
-   <li>Before you ask
-    <ul>
-     <li>Learn about the on-line resources and documentation</li>
-     <li>Try to find the answer yourself</li>
-     <li>Don't assume you are <i>entitled</i> to an answer</li>
-    </ul>
-   </li>
-   <li>Ask in the right way in the right place
-    <ul>
-     <li>Question should be easy to answer for someone who knows</li>
-     <li>Detail your objective, what you tried and the results</li>
-     <li>Use meaningful and specific subject headers</li>
-     <li>Using <a href="http://beagleboard.org/chat">the on-line chat</a> can 
-      help you formulate your question for
-      <a href="http://beagleboard.org/discuss">the mailing list</a>
-     </li>
-    </ul>
-   </li>
-   <li>Listen to the answers, even if they <i>seem</i> unhelpful</li>
-   <li>Share useful lessons you learn</li>
-  </ul>
- </div> 
-
- <div class="slide">
-  <h1>What do I work with the community on?</h1> 
-  <h2>&nbsp;</h2>
-  <ul>
-   <li>There are <a href="http://beagleboard.org/project">hundreds of projects with BeagleBoard-specific interest</a></li>
-   <li>It is really up to your heart's desire</li>
-   <li>Linux is known for its community</li>
-   <li>Many communities build upon Linux</li>
-   <li>Let's start with the projects required to boot Linux</li>
-  </ul>
- </div> 
-
- <div class="slide">
-  <h1>Typical BeagleBone boot process</h1> 
-  <h2>The five phases</h2>
-  <ol>
-   <li>ROM loads u-boot SPL (MLO)
-    <ul>
-     <li>Default location is /media/mmcblk0p1/MLO</li>
-     <li>Performs external DRAM configuration</li>
-    </ul>
-   </li>
-   <li>u-boot SPL (MLO) loads u-boot
-    <ul>
-     <li>Default location is /media/mmcblk0p1/u-boot.img</li>
-    </ul>
-   </li>
-   <li>u-boot executes default environment/commands
-    <ul>
-     <li>Default location is /media/mmcblk0p1/uEnv.txt</li>
-     <li>By default, 'uenvcmd' variable is executed</li>
-    </ul>
-   </li>
-   <li>Commands load kernel
-    <ul>
-     <li>Default location is /media/mmcblk0p1/uImage</li>
-    </ul>
-   </li>
-   <li>Kernel reads root file system</li>
-  </ol>
- </div> 
-
- <div class="slide">
-  <h1>Baseline software</h1> 
-  <h2><a href="http://beagleboard.org/linux">http://beagleboard.org/linux</a></h2>
-  <ul>
-   <li><a href="http://git.denx.de/?p=u-boot/u-boot-ti.git;a=summary">U-boot</a>
-    <ul>
-     <li><a href="https://github.com/beagleboard/u-boot">BeagleBoard-patched u-boots</a></li>
-    </ul>
-   </li>
-   <li><a href="http://git.kernel.org/?p=linux/kernel/git/torvalds/linux.git;a=summary">Linux Kernel</a>
-    <ul>
-     <li><a href="https://github.com/beagleboard/linux">BeagleBoard-patched kernels</a></li>
-    </ul>
-   </li>
-   <li><a href="http://git.yoctoproject.org/cgit/cgit.cgi/meta-ti/tree/README">OE-core based BSP</a>
-   </li>
-  </ul>
- </div> 
-
- <div class="slide">
-  <h1>Highlighted community projects</h1> 
-  <h2>&nbsp;</h2> 
-  <ul>
-   <li><a href="http://arowboat.org">Android Rowboat</a></li>
-   <li><a href="http://linaro.org">Linaro</a></li>
-   <li><a href="http://yoctoproject.org">Yocto Project</a></li>
-   <li><a href="http://www.angstrom-distribution.org">Angstrom</a></li>
-   <li><a href="http://github.com/jadonk/bonescript">Bonescript</a></li>
-  </ul>
- </div>
-
- <div class="slide">
-  <h1>Linaro</h1>
-  <h2><a href="http://linaro.org">www.linaro.org</a></h2>
-  <ul>
-   <li><a href="http://linaro.org">Linaro</a> is a non-profit formed in June 2010
-    <ul>
-     <li>"to make it easier for ARM partners to deploy the latest
-      technology into optimized Linux based products"</li>
-    </ul>
-   </li>
-   <li>Started by ARM
-    <ul>
-     <li>with Texas Instruments, Freescale, IBM, Samsung and ST Ericsson</li>
-    </ul>
-   </li>
-   <li>Focused on improving core open source tools and components for ARM 
-    Cortex-A processors
-    <ul>
-     <li>Compiler, debugger, profiler, kernel and middleware</li>
-     <li>Validation of efforts done with Ubuntu and Android</li>
-    </ul>
-   </li>
-   <li>Includes "landing teams" for SoC vendors</li>
-   <li>The BeagleBoard-xM is one of their release platforms</li>
-  </ul>
- </div>
-
- <div class="slide">
-  <h1>Yocto</h1>
-  <h2><a href="http://yoctoproject.org">www.yoctoproject.org</a></h2>
-  <ul>
-   <li><a href="http://yoctoproject.org">Yocto</a> is a Linux Foundation project
-    started in
-    <a href="http://www.marketwire.com/press-release/the-linux-foundation-announces-yocto-project-steering-group-and-release-10-1423707.htm">
-    April 2011</a>
-    <ul>
-     <li>"and is an open source collaboration project that provides templates, 
-      tools and methods to help you create custom Linux-based systems for 
-      embedded products regardless of the hardware architecture."</li>
-    </ul>
-   </li>
-   <li>The advisory board includes members from several key silicon vendors, 
-    embedded Linux suppliers and the OpenEmbedded community
-    <ul>
-     <li>including representation from 
-      <a href="http://www.yoctoproject.org/about/governance/advisory-board">
-      Texas Instruments, Intel, Mentor Graphics, MontaVista, TimeSys and Dell</a></li>
-    </ul>
-   </li>
-   <li>Building on OpenEmbedded technology and providing board support package 
-    (BSP) development tools for embedded platforms
-    <ul>
-     <li>Committed to support ARM, PPC, MIPS, x86 and x86-64 ISAs</li>
-     <li>Aligned with the OpenEmbedded community through OE-core</li>
-    </ul>
-   </li>
-   <li>The BeagleBoard-xM is their ARM reference platform</li>
-  </ul>
- </div>
-
  <div class="slide"> 
   <h1>Thanks!</h1> 
-  <h2>&nbsp;</h2> 
+  <h2><a href="http://github.com/jadonk/bonescript">
+   http://github.com/jadonk/bonescript
+  </a></h2> 
   <ul>
-   <li>There's more to come.  Please join us in improving this project for the 
+   <li>There's more to come.  Please join me in improving this project for the 
     benefit of both yourself and others.</li>
   </ul>
  </div>
