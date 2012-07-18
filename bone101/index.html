@@ -174,7 +174,25 @@
  </div>
 
  <div class="slide">
-  <h1>Analog signals can be input and generated via analogInput/analogOutput<h1>
+  <h1>Analog signals can be input and generated via analogRead/analogWrite<h1>
+  <h2>&nbsp;</h2>
+  <p>Please connect P8-13 to LED through 1khom resistor</p>
+  <div id="slider1"></div>
+  <p>Attach to slider: <span class="dynlink" onclick="eval(document.getElementById('analogWrite1').innerHTML)">
+   run</span></p>
+  <pre id="analogWrite1">
+pinMode(bone.P8_13, 'out', 4);
+$("slider1").bind("slidechange", function(event, ui){
+ analogWrite(bone.P8_13, ui.value/100.0);
+})</pre>
+  <p>Fade in and out: <span class="dynlink" onclick="eval(document.getElementById('analogWrite2').innerHTML)">
+   run</span></p>
+  <pre id="analogWrite2">
+pinMode(bone.P8_13, 'out', 4);
+addLoop(function() {
+ var value = analogRead(bone.P9_36);
+ analogWrite(bone.P8_13, value);
+}, 25, doAlert);
  </div>
 
  <div class="slide">

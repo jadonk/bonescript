@@ -1,6 +1,7 @@
 var cssUrls = [
     '/schmux.css',
-    '/jquery.terminal.css'          // http://terminal.jcubic.pl/js/jquery.terminal.css
+    '/jquery.terminal.css',         // http://terminal.jcubic.pl/js/jquery.terminal.css
+    '/jquery-ui.css'                // http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css
 ];
 
 var scriptUrls = [
@@ -11,7 +12,8 @@ var scriptUrls = [
     '/jquery.mousewheel.js',        // http://terminal.jcubic.pl/js/jquery.mousewheel-min.js
     '/eeprom-web.js',
     '/autoadvance.js',
-    '/processing.js'
+    '/processing.js',
+    '/jquery-ui.min.js'             // http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js
 ];
 
 // Placeholder to get filled in from bonescript via socket.io
@@ -53,6 +55,8 @@ var clearPin = function(pinname) {
 //}
 
 var initClient = function() {
+    $("#slider1").slider();
+
     try {
         var canvas = document.getElementById("canvas1");
         var graphDataSize = 50;

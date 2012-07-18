@@ -1,7 +1,7 @@
 require('bonescript');
 
-inputPin = bone.P9_39;
-outputPin = bone.P9_14;
+inputPin = bone.P9_36;
+outputPin = bone.P8_13;
 
 setup = function() {
     pinMode(outputPin, OUTPUT);
