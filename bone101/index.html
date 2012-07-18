@@ -174,7 +174,7 @@
  </div>
 
  <div class="slide">
-  <h1>analogRead/analogWrite<h1>
+  <h1>analogRead/analogWrite</h1>
   <h2>Use ADCs and PWMs to read/write analog values</h2>
   <p>Monitor analog in: <span class="dynlink" onclick="eval(document.getElementById('analogWrite2').innerHTML)">
    run</span></p>
@@ -202,8 +202,8 @@ addLoop(function() {
  </div>
 
  <div class="slide">
-  <h1>analogRead/analogWrite<h1>
-  <h2>Use ADCs and PWMs to read/write analog values</h2>
+  <h1>Using a slider with analogWrite</h1>
+  <h2>&nbsp;</h2>
   <p>Please connect P8-13 to LED through 1khom resistor</p>
   <div id="slider1"></div>
   <p>Attach to slider: <span class="dynlink" onclick="eval(document.getElementById('analogWrite1').innerHTML)">
@@ -213,6 +213,26 @@ pinMode(bone.P8_13, 'out', 4);
 $("#slider1").bind("slidechange", function(event, ui) {
  analogWrite(bone.P8_13, ui.value/100.0);
 })</pre>
+ </div>
+ 
+ <div class="slide">
+  <h1>Using a slider with analogRead</h1>
+  <h2>&nbsp;</h2>
+  <p>Please connect P9-36 to potentiometer and adust from 0V to 1.8V</p>
+  <div id="slider2"></div>
+  <p>Attach to slider: <span class="dynlink" onclick="eval(document.getElementById('analogRead1').innerHTML)">
+   run</span></p>
+  <pre id="analogRead1">
+arUpdateSlider = function(x) {
+ if(x.callback) $("#slider2").slider("option", "value", x.callback*100);
+};
+addLoop(function() {
+ return(analogRead(bone.P9_36));
+}, 100, arUpdateSlider);</pre>
+  <p>Halt all loops: <span class="dynlink" onclick="eval(document.getElementById('analogRead2').innerHTML)">
+   run</span></p>
+  <pre id="analogRead2">
+ getLoops(function(loops){for(var loop in loops.loops){removeLoop(loop, doAlert);}});</pre>
  </div>
  
  <div class="slide">

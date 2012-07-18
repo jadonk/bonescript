@@ -57,6 +57,7 @@ var clearPin = function(pinname) {
 
 var initClient = function() {
     $("#slider1").slider();
+    $("#slider2").slider();
 
     try {
         var canvas = document.getElementById("canvas1");
