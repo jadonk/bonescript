@@ -174,27 +174,47 @@
  </div>
 
  <div class="slide">
-  <h1>Analog signals can be input and generated via analogRead/analogWrite<h1>
-  <h2>&nbsp;</h2>
-  <p>Please connect P8-13 to LED through 1khom resistor</p>
-  <div id="slider1"></div>
-  <p>Attach to slider: <span class="dynlink" onclick="eval(document.getElementById('analogWrite1').innerHTML)">
-   run</span></p>
-  <pre id="analogWrite1">
-pinMode(bone.P8_13, 'out', 4);
-$("slider1").bind("slidechange", function(event, ui){
- analogWrite(bone.P8_13, ui.value/100.0);
-})</pre>
-  <p>Fade in and out: <span class="dynlink" onclick="eval(document.getElementById('analogWrite2').innerHTML)">
+  <h1>analogRead/analogWrite<h1>
+  <h2>Use ADCs and PWMs to read/write analog values</h2>
+  <p>Monitor analog in: <span class="dynlink" onclick="eval(document.getElementById('analogWrite2').innerHTML)">
    run</span></p>
   <pre id="analogWrite2">
 pinMode(bone.P8_13, 'out', 4);
 addLoop(function() {
  var value = analogRead(bone.P9_36);
  analogWrite(bone.P8_13, value);
-}, 25, doAlert);
+}, 25, doAlert);</pre>
+  <p>Fade in and out: <span class="dynlink" onclick="eval(document.getElementById('analogWrite3').innerHTML)">
+   run</span></p>
+  <pre id="analogWrite3">
+ pinMode(bone.P8_13, 'out', 4);
+ addLoop(function() {
+  if(!this.awDirection) { this.awValue = 0.01; this.awDirection = 1; }
+  analogWrite(bone.P8_13, this.awValue);
+  this.awValue = this.awValue + (this.awDirection*0.01);
+  if(this.awValue > 1.0) { this.awValue = 1.0; this.awDirection = -1; }
+  else if(this.awValue <= 0.01) { this.awValue = 0.01; this.awDirection = 1; }
+ }, 100, doAlert);</pre>
+  <p>Halt all loops: <span class="dynlink" onclick="eval(document.getElementById('analogWrite4').innerHTML)">
+   run</span></p>
+  <pre id="analogWrite4">
+ getLoops(function(loops){for(var loop in loops.loops){removeLoop(loop, doAlert);}});</pre>
  </div>
 
+ <div class="slide">
+  <h1>analogRead/analogWrite<h1>
+  <h2>Use ADCs and PWMs to read/write analog values</h2>
+  <p>Please connect P8-13 to LED through 1khom resistor</p>
+  <div id="slider1"></div>
+  <p>Attach to slider: <span class="dynlink" onclick="eval(document.getElementById('analogWrite1').innerHTML)">
+   run</span></p>
+  <pre id="analogWrite1">
+pinMode(bone.P8_13, 'out', 4);
+$("#slider1").bind("slidechange", function(event, ui) {
+ analogWrite(bone.P8_13, ui.value/100.0);
+})</pre>
+ </div>
+ 
  <div class="slide">
   <h1>Cloud9 experience<h1>
  </div>

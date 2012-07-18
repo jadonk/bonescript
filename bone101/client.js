@@ -1,7 +1,8 @@
 var cssUrls = [
     '/schmux.css',
     '/jquery.terminal.css',         // http://terminal.jcubic.pl/js/jquery.terminal.css
-    '/jquery-ui.css'                // http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css
+    '/jquery-ui.css',               // http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css
+    '/client.css'
 ];
 
 var scriptUrls = [
