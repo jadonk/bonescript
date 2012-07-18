@@ -24,13 +24,13 @@
  </div>
 
  <div class="slide cover title"> 
-  <h1>Bonescript</h1>
-  <h2>Simplified Physical Computing with Node.JS</h2>
+  <h1><u>Bonescript</u></h1>
+  <h2 style="margin-left: 1em;">Simplified Physical Computing with Node.JS</h2>
   <p>
    Thursday, July 19, 2012<br />
    5:00PM, Open Hardware, D137
   </p>
-  <br />
+  <img src="7410840420_c2dd73d2b0_c.jpg" height="25%" style="margin-left: 1em;" />
   <p>Jason Kridner<br />
    Software Architecture and Community Development Manager<br />
    Sitara ARM Processors<br />
@@ -40,43 +40,40 @@
  </div>
 
  <div class="slide"> 
-  <h1>What is BeagleBoard.org?</h1> 
+  <h1>BeagleBoard.org is open access to ARM processors</h1> 
   <h2><a href="http://beagleboard.org/static/flyer_latest.pdf">http://beagleboard.org/static/flyer_latest.pdf</a></h2>
-  <p>BeagleBoard.org is an open hardware project featuring two designs:</p>
-  <ul> 
-   <li><b>BeagleBoard-xM:</b> Open software desktop experience with extra MHz and extra memory</li>
-   <li><b>BeagleBone:</b> Hardware I/O focus with single cable development experience</li>
-  </ul>
-  <p>BeagleBoard.org designs have a common philosophy:</p>
-  <ul> 
-   <li><font size="+3" color="orange">B</font>ring your own peripherals
-    <sup><small><a href="peripheral list">[1]</a></small></sup>
-   </li> 
-   <li><font size="+3" color="orange">E</font>ntry level cost</li> 
-   <li><font size="+3" color="orange">A</font>RM with latest v7 and NEON instructions</li> 
-   <li><font size="+3" color="orange">G</font>raphics (and possibly DSP) accelerated</li> 
-   <li><font size="+3" color="orange">L</font>inux and open source community</li> 
-   <li><font size="+3" color="orange">E</font>nvironment for innovators</li> 
-  </ul>
+  <p>BeagleBoard.org is an open hardware project leveling access to low-power mobile processing</p>
+  <table>
+   <tr>
+    <td><b>BeagleBoard-xM:</b> Open software desktop experience with extra MHz and extra memory</td>
+    <td><b>BeagleBone:</b> Hardware I/O focus with single cable development experience</td>
+   </tr>
+   <tr>
+    <td>
+     <a href="http://www.flickr.com/photos/jadon/4644436246/" title="BeagleBoard-xM_hand_shot by jadonk, on Flickr"><img src="http://farm5.staticflickr.com/4016/4644436246_459bcc0696_z.jpg" width="90%" alt="BeagleBoard-xM_hand_shot"></a>
+    </td>
+    <td>
+     <a href="http://www.flickr.com/photos/adafruit/6800874202/" title="Beagle Bone A5 + Extras - Rev. A5 by adafruit, on Flickr"><img src="http://farm8.staticflickr.com/7044/6800874202_cc3c69b2fe_z.jpg" width="100%" alt="Beagle Bone A5 + Extras - Rev. A5"></a>
+    </td>
+   </tr>
+  </table>
  </div> 
 
  <div class="slide">
-  <h1>What is BeagleBone?</h1> 
+  <h1>BeagleBone hardware details</h1> 
   <h2><a href="http://beagleboard.org/bone">http://beagleboard.org/bone</a></h2>
   <img src="bone_connectors.jpg" alt="BeagleBone image" align="right" width="70%" height="70%" />
   <ul>
    <li>Processor<ul>
-    <li>720MHz super-scalar ARM Cortex-A8&nbsp<font size="-3">(1,450 DMIPS)</font></li>
-    <li>3D graphics</li>
-   </ul></li>
+    <li>720MHz super-scalar ARM Cortex-A8</li>
+    <li>armv7 and NEON SIMD instructions</li>
+    <li>3D graphics accelerator</li>
    </ul></li>
    <li>Connectivity<ul>
     <li>USB client: power, debug and device</li>
     <li>USB host, Ethernet</li>
     <li>2x46 pin headers<ul>
-     <li>2xI2C, 5xUART, SPI, CAN, GPIO</li>
-    </ul></li>
-   </ul></li>
+    <li>2xI2C, 5xUART, SPI, CAN, GPIO</li>
    </ul></li>
    <li>Software<ul>
     <li>4GB microSD card with Angstrom Distribution</li>
@@ -85,97 +82,61 @@
  </div>
  
  <div class="slide">
-  <h1>Starting point software</h1>
-  <h2><a href="http://beagleboard.org/project">http://beagleboard.org/project</a></h2>
-  <p>Your BeagleBone is currently running the Angstrom Distribution.  Below are links to upgrades
-   for Angstrom and various other starting points you might choose for your project.</p>
+  <h1>Arduino reignites electronics interest for non-experts</h1>
+  <h2>Not the original BeagleBoard inspiration, but should it have been?</h2>
+  <a href="http://www.flickr.com/photos/snootlab/6052455554/" title="Arduino Uno by Snootlab, on Flickr">
+   <img align="right" src="http://farm7.staticflickr.com/6209/6052455554_a4301347ef_z.jpg" width="640" height="427" alt="Arduino Uno">
+  </a>
   <ul>
-    <li>BeagleBone<ul>
-     <li>Texas Instruments releases:
-      <a href="http://processors.wiki.ti.com/index.php/BeagleBone-Android-DevKit_Guide">
-       Android</a>,
-      <a href="http://software-dl.ti.com/dsps/dsps_public_sw/am_bu/sdk/AM335xSDK/latest/index_FDS.html">
-       Linux</a>,
-      <a href="http://processors.wiki.ti.com/index.php/StarterWare">
-       StarterWare (no OS)</a>
-     </li>
-     <li>Linux: 
-      <a href="http://beagleboard.org/angstrom">Angstrom</a>,
-      <a href="http://elinux.org/BeagleBoardUbuntu">Ubuntu</a>,
-      <a href="http://wiki.debian.org/InstallingDebianOn/TI/BeagleBone">Debian</a>,
-      <a href="http://archlinuxarm.org/platforms/armv7/beaglebone">ArchLinux</a>,
-      <a href="http://dev.gentoo.org/~armin76/arm/beaglebone/install.xml">Gentoo</a>,
-      <a href="http://wiki.sabayon.org/index.php?title=Hitchhikers_Guide_to_the_BeagleBone_(and_ARMv7a)">
-       Sabayon</a>,
-      <a href="http://www.zoobab.com/beaglebone">Buildroot</a>,
-      <a href="http://nerves-project.org/">Erlang</a>,
-      <a href="http://elinux.org/BeagleBoardFedora">Fedora</a>
-     </li>
-     <li>Other:
-      <a href="http://community.qnx.com/sf/wiki/do/viewPage/projects.bsp/wiki/TiAm335Beaglebone">QNX</a>,
-      <a href="http://people.freebsd.org/~dmarion/beaglebone/creating_bootable_sd_card/">FreeBSD</a>
-     </li>
-    </ul></li>
-    <li>BeagleBoard and BeagleBoard-xM<ul>
-     <li>Texas Instruments releases:
-      <a href="http://www.ti.com/tool/androidsdk-sitara">
-       Android (see AM3715)</a>,
-      <a href="http://www.ti.com/tool/LINUXEZSDK-SITARA">
-       Linux</a>,
-      <a href="http://processors.wiki.ti.com/index.php/DVSDK_4.x_FAQ#How_to_build_and_install_DVSDK_4.01_on_BeagleBoard-xM">
-       DVSDK</a>
-     </li>
-     <li>Linux: 
-      <a href="http://beagleboard.org/angstrom">Angstrom</a>,
-      <a href="http://elinux.org/BeagleBoardUbuntu">Ubuntu</a>,
-      <a href="http://elinux.org/BeagleBoardDebian">Debian</a>,
-      <a href="http://archlinuxarm.org/platforms/armv7/beagleboard">ArchLinux</a>
-      (<a href="http://archlinuxarm.org/platforms/armv7/beagleboard-xm">xM</a>),
-      <a href="https://github.com/Jach/squidly/wiki/Beagleboard-Gentoo-Install">
-       Gentoo</a>,
-      <a href="http://elinux.org/BeagleBoardFedora">Fedora</a>
-     </li>
-     <li>Other:
-      <a href="http://support.mpcdata.com/ti/">Windows Embedded</a>,
-      <a href="http://community.qnx.com/sf/wiki/do/viewPage/projects.bsp/wiki/Bspdown_ti_omap_3530_evm">QNX</a>
-      (<a href="http://community.qnx.com/sf/wiki/do/viewPage/projects.bsp/wiki/Bspdown_ti_omap_3730_beagle">xM</a>), 
-      <a href="http://www.riscosopen.org/wiki/documentation/show/How%20to%20get%20started%20with%20a%20BeagleBoard">
-       RISC OS</a>, 
-      <a href="http://code.google.com/p/puppybits/">Puppy Bits</a>, 
-      <a href="http://sourceforge.net/apps/mediawiki/wildducks/index.php?title=Main_Page">Symbian</a>
-     </li>
-    </ul>
-   </li>
+   <li>Removes cognitive barriers to demonstrating hardware interactions</li>
+   <li>Barriers removed include C++ boilerplate such as "int main(int argc, char* argv) ..."</li>
+   <li>Barriers removed include linking to libraries</li>
+   <li>Derived from Processing and then Wiring</li>
+   <li>Minimal time to Hello-World-for-hardware: toggling of LED</li>
+   <li>Lots of examples on interfacing</li>
+   <li>Hundreds of "shields", breakout-boards and tools like Fritzing enable step-by-step examples</li>
   </ul>
  </div>
  
  <div class="slide">
-  <h1>Programming an SD card</h1> 
-  <h2>Your get-out-of-jail-free card</h2>
+  <h1>BeagleBone: open hardware expandable computer</h1>
+  <h2>Latest ARM open source focused on easy hardware experimentation</h2>
   <ul>
-   <li>Removable SD cards enables experimentation and ease of getting
-    back to a known starting point</li>
-   <li>First, make sure you have an appropriately sized microSD card and an 
-    adapter for your PC</li>
-   <li>Linux and Mac OS X
-    <ul>
-     <li>Learn to use '<a href="http://linux.die.net/man/1/dd">dd</a>' and
-      '<a href="http://linux.die.net/man/1/xzcat">xzcat</a>'</li>
-     <li>Know which /dev/sdX or /dev/diskX is your SD card through use of
-      '<a href="http://linux.die.net/man/1/dmesg">dmesg</a>'</li>
-     <li>Example<br /><pre>xzcat XXX.img.xz | sudo dd of=/dev/sdX bs=64M</pre></li>
-    </ul>
-   </li>
-  </ul>
-  <img align="right" src="imager.png" height="150px" />
-  <ul>
-   <li>Windows
-    <ul>
-     <li>Use <a href="http://http://www.7-zip.org/">7-zip</a> 
-      to decompress the XXX.img.xz file</li>
-     <li>Use <a href="https://wiki.ubuntu.com/Win32DiskImager">
-      Ubuntu Win32DiskImager</a> to write it to your microSD card</li>
-    </ul>
+   <li>Ships ready to use<ul>
+    <li>Angstrom Distribution with C++, Perl, Python, ...</li>
+    <li>Built-in USB-to-serial adapter with JTAG and device access</li>
+    <li>Linux drivers support countless USB peripherals</li>
+   </li></ul>
+   <li>Open source means options<ul>
+    <li>Texas Instruments releases:
+     <a href="http://processors.wiki.ti.com/index.php/BeagleBone-Android-DevKit_Guide">
+      Android 4.0</a>,
+     <a href="http://software-dl.ti.com/dsps/dsps_public_sw/am_bu/sdk/AM335xSDK/latest/index_FDS.html">
+      Linux</a>,
+     <a href="http://processors.wiki.ti.com/index.php/StarterWare">
+      StarterWare (no OS)</a>
+    </li>
+    <li>Linux: 
+     <a href="http://beagleboard.org/angstrom">Angstrom</a>,
+     <a href="http://elinux.org/BeagleBoardUbuntu">Ubuntu</a>,
+     <a href="http://wiki.debian.org/InstallingDebianOn/TI/BeagleBone">Debian</a>,
+     <a href="http://archlinuxarm.org/platforms/armv7/beaglebone">ArchLinux</a>,
+     <a href="http://dev.gentoo.org/~armin76/arm/beaglebone/install.xml">Gentoo</a>,
+     <a href="http://wiki.sabayon.org/index.php?title=Hitchhikers_Guide_to_the_BeagleBone_(and_ARMv7a)">
+      Sabayon</a>,
+     <a href="http://www.zoobab.com/beaglebone">Buildroot</a>,
+     <a href="http://nerves-project.org/">Erlang</a>,
+     <a href="http://elinux.org/BeagleBoardFedora">Fedora,</a>
+     <a href="http://www.timesys.com/embedded-linux/resources/dev-center/am335x">TimeSys</a>
+    </li>
+    <li>Other:
+     <a href="http://community.qnx.com/sf/wiki/do/viewPage/projects.bsp/wiki/TiAm335Beaglebone">QNX Neutrino<sup>&copy;</sup></a>,
+     <a href="http://people.freebsd.org/~dmarion/beaglebone/creating_bootable_sd_card/">FreeBSD</a>
+    </li>
+   </ul></li>
+   <img align="right" src="imager.png" width="30%" />
+   <li>SD card images like get-out-of-jail-free card
+    <pre>xzcat XXX.img.xz | sudo dd of=/dev/sdX</pre>
    </li>
   </ul>
  </div>
