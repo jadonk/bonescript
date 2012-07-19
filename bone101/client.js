@@ -28,6 +28,11 @@ var doAlert = function(m) {
     alert(JSON.stringify(m));
 };
 
+var demoRun = function(id) {
+    var myScript = document.getElementById(id).innerHTML
+    eval(myScript);
+};
+
 var callbacks = {};
 var seqnum = 0;
 var seqcall = function(data) {

@@ -130,6 +130,172 @@
  </div>
  
  <div class="slide">
+  <h1>Bonescript enables physical computing exploration</h1>
+  <h2>Linux handles the interfaces, JavaScript provides the glue</h2>
+  <ul>
+   <li>Builds on two key familiar programming environments: web and Arduino<ul>
+    <li>JavaScript is language of web and first logical choice for new programmers</li>
+    <li>HTML5 and libraries provides rapid prototyping of GUIs and ability to access remotely</li>
+   </ul></li>
+   <li>Benefits from being run on complete Linux computer<ul>
+    <li>Networking and USB stacks</li>
+    <li>Extensive libraries and processing performance, such as OpenCV</li>
+    <li>Web-based zero-install experience</li>
+   </ul></li>
+   <li>Event-based model of NodeJS simplifies asynchronous interactions<ul>
+    <li>I/O interactions are relatively slow compared to the CPU</li>
+    <li>Lends itself naturally to many event handlers</li>
+   </ul></li>
+   <li>Goal is a self-documenting interactive teaching web experience<ul>
+    <li>Currently using W3C Slidy for presentation view</li>
+   </ul></li>
+  </ul>
+ </div>
+
+ <div class="slide">
+  <h1>First experience of Bonescript</h1>
+  <h2>Familiar Arduino function calls, exported to the browser</h2>
+  <p>The links below are live and will impact the USR3 LED on your BeagleBone. The exact code used
+   in the browser is below and will send messages to your board using <a href="http://socket.io/">
+   Socket.IO</a>.</p>
+  <p>Set pin high: <span class="dynlink" onclick="demoRun('led1')">run</span></p>
+  <pre id="led1">
+pinMode(bone.USR3, 'out');
+digitalWrite(bone.USR3, 1);</pre>
+  <p>Set pin low: <span class="dynlink" onclick="demoRun('led2')">run</span></p>
+  <pre id="led2">
+digitalWrite(bone.USR3, 0);</pre>
+ </div>
+
+ <div class="slide">
+  <h1>Native sketch-like applications</h1>
+  <h2>Bonescript application code uses the typical setup/loop global functions</h2>
+  <p>Some boilerplate required, but fairly minimal.  Below is blinking LED app
+   with the familiar blocking style:</p>
+  <pre>
+require('bonescript');
+ledPin = bone.USR3;
+setup = function() {
+    pinMode(ledPin, OUTPUT);
+};
+loop = function() {
+    digitalWrite(ledPin, HIGH);
+    delay(1000);
+    digitalWrite(ledPin, LOW);
+    delay(1000);
+};</pre>
+  <p>Installation and execution of above 'blinkled.js' with node 0.6.x on a supported platform would
+   look something like:</p>
+  <pre>
+# npm install bonescript
+# node blinkled.js</pre>
+ </div>
+
+ <div class="slide">
+  <h1>Interactively add new loops</h1>
+  <h2>Bonescript adds addLoop function and multiple loops</h2>
+  <ul>
+   <li>Arduino sketches are designed to block</li>
+   <li>Web apps don't want to run all loops at beginning of time</li>
+   <li>Each loop is a fork using NodeJS 'cluster' feature<ul>
+    <li>Not in the spirit of NodeJS, but goal is simplicity and growth</li>
+    <li>Also added blocking 'delay' call for familiarity</li>
+    <li>Works well for independent processes</li>
+   </ul></li>
+   <li>Vision is to enable moving loops to dedicated processors or RT threads<ul>
+    <li>Loops are local strings with one-time global reference</li>
+    <li>Callbacks forwarded when loop returns a non-false value</li>
+    <li>Performance is reasonable today for many interactive apps</li>
+   </ul></li>
+  </ul>
+ </div>
+
+ <div class="slide">
+  <h1>addLoop/getLoops/removeLoop</h1>
+  <h2>Run something repeatedly</h2>
+  <p>Blink USR3 LED: <span class="dynlink" onclick="demoRun('addLoop1')">run</span></p>
+  <pre id="addLoop1">
+pinMode(bone.USR3, 'out');
+addLoop(function() {
+  digitalWrite(bone.USR3, 1);
+  delay(100);
+  digitalWrite(bone.USR3, 0);
+  delay(100);
+});</pre>
+  <p>Halt all loops: <span class="dynlink" onclick="demoRun('addLoop2')">run</span></p>
+  <pre id="addLoop2">
+getLoops(function(x) {
+  for(var loop in x.loops) {
+    removeLoop(loop);
+  }
+});</pre>
+ </div>
+
+ <div class="slide">
+  <h1>setInterval/clearInterval</h1>
+  <h2>Run something repeatedly without invoking a process</h2>
+  <ul>
+   <li>Starts faster than addLoop because it isn't invoking a process</li>
+   <li>Consumes less CPU on target</li>
+   <li>Puts load on browser machine and communications in this example</li>
+  </ul>
+  <p>Blink USR3 LED: <span class="dynlink" onclick="demoRun('setInterval1')">run</span></p>
+  <pre id="setInterval1">
+value = 0;
+pinMode(bone.USR3, 'out');
+interval = setInterval(function() {
+  value = value ? 0 : 1;
+  digitalWrite(bone.USR3, value);
+}, 100);</pre>
+  <p>Halt function: <span class="dynlink" onclick="demoRun('setInterval2')">run</span></p>
+  <pre id="setInterval2">
+clearInterval(interval);</pre>
+ </div>
+
+ <div class="slide"> 
+  <h1>doEval</h1>
+  <h2>Run something remotely just once</h2>
+  <p>What if we want to invoke the previous example on the target, rather than the browser?</p>
+  <p>Blink USR3 LED: <span class="dynlink" onclick="demoRun('doEval1')">run</span></p>
+  <pre id="doEval1">
+doEval(function() {
+ value = 0;
+ pinMode(bone.USR3, 'out');
+ interval = setInterval(function() {
+   value = value ? 0 : 1;
+   digitalWrite(bone.USR3, value);
+ }, 100);
+ return(interval);
+}, doAlert);</pre>
+  <p>Halt function: <span class="dynlink" onclick="demoRun('doEval2')">run</span></p>
+  <pre id="doEval2">
+doEval(function() { clearInterval(interval); };</pre>
+ </div>
+
+ <div class="slide"> 
+  <h1>attachInterrupt/detachInterrupt</h1>
+  <h2>Detect input changes</h2>
+  <p>Please connect P8-3 to P8-5 with a 1khom resistor</p>
+  <p>Attach interrupt and toggle P8-3: <span class="dynlink" onclick="demoRun('attachInterrupt1')">run</span></p>
+  <pre id="attachInterrupt1">
+pinMode(bone.P8_5, 'in');
+pinMode(bone.P8_3, 'out');
+value = 0;
+digitalWrite(bone.P8_3, value);
+attachInterrupt(bone.P8_5, function(x) {
+  digitalWrite(bone.USR3, x.value);
+}, 'both', doAlert);
+interval2 = setInterval(function() {
+  value = value ? 0 : 1;
+  digitalWrite(bone.P8_3, value);
+}, 1000);</pre>
+  <p>Halt function: <span class="dynlink" onclick="eval(demoRun('attachInterrupt4')">run</span></p>
+  <pre id="attachInterrupt4">
+clearInterval(interval2);
+detachInterrupt(bone.P8_5, doAlert);</pre>
+ </div>
+
+ <div class="slide">
   <h1>BeagleBone hardware details</h1> 
   <h2><a href="http://beagleboard.org/bone">http://beagleboard.org/bone</a></h2>
   <img src="bone_connectors.jpg" alt="BeagleBone image" align="right" width="70%" height="70%" />
@@ -152,23 +318,7 @@
     <li>4GB microSD card with Angstrom Distribution</li>
    </ul></li>
   </ul>
- </div> 
-
- <div class="slide">
-  <h1>Bonescript is attempt to collaboratively deliver a teaching system useful for integrating systems and building physically instrumented web services</h1>
-  <li>JavaScript is language of web and first logical choice for new programmers</li>
-  <li>HTML5 and libraries provides rapid prototyping of GUIs and ability to access remotely</li>
-  <li>NodeJS avoids delays waiting on physical I/O</li>
  </div>
-
- <div class="slide">
-  <h1>Bonescript follows Processing/Arduino model of using setup/loop functions<h1>
- </div>
-
- <div class="slide">
-  <h1>Bonescript adds addLoop function and multiple loops<h1>
- </div>
-
 
  <div class="slide">
   <h1>Bonescript enables low-level physical access to GPIOs via digitalInput/digtalOutput<h1>
@@ -177,7 +327,7 @@
  <div class="slide">
   <h1>analogRead/analogWrite</h1>
   <h2>Use ADCs and PWMs to read/write analog values</h2>
-  <p>Monitor analog in: <span class="dynlink" onclick="eval(document.getElementById('analogWrite2').innerHTML)">
+  <p>Monitor analog in: <span class="dynlink" onclick="demoRun('analogWrite2')">
    run</span></p>
   <pre id="analogWrite2">
 pinMode(bone.P8_13, 'out', 4);
@@ -185,7 +335,7 @@ addLoop(function() {
  var value = analogRead(bone.P9_36);
  analogWrite(bone.P8_13, value);
 }, 25, doAlert);</pre>
-  <p>Fade in and out: <span class="dynlink" onclick="eval(document.getElementById('analogWrite3').innerHTML)">
+  <p>Fade in and out: <span class="dynlink" onclick="demoRun('analogWrite3')">
    run</span></p>
   <pre id="analogWrite3">
  pinMode(bone.P8_13, 'out', 4);
@@ -193,10 +343,10 @@ addLoop(function() {
   if(!this.awDirection) { this.awValue = 0.01; this.awDirection = 1; }
   analogWrite(bone.P8_13, this.awValue);
   this.awValue = this.awValue + (this.awDirection*0.01);
-  if(this.awValue > 1.0) { this.awValue = 1.0; this.awDirection = -1; }
-  else if(this.awValue <= 0.01) { this.awValue = 0.01; this.awDirection = 1; }
+  if(this.awValue &gt; 1.0) { this.awValue = 1.0; this.awDirection = -1; }
+  else if(this.awValue &lt; 0.01) { this.awValue = 0.01; this.awDirection = 1; }
  }, 100, doAlert);</pre>
-  <p>Halt all loops: <span class="dynlink" onclick="eval(document.getElementById('analogWrite4').innerHTML)">
+  <p>Halt all loops: <span class="dynlink" onclick="demoRun('analogWrite4')">
    run</span></p>
   <pre id="analogWrite4">
  getLoops(function(loops){for(var loop in loops.loops){removeLoop(loop, doAlert);}});</pre>
@@ -207,7 +357,7 @@ addLoop(function() {
   <h2>&nbsp;</h2>
   <p>Please connect P8-13 to LED through 1khom resistor</p>
   <div id="slider1"></div>
-  <p>Attach to slider: <span class="dynlink" onclick="eval(document.getElementById('analogWrite1').innerHTML)">
+  <p>Attach to slider: <span class="dynlink" onclick="demoRun('analogWrite1')">
    run</span></p>
   <pre id="analogWrite1">
 pinMode(bone.P8_13, 'out', 4);
@@ -221,7 +371,7 @@ $("#slider1").bind("slidechange", function(event, ui) {
   <h2>&nbsp;</h2>
   <p>Please connect P9-36 to potentiometer and adust from 0V to 1.8V</p>
   <div id="slider2"></div>
-  <p>Attach to slider: <span class="dynlink" onclick="eval(document.getElementById('analogRead1').innerHTML)">
+  <p>Attach to slider: <span class="dynlink" onclick="demoRun('analogRead1')">
    run</span></p>
   <pre id="analogRead1">
 arUpdateSlider = function(x) {
@@ -230,12 +380,16 @@ arUpdateSlider = function(x) {
 addLoop(function() {
  return(analogRead(bone.P9_36));
 }, 100, arUpdateSlider);</pre>
-  <p>Halt all loops: <span class="dynlink" onclick="eval(document.getElementById('analogRead2').innerHTML)">
+  <p>Halt all loops: <span class="dynlink" onclick="demoRun('analogRead2')">
    run</span></p>
   <pre id="analogRead2">
- getLoops(function(loops){for(var loop in loops.loops){removeLoop(loop, doAlert);}});</pre>
+getLoops(function(loops){for(var loop in loops.loops){removeLoop(loop, doAlert);}});</pre>
  </div>
  
+ <div class="slide">
+  <h1>Capes extend BeagleBone capability</h1>
+ </div>
+
  <div class="slide">
   <h1>Cloud9 experience<h1>
  </div>
@@ -251,96 +405,6 @@ addLoop(function() {
   <li>the universality of JavaScript provides new opportunities to avoid such surprises or delays to success</li>
   <li>When a sensor provides data, JavaScript closure functions provide an easy-to-use mechanism to efficiently</li>
   <li>responsively update a web-based user interface providing visualizations of the data</li>
- </div>
-
- <div class="slide">
-  <h1>Turn on an LED (on-board)</h1>
-  <h2>The "hello world" of hardware</h2>
-  <p>The links below are live and will impact the USR3 LED on your BeagleBone. The exact code used
-   in the browser is below and will send messages to your board using <a href="http://socket.io/">
-   Socket.IO</a>.</p>
-  <p>Set pin high: <span class="dynlink" onclick="eval(document.getElementById('led1').innerHTML)">
-   run</span></p>
-  <pre id="led1">
-pinMode(bone.USR3, 'out');
-digitalWrite(bone.USR3, 1);</pre>
-  <p>Set pin low: <span class="dynlink" onclick="eval(document.getElementById('led2').innerHTML)">
-   run</span></p>
-  <pre id="led2">
-digitalWrite(bone.USR3, 0);</pre>
- </div>
-
- <div class="slide">
-  <h1>addLoop/getLoops/removeLoop</h1>
-  <h2>Run something repeatedly</h2>
-  <p>Blink USR3 LED: <span class="dynlink" onclick="eval(document.getElementById('addLoop1').innerHTML)">
-   run</span></p>
-  <pre id="addLoop1">
-pinMode(bone.USR3, 'out');
-addLoop(function() {
-  digitalWrite(bone.USR3, 1);
-  delay(100);
-  digitalWrite(bone.USR3, 0);
-  delay(100);
-});</pre>
-  <p>Halt all loops: <span class="dynlink" onclick="eval(document.getElementById('addLoop2').innerHTML)">
-   run</span></p>
-  <pre id="addLoop2">
-getLoops(function(x) {
-  for(var loop in x.loops) {
-    removeLoop(loop);
-  }
-});</pre>
- </div>
-
- <div class="slide">
-  <h1>setInterval/clearInterval</h1>
-  <h2>Run something repeatedly without invoking a process</h2>
-  <p>Blink USR3 LED: <span class="dynlink" onclick="eval(document.getElementById('setInterval1').innerHTML)">
-   run</span></p>
-  <pre id="setInterval1">
-value = 0;
-pinMode(bone.USR3, 'out');
-interval = setInterval(function() {
-  value = value ? 0 : 1;
-  digitalWrite(bone.USR3, value);
-}, 100);</pre>
-  <p>Halt function: <span class="dynlink" onclick="eval(document.getElementById('setInterval2').innerHTML)">
-   run</span></p>
-  <pre id="setInterval2">
-clearInterval(interval);</pre>
- </div>
-
- <div class="slide"> 
-  <h1>attachInterrupt/detachInterrupt</h1>
-  <h2>Detect input changes</h2>
-  <p>Please connect P8-3 to P8-5 with a 1khom resistor</p>
-  <p>Attach interrupt: <span class="dynlink" onclick="eval(document.getElementById('attachInterrupt1').innerHTML)">
-   run</span></p>
-  <pre id="attachInterrupt1">
-pinMode(bone.P8_5, 'in');
-pinMode(bone.P8_3, 'out');
-value = 0;
-digitalWrite(bone.P8_3, value);
-attachInterrupt(bone.P8_5, function(x) {
-  digitalWrite(bone.USR3, x.value);
-}, 'both', doAlert);</pre>
-  <p>Toggle P8-3: <span class="dynlink" onclick="eval(document.getElementById('attachInterrupt2').innerHTML)">
-   run</span></p>
-  <pre id="attachInterrupt2">
-interval2 = setInterval(function() {
-  value = value ? 0 : 1;
-  digitalWrite(bone.P8_3, value);
-}, 1000);</pre>
-  <p>Read P8-5: <span class="dynlink" onclick="eval(document.getElementById('attachInterrupt3').innerHTML)">
-   run</span></p>
-  <pre id="attachInterrupt3">
-digitalRead(bone.P8_5, function(x){alert(x.value);});</pre>
-  <p>Halt function: <span class="dynlink" onclick="eval(document.getElementById('attachInterrupt4').innerHTML)">
-   run</span></p>
-  <pre id="attachInterrupt4">
-clearInterval(interval2);
-detachInterrupt(bone.P8_5, doAlert);</pre>
  </div>
 
  <div class="slide"> 
