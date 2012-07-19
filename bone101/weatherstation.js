@@ -29,16 +29,16 @@ var tmax = tempConfig.rangeHigh;
 var tmin = tempConfig.rangeLow;
 var tunit = tempConfig.unit;
 
-canvasWidth = window.innerWidth;
+canvasWidth = window.innerWidth * 0.9;
 if ( canvasWidth > window.innerHeight) 
- canvasWidth = 1.4 * window.innerHeight;
+ canvasWidth = 1.3 * window.innerHeight;
 
 var barometerSketchProc = function(p) {
  p.size(canvasWidth*(2/3), canvasWidth*(2/3));
  p.draw = function() {
- p.size(canvasWidth*(2/3), canvasWidth*(2/3));
- barometerWidth=p.width;
- p.background(0,0);
+  p.size(canvasWidth*(2/3), canvasWidth*(2/3));
+  barometerWidth=p.width;
+  p.background(0,0);
   
   // barometer
   p.fill(220);
@@ -184,9 +184,9 @@ temperatureUpdate = function(data) {
 
 window.onresize=resizeHandler;
 function resizeHandler(){
- canvasWidth = window.innerWidth;
+ canvasWidth = window.innerWidth * 0.9;
  if ( canvasWidth > window.innerHeight) 
-  canvasWidth = 1.4 * window.innerHeight;
+  canvasWidth = 1.3 * window.innerHeight;
  
  barometerCanvas.width = canvasWidth*(2/3);
  barometerCanvas.height = canvasWidth*(2/3);
