@@ -299,23 +299,29 @@ doEval(function(callback) {
   <h1>attachInterrupt/detachInterrupt</h1>
   <h2>Detect input changes</h2>
   <p>Please connect P8-3 to P8-5 with a 1khom resistor</p>
-  <p>Attach interrupt and toggle P8-3: <span class="dynlink" onclick="demoRun('attachInterrupt1')">run</span></p>
+  <p>Attach interrupt and toggle P8-3 for 30 seconds:
+   <span class="dynlink" onclick="demoRun('attachInterrupt1')">run</span>
+  </p>
+  <p>Last value read was: <b><span id="attachInterruptValue">unknown</span></b></p>
   <pre id="attachInterrupt1">
 pinMode(bone.P8_5, 'in');
 pinMode(bone.P8_3, 'out');
 value = 0;
 digitalWrite(bone.P8_3, value);
 attachInterrupt(bone.P8_5, function(x) {
-  digitalWrite(bone.USR3, x.value);
-}, 'both', doAlert);
-interval2 = setInterval(function() {
+  return({'value': x.value});
+ }, 'both', function(x) {
+  if(x.output) $('#attachInterruptValue').text(x.output.value)
+  else doAlert(x);
+});
+var interval = setInterval(function() {
   value = value ? 0 : 1;
   digitalWrite(bone.P8_3, value);
-}, 1000);</pre>
-  <p>Halt function: <span class="dynlink" onclick="eval(demoRun('attachInterrupt4')">run</span></p>
-  <pre id="attachInterrupt4">
-clearInterval(interval2);
-detachInterrupt(bone.P8_5, doAlert);</pre>
+}, 1000);
+setTimeout(function() {
+ clearInterval(interval);
+ detachInterrupt(bone.P8_5, doAlert);
+}, 30000);</pre>
  </div>
  
  <div class="slide">
@@ -415,6 +421,12 @@ doEval(function(callback) {
 
  <div class="slide">
   <h1>Cloud9 experience</h1>
+  <h2>&nbsp;</h2>
+  <img src="Cloud9_Screen.png" align="right" width="60%" />
+  <ul>
+   <li>Running on boot-up on the BeagleBone</li>
+   <li>Starts-up with directory of Bonescript examples</li>
+  </ul>
  </div>
  
  <div class="slide">
