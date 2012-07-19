@@ -45,6 +45,7 @@
    <li>Add screen capture of Cloud9</li>
    <li>Add jQuery color toggle on attachInterrupt</li>
    <li>Add list of capes</li>
+   <li>Add weatherstation demo</li>
   </ul>
  </div>
 
@@ -174,6 +175,7 @@ digitalWrite(bone.USR3, 1);</pre>
   <p>Set pin low: <span class="dynlink" onclick="demoRun('led2')">run</span></p>
   <pre id="led2">
 digitalWrite(bone.USR3, 0);</pre>
+  <p>All GPIOs accessible via digitalWrite and digtalRead.</p>
  </div>
 
  <div class="slide">
@@ -241,24 +243,28 @@ getLoops(function(x) {
  </div>
 
  <div class="slide">
-  <h1>setInterval/clearInterval</h1>
+  <h1>setInterval/clearInterval/setTimeout</h1>
   <h2>Run something repeatedly without invoking a process</h2>
   <ul>
    <li>Starts faster than addLoop because it isn't invoking a process</li>
    <li>Consumes less CPU on target</li>
    <li>Puts load on browser machine and communications in this example</li>
+   <li>Here we demonstrate on the client browser, but NodeJS provides same functions</li>
   </ul>
-  <p>Blink USR3 LED: <span class="dynlink" onclick="demoRun('setInterval1')">run</span></p>
+  <p>Blink USR3 LED for 30 seconds: <span class="dynlink" onclick="demoRun('setInterval1')">run</span></p>
   <pre id="setInterval1">
 value = 0;
 pinMode(bone.USR3, 'out');
+
 interval = setInterval(function() {
   value = value ? 0 : 1;
   digitalWrite(bone.USR3, value);
-}, 100);</pre>
-  <p>Halt function: <span class="dynlink" onclick="demoRun('setInterval2')">run</span></p>
-  <pre id="setInterval2">
-clearInterval(interval);</pre>
+}, 100);
+
+setTimeout(function() {
+ clearInterval(interval);
+}, 30000);
+</pre>
  </div>
 
  <div class="slide"> 
@@ -283,6 +289,10 @@ doEval(function(callback) {
  
  return({'notice': "Launched doEval demo interval function"});
 }, doAlert);</pre>
+  <ul>
+   <li>Function converted to string when passed from client to server</li>
+   <li>On client, 'callback' is a proxy for the 'doAlert' callback provided to doEval</li>
+  </ul>
  </div>
 
  <div class="slide"> 
@@ -307,36 +317,7 @@ interval2 = setInterval(function() {
 clearInterval(interval2);
 detachInterrupt(bone.P8_5, doAlert);</pre>
  </div>
-
- <div class="slide">
-  <h1>BeagleBone hardware details</h1> 
-  <h2><a href="http://beagleboard.org/bone">http://beagleboard.org/bone</a></h2>
-  <img src="bone_connectors.jpg" alt="BeagleBone image" align="right" width="70%" height="70%" />
-  <ul>
-   <li>Processor<ul>
-    <li>720MHz super-scalar ARM Cortex-A8</li>
-    <li>armv7 and NEON SIMD instructions</li>
-    <li>3D graphics accelerator</li>
-   </ul></li>
-   <li>Connectivity<ul>
-    <li>USB client: power, debug and device</li>
-    <li>USB host, Ethernet</li>
-    <li>2x46 pin headers<ul>
-     <li>7xADC, 66xGPIO</li>
-     <li>2xI2C, 5xUART, SPI, CAN, 8xPWM</li>
-     <li>LCD, parallel, MMC/SDIO</li>
-    </ul></li>
-   </ul></li>
-   <li>Software<ul>
-    <li>4GB microSD card with Angstrom Distribution</li>
-   </ul></li>
-  </ul>
- </div>
-
- <div class="slide">
-  <h1>Bonescript enables low-level physical access to GPIOs via digitalInput/digtalOutput</h1>
- </div>
-
+ 
  <div class="slide">
   <h1>analogRead/analogWrite</h1>
   <h2>Use ADCs and PWMs to read/write analog values</h2>
@@ -384,21 +365,50 @@ $("#slider1").bind("slidechange", function(event, ui) {
   <h2>&nbsp;</h2>
   <p>Please connect P9-36 to potentiometer and adust from 0V to 1.8V</p>
   <div id="slider2"></div>
-  <p>Attach to slider: <span class="dynlink" onclick="demoRun('analogRead1')">
-   run</span></p>
+  <p>Attach to slider for 30 seconds: <span class="dynlink" onclick="demoRun('analogRead1')">run</span></p>
   <pre id="analogRead1">
 arUpdateSlider = function(x) {
- if(x.callback) $("#slider2").slider("option", "value", x.callback*100);
+ if(x.value) $("#slider2").slider("option", "value", x.value*100);
+ if(x.halt) alert("Halting analogRead slider update");
 };
-addLoop(function() {
- return(analogRead(bone.P9_36));
-}, 100, arUpdateSlider);</pre>
-  <p>Halt all loops: <span class="dynlink" onclick="demoRun('analogRead2')">
-   run</span></p>
-  <pre id="analogRead2">
-getLoops(function(loops){for(var loop in loops.loops){removeLoop(loop, doAlert);}});</pre>
+
+doEval(function(callback) {
+ var interval = setInterval(function() {
+  analogRead(bone.P9_36, callback);
+ }, 100);
+ 
+ setTimeout(function() {
+  clearInterval(interval);
+  callback({'halt':true});
+ }, 30000);
+}, arUpdateSlider);</pre>
  </div>
  
+ <div class="slide">
+  <h1>BeagleBone hardware details</h1> 
+  <h2><a href="http://beagleboard.org/bone">http://beagleboard.org/bone</a></h2>
+  <img src="bone_connectors.jpg" alt="BeagleBone image" align="right" width="70%" height="70%" />
+  <ul>
+   <li>Processor<ul>
+    <li>720MHz super-scalar ARM Cortex-A8</li>
+    <li>armv7 and NEON SIMD instructions</li>
+    <li>3D graphics accelerator</li>
+   </ul></li>
+   <li>Connectivity<ul>
+    <li>USB client: power, debug and device</li>
+    <li>USB host, Ethernet</li>
+    <li>2x46 pin headers<ul>
+     <li>7xADC, 66xGPIO</li>
+     <li>2xI2C, 5xUART, SPI, CAN, 8xPWM</li>
+     <li>LCD, parallel, MMC/SDIO</li>
+    </ul></li>
+   </ul></li>
+   <li>Software<ul>
+    <li>4GB microSD card with Angstrom Distribution</li>
+   </ul></li>
+  </ul>
+ </div>
+
  <div class="slide">
   <h1>Capes extend BeagleBone capability</h1>
  </div>
@@ -456,6 +466,26 @@ getLoops(function(loops){for(var loop in loops.loops){removeLoop(loop, doAlert);
   <div class="capesvg"><div id="cape55"></div></div>
   <div class="capesvg"><div id="cape56"></div></div>
   <div class="capesvg"><div id="cape57"></div></div>
+ </div>
+ 
+ <div class="slide">
+  <h1>Weather station setup</h1>
+  <h2>Here we initialize the weather station demo</h2>
+  <pre>
+doEval(function(callback) {
+ var fs = require('fs');
+ try {
+  fs.writeFileSync('/sys/class/i2c-adapter/i2c-3/new_device', 'bmp085 0x77', encoding='ascii');
+ } catch(ex) {
+  callback('alert':'bmp085 driver load failed: ' + ex);
+ }
+}, doAlert);</pre>  
+ </div>
+ 
+ <div class="slide">
+  <h1>Weather station demo</h1>
+  <h2>&nbsp;</h2>
+  <canvas id="barometerCanvas"></canvas><canvas id="thermometerCanvas"></canvas>
  </div>
 
  <div class="slide"> 

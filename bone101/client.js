@@ -14,7 +14,8 @@ var scriptUrls = [
     '/eeprom-web.js',
     '/autoadvance.js',
     '/processing.js',
-    '/jquery-ui.min.js'             // http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js
+    '/jquery-ui.min.js',         // http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js
+    '/weatherstation.js'
 ];
 
 // Placeholder to get filled in from bonescript via socket.io
