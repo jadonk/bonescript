@@ -1,10 +1,8 @@
 <html>
 <head>
-<title>Beaglebone + BMP085 sensorboard Processing.js + socket.io demo</title>
+<title>Beaglebone + weatherstation cape Processing.js + socket.io demo</title>
 <style type="text/css" media="all">@import "/style.css";</style>
-<link rel="stylesheet" href="animate-style.css" />
-<link rel="stylesheet" href="animate.css" />
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+<script src="jquery-1.7.2.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 </head>
 <body>
@@ -33,6 +31,11 @@ var temp = -25;
 var tmax;
 var tmin;
 var tunit = "jiggoWatt";
+
+var humidity = 50;
+var hmax;
+var hmin;
+var hunit = "jiggoWatt";
 
 canvasWidth = window.innerWidth;
 if ( canvasWidth > window.innerHeight) 
@@ -79,12 +82,48 @@ var barometerSketchProc = function(p) {
          p.text(myText, Math.round(barometerWidth/2 + Math.cos(angle) * barometerWidth*0.3 - myWidth/2),Math.round(barometerWidth/2 + Math.sin(angle) * barometerWidth*0.3));
        }
    }
-
-  //needle
+   
+  
+   // RH scale
+   p.fill(220);
+   p.stroke(0);
+   p.strokeWeight(barometerWidth*0.005);
+   p.arc(barometerWidth/2, barometerWidth/2, barometerWidth*0.4, barometerWidth*0.4, -(4/3)*PI, PI/3);
+   
+   // we want a range from 0 - 100%
+   // 1-5=60-100, 7-12=0-50
+   p.textSize(Math.round(barometerWidth*0.02));
+   for ( i = 1; i <= 12; i++, angle += inc ) {
+       if(i!=6) {
+         p.line(barometerWidth/2 + Math.cos(angle) * barometerWidth*0.18,barometerWidth/2 + Math.sin(angle) * barometerWidth*.18,barometerWidth/2 + Math.cos(angle) * barometerWidth*0.2,barometerWidth/2 + Math.sin(angle) * barometerWidth*.2);
+         if (i < 6) {
+           myText = 50 +10*i;
+         } else {
+           myText = 10*i - 70;
+         }     
+         myWidth = p.textWidth(myText);
+         p.fill(0, 102, 153);
+         p.text(myText, Math.round(barometerWidth/2 + Math.cos(angle) * barometerWidth*0.16 - myWidth/2),Math.round(barometerWidth/2 + Math.sin(angle) * barometerWidth*0.16));
+       } else {
+         myText = hunit;  
+         myWidth = p.textWidth(myText);
+         p.fill(0, 102, 153);
+         p.text(myText, Math.round(barometerWidth/2 + Math.cos(angle) * barometerWidth*0.12 - myWidth/2),Math.round(barometerWidth/2 + Math.sin(angle) * barometerWidth*0.12));
+       }
+   }
+   
+        //humidity needle
+  p.stroke(60);
+  p.strokeWeight(barometerWidth*0.005);
+  p.line(-Math.cos(humidity) * barometerWidth*0.05  + barometerWidth/2, -Math.sin(humidity) * barometerWidth*0.05 + barometerWidth/2, Math.cos(humidity) * barometerWidth*0.15 + barometerWidth/2, Math.sin(humidity) * barometerWidth*0.15 + barometerWidth/2);
+  //p.ellipse(barometerWidth/2, barometerWidth/2, barometerWidth/20, barometerWidth/20);
+   
+     // pressure needle
   p.stroke(60);
   p.strokeWeight(barometerWidth*0.015);
   p.line(-Math.cos(pressure) * barometerWidth*0.05  + barometerWidth/2, -Math.sin(pressure) * barometerWidth*0.05 + barometerWidth/2, Math.cos(pressure) * barometerWidth*0.35 + barometerWidth/2, Math.sin(pressure) * barometerWidth*0.35 + barometerWidth/2);
   p.ellipse(barometerWidth/2, barometerWidth/2, barometerWidth/20, barometerWidth/20);
+  
  };
  p.noLoop();
 }
@@ -183,6 +222,19 @@ socket.on('pressuredata', function(data) {
  barometer.redraw();
 });
 
+socket.on('humiditydata', function(data) {
+ var myData = parseFloat(data);
+ // Angles for sin() and cos() start at 3 o'clock;
+ // subtract HALF_PI to make them start at the top
+ // 30% = HALF_PI
+ humidity = (myData  - 50) * (TWO_PI / 120) - HALF_PI;
+
+ if (myData > hmax) hmax = myData;
+ if (myData < hmin) hmin = myData;
+ 
+ barometer.redraw();
+});
+
 socket.on('tempdata', function(data) {
  var myData = parseFloat(data);
  // Angles for sin() and cos() start at 3 o'clock;
@@ -206,6 +258,14 @@ socket.on('tempconfig', function(config) {
   tunit = config.unit;
   tmin = config.rangeHigh;
   tmax = config.rangeLow;
+ } catch(ex) {}
+});
+
+socket.on('humidityconfig', function(config) {
+ try {
+  hunit = config.unit;
+  hmin = config.rangeHigh;
+  hmax = config.rangeLow;
  } catch(ex) {}
 });
 
@@ -233,44 +293,6 @@ function resizeHandler(){
 }
 
 </script>
-
-    		<hr>
-			<h3>Attention seekers</h3>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('flash');">flash</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('bounce');">bounce</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('shake');">shake</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('tada');">tada</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('swing');">swing</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('wobble');">wobble</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('pulse');">pulse</a>
-			
-			<h3>Flippers (currently Webkit &amp; IE10 only)</h3>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('flip');">flip</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('flipInX');">flipInX</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('flipOutX');">flipOutX</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('flipInY');">flipInY</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('flipOutY');">flipOutY</a>
-			
-			<h3>Rotating entrances</h3>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('rotateIn');">rotateIn</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('rotateInDownLeft');">rotateInDownLeft</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('rotateInDownRight');">rotateInDownRight</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('rotateInUpLeft');">rotateInUpLeft</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('rotateInUpRight');">rotateInUpRight</a>
-			
-			<h3>Rotating exits</h3>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('rotateOut');">rotateOut</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('rotateOutDownLeft');">rotateOutDownLeft</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('rotateOutDownRight');">rotateOutDownRight</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('rotateOutUpLeft');">rotateOutUpLeft</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('rotateOutUpRight');">rotateOutUpRight</a>
-			
-			<h3>Specials</h3>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('hinge');">hinge</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('rollIn');">rollIn</a>
-			<a class="butt butt-small" href="#cta" onclick="$('#animateTest').removeClass().addClass('rollOut');">rollOut</a>
-			
-			<hr>
 
 <a href="index-st7735.html">1.8" SPI display optimized version</a>
 
