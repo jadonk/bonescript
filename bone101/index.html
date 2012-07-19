@@ -265,20 +265,22 @@ clearInterval(interval);</pre>
   <h1>doEval</h1>
   <h2>Run something remotely just once</h2>
   <p>What if we want to invoke the previous example on the target, rather than the browser?</p>
-  <p>Blink USR3 LED: <span class="dynlink" onclick="demoRun('doEval1')">run</span></p>
+  <p>Blink USR3 LED for 30 seconds: <span class="dynlink" onclick="demoRun('doEval1')">run</span></p>
   <pre id="doEval1">
-doEval(function() {
- value = 0;
+doEval(function(callback) {
+ var value = 0;
  pinMode(bone.USR3, 'out');
- interval = setInterval(function() {
-   value = value ? 0 : 1;
-   digitalWrite(bone.USR3, value);
+ 
+ var interval = setInterval(function() {
+  value = value ? 0 : 1;
+  digitalWrite(bone.USR3, value);
  }, 100);
- return(interval);
+ 
+ setTimeout(function() {
+  clearInterval(interval);
+  callback({'notice':"Removing doEval demo interval function"});
+ }, 30000);
 }, doAlert);</pre>
-  <p>Halt function: <span class="dynlink" onclick="demoRun('doEval2')">run</span></p>
-  <pre id="doEval2">
-doEval(function() { clearInterval(interval); };</pre>
  </div>
 
  <div class="slide"> 
@@ -354,7 +356,7 @@ addLoop(function() {
   this.awValue = this.awValue + (this.awDirection*0.01);
   if(this.awValue &gt; 1.0) { this.awValue = 1.0; this.awDirection = -1; }
   else if(this.awValue &lt; 0.01) { this.awValue = 0.01; this.awDirection = 1; }
- }, 100, doAlert);</pre>
+ }, 10, doAlert);</pre>
   <p>Halt all loops: <span class="dynlink" onclick="demoRun('analogWrite4')">
    run</span></p>
   <pre id="analogWrite4">

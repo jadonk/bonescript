@@ -29,7 +29,9 @@ var doAlert = function(m) {
 };
 
 var demoRun = function(id) {
-    var myScript = document.getElementById(id).innerHTML
+    var myScript = document.getElementById(id).innerHTML;
+    myScript = myScript.replace("&lt;", "<");
+    myScript = myScript.replace("&gt;", ">");
     eval(myScript);
 };
 
