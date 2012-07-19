@@ -278,8 +278,10 @@ doEval(function(callback) {
  
  setTimeout(function() {
   clearInterval(interval);
-  callback({'notice':"Removing doEval demo interval function"});
+  callback({'notice': "Removing doEval demo interval function"});
  }, 30000);
+ 
+ return({'notice': "Launched doEval demo interval function"});
 }, doAlert);</pre>
  </div>
 
