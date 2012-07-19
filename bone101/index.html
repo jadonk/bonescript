@@ -470,16 +470,52 @@ doEval(function(callback) {
  
  <div class="slide">
   <h1>Weather station setup</h1>
-  <h2>Here we initialize the weather station demo</h2>
-  <pre>
+  <h2>Here we initialize the weather station demo:
+   <span class="dynlink" onclick="demoRun('weather1')">run</span>
+  </h2>
+  <pre id="weather1">
+function doTempRead(cb) {
+ doEval(function(callback) {
+  fs.readFile("/sys/bus/i2c/drivers/bmp085/3-0077/temp0_input", function(err, data) {
+   if(!err) callback({'valid': true, 'value': '' + data});
+  });
+ }, cb);
+};
+
+function doPressureRead(cb) {
+ doEval(function(callback) {
+  fs.readFile("/sys/bus/i2c/drivers/bmp085/3-0077/pressure0_input", function(err, data) {
+   if(!err) callback({'valid': true, 'value': '' + data});
+  });
+ }, cb);
+};
+
+function tempRead(x) {
+ if(x.valid) tempUpdate(x.value);
+};
+  
+function pressureRead(x) {
+ if(x.valid) pressureUpdate(x.value);
+};
+  
+function updateWeather(x) {
+ doAlert(x);
+ setInterval(function() {
+  doPressureRead(pressureRead);
+ }, 5000);
+ setInterval(function() {
+  doTempRead(tempRead);
+ }, 1000);
+};
+
 doEval(function(callback) {
- var fs = require('fs');
  try {
   fs.writeFileSync('/sys/class/i2c-adapter/i2c-3/new_device', 'bmp085 0x77', encoding='ascii');
+  return({'alert':'bmp085 driver successfully loaded'});
  } catch(ex) {
-  callback('alert':'bmp085 driver load failed: ' + ex);
+  return({'alert':'bmp085 driver load failed: ' + ex});
  }
-}, doAlert);</pre>  
+}, updateWeather);</pre>  
  </div>
  
  <div class="slide">

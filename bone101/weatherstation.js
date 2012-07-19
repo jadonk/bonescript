@@ -1,3 +1,18 @@
+// Configuration data
+pressureConfig = {
+    unit: "milliBar",
+    scale: 100,
+    rangeHigh: 1100,
+    rangeLow: 900,
+};
+
+tempConfig = {
+    unit: "° C",
+    scale: 10,
+    rangeHigh: 40,
+    rangeLow: -20,
+};
+
 // global vars
 var PI = 3.14;
 var HALF_PI = 1.57;
@@ -5,14 +20,14 @@ var TWO_PI = 6.28;
 
 // set defaults
 var pressure = 950;
-var pmax;
-var pmin;
-var punit = "jiggoWatt";
+var pmax = pressureConfig.rangeHigh;
+var pmin = pressureConfig.rangeLow;
+var punit = pressureConfig.unit;
 
 var temp = -25;
-var tmax;
-var tmin;
-var tunit = "jiggoWatt";
+var tmax = tempConfig.rangeHigh;
+var tmin = tempConfig.rangeLow;
+var tunit = tempConfig.unit;
 
 canvasWidth = window.innerWidth;
 if ( canvasWidth > window.innerHeight) 
@@ -144,13 +159,7 @@ var thermometerCanvas = document.getElementById("thermometerCanvas");
 var barometer = new Processing(barometerCanvas, barometerSketchProc);
 var thermometer = new Processing(thermometerCanvas, thermometerSketchProc);
 
-var socket = new io.connect();
-socket.on('connect', function() {
- document.getElementById("status").innerHTML="Connected";
- $('#animateTest').removeClass().addClass('fadeIn');
-});
-
-socket.on('pressuredata', function(data) {
+pressureUpdate = function(data) {
  var myData = parseFloat(data);
  // Angles for sin() and cos() start at 3 o'clock;
  // subtract HALF_PI to make them start at the top
@@ -161,9 +170,9 @@ socket.on('pressuredata', function(data) {
  if (myData < pmin) pmin = myData;
  
  barometer.redraw();
-});
+};
 
-socket.on('tempdata', function(data) {
+temperatureUpdate = function(data) {
  var myData = parseFloat(data);
  // Angles for sin() and cos() start at 3 o'clock;
  // subtract HALF_PI to make them start at the top
@@ -171,23 +180,7 @@ socket.on('tempdata', function(data) {
  if (myData > tmax) tmax = myData;
  if (myData < tmin) tmin = myData;
  thermometer.redraw();
-});
-
-socket.on('pressureconfig', function(config) {
- try {
-  punit = config.unit;
-  pmin = config.rangeHigh;
-  pmax = config.rangeLow;
- } catch(ex) {}
-});
-
-socket.on('tempconfig', function(config) {
- try {
-  tunit = config.unit;
-  tmin = config.rangeHigh;
-  tmax = config.rangeLow;
- } catch(ex) {}
-});
+};
 
 window.onresize=resizeHandler;
 function resizeHandler(){
