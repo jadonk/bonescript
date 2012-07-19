@@ -145,23 +145,16 @@
     <li>Networking and USB stacks</li>
     <li>Extensive libraries and processing performance, such as OpenCV</li>
     <li>Web-based zero-install experience</li>
+    <li>Avoids need to get low-level permissions on shared machine</li>
    </ul></li>
    <li>Event-based model of NodeJS simplifies asynchronous interactions<ul>
     <li>I/O interactions are relatively slow compared to the CPU</li>
     <li>Lends itself naturally to many event handlers</li>
    </ul></li>
+   <li>Enables single-language environment, including IDE</li>
    <li>Goal is a self-documenting interactive teaching web experience<ul>
     <li>Currently using W3C Slidy for presentation view</li>
    </ul></li>
-   <li>JavaScript is the programming language of the web and a logical first choice for new programmers</li>
-   <li>By providing the development environment over the web using Cloud9 IDE</li>
-   <li>familiarity is maintained from top to bottom building on the same technology and language</li>
-   <li>Additionally, lengthy download and installation of tools is not required</li>
-   <li>nor any permission to alter a computer host that is often used for more passive experiences such as browsing the Internet</li>
-   <li>Avoiding any surprises is a critical aspect of building a platform for inexperienced users</li>
-   <li>the universality of JavaScript provides new opportunities to avoid such surprises or delays to success</li>
-   <li>When a sensor provides data, JavaScript closure functions provide an easy-to-use mechanism to efficiently</li>
-   <li>responsively update a web-based user interface providing visualizations of the data</li>
   </ul>
  </div>
 
@@ -324,16 +317,17 @@ pinMode(bone.P8_5, 'in');
 pinMode(bone.P8_3, 'out');
 value = 0;
 digitalWrite(bone.P8_3, value);
-attachInterrupt(bone.P8_5, function(x) {
-  return({'value': x.value});
- }, 'both', function(x) {
-  if(x.output) $('#attachInterruptValue').text(x.output.value)
-  else doAlert(x);
-});
-var interval = setInterval(function() {
+function interruptHandler(x) { return({'value': x.value}); }
+function interruptCallback(x) {
+ if(x.output) $('#attachInterruptValue').text(x.output.value);
+ else doAlert(x);
+}
+function toggleP8_3() {
   value = value ? 0 : 1;
   digitalWrite(bone.P8_3, value);
-}, 1000);
+}
+attachInterrupt(bone.P8_5, interruptHandler, 'both', interruptCallback);
+var interval = setInterval(toggleP8_3, 200);
 setTimeout(function() {
  clearInterval(interval);
  detachInterrupt(bone.P8_5, doAlert);
