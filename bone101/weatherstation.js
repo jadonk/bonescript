@@ -160,7 +160,7 @@ var barometer = new Processing(barometerCanvas, barometerSketchProc);
 var thermometer = new Processing(thermometerCanvas, thermometerSketchProc);
 
 pressureUpdate = function(data) {
- var myData = parseFloat(data);
+ var myData = parseFloat(data) / pressureConfig.scale;
  // Angles for sin() and cos() start at 3 o'clock;
  // subtract HALF_PI to make them start at the top
  // 30miliBar = HALF_PI
@@ -173,7 +173,7 @@ pressureUpdate = function(data) {
 };
 
 temperatureUpdate = function(data) {
- var myData = parseFloat(data);
+ var myData = parseFloat(data) / tempConfig.scale;
  // Angles for sin() and cos() start at 3 o'clock;
  // subtract HALF_PI to make them start at the top
  temp = myData;

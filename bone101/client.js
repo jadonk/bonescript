@@ -33,6 +33,7 @@ var demoRun = function(id) {
     var myScript = document.getElementById(id).innerHTML;
     myScript = myScript.replace("&lt;", "<");
     myScript = myScript.replace("&gt;", ">");
+    myScript = myScript.replace("&amp;", "&");
     eval(myScript);
 };
 

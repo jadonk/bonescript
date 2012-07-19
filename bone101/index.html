@@ -474,46 +474,34 @@ doEval(function(callback) {
    <span class="dynlink" onclick="demoRun('weather1')">run</span>
   </h2>
   <pre id="weather1">
-function doTempRead(cb) {
+function updateWeather(x) {
+ if(x.startup) { pressureRead(); tempRead(); }
+ else if(x.temp) { temperatureUpdate(x.value); setTimeout(tempRead, 500); }
+ else if(x.pressure) { pressureUpdate(x.value); setTimeout(pressureRead, 3000);}
+};
+
+function tempRead() {
  doEval(function(callback) {
   fs.readFile("/sys/bus/i2c/drivers/bmp085/3-0077/temp0_input", function(err, data) {
-   if(!err) callback({'valid': true, 'value': '' + data});
+   if(!err) callback({'temp': true, 'value': '' + data});
   });
- }, cb);
+ }, updateWeather);
 };
 
-function doPressureRead(cb) {
+function pressureRead() {
  doEval(function(callback) {
   fs.readFile("/sys/bus/i2c/drivers/bmp085/3-0077/pressure0_input", function(err, data) {
-   if(!err) callback({'valid': true, 'value': '' + data});
+   if(!err) callback({'pressure': true, 'value': '' + data});
   });
- }, cb);
-};
-
-function tempRead(x) {
- if(x.valid) tempUpdate(x.value);
-};
-  
-function pressureRead(x) {
- if(x.valid) pressureUpdate(x.value);
-};
-  
-function updateWeather(x) {
- doAlert(x);
- setInterval(function() {
-  doPressureRead(pressureRead);
- }, 5000);
- setInterval(function() {
-  doTempRead(tempRead);
- }, 1000);
+ }, updateWeather);
 };
 
 doEval(function(callback) {
  try {
   fs.writeFileSync('/sys/class/i2c-adapter/i2c-3/new_device', 'bmp085 0x77', encoding='ascii');
-  return({'alert':'bmp085 driver successfully loaded'});
+  callback({'startup':'bmp085 driver successfully loaded'});
  } catch(ex) {
-  return({'alert':'bmp085 driver load failed: ' + ex});
+  callback({'startup':'bmp085 driver load failed: ' + ex});
  }
 }, updateWeather);</pre>  
  </div>
