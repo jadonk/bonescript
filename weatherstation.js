@@ -59,12 +59,21 @@ setup = function() {
             setTimeout(hreadData, hdelay);
         };
 
+        var lreadData = function(fd) {
+            fs.readFile('/sys/devices/platform/omap/omap_i2c.3/i2c-3/3-0039/lux1_input', function(err, data) {
+                if(err) throw("Unable to read data: " + err);
+                socket.emit('lux', "" + data);
+            });
+            setTimeout(lreadData, 500);
+        };
+
         socket.emit('pressureconfig', bmp085config.pressureConfig);
         socket.emit('tempconfig', bmp085config.tempConfig);
         socket.emit('humidityconfig', sht21config.humidityConfig);
         setTimeout(treadData, tdelay);
         setTimeout(preadData, pdelay);
         setTimeout(hreadData, hdelay);
+        setTimeout(lreadData, 500);
 
         // on message
         socket.on('message', function(data) {
