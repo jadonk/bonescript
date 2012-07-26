@@ -1,0 +1,712 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"> 
+<head> 
+ <title>BeagleBone 101</title> 
+ <link rel="stylesheet" type="text/css" media="screen, projection, print" href="slidy.css" /> 
+ <script src="client.js" charset="utf-8" type="text/javascript"></script> 
+ <link rel="stylesheet" type="text/css" media="screen, projection, print" href="oscon.css" /> 
+ <script src="slidy.js" charset="utf-8" type="text/javascript"></script> 
+ <link rel="icon" href="favicon.ico" type="image/x-icon" />
+ <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+ <meta name="duration" content="40" />
+</head>
+<body>
+ <div class="background">
+  <img id="background" src="speaker.005.png" height="98%" width="100%" />
+  <img id="head-logo" title="beagleboard logo" alt="beagleboard logo" src="beagle.png" />
+ </div>
+
+ <div class="background cover">
+  <img id="title-background" src="speaker.001.png" height="98%" width="100%" />
+  <img id="head-logo2" title="beagleboard logo" alt="beagleboard logo" src="beagle.png" />
+ </div>
+
+ <div class="slide cover title"> 
+  <h1><u>Bonescript</u></h1>
+  <h2 style="margin-left: 1em;">Simplified Physical Computing with Node.JS</h2>
+  <p>
+   Thursday, July 19, 2012<br />
+   5:00PM, Open Hardware, D137
+  </p>
+  <img src="7410840420_c2dd73d2b0_c.jpg" height="25%" style="margin-left: 1em;" />
+  <p>Jason Kridner<br />
+   Software Architecture and Community Development Manager<br />
+   Sitara ARM Processors<br />
+   Texas Instruments<br />
+   jkridner@beagleboard.org or jdk@ti.com
+  </p>
+  <p>Code at<br />
+   <a href="https://github.com/jadonk/bonescript/tree/oscon-2012">
+    https://github.com/jadonk/bonescript/tree/oscon-2012
+   </a>
+ </div>
+
+ <div class="slide"> 
+  <h1>BeagleBoard.org is open access to ARM processors</h1> 
+  <h2><a href="http://beagleboard.org/static/flyer_latest.pdf">http://beagleboard.org/static/flyer_latest.pdf</a></h2>
+  <p>BeagleBoard.org is an open hardware project leveling access to low-power mobile processing</p>
+  <table>
+   <tr>
+    <td><b>BeagleBoard-xM:</b> Open software desktop experience with extra MHz and extra memory</td>
+    <td><b>BeagleBone:</b> Hardware I/O focus with single cable development experience</td>
+   </tr>
+   <tr>
+    <td>
+     <a href="http://www.flickr.com/photos/jadon/4644436246/" title="BeagleBoard-xM_hand_shot by jadonk, on Flickr">
+      <img src="4644436246_459bcc0696_z.jpg" width="90%" alt="BeagleBoard-xM_hand_shot" />
+     </a>
+    </td>
+    <td>
+     <a href="http://www.flickr.com/photos/adafruit/6800874202/" title="Beagle Bone A5 + Extras - Rev. A5 by adafruit, on Flickr">
+      <img src="6800874202_cc3c69b2fe_z.jpg" width="100%" alt="Beagle Bone A5 + Extras - Rev. A5" />
+     </a>
+    </td>
+   </tr>
+  </table>
+ </div> 
+
+ <div class="slide">
+  <h1>Arduino reignites electronics interest for non-experts</h1>
+  <h2>Not the original BeagleBoard inspiration, but should it have been?</h2>
+  <a href="http://www.flickr.com/photos/snootlab/6052455554/" title="Arduino Uno by Snootlab, on Flickr">
+   <img align="right" src="6052455554_a4301347ef_z.jpg" width="40%" alt="Arduino Uno" />
+  </a>
+  <ul>
+   <li>Removes cognitive barriers to demonstrating hardware interactions<ul>
+    <li>Avoids C++ boilerplate such as "int main(int argc, char* argv) ..."</li>
+    <li>Eliminates manual linking to libraries</li>
+   </ul></li>
+   <li>Derived from Processing and then Wiring</li>
+   <li>Minimal time to Hello-World-for-hardware: toggling of LED</li>
+   <li>Lots of examples on interfacing</li>
+   <li>Hundreds of "shields", breakout-boards and tools like Fritzing enable step-by-step examples</li>
+  </ul>
+ </div>
+ 
+ <div class="slide">
+  <h1>BeagleBone: open hardware expandable computer</h1>
+  <h2>Latest ARM open source focused on easy hardware experimentation</h2>
+  <ul>
+   <img src="bone_in_hand.jpg" align="right" width="25%" />
+   <li>Ships ready to use<ul>
+    <li>Angstrom Distribution with C++, Perl, Python, ...</li>
+    <li>Built-in USB-to-serial adapter with JTAG and device access</li>
+    <li>Linux drivers support countless USB peripherals</li>
+   </ul></li>
+   <li>Open source means options<ul>
+    <li>Texas Instruments releases:
+     <a href="http://processors.wiki.ti.com/index.php/BeagleBone-Android-DevKit_Guide">
+      Android 4.0</a>,
+     <a href="http://software-dl.ti.com/dsps/dsps_public_sw/am_bu/sdk/AM335xSDK/latest/index_FDS.html">
+      Linux</a>,
+     <a href="http://processors.wiki.ti.com/index.php/StarterWare">
+      StarterWare (no OS)</a>
+    </li>
+    <li>Linux: 
+     <a href="http://beagleboard.org/angstrom">Angstrom</a>,
+     <a href="http://elinux.org/BeagleBoardUbuntu">Ubuntu</a>,
+     <a href="http://wiki.debian.org/InstallingDebianOn/TI/BeagleBone">Debian</a>,
+     <a href="http://archlinuxarm.org/platforms/armv7/beaglebone">ArchLinux</a>,
+     <a href="http://dev.gentoo.org/~armin76/arm/beaglebone/install.xml">Gentoo</a>,
+     <a href="http://wiki.sabayon.org/index.php?title=Hitchhikers_Guide_to_the_BeagleBone_(and_ARMv7a)">
+      Sabayon</a>,
+     <a href="http://www.zoobab.com/beaglebone">Buildroot</a>,
+     <a href="http://nerves-project.org/">Erlang</a>,
+     <a href="http://elinux.org/BeagleBoardFedora">Fedora,</a>
+     <a href="http://www.timesys.com/embedded-linux/resources/dev-center/am335x">TimeSys</a>
+    </li>
+    <li>Other:
+     <a href="http://community.qnx.com/sf/wiki/do/viewPage/projects.bsp/wiki/TiAm335Beaglebone">QNX Neutrino</a>,
+     <a href="http://people.freebsd.org/~dmarion/beaglebone/creating_bootable_sd_card/">FreeBSD</a>
+    </li>
+   </ul></li>
+   <img align="right" src="imager.png" width="30%" />
+   <li>SD card images like get-out-of-jail-free card
+    <pre>xzcat XXX.img.xz | sudo dd of=/dev/sdX</pre>
+    <ul>
+     <li>Can be used just as easily for backups</li>
+     <li>Booted from device ROM, so you can't "brick" it</li>
+    </ul>
+   </li>
+  </ul>
+ </div>
+ 
+ <div class="slide">
+  <h1>Bonescript enables physical computing exploration</h1>
+  <h2>Linux handles the interfaces, JavaScript provides the glue</h2>
+  <ul>
+   <li>Builds on two key familiar programming environments: web and Arduino<ul>
+    <li>JavaScript is language of web and first logical choice for new programmers</li>
+    <li>HTML5 and libraries provides rapid prototyping of GUIs and ability to access remotely</li>
+   </ul></li>
+   <li>Benefits from being run on complete Linux computer<ul>
+    <li>Networking and USB stacks</li>
+    <li>Extensive libraries and processing performance, such as OpenCV</li>
+    <li>Web-based zero-install experience</li>
+    <li>Avoids need to get low-level permissions on shared machine</li>
+   </ul></li>
+   <li>Event-based model of NodeJS simplifies asynchronous interactions<ul>
+    <li>I/O interactions are relatively slow compared to the CPU</li>
+    <li>Lends itself naturally to many event handlers</li>
+   </ul></li>
+   <li>Enables single-language environment, including IDE</li>
+   <li>Goal is a self-documenting interactive teaching web experience<ul>
+    <li>Currently using W3C Slidy for presentation view</li>
+   </ul></li>
+  </ul>
+ </div>
+
+ <div class="slide">
+  <h1>First experience of Bonescript</h1>
+  <h2>Familiar Arduino function calls, exported to the browser</h2>
+  <p>The links below are live and will impact the USR3 LED on your BeagleBone. The exact code used
+   in the browser is below and will send messages to your board using <a href="http://socket.io/">
+   Socket.IO</a>.</p>
+  <p>Set pin high: <span class="dynlink" onclick="demoRun('led1')">run</span></p>
+  <pre id="led1">
+pinMode(bone.USR3, 'out');
+digitalWrite(bone.USR3, 1);</pre>
+  <p>Set pin low: <span class="dynlink" onclick="demoRun('led2')">run</span></p>
+  <pre id="led2">
+digitalWrite(bone.USR3, 0);</pre>
+  <p>All GPIOs accessible via digitalWrite and digtalRead.</p>
+ </div>
+
+ <div class="slide">
+  <h1>Native sketch-like applications</h1>
+  <h2>Bonescript application code uses the typical setup/loop global functions</h2>
+  <p>Some boilerplate required, but fairly minimal.  Below is blinking LED app
+   with the familiar blocking style:</p>
+  <pre>
+require('bonescript');
+ledPin = bone.USR3;
+setup = function() {
+    pinMode(ledPin, OUTPUT);
+};
+loop = function() {
+    digitalWrite(ledPin, HIGH);
+    delay(1000);
+    digitalWrite(ledPin, LOW);
+    delay(1000);
+};</pre>
+  <p>Installation and execution of above 'blinkled.js' with node 0.6.x on a supported platform would
+   look something like:</p>
+  <pre>
+# npm install bonescript
+# node blinkled.js</pre>
+ </div>
+
+ <div class="slide">
+  <h1>Interactively add new loops</h1>
+  <h2>Bonescript adds addLoop function and multiple loops</h2>
+  <ul>
+   <li>Arduino sketches are designed to block</li>
+   <li>Web apps don't want to run all loops at beginning of time</li>
+   <li>Each loop is a fork using NodeJS 'cluster' feature<ul>
+    <li>Not in the spirit of NodeJS, but goal is simplicity and growth</li>
+    <li>Also added blocking 'delay' call for familiarity</li>
+    <li>Works well for independent processes</li>
+   </ul></li>
+   <li>Vision is to enable moving loops to dedicated processors or RT threads<ul>
+    <li>Loops are local strings with one-time global reference</li>
+    <li>Callbacks forwarded when loop returns a non-false value</li>
+    <li>Performance is reasonable today for many interactive apps</li>
+   </ul></li>
+  </ul>
+ </div>
+
+ <div class="slide">
+  <h1>addLoop/getLoops/removeLoop</h1>
+  <h2>Run something repeatedly</h2>
+  <p>Blink USR3 LED: <span class="dynlink" onclick="demoRun('addLoop1')">run</span></p>
+  <pre id="addLoop1">
+pinMode(bone.USR3, 'out');
+addLoop(function() {
+  digitalWrite(bone.USR3, 1);
+  delay(100);
+  digitalWrite(bone.USR3, 0);
+  delay(100);
+});</pre>
+  <p>Halt all loops: <span class="dynlink" onclick="demoRun('addLoop2')">run</span></p>
+  <pre id="addLoop2">
+getLoops(function(x) {
+  for(var loop in x.loops) {
+    removeLoop(loop);
+  }
+});</pre>
+ </div>
+
+ <div class="slide">
+  <h1>setInterval/clearInterval/setTimeout</h1>
+  <h2>Run something repeatedly without invoking a process</h2>
+  <ul>
+   <li>Starts faster than addLoop because it isn't invoking a process</li>
+   <li>Consumes less CPU on target</li>
+   <li>Puts load on browser machine and communications in this example</li>
+   <li>Here we demonstrate on the client browser, but NodeJS provides same functions</li>
+  </ul>
+  <p>Blink USR3 LED for 30 seconds: <span class="dynlink" onclick="demoRun('setInterval1')">run</span></p>
+  <pre id="setInterval1">
+value = 0;
+pinMode(bone.USR3, 'out');
+
+interval = setInterval(function() {
+  value = value ? 0 : 1;
+  digitalWrite(bone.USR3, value);
+}, 100);
+
+setTimeout(function() {
+ clearInterval(interval);
+}, 30000);
+</pre>
+ </div>
+
+ <div class="slide"> 
+  <h1>doEval</h1>
+  <h2>Run something remotely just once</h2>
+  <p>What if we want to invoke the previous example on the target, rather than the browser?</p>
+  <p>Blink USR3 LED for 30 seconds: <span class="dynlink" onclick="demoRun('doEval1')">run</span></p>
+  <pre id="doEval1">
+doEval(function(callback) {
+ var value = 0;
+ pinMode(bone.USR3, 'out');
+ 
+ var interval = setInterval(function() {
+  value = value ? 0 : 1;
+  digitalWrite(bone.USR3, value);
+ }, 100);
+ 
+ setTimeout(function() {
+  clearInterval(interval);
+  callback({'notice': "Removing doEval demo interval function"});
+ }, 30000);
+ 
+ return({'notice': "Launched doEval demo interval function"});
+}, doAlert);</pre>
+  <ul>
+   <li>Function converted to string when passed from client to server</li>
+   <li>On client, 'callback' is a proxy for the 'doAlert' callback provided to doEval</li>
+  </ul>
+ </div>
+
+ <div class="slide">
+  <h1>Connecting up some inputs</h1>
+  <h2>Wire up this Fritzing drawing to give us some stimulus</h2>
+  <img src="oscon_bb.png" height="65%" align="right" />
+  <ul>
+   <li>2x 1kohm resistor</li>
+   <li>1x LED</li>
+   <li>1x potentiometer</li>
+  </ul>
+  <p>You can download the <a href="https://github.com/ohporter/fritzing-parts">
+   BeagleBone Fritzing part</a></p>
+ </div>
+
+ <div class="slide"> 
+  <h1>attachInterrupt/detachInterrupt</h1>
+  <h2>Detect input changes</h2>
+  <p>Please connect P8-3 to P8-5 with a 1khom resistor</p>
+  <p>Attach interrupt and toggle P8-3 for 30 seconds:
+   <span class="dynlink" onclick="demoRun('attachInterrupt1')">run</span>
+  </p>
+  <p>Last value read was: <b><span id="attachInterruptValue">unknown</span></b></p>
+  <pre id="attachInterrupt1">
+pinMode(bone.P8_5, 'in');
+pinMode(bone.P8_3, 'out');
+value = 0;
+digitalWrite(bone.P8_3, value);
+function interruptHandler(x) { return({'value': x.value}); }
+function interruptCallback(x) {
+ if(x.output) $('#attachInterruptValue').text(x.output.value);
+ else doAlert(x);
+}
+function toggleP8_3() {
+  value = value ? 0 : 1;
+  digitalWrite(bone.P8_3, value);
+}
+attachInterrupt(bone.P8_5, interruptHandler, 'both', interruptCallback);
+var interval = setInterval(toggleP8_3, 200);
+setTimeout(function() {
+ clearInterval(interval);
+ detachInterrupt(bone.P8_5, doAlert);
+}, 30000);</pre>
+ </div>
+ 
+ <div class="slide">
+  <h1>analogRead/analogWrite</h1>
+  <h2>Use ADCs and PWMs to read/write analog values</h2>
+  <p>Monitor analog in: <span class="dynlink" onclick="demoRun('analogWrite2')">
+   run</span></p>
+  <pre id="analogWrite2">
+pinMode(bone.P8_13, 'out', 4);
+addLoop(function() {
+ var value = analogRead(bone.P9_36);
+ analogWrite(bone.P8_13, value);
+}, 25, doAlert);</pre>
+  <p>Fade in and out: <span class="dynlink" onclick="demoRun('analogWrite3')">
+   run</span></p>
+  <pre id="analogWrite3">
+ pinMode(bone.P8_13, 'out', 4);
+ addLoop(function() {
+  if(!this.awDirection) { this.awValue = 0.01; this.awDirection = 1; }
+  analogWrite(bone.P8_13, this.awValue);
+  this.awValue = this.awValue + (this.awDirection*0.01);
+  if(this.awValue &gt; 1.0) { this.awValue = 1.0; this.awDirection = -1; }
+  else if(this.awValue &lt; 0.01) { this.awValue = 0.01; this.awDirection = 1; }
+ }, 10, doAlert);</pre>
+  <p>Halt all loops: <span class="dynlink" onclick="demoRun('analogWrite4')">
+   run</span></p>
+  <pre id="analogWrite4">
+ getLoops(function(loops){for(var loop in loops.loops){removeLoop(loop, doAlert);}});</pre>
+ </div>
+
+ <div class="slide">
+  <h1>Using a slider with analogWrite</h1>
+  <h2>&nbsp;</h2>
+  <p>Please connect P8-13 to LED through 1khom resistor</p>
+  <div id="slider1"></div>
+  <p>Attach to slider: <span class="dynlink" onclick="demoRun('analogWrite1')">
+   run</span></p>
+  <pre id="analogWrite1">
+pinMode(bone.P8_13, 'out', 4);
+$("#slider1").bind("slidechange", function(event, ui) {
+ analogWrite(bone.P8_13, ui.value/100.0);
+})</pre>
+ </div>
+ 
+ <div class="slide">
+  <h1>Using a slider with analogRead</h1>
+  <h2>&nbsp;</h2>
+  <p>Please connect P9-36 to potentiometer and adust from 0V to 1.8V</p>
+  <div id="slider2"></div>
+  <p>Attach to slider for 30 seconds: <span class="dynlink" onclick="demoRun('analogRead1')">run</span></p>
+  <pre id="analogRead1">
+arUpdateSlider = function(x) {
+ if(x.value) $("#slider2").slider("option", "value", x.value*100);
+ if(x.halt) alert("Halting analogRead slider update");
+};
+
+doEval(function(callback) {
+ var interval = setInterval(function() {
+  analogRead(bone.P9_36, callback);
+ }, 100);
+ 
+ setTimeout(function() {
+  clearInterval(interval);
+  callback({'halt':true});
+ }, 30000);
+}, arUpdateSlider);</pre>
+ </div>
+ 
+ <div class="slide">
+  <h1>BeagleBone hardware details</h1> 
+  <h2><a href="http://beagleboard.org/bone">http://beagleboard.org/bone</a></h2>
+  <img src="bone_connectors.jpg" alt="BeagleBone image" align="right" width="70%" height="70%" />
+  <ul>
+   <li>Processor<ul>
+    <li>720MHz super-scalar ARM Cortex-A8</li>
+    <li>armv7 and NEON SIMD instructions</li>
+    <li>3D graphics accelerator</li>
+   </ul></li>
+   <li>Connectivity<ul>
+    <li>USB client: power, debug and device</li>
+    <li>USB host, Ethernet</li>
+    <li>2x46 pin headers<ul>
+     <li>7xADC, 66xGPIO</li>
+     <li>2xI2C, 5xUART, SPI, CAN, 8xPWM</li>
+     <li>LCD, parallel, MMC/SDIO</li>
+    </ul></li>
+   </ul></li>
+   <li>Software<ul>
+    <li>4GB microSD card with Angstrom Distribution</li>
+   </ul></li>
+  </ul>
+ </div>
+ 
+ <div class="slide"> 
+  <h1>Expansion header state</h1>
+  <h2>Pin mux can be read and altered with pinMode and getPinMode</h2>
+  <center><table class="pinmux">
+  <thead>
+      <tr><td></td><td colspan="2">P9</td><td></td><td></td><td></td><td colspan="2">P8</td><td></td></tr>
+      <tr><td></td><td>1</td><td>2</td><td></td><td></td><td></td><td>1</td><td>2</td><td></td></tr>
+  </thead>
+  <tfoot>
+      <tr><td></td><td>45</td><td>46</td><td></td><td></td><td></td><td>45</td><td>46</td><td></td></tr>
+  </tfoot>
+  <tr><td id='P9_1_name'></td><td id='P9_1' class='pin'></td><td id='P9_2' class='pin'></td><td id='P9_2_name'></td>
+  <td class='spacer'></td>
+  <td id='P8_1_name'></td><td id='P8_1' class='pin'></td><td id='P8_2' class='pin'></td><td id='P8_2_name'></td></tr>
+  <tr><td id='P9_3_name'></td><td id='P9_3' class='pin'></td><td id='P9_4' class='pin'></td><td id='P9_4_name'></td>
+  <td class='spacer'></td>
+  <td id='P8_3_name'></td><td id='P8_3' class='pin'></td><td id='P8_4' class='pin'></td><td id='P8_4_name'></td></tr>
+  <tr><td id='P9_5_name'></td><td id='P9_5' class='pin'></td><td id='P9_6' class='pin'></td><td id='P9_6_name'></td>
+  <td class='spacer'></td>
+  <td id='P8_5_name'></td><td id='P8_5' class='pin'></td><td id='P8_6' class='pin'></td><td id='P8_6_name'></td></tr>
+  <tr><td id='P9_7_name'></td><td id='P9_7' class='pin'></td><td id='P9_8' class='pin'></td><td id='P9_8_name'></td>
+  <td class='spacer'></td>
+  <td id='P8_7_name'></td><td id='P8_7' class='pin'></td><td id='P8_8' class='pin'></td><td id='P8_8_name'></td></tr>
+  <tr><td id='P9_9_name'></td><td id='P9_9' class='pin'></td><td id='P9_10' class='pin'></td><td id='P9_10_name'></td>
+  <td class='spacer'></td>
+  <td id='P8_9_name'></td><td id='P8_9' class='pin'></td><td id='P8_10' class='pin'></td><td id='P8_10_name'></td></tr>
+  <tr><td id='P9_11_name'></td><td id='P9_11' class='pin'></td><td id='P9_12' class='pin'></td><td id='P9_12_name'></td>
+  <td class='spacer'></td>
+  <td id='P8_11_name'></td><td id='P8_11' class='pin'></td><td id='P8_12' class='pin'></td><td id='P8_12_name'></td></tr>
+  <tr><td id='P9_13_name'></td><td id='P9_13' class='pin'></td><td id='P9_14' class='pin'></td><td id='P9_14_name'></td>
+  <td class='spacer'></td>
+  <td id='P8_13_name'></td><td id='P8_13' class='pin'></td><td id='P8_14' class='pin'></td><td id='P8_14_name'></td></tr>
+  <tr><td id='P9_15_name'></td><td id='P9_15' class='pin'></td><td id='P9_16' class='pin'></td><td id='P9_16_name'></td>
+  <td class='spacer'></td>
+  <td id='P8_15_name'></td><td id='P8_15' class='pin'></td><td id='P8_16' class='pin'></td><td id='P8_16_name'></td></tr>
+  <tr><td id='P9_17_name'></td><td id='P9_17' class='pin'></td><td id='P9_18' class='pin'></td><td id='P9_18_name'></td>
+  <td class='spacer'></td>
+  <td id='P8_17_name'></td><td id='P8_17' class='pin'></td><td id='P8_18' class='pin'></td><td id='P8_18_name'></td></tr>
+  <tr><td id='P9_19_name'></td><td id='P9_19' class='pin'></td><td id='P9_20' class='pin'></td><td id='P9_20_name'></td>
+  <td class='spacer'></td>
+  <td id='P8_19_name'></td><td id='P8_19' class='pin'></td><td id='P8_20' class='pin'></td><td id='P8_20_name'></td></tr>
+  <tr><td id='P9_21_name'></td><td id='P9_21' class='pin'></td><td id='P9_22' class='pin'></td><td id='P9_22_name'></td>
+  <td class='spacer'></td>
+  <td id='P8_21_name'></td><td id='P8_21' class='pin'></td><td id='P8_22' class='pin'></td><td id='P8_22_name'></td></tr>
+  <tr><td id='P9_23_name'></td><td id='P9_23' class='pin'></td><td id='P9_24' class='pin'></td><td id='P9_24_name'></td>
+  <td class='spacer'></td>
+  <td id='P8_23_name'></td><td id='P8_23' class='pin'></td><td id='P8_24' class='pin'></td><td id='P8_24_name'></td></tr>
+  <tr><td id='P9_25_name'></td><td id='P9_25' class='pin'></td><td id='P9_26' class='pin'></td><td id='P9_26_name'></td>
+  <td class='spacer'></td>
+  <td id='P8_25_name'></td><td id='P8_25' class='pin'></td><td id='P8_26' class='pin'></td><td id='P8_26_name'></td></tr>
+  <tr><td id='P9_27_name'></td><td id='P9_27' class='pin'></td><td id='P9_28' class='pin'></td><td id='P9_28_name'></td>
+  <td class='spacer'></td>
+  <td id='P8_27_name'></td><td id='P8_27' class='pin'></td><td id='P8_28' class='pin'></td><td id='P8_28_name'></td></tr>
+  <tr><td id='P9_29_name'></td><td id='P9_29' class='pin'></td><td id='P9_30' class='pin'></td><td id='P9_30_name'></td>
+  <td class='spacer'></td>
+  <td id='P8_29_name'></td><td id='P8_29' class='pin'></td><td id='P8_30' class='pin'></td><td id='P8_30_name'></td></tr>
+  <tr><td id='P9_31_name'></td><td id='P9_31' class='pin'></td><td id='P9_32' class='pin'></td><td id='P9_32_name'></td>
+  <td class='spacer'></td>
+  <td id='P8_31_name'></td><td id='P8_31' class='pin'></td><td id='P8_32' class='pin'></td><td id='P8_32_name'></td></tr>
+  <tr><td id='P9_33_name'></td><td id='P9_33' class='pin'></td><td id='P9_34' class='pin'></td><td id='P9_34_name'></td>
+  <td class='spacer'></td>
+  <td id='P8_33_name'></td><td id='P8_33' class='pin'></td><td id='P8_34' class='pin'></td><td id='P8_34_name'></td></tr>
+  <tr><td id='P9_35_name'></td><td id='P9_35' class='pin'></td><td id='P9_36' class='pin'></td><td id='P9_36_name'></td>
+  <td class='spacer'></td>
+  <td id='P8_35_name'></td><td id='P8_35' class='pin'></td><td id='P8_36' class='pin'></td><td id='P8_36_name'></td></tr>
+  <tr><td id='P9_37_name'></td><td id='P9_37' class='pin'></td><td id='P9_38' class='pin'></td><td id='P9_38_name'></td>
+  <td class='spacer'></td>
+  <td id='P8_37_name'></td><td id='P8_37' class='pin'></td><td id='P8_38' class='pin'></td><td id='P8_38_name'></td></tr>
+  <tr><td id='P9_39_name'></td><td id='P9_39' class='pin'></td><td id='P9_40' class='pin'></td><td id='P9_40_name'></td>
+  <td class='spacer'></td>
+  <td id='P8_39_name'></td><td id='P8_39' class='pin'></td><td id='P8_40' class='pin'></td><td id='P8_40_name'></td></tr>
+  <tr><td id='P9_41_name'></td><td id='P9_41' class='pin'></td><td id='P9_42' class='pin'></td><td id='P9_42_name'></td>
+  <td class='spacer'></td>
+  <td id='P8_41_name'></td><td id='P8_41' class='pin'></td><td id='P8_42' class='pin'></td><td id='P8_42_name'></td></tr>
+  <tr><td id='P9_43_name'></td><td id='P9_43' class='pin'></td><td id='P9_44' class='pin'></td><td id='P9_44_name'></td>
+  <td class='spacer'></td>
+  <td id='P8_43_name'></td><td id='P8_43' class='pin'></td><td id='P8_44' class='pin'></td><td id='P8_44_name'></td></tr>
+  <tr><td id='P9_45_name'></td><td id='P9_45' class='pin'></td><td id='P9_46' class='pin'></td><td id='P9_46_name'></td>
+  <td class='spacer'></td>
+  <td id='P8_45_name'></td><td id='P8_45' class='pin'></td><td id='P8_46' class='pin'></td><td id='P8_46_name'></td></tr>
+  </table></center>
+ </div>
+
+ <div class="slide">
+  <h1>Capes extend BeagleBone capability</h1>
+  <h2>&nbsp;</h2>
+  <table width="90%" align="center" style="text-align: center;">
+   <tr>
+    <td style="width:25%;">
+     <p><a href="http://circuitco.com/support/index.php?title=BeBoPr_Cape">
+      <img src="300px-BeBoPrCape.jpg" width="90%" /></a><br />
+      <b><a href="http://circuitco.com/support/index.php?title=BeBoPr_Cape" rel="nofollow">BeBoPr Cape</a></b><br />
+      AES electronics
+     </p>
+    </td>
+    <td style="width:25%;">
+     <p><a href="http://circuitco.com/support/index.php?title=BeagleBone_LCD7">
+      <img src="300px-BeagleBone-LCD-Brackets.jpg" width="90%" /></a><br />
+      <b><a href="http://circuitco.com/support/index.php?title=BeagleBone_LCD7" rel="nofollow">BeagleBone LCD7 Cape</a></b><br />
+      BeagleBoardToys
+     </p>
+    </td>
+    <td style="width:25%;">
+     <p><a href="http://circuitco.com/support/index.php?title=TT3201_CAN_Cape">
+      <img src="300px-TT3201-CAN.jpg" width="90%" /></a><br />
+      <b><a href="http://circuitco.com/support/index.php?title=TT3201_CAN_Cape" rel="nofollow">TT3201 CAN Cape</a></b><br />
+      TowerTech
+     </p>
+    </td>
+    <td style="width:25%;">
+     <p><a href="http://circuitco.com/support/index.php?title=BeagleBone_Camera_3.1MP">
+      <img src="300px-Camera-Top.jpg" width="90%" /></a><br />
+      <b><a href="http://circuitco.com/support/index.php?title=BeagleBone_Camera_3.1MP" rel="nofollow">BeagleBone Camera Cape</a></b><br />
+      BeagleBoardToys
+     </p>
+    </td>
+   </tr>
+   <tr>
+    <td style="width:25%;">
+     <p><a href="http://www.adafruit.com/products/572">
+      <img src="150px-Proto_Cape_Kit.jpg" width="90%" /></a><br />
+      <b><a href="http://www.adafruit.com/products/572" rel="nofollow">Proto Cape Kit</a></b><br />
+      Adafruit
+     </p>
+    </td>
+    <td style="width:25%;">
+     <p><a href="http://circuitco.com/support/index.php?title=BeagleBone_VGA">
+      <img src="300px-VGA-catalog.jpg" width="90%" /></a><br />
+      <b><a href="http://circuitco.com/support/index.php?title=BeagleBone_VGA" rel="nofollow">BeagleBone VGA Cape</a></b><br />
+      BeagleBoardToys
+     </p>
+    </td>
+    <td style="width:25%;">
+     <p><a href="http://circuitco.com/support/index.php?title=BeagleBone_MSTP">
+      <img src="300px-MSTP-Front.jpg" width="90%" /></a><br />
+      <b><a href="http://circuitco.com/support/index.php?title=BeagleBone_MSTP" rel="nofollow">BeagleBone MSTP Cape</a></b><br />
+      Plano CAD
+     </p>
+    </td>
+    <td style="width:25%;">
+     <p><a href="http://circuitco.com/support/index.php?title=BeagleBone_LCD3">
+      <img src="300px-LCD3-catalog.jpg" width="90%" /></a><br />
+      <b><a href="http://circuitco.com/support/index.php?title=BeagleBone_LCD3" rel="nofollow">BeagleBone LCD3 Cape</a></b><br />
+      BeagleBoardToys
+     </p>
+    </td>
+   </tr>
+  </table>
+ </div>
+
+ <div class="slide"> 
+  <h1>Attached capes</h1>
+  <h2>Any attached capes with ID EEPROMs would be listed here</h2>
+  <div id="eeprom"></div>
+  <div class="capesvg"><div id="cape54"></div></div>
+  <div class="capesvg"><div id="cape55"></div></div>
+  <div class="capesvg"><div id="cape56"></div></div>
+  <div class="capesvg"><div id="cape57"></div></div>
+ </div>
+ 
+ <div class="slide">
+  <h1>Weather station setup</h1>
+  <h2>Here we initialize the weather station demo:
+   <span class="dynlink" onclick="demoRun('weather1')">run</span>
+  </h2>
+  <pre id="weather1">
+function updateWeather(x) {
+ if(x.startup) { pressureRead(); tempRead(); }
+ else if(x.temp) { temperatureUpdate(x.value); setTimeout(tempRead, 500); }
+ else if(x.pressure) { pressureUpdate(x.value); setTimeout(pressureRead, 3000);}
+};
+
+function tempRead() {
+ doEval(function(callback) {
+  fs.readFile("/sys/bus/i2c/drivers/bmp085/3-0077/temp0_input", function(err, data) {
+   if(!err) callback({'temp': true, 'value': '' + data});
+  });
+ }, updateWeather);
+};
+
+function pressureRead() {
+ doEval(function(callback) {
+  fs.readFile("/sys/bus/i2c/drivers/bmp085/3-0077/pressure0_input", function(err, data) {
+   if(!err) callback({'pressure': true, 'value': '' + data});
+  });
+ }, updateWeather);
+};
+
+doEval(function(callback) {
+ try {
+  fs.writeFileSync('/sys/class/i2c-adapter/i2c-3/new_device', 'bmp085 0x77', encoding='ascii');
+  callback({'startup':'bmp085 driver successfully loaded'});
+ } catch(ex) {
+  callback({'startup':'bmp085 driver load failed: ' + ex});
+ }
+}, updateWeather);</pre>  
+ </div>
+ 
+ <div class="slide">
+  <h1>Weather station demo</h1>
+  <h2>Click here to start running the code on the previous page:
+   <span class="dynlink" onclick="demoRun('weather1')">run</span>
+  </h2>
+  <canvas id="barometerCanvas" style="margin-left: 2em;"></canvas><canvas id="thermometerCanvas"></canvas>
+ </div>
+
+ <div class="slide">
+  <h1>Cloud9 experience</h1>
+  <h2>&nbsp;</h2>
+  <img src="Cloud9_Screen.png" align="right" width="60%" />
+  <ul>
+   <li>Running on boot-up on the BeagleBone</li>
+   <li>Starts-up with directory of Bonescript examples</li>
+  </ul>
+ </div>
+ 
+ <div class="slide"> 
+  <h1>Giving back!</h1> 
+  <h2><a href="http://github.com/jadonk/bonescript">
+   http://github.com/jadonk/bonescript
+  </a></h2>
+  <ul>
+   <li>There's more to come.  Please join me in improving this project for the 
+    benefit of both yourself and others.</li>
+   <li>Pull down the latest using git
+    <pre>
+cd /var/lib/cloud9
+git pull origin master</pre>
+   </li>
+   <li>File bug reports via the github interface</li>
+   <li>License is MIT-like with contributions welcome</li>
+  </ul>
+ </div>
+ 
+ <div class="slide cover title"> 
+  <h1>Backup slides</h1>
+  <h2>&nbsp;</h2>
+ </div>
+ 
+ <div class="slide"> 
+  <h1>Services running on the BeagleBone</h1>
+  <h2>Default web services ready for you to try</h2>
+  <img align="right" src="beaglebone_small.png" height="400px" />
+  <p>The interactivity presented on the previous slide is provided through a set of services
+   running on your BeagleBone.  You can experiment with some of these services below.  The
+   immediately following slides will provide you with some dynamic information about your
+   BeagleBone.</p>
+  <ul>
+   <li>
+    <span class='dynlink' onclick='location.href="http://"+window.location.hostname+":3000"'>
+     Cloud9 IDE</span>
+     <ul><li>Write applications directly in the browser</li></ul>
+   </li>
+   <li>
+    <span class='dynlink' onclick='location.href="https://"+window.location.hostname'>
+     Gate One</span>
+     <ul><li>Execute ssh (terminal) directly in the browser</li></ul>
+   </li>
+   <li><a href="/js_term.html">JavaScript terminal <small>(bone101)</small></a>
+    <ul><li>Interactively execute JavaScript in the browser</li></ul>
+   </li>
+   <li><a href="/shell.html">Shell <small>(bone101)</small></a>
+    <ul><li>Issue commands to bash using JQuery Terminal</li></ul>
+   </li>
+  </ul>
+ </div>
+
+ <div class="slide">
+  <h1>Blinking an LED (external)</h1>
+  <h2>The "hello world" of hardware</h2>
+  <embed src="blinkled.svg" align="right" />
+  <ul>
+   <li>Connect resistor lead to P8_1 (GND)</li>
+   <li>Connect other lead to short LED lead</li>
+   <li>Connect long LED lead to P8_3</li>
+   <li>Launch the
+     <span class='dynlink' onclick='location.href="http://"+window.location.hostname+":3000"'>
+      Cloud9 IDE</span>
+   </li>
+   <li>Run the 'blinkled.js' application</li>
+  </ul>
+ </div>
+</body>
+</html>
+
