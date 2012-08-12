@@ -22,11 +22,11 @@ Blockly.JavaScript.bonescript_digitalWrite = function () {
  return code;
 };
 
-Blockly.Language.javascript_setInterval = {
- category: 'JavaScript',
+Blockly.Language.timers_setInterval = {
+ category: 'Timers',
  init: function() {
   this.setColour(160);
-  this.appendInput('interval', Blockly.INPUT_VALUE, 'INTERVAL', Number);
+  this.appendInput('setInterval', Blockly.INPUT_VALUE, 'INTERVAL', Number);
   this.appendInput('', Blockly.NEXT_STATEMENT, 'FUNC');
   this.setPreviousStatement(true);
   this.setNextStatement(true);
