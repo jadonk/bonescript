@@ -15,9 +15,20 @@ Blockly.Language.bonescript_digitalWrite = {
 };
 
 Blockly.JavaScript.bonescript_digitalWrite = function () {
- var argument0 = Blockly.JavaScript.valueToCode('PIN',
+ var argument0 = Blockly.JavaScript.valueToCode(this, 'PIN',
   Blockly.JavaScript.ORDER_MEMBER) || '{}';
- var argument1 = Blockly.JavaScript.getTitleValue('VALUE') || '0';
+ var argument1 = this.getTitleValue('VALUE') || '0';
  var code = 'digitalWrite(' + argument0 + ',' + argument1 + ');\n';
  return code;
+};
+
+Blockly.Language.javascript_setInterval = {
+ category: 'JavaScript',
+ init: function() {
+  this.setColour(160);
+  this.appendInput('interval', Blockly.INPUT_VALUE, 'INTERVAL', Number);
+  this.appendInput('', Blockly.NEXT_STATEMENT, 'FUNC');
+  this.setPreviousStatement(true);
+  this.setNextStatement(true);
+ }
 };
