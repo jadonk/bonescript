@@ -1,0 +1,19 @@
+@import url("impress.js/css/impress-demo.css");
+
+.small {
+    width: 500px;
+    font-size: 20px;
+    line-height: 2;
+}
+
+ul { list-style-type: square; font-size: 20px; }
+ul ul { list-style-type: disc; }
+ul ul ul { list-style-type: circle; }
+ul ul ul ul { list-style-type: disc; }
+li { margin-left: 0.5em; margin-top: 0.5em; }
+li li { font-size: 85%; font-style: italic; }
+li li li { font-size: 85%; font-style: normal; }
+
+table, tbody, tr, td { vertical-align: top; }
+
+sup { font-size: 60%; vertical-align: top; }
