@@ -3,14 +3,13 @@
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"> 
 <head> 
- <title>Bonescript webpage app template</title>
+ <title>Bonescript: attachInterrupt</title>
  <script src="client.js" charset="utf-8" type="text/javascript"></script> 
  <link rel="icon" href="favicon.ico" type="image/x-icon" />
  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 </head>
 <body>
- <h1>Bonescript webpage app template</h1>
- <p>This is a minimal example that can be extended easily.</p>
+ <h1>Bonescript: attachInterrupt</h1>
  <p>
   <button class="dynlink" onclick="demoRun('code')">Run</button>
   <button class="dynlink" onclick="demoEdit('code')">Editor</button>
@@ -20,24 +19,18 @@
  <hr />
  <pre id="code">
 pinMode(bone.P8_5, 'in');
-pinMode(bone.P8_3, 'out');
-value = 0;
-digitalWrite(bone.P8_3, value);
+
 function interruptHandler(x) { return({'value': x.value}); }
 function interruptCallback(x) {
  if(x.output) $('#attachInterruptValue').text(x.output.value);
- else doAlert(x);
-}
-function toggleP8_3() {
-  value = value ? 0 : 1;
-  digitalWrite(bone.P8_3, value);
 }
 attachInterrupt(bone.P8_5, interruptHandler, 'both', interruptCallback);
-var interval = setInterval(toggleP8_3, 200);
-setTimeout(function() {
- clearInterval(interval);
- detachInterrupt(bone.P8_5, doAlert);
-}, 30000);</pre>
+
+stopTimer = function() {
+ detachInterrupt(bone.P8_5);
+};
+setTimeout(stopTimer, 12000);
+</pre>
  <hr />
  <div id="js_term"></div>
 </body>

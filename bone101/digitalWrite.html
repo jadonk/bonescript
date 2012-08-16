@@ -10,7 +10,7 @@
 </head>
 <body>
  <h1>Bonescript: digitalWrite</h1>
- <p>This is a minimal example that can be extended easily.</p>
+ <p>Set a pin high or low.</p>
  <p>
   <button class="dynlink" onclick="demoRun('code')">Run</button>
   <button class="dynlink" onclick="demoEdit('code')">Editor</button>
@@ -18,7 +18,7 @@
  </p>
  <hr />
  <pre id="code">
-led = bone.USR3;
+led = bone.P8_13;
 
 pinMode(led, 'out');
 digitalWrite(led, 1);</pre>
