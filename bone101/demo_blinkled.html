@@ -1,0 +1,31 @@
+<html> 
+<head> 
+ <title>Bonescript webpage app template</title>
+ <script src="client.js" type="text/javascript"></script> 
+</head>
+<body>
+ <h1>Bonescript webpage app template</h1>
+ <p>This is a minimal example that can be extended easily.</p>
+ <div id="buttons"></div>
+ <hr />
+ <pre id="code">
+led = bone.P8_13;
+state = 0;
+
+pinMode(led, 'out');
+toggleLED = function() {
+ state = state ? 0 : 1;
+ digitalWrite(led, state);
+};
+
+timer = setInterval(toggleLED, 100);
+
+stopTimer = function() {
+ clearInterval(timer);
+};
+
+setTimeout(stopTimer, 3000);</pre>
+ <hr />
+ <div id="js_term"></div>
+</body>
+</html>

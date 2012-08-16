@@ -7,7 +7,7 @@ pressureConfig = {
 };
 
 tempConfig = {
-    unit: "° C",
+    unit: "C",
     scale: 10,
     rangeHigh: 40,
     rangeLow: -20,
