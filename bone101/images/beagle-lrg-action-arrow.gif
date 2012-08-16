@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>BeagleBoard.org - Page not found</title>
+  <meta name="keywords" content="Beagle Board, BeagleBoard, beagleboard.org, BeagleBone, BeagleBoard-xM, bealgeboard, open hardware, open source" />
+  <link href="http://feeds.feedburner.com/BeagleBoard" rel="alternate" title="Beagle Board news feed" type="application/atom+xml">
+  <link rel="icon" href="/static/beagle.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="/static/beagle.ico" type="image/x-icon">
+  <style type="text/css">
+   @import "dojoroot/dijit/themes/tundra/tundra.css";
+   @import "/static/dojo/resources/dojo.css";
+   @import "/static/dojox/image/resources/image.css";
+  </style>
+  <style type="text/css" media="screen">@import "/static/common.css";</style>
+  <style type="text/css" media="screen">@import "/static/login.css";</style>
+  <script type="text/javascript" src="/static/dojo/dojo.js" djConfig="parseOnLoad: true"></script>
+ </head>
+ <body>
+  <a name="top" id="top"></a>
+  <!-- DIV that centers page - START -->
+  <div id="wrapper">
+   <!-- Header/Logo Area - START -->
+   <div id="header">
+    <div id="logo"><a href="/"><img src="/static/images/beagle-hd-logo.gif" alt="Beagle Board - beagleboard.org" border="0" width="301" height="53" /></a></div>
+    <!-- Horizontal Navigation - START -->
+    <div id="nav2">
+     <ul>
+      <li><a href="/support">Support</a> |</li>
+      <li><a href="/about">About</a> |</li>
+      <li><a href="/media">Pics</a> |</li>
+      <li><div class="g-plusone" data-size="small" data-annotation="none"></div></li>
+      <li>&nbsp;&nbsp;</li>
+      <li class="google">
+       <form action="http://www.google.com/cse" id="cse-search-box">
+        <input type="hidden" name="cx" value="001071468846613058269:xd-gxvzmbq4" />
+        <input type="hidden" name="ie" value="UTF-8" />
+        <input type="text" name="q" style="width:180px;" />
+        <input class="btn1" type="submit" name="sa" value="Search"/>
+       </form>
+       <script type="text/javascript" src="http://www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+      </li>
+      <li>&nbsp;&nbsp;</li>
+     </ul>
+    </div>
+    <!-- Horizontal Navigation - END -->
+    <!-- Horizontal Navigation - START -->
+    <div id="nav">
+     <ul>
+      <li class="navitem1"><a href="/discuss">Discuss</a></li>
+      <li class="navitem2"><a href="/hardware">Details</a></li>
+      <li class="navitem3"><a href="/project">Projects</a></li>
+      <li class="navitem4"><a href="/buy">Buy</a></li>
+     </ul>
+    </div>
+    <!-- Horizontal Navigation - END -->
+   </div>
+   <!-- Header/Logo Area - END -->
+   <!-- Content Area - START -->
+   <div id="contentarea2" class="line">
+    <div id="contentbuffer">
+     <p class="breadcrumb"><a href="/">BeagleBoard.org</a> &rsaquo; <a href="/images/">images</a> &rsaquo; <a href="/images/beagle-lrg-action-arrow.gif/">beagle-lrg-action-arrow.gif</a></p>
+     <h1>Error: Page not found</h1><p>The requested page does not currently exist.</p>
+    </div>
+   </div>
+   <!-- Content Area - END -->
+  </div>
+  <!-- DIV that centers page - END -->
+  <!-- Footer - START -->
+  <div id="footer">
+   <div id="cc"><a href="http://creativecommons.org/about/license/" target="_blank"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" alt="Creative Commons - Conditions - Attribution and Share Alike" border="0" width="88" height="31" /></a></div>
+   <div id="footernav">
+    <p>
+     <a href="/privacy">Privacy Policy</a> | <a href="/terms">Terms of Use</a> | <div class="login">  <form method="post" action="">
+   <input type="text" id="openid" name="openid_url"></input>
+   <button type="submit">Login</button>
+  </form>
+ | <a href="/register">Register</a></div><br />
+     Except where otherwise noted, content on this site is licensed under a Creative Commons Attribution-Share Alike 3.0 license
+    </p>
+   </div>
+  </div>
+  <br />
+  <!-- Footer - END -->
+  <script type="text/javascript">
+   (function() {
+    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+    po.src = 'https://apis.google.com/js/plusone.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+   })();
+  </script>
+  <script type="text/javascript">
+   var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+   document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+  </script>
+  <script type="text/javascript">
+   var pageTracker = _gat._getTracker("UA-3429714-1");
+   pageTracker._initData();
+   pageTracker._trackPageview();
+  </script>
+  <iframe src='http://pixel.fetchback.com/serve/fb/pdc?cat=&name=landing&sid=1866' scrolling='no' width='1' height='1' marginheight='0' marginwidth='0' frameborder='0'></iframe>
+ </body>
+</html>
