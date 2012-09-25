@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"> 
+<head> 
+ <title>Bonescript webpage app template</title>
+ <script src="client.js" charset="utf-8" type="text/javascript"></script> 
+ <link rel="icon" href="favicon.ico" type="image/x-icon" />
+ <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+</head>
+<body>
+ <h1>Bonescript webpage app template</h1>
+ <p>This is a minimal example that can be extended easily.</p>
+ <p>
+  <button class="dynlink" onclick="demoRun('code')">Run</button>
+  <button class="dynlink" onclick="demoEdit('code')">Edit</button>
+ </p>
+ <canvas id="canvas1"></canvas>
+ <hr />
+ <pre id="code">
+ain = bone.P9_38;
+a = function(x) { graphDraw(x.value); };
+b = function() { analogRead(ain, a); }
+setInterval(b, 100);
+</pre>
+ <hr />
+</body>
+</html>
