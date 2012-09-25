@@ -15,7 +15,8 @@ var scriptUrls = [
     '/autoadvance.js',
     '/processing.js',
     '/jquery-ui.min.js',         // http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js
-    '/weatherstation.js'
+    '/weatherstation.js',
+    '/ajaxorg-ace-builds-c2f3abb/ace.js' // https://github.com/ajaxorg/ace-builds/commit/c2f3abb2ecd3287f90225d804132f0fd26cfb639
 ];
 
 // Placeholder to get filled in from bonescript via socket.io
@@ -68,6 +69,17 @@ var initClient = function() {
     $("#slider1").slider();
     $("#slider2").slider();
 
+    demoEdit = function(id) {
+        var editor = ace.edit(id);
+        editor.setTheme("ace/theme/monokai");
+        editor.getSession().setMode("ace/mode/javascript");
+        var originalDemoRun = demoRun;
+        demoRun = function(myid) {
+            if(myid == id) eval(editor.getValue());
+            else originalDemoRun(myid);
+        }
+    };        
+        
     try {
         var canvas = document.getElementById("canvas1");
         var graphDataSize = 50;
