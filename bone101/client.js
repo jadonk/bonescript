@@ -129,7 +129,7 @@ var initClient = function() {
             };
         };
         var processing = new Processing(canvas, sketchProc);
-        var graphDraw = function(data) {
+        graphDraw = function(data) {
             var myData = parseFloat(data);
             for(var i=0; i<graphDataSize-1; i++) {
                 window.graphData[i] = window.graphData[i+1];
