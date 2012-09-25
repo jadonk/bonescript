@@ -14,7 +14,7 @@ Blockly.Language.bonescript_digitalWrite = {
  }
 };
 
-Blockly.JavaScript.bonescript_digitalWrite = function () {
+Blockly.JavaScript.bonescript_digitalWrite = function() {
  var argument0 = Blockly.JavaScript.valueToCode(this, 'PIN',
   Blockly.JavaScript.ORDER_MEMBER) || '{}';
  var argument1 = this.getTitleValue('VALUE') || '0';
@@ -31,4 +31,12 @@ Blockly.Language.timers_setInterval = {
   this.setPreviousStatement(true);
   this.setNextStatement(true);
  }
+};
+
+Blockly.JavaScript.timers_setInterval = function() {
+ var argument0 = Blockly.JavaScript.valueToCode(this, 'FUNC',
+  Blockly.JavaScript.ORDER_MEMBER) || '(function(){})';
+ var argument1 = this.getTitleValue('INTERVAL') || '0';
+ var code = 'setInterval(' + argument0 + ',' + argument1 + ');\n';
+ return code;
 };
