@@ -68,6 +68,12 @@ var clearPin = function(pinname) {
 var initClient = function() {
     $("#slider1").slider();
     $("#slider2").slider();
+    
+    $("#buttons").append("<p>" +
+      "<button class=\"dynlink\" onclick=\"demoRun('code')\">Run</button>" +
+      "<button class=\"dynlink\" onclick=\"demoEdit('code')\">Editor</button>" +
+      "<button class=\"dynlink\" onclick=\"openJSTerm('js_term')\">Interpreter</button>" +
+      "</p>");
 
     demoEdit = function(id) {
         var editor = ace.edit(id);
