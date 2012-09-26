@@ -16,23 +16,28 @@
   <button class="dynlink" onclick="demoEdit('code')">Editor</button>
   <button class="dynlink" onclick="openJSTerm('js_term')">Interpreter</button>
  </p>
+ <p>Last value read was: <b><span id="attachInterruptValue">unknown</span></b></p>
  <hr />
  <pre id="code">
-led = bone.USR3;
-state = 0;
-
-pinMode(led, 'out');
-toggleLED = function() {
- state = state ? 0 : 1;
- digitalWrite(led, state);
-};
-
-timer = setInterval(toggleLED, 100);
-
-stopTimer = function() {
- clearInterval(timer);
-};
-setTimeout(stopTimer, 3000);</pre>
+pinMode(bone.P8_5, 'in');
+pinMode(bone.P8_3, 'out');
+value = 0;
+digitalWrite(bone.P8_3, value);
+function interruptHandler(x) { return({'value': x.value}); }
+function interruptCallback(x) {
+ if(x.output) $('#attachInterruptValue').text(x.output.value);
+ else doAlert(x);
+}
+function toggleP8_3() {
+  value = value ? 0 : 1;
+  digitalWrite(bone.P8_3, value);
+}
+attachInterrupt(bone.P8_5, interruptHandler, 'both', interruptCallback);
+var interval = setInterval(toggleP8_3, 200);
+setTimeout(function() {
+ clearInterval(interval);
+ detachInterrupt(bone.P8_5, doAlert);
+}, 30000);</pre>
  <hr />
  <div id="js_term"></div>
 </body>

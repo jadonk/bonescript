@@ -13,7 +13,8 @@
  <p>This is a minimal example that can be extended easily.</p>
  <p>
   <button class="dynlink" onclick="demoRun('code')">Run</button>
-  <button class="dynlink" onclick="demoEdit('code')">Edit</button>
+  <button class="dynlink" onclick="demoEdit('code')">Editor</button>
+  <button class="dynlink" onclick="openJSTerm('js_term')">Interpreter</button>
  </p>
  <hr />
  <pre id="code">
@@ -22,5 +23,6 @@ led = bone.USR3;
 pinMode(led, 'out');
 digitalWrite(led, 1);</pre>
  <hr />
+ <div id="js_term"></div>
 </body>
 </html>
