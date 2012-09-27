@@ -14,3 +14,6 @@ li { margin-left: 0.5em; margin-top: 0.5em; }
 li li { font-size: 85%; font-style: italic; }
 li li li { font-size: 85%; font-style: normal; }
 
+table, tbody, tr, td { vertical-align: top; }
+
+sup { font-size: 60%; vertical-align: top; }
