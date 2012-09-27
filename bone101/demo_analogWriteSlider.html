@@ -1,0 +1,22 @@
+<html> 
+<head> 
+ <title>Using a slider with analogWrite</title>
+ <script src="client.js" charset="utf-8" type="text/javascript"></script> 
+ <link rel="icon" href="favicon.ico" type="image/x-icon" />
+ <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+</head>
+<body>
+ <h1>Using a slider with analogWrite</h1>
+ <p>Please connect P8-13 to LED through 1khom resistor</p>
+ <div id="slider1"></div>
+ <div id="buttons"></div>
+ <hr />
+ <pre id="code">
+pinMode(bone.P8_13, 'out', 4);
+$("#slider1").bind("slidechange", function(event, ui) {
+ analogWrite(bone.P8_13, ui.value/100.0);
+});</pre>
+ <hr />
+ <div id="js_term"></div>
+</body>
+</html>
