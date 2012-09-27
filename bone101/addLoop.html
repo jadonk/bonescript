@@ -12,11 +12,7 @@
  <h1>Bonescript: addLoop</h1>
  <p>This is a prototype of a function to add additional running loops. It will
   eventually be cleaned up a bit, but you can get started with it today.</p>
- <p>
-  <button class="dynlink" onclick="demoRun('code')">Run</button>
-  <button class="dynlink" onclick="demoEdit('code')">Editor</button>
-  <button class="dynlink" onclick="openJSTerm('js_term')">Interpreter</button>
- </p>
+ <div id="buttons"></div>
  <hr />
  <pre id="code">
 led = bone.USR3;
@@ -29,7 +25,7 @@ blinkLED = function() {
   delay(100);
 };
 
-addLoop(blinkLED, 0, stopBlinking);
+addLoop(blinkLED);
 setTimeout(removeLoops, 10000);</pre>
  <hr />
  <div id="js_term"></div>
