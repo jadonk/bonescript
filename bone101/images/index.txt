@@ -76,6 +76,42 @@ http://blog.thelifeofkenneth.com/2012/05/twittermatrixticker-dot-matrix-tweet.ht
 http://mattrichardson.com/Descriptive-Camera/
  http://mattrichardson.com/Descriptive-Camera/images/Descriptive-Camera-600px.jpg
 
+Capes:
+
+http://beaglebonecapes.com
+ http://circuitco.com/support/index.php?title=BeagleBone_Breadboard
+  http://circuitco.com/support/images/7/73/BeagleBone_Breadboard_Cape.jpg
+ http://circuitco.com/support/index.php?title=BeagleBone_Breakout
+  http://circuitco.com/support/images/0/06/BeagleBone_Breakout_Cape.jpg
+ http://circuitco.com/support/index.php?title=BeagleBone_DVI-D
+  http://circuitco.com/support/images/9/9e/BeagleBone_DVI-D_Cape.jpg
+ http://circuitco.com/support/index.php?title=BeagleBone_LCD7
+ Adafruit proto cape
+  http://circuitco.com/support/images/f/f8/Proto_Cape_Kit.jpg
+ http://circuitco.com/support/index.php?title=TT3201_CAN_Cape
+  http://circuitco.com/support/images/7/73/TT3201_Can_Cape.jpg
+ http://circuitco.com/support/index.php?title=BeagleBone_LCD3
+  http://circuitco.com/support/images/c/c3/LCD3-catalog.jpg
+ http://circuitco.com/support/index.php?title=BeagleBone_Battery
+  http://circuitco.com/support/images/0/06/BatteryCape-Front.jpg
+ http://circuitco.com/support/index.php?title=BeagleBone_MSTP
+  http://circuitco.com/support/images/f/ff/MSTP-Front.jpg
+ http://circuitco.com/support/index.php?title=BeagleBone_VGA
+  http://circuitco.com/support/images/2/20/VGA-catalog.jpg
+ http://circuitco.com/support/index.php?title=BeagleBone_CANBus
+ http://circuitco.com/support/index.php?title=BeagleBone_ProfiBus
+ http://circuitco.com/support/index.php?title=BeagleBone_RS232
+ http://circuitco.com/support/index.php?title=BeagleBone_RS485
+ http://circuitco.com/support/index.php?title=BeagleBone_LCD4
+ http://circuitco.com/support/index.php?title=BeagleBone_3.1MP_Camera
+ http://circuitco.com/support/index.php?title=BeBoPr_Cape
+ http://circuitco.com/support/index.php?title=BeagleBone_Audio
+ http://circuitco.com/support/index.php?title=BeagleBone_DVI-D_with_Audio
+ http://circuitco.com/support/index.php?title=BeagleBone_Weather
+ http://circuitco.com/support/index.php?title=BeagleBone_RF
+ http://circuitco.com/support/index.php?title=Radarcape
+ http://circuitco.com/support/index.php?title=BeagleBone_LVDS_LCD_Cape
+
 http://youtu.be/YNezj0DOCK4
 http://youtu.be/C8ZT-4VX1BE
 
