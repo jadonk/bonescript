@@ -41,10 +41,14 @@ http://fleshandmachines.wordpress.com/2012/09/25/sonar-sensor-on-the-beaglebone-
  http://fleshandmachines.files.wordpress.com/2012/09/sam_1175.jpg
  http://fleshandmachines.files.wordpress.com/2012/09/sam_1103.jpg
  http://fleshandmachines.files.wordpress.com/2012/07/7288743.jpg
-http://circuitco.com/support/index.php?title=BeBoPr_Cape
- http://circuitco.com/support/images/0/0d/BeBoPrCape.jpg
+https://plus.google.com/100242854243155306943/posts
+ http://circuitco.com/support/index.php?title=BeBoPr_Cape
+  http://circuitco.com/support/images/0/0d/BeBoPrCape.jpg
+ https://lh4.googleusercontent.com/-UieyMdtvBOs/UDO-LyywwNI/AAAAAAAAA7w/cTht1qrSukE/s634/Schermafbeelding+2012-08-21+om+18.58.05.png
  http://www.flickr.com/photos/86669029@N00/7984661732 
   http://farm9.staticflickr.com/8300/7984661732_c7feec07e8_o.jpg
+  http://farm9.staticflickr.com/8285/7704246430_0b6c56968f_c.jpg
+  http://farm8.staticflickr.com/7275/7408744774_7223778630_c.jpg
 
 Expansion:
 
@@ -75,6 +79,8 @@ http://blog.thelifeofkenneth.com/2012/05/twittermatrixticker-dot-matrix-tweet.ht
 
 http://mattrichardson.com/Descriptive-Camera/
  http://mattrichardson.com/Descriptive-Camera/images/Descriptive-Camera-600px.jpg
+ http://mattrichardson.com/Descriptive-Camera/images/Descriptive-Camera-Tech-600px.jpg
+ http://mattrichardson.com/Descriptive-Camera/images/results-600px.jpg
 
 Capes:
 
@@ -86,7 +92,6 @@ http://beaglebonecapes.com
  http://circuitco.com/support/index.php?title=BeagleBone_DVI-D
   http://circuitco.com/support/images/9/9e/BeagleBone_DVI-D_Cape.jpg
  http://circuitco.com/support/index.php?title=BeagleBone_LCD7
- Adafruit proto cape
   http://circuitco.com/support/images/f/f8/Proto_Cape_Kit.jpg
  http://circuitco.com/support/index.php?title=TT3201_CAN_Cape
   http://circuitco.com/support/images/7/73/TT3201_Can_Cape.jpg
@@ -98,19 +103,29 @@ http://beaglebonecapes.com
   http://circuitco.com/support/images/f/ff/MSTP-Front.jpg
  http://circuitco.com/support/index.php?title=BeagleBone_VGA
   http://circuitco.com/support/images/2/20/VGA-catalog.jpg
- http://circuitco.com/support/index.php?title=BeagleBone_CANBus
- http://circuitco.com/support/index.php?title=BeagleBone_ProfiBus
- http://circuitco.com/support/index.php?title=BeagleBone_RS232
- http://circuitco.com/support/index.php?title=BeagleBone_RS485
- http://circuitco.com/support/index.php?title=BeagleBone_LCD4
- http://circuitco.com/support/index.php?title=BeagleBone_3.1MP_Camera
- http://circuitco.com/support/index.php?title=BeBoPr_Cape
- http://circuitco.com/support/index.php?title=BeagleBone_Audio
- http://circuitco.com/support/index.php?title=BeagleBone_DVI-D_with_Audio
  http://circuitco.com/support/index.php?title=BeagleBone_Weather
+  http://circuitco.com/support/images/3/3b/Weather-Sensor.jpg
+ http://circuitco.com/support/index.php?title=BeagleBone_CANBus
+  http://circuitco.com/support/index.php?title=File:Serial-front.jpg
+ http://circuitco.com/support/index.php?title=BeagleBone_LCD4
+  http://circuitco.com/support/images/d/d1/LCD4.jpg
+ http://circuitco.com/support/index.php?title=BeagleBone_3.1MP_Camera
+  http://circuitco.com/support/images/0/08/Camera-Top.jpg
+ http://www.adafruit.com/products/572
+  http://www.adafruit.com/images/large/boneproto_LRG.jpg
+ http://circuitco.com/support/index.php?title=BeBoPr_Cape
+  http://circuitco.com/support/images/0/0d/BeBoPrCape.jpg
+ http://circuitco.com/support/index.php?title=BeagleBone_Audio
+  http://circuitco.com/support/images/0/00/Audio-Cape.jpg
  http://circuitco.com/support/index.php?title=BeagleBone_RF
+  http://circuitco.com/support/images/e/e7/RFCape1.jpg
  http://circuitco.com/support/index.php?title=Radarcape
+  http://circuitco.com/support/images/2/2e/Radarcape.jpg
  http://circuitco.com/support/index.php?title=BeagleBone_LVDS_LCD_Cape
+  http://circuitco.com/support/images/5/58/LVDS.jpg
+ http://circuitco.com/support/index.php?title=BeagleBone_LCD7
+  http://circuitco.com/support/images/2/2c/BeagleBone-LCD7-Front.jpg
+  http://circuitco.com/support/images/b/b3/HDMI.jpg
 
 http://youtu.be/YNezj0DOCK4
 http://youtu.be/C8ZT-4VX1BE
