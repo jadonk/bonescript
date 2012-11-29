@@ -344,6 +344,7 @@ var loadScripts = function() {
         var script = document.createElement('script');
         script.type = 'text/javascript';
         script.src = url;
+	script.charset = 'UTF-8';
         var scriptObj = head.appendChild(script);
         scriptObj.onload = loadScripts;
     } else {
