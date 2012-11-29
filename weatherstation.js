@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 var bb = require('bonescript');
 var fs = require('fs');
-var io = require('socket.io');
 var bmp085config = require('./weatherstation/bmp085-pressure');
 var sht21config = require('./weatherstation/sht21-humidity');
 
@@ -27,44 +26,44 @@ setup = function() {
         var pscale = bmp085config.pressureConfig.scale;
         var pfileData = bmp085config.pressureConfig.file;
 
-        var preadData = function(fd) {
+        var preadData = function() {
             fs.readFile(pfileData, function(err, data) {
-                if(err) throw("Unable to read data: " + err);
+                if(err) {console.log("Unable to read data: " + err); return;}
                 socket.emit('pressuredata', "" + data / pscale);
+                setTimeout(preadData, pdelay);
             });
-            setTimeout(preadData, pdelay);
         };
 
         var tdelay = bmp085config.tempConfig.delay;
         var tscale = bmp085config.tempConfig.scale;
         var tfileData = bmp085config.tempConfig.file;
         
-        var treadData = function(fd) {
+        var treadData = function() {
             fs.readFile(tfileData, function(err, data) {
-                if(err) throw("Unable to read data: " + err);
+                if(err) {console.log("Unable to read data: " + err); return;}
                 socket.emit('tempdata', "" + Math.round((data / tscale)*10)/10);
+                setTimeout(treadData, tdelay);
             });
-            setTimeout(treadData, tdelay);
         };
 
         var hdelay = sht21config.humidityConfig.delay;
         var hscale = sht21config.humidityConfig.scale;
         var hfileData = sht21config.humidityConfig.file;
         
-        var hreadData = function(fd) {
+        var hreadData = function() {
             fs.readFile(hfileData, function(err, data) {
-                if(err) throw("Unable to read data: " + err);
+                if(err) {console.log("Unable to read data: " + err); return;}
                 socket.emit('humiditydata', "" + data / hscale);
+                setTimeout(hreadData, hdelay);
             });
-            setTimeout(hreadData, hdelay);
         };
 
-        var lreadData = function(fd) {
+        var lreadData = function() {
             fs.readFile('/sys/devices/platform/omap/omap_i2c.3/i2c-3/3-0039/lux1_input', function(err, data) {
-                if(err) throw("Unable to read data: " + err);
+                if(err) {console.log("Unable to read data: " + err); return;}
                 socket.emit('lux', "" + data);
+                setTimeout(lreadData, 500);
             });
-            setTimeout(lreadData, 500);
         };
 
         socket.emit('pressureconfig', bmp085config.pressureConfig);
