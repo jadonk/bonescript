@@ -15,7 +15,8 @@ var scriptUrls = [
     '/autoadvance.js',
     '/processing.js',
     '/jquery-ui.min.js',         // http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js
-    '/weatherstation.js'
+    '/weatherstation.js',
+    '/ajaxorg-ace-builds-c2f3abb/ace.js' // https://github.com/ajaxorg/ace-builds/commit/c2f3abb2ecd3287f90225d804132f0fd26cfb639
 ];
 
 // Placeholder to get filled in from bonescript via socket.io
@@ -67,7 +68,24 @@ var clearPin = function(pinname) {
 var initClient = function() {
     $("#slider1").slider();
     $("#slider2").slider();
+    
+    $("#buttons").append("<p>" +
+      "<button class=\"dynlink\" onclick=\"demoRun('code')\">Run</button>" +
+      "<button class=\"dynlink\" onclick=\"demoEdit('code')\">Editor</button>" +
+      "<button class=\"dynlink\" onclick=\"openJSTerm('js_term')\">Interpreter</button>" +
+      "</p>");
 
+    demoEdit = function(id) {
+        var editor = ace.edit(id);
+        editor.setTheme("ace/theme/monokai");
+        editor.getSession().setMode("ace/mode/javascript");
+        var originalDemoRun = demoRun;
+        demoRun = function(myid) {
+            if(myid == id) eval(editor.getValue());
+            else originalDemoRun(myid);
+        }
+    };        
+        
     try {
         var canvas = document.getElementById("canvas1");
         var graphDataSize = 50;
@@ -117,7 +135,7 @@ var initClient = function() {
             };
         };
         var processing = new Processing(canvas, sketchProc);
-        var graphDraw = function(data) {
+        graphDraw = function(data) {
             var myData = parseFloat(data);
             for(var i=0; i<graphDataSize-1; i++) {
                 window.graphData[i] = window.graphData[i+1];
@@ -156,7 +174,8 @@ var initClient = function() {
             'doEval': [ 'evalFunc' ],
             'addLoop': [ 'loopFunc', 'loopDelay' ],
             'getLoops': [],
-            'removeLoop': [ 'loopid' ]
+            'removeLoop': [ 'loopid' ],
+            'removeLoops': []
         };
         for(var x in myfuncs) {
             socket.on(x, function(data) {
@@ -233,11 +252,17 @@ var initClient = function() {
                 height: 300,
                 prompt: 'js>'
         };
-        try {
-            $('#js_term').terminal(js_term.term, js_term.args);
-        } catch(ex2) {
-            console.log("Unable to open javascript terminal window due to " + ex2);
-        }
+        openJSTerm = function(id) {
+            var myJSTerm = document.getElementById(id);            
+            if(myJSTerm.hasTerminal && myJSTerm.isEnabled) {
+                $(myJSTerm).terminal.disable();
+                myJSTerm.isEnabled = false;
+            } else {
+                $(myJSTerm).terminal(js_term.term, js_term.args);
+                myJSTerm.isEnabled = true;
+            }
+            myJSTerm.hasTerminal = true;
+        };
 
         var setMuxSelect = function(data) {
             var pinname = data.pin;
