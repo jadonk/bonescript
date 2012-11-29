@@ -30,8 +30,8 @@ var tmin = tempConfig.rangeLow;
 var tunit = tempConfig.unit;
 
 canvasWidth = window.innerWidth * 0.9;
-if ( canvasWidth > window.innerHeight) 
- canvasWidth = 1.3 * window.innerHeight;
+//if ( canvasWidth > window.innerHeight) 
+// canvasWidth = 1.3 * window.innerHeight;
 
 var barometerSketchProc = function(p) {
  p.size(canvasWidth*(2/3), canvasWidth*(2/3));
