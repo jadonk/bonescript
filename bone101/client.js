@@ -175,7 +175,9 @@ var initClient = function() {
             'addLoop': [ 'loopFunc', 'loopDelay' ],
             'getLoops': [],
             'removeLoop': [ 'loopid' ],
-            'removeLoops': []
+            'removeLoops': [],
+            'readTextFile': [ 'filename' ],
+            'writeTextFile': [ 'filename', 'data' ]
         };
         for(var x in myfuncs) {
             socket.on(x, function(data) {

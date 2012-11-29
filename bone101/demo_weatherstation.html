@@ -9,36 +9,30 @@
  <div id="buttons"></div>
  <hr />
  <pre id="code" height="1000px">
-function updateWeather(x) {
- if(x.startup) { pressureRead(); tempRead(); }
- else if(x.temp) { temperatureUpdate(x.value); setTimeout(tempRead, 500); }
- else if(x.pressure) { pressureUpdate(x.value); setTimeout(pressureRead, 3000);}
+function tempData(x) {
+ if(!x.err) temperatureUpdate(x.data);
+ setTimeout(tempRead, 500);
 };
 
 function tempRead() {
- doEval(function(callback) {
-  fs.readFile("/sys/bus/i2c/drivers/bmp085/3-0077/temp0_input", function(err, data) {
-   if(!err) callback({'temp': true, 'value': '' + data});
-  });
- }, updateWeather);
+ readTextFile('/sys/bus/i2c/drivers/bmp085/3-0077/temp0_input', tempData);
+};
+
+function pressureData(x) {
+ if(!x.err) pressureUpdate(x.data);
+ setTimeout(pressureRead, 3000);
 };
 
 function pressureRead() {
- doEval(function(callback) {
-  fs.readFile("/sys/bus/i2c/drivers/bmp085/3-0077/pressure0_input", function(err, data) {
-   if(!err) callback({'pressure': true, 'value': '' + data});
-  });
- }, updateWeather);
+ readTextFile('/sys/bus/i2c/drivers/bmp085/3-0077/pressure0_input', pressureData);
 };
 
-doEval(function(callback) {
- try {
-  fs.writeFileSync('/sys/class/i2c-adapter/i2c-3/new_device', 'bmp085 0x77', encoding='ascii');
-  callback({'startup':'bmp085 driver successfully loaded'});
- } catch(ex) {
-  callback({'startup':'bmp085 driver load failed: ' + ex});
- }
-}, updateWeather);</pre>
+function startUpdates(x) {
+ alert('Starting updates');
+ pressureRead(); tempRead();
+};
+
+writeTextFile('/sys/class/i2c-adapter/i2c-3/new_device', 'bmp085 0x77', startUpdates);</pre>
  <hr />
  <div id="js_term"></div>
 </body>
