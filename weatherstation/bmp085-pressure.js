@@ -9,7 +9,7 @@ exports.pressureConfig = {
 
 exports.tempConfig = {
     file: "/sys/bus/i2c/drivers/bmp085/3-0077/temp0_input",
-    unit: "° F",
+    unit: "° C",
     delay: 2000,
     scale: 10,
     rangeHigh: 40,
