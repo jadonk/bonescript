@@ -10,7 +10,7 @@ pressureConfig = {
 
 tempConfig = {
     file: "/sys/bus/i2c/drivers/bmp085/3-0077/temp0_input",
-    unit: "° F",
+    unit: "° C",
     delay: 2000,
     scale: 10,
     rangeHigh: 40,
@@ -206,7 +206,7 @@ var thermometerSketchProc = function(p) {
     }    
     p.line((thermometerWidth/2) - thermometerWidth/8,theight,(thermometerWidth/2) - thermometerWidth/8 + extra, theight );
     
-    myText = (-30 + i*10)*1.8 + 32;
+    myText = -30 + i*10;
     p.fill(0, 0, 0);
     p.text(myText, (thermometerWidth/2) - thermometerWidth*0.09 + extra, theight + 4);
     
@@ -215,8 +215,8 @@ var thermometerSketchProc = function(p) {
     p.line((thermometerWidth/2) + thermometerWidth/8,thermometerWidth*1.1 - (thermometerWidth/50) * tmin,(thermometerWidth/2) + thermometerWidth/8 - thermometerWidth/20, thermometerWidth*1.1 - (thermometerWidth/50) * tmin );
     p.line((thermometerWidth/2) + thermometerWidth/8,thermometerWidth*1.1 - (thermometerWidth/50) * tmax,(thermometerWidth/2) + thermometerWidth/8 - thermometerWidth/20, thermometerWidth*1.1 - (thermometerWidth/50) * tmax );
     p.strokeWeight(thermometerWidth*0.03);
-}
-  myText = Math.round((temp*1.8 + 32)*10)/10 + tunit;
+  }
+  myText = temp + tunit;
   p.fill(0, 0, 0);
   p.textSize(Math.round(thermometerWidth*0.09));
   myWidth = p.textWidth(myText);
