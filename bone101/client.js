@@ -48,12 +48,32 @@ var clearPin = function(pinname) {
     $("#" + pinname).css("background-color", "#EAF2D3");
 }
 
-var completeMux = function(data) {
-    bone = data.platform;
+var setMuxSelect = function(data) {
+    var pinname = data.pin;
+    if(data.options) {
+        var muxSelect = "<select class='mux'>\n";
+        for(var option in data.options) {
+            if(isNaN(option)) continue;
+            var pinFunction = data.options[option];
+            var muxSelected = "";
+            // Select the signal the pin is currently muxed to
+            if(option == data.mux) {
+                muxSelected = "selected=true";
+            }
+            muxSelect += "<option " + muxSelected + ">" + option + ": " + pinFunction + "</option>";
+        }
+        muxSelect += "</select>\n";
+        $("#" + pinname + "_name").html(muxSelect);
+        //console.log(pinname + ": " + pinMode);
+    }
+};
+
+var completeMux = function(data, onMux) {
+    var bone = data.platform;
     for(var pinname in bone) {
         $("#" + pinname + "_name").html(bone[pinname].name);
         if(bone[pinname].mux) {
-            getPinMode(bone[pinname], setMuxSelect);
+            onMux(bone[pinname], setMuxSelect);
         }
     }
 };
@@ -269,35 +289,22 @@ var initClient = function() {
                 }
                 myJSTerm.hasTerminal = true;
             };
-    
-            var setMuxSelect = function(data) {
-                var pinname = data.pin;
-                if(data.options) {
-                    var muxSelect = "<select class='mux'>\n";
-                    for(var option in data.options) {
-                        if(isNaN(option)) continue;
-                        var pinFunction = data.options[option];
-                        var muxSelected = "";
-                        // Select the signal the pin is currently muxed to
-                        if(option == data.mux) {
-                            muxSelected = "selected=true";
-                        }
-                        muxSelect += "<option " + muxSelected + ">" + option + ": " + pinFunction + "</option>";
-                    }
-                    muxSelect += "</select>\n";
-                    $("#" + pinname + "_name").html(muxSelect);
-                    //console.log(pinname + ": " + pinMode);
-                }
-            };
-            
+                
             //setup handler for receiving the strict with all the expansion pins from the server
-            platform(completeMux);
+            var completeMuxWrapper = function(data) {
+                completeMux(data, getPinMode);
+            };
+            platform(completeMuxWrapper);
+            
         } catch(ex) {
             console.log("Unable to attach socket functions due to " + ex);
         }
     };
     
-    completeMux(exports.bone);
+    var getDefaultMode = function(pin, callback) {
+        callback({pin:exports.bone[pin]});
+    };
+    completeMux(exports.bone, getDefaultMode);
     loadScript('/socket.io/socket.io.js', onSocketIOLoaded);
 
     $("#i2c1").hover(
