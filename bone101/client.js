@@ -1,30 +1,23 @@
 var cssUrls = [
-    '/schmux.css',
-    '/jquery.terminal.css',         // http://terminal.jcubic.pl/js/jquery.terminal.css
-    '/jquery-ui.css',               // http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css
-    '/client.css'
+    'schmux.css',
+    'jquery.terminal.css',         // http://terminal.jcubic.pl/js/jquery.terminal.css
+    'jquery-ui.css',               // http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css
+    'client.css'
 ];
 
 var scriptUrls = [
-    '/socket.io/socket.io.js',
-    '/jquery.js',
-    '/jquery.svg.js',
-    '/jquery.terminal.js',          // http://terminal.jcubic.pl/js/jquery.terminal-0.4.12.min.js
-    '/jquery.mousewheel.js',        // http://terminal.jcubic.pl/js/jquery.mousewheel-min.js
-    '/eeprom-web.js',
-    '/autoadvance.js',
-    '/processing.js',
-    '/jquery-ui.min.js',         // http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js
-    '/weatherstation.js',
-    '/ajaxorg-ace-builds-c2f3abb/ace.js' // https://github.com/ajaxorg/ace-builds/commit/c2f3abb2ecd3287f90225d804132f0fd26cfb639
+    'jquery.js',
+    'jquery.svg.js',
+    'jquery.terminal.js',          // http://terminal.jcubic.pl/js/jquery.terminal-0.4.12.min.js
+    'jquery.mousewheel.js',        // http://terminal.jcubic.pl/js/jquery.mousewheel-min.js
+    'eeprom-web.js',
+    'autoadvance.js',
+    'processing.js',
+    'jquery-ui.min.js',         // http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js
+    'weatherstation.js',
+    'bone.js',
+    'ajaxorg-ace-builds-c2f3abb/ace.js' // https://github.com/ajaxorg/ace-builds/commit/c2f3abb2ecd3287f90225d804132f0fd26cfb639
 ];
-
-// Placeholder to get filled in from bonescript via socket.io
-bone =
-{
-    P8_1: { name: "DGND" },
-    P8_2: { name: "DGND" },
-};
 
 var doAlert = function(m) {
     alert(JSON.stringify(m));
@@ -55,6 +48,16 @@ var clearPin = function(pinname) {
     $("#" + pinname).css("background-color", "#EAF2D3");
 }
 
+var completeMux = function(data) {
+    bone = data.platform;
+    for(var pinname in bone) {
+        $("#" + pinname + "_name").html(bone[pinname].name);
+        if(bone[pinname].mux) {
+            getPinMode(bone[pinname], setMuxSelect);
+        }
+    }
+};
+
 //var slidyDisable = function() {
 //  document.removeEventListener('keydown', w3c_slidy.key_down);
 //  document.removeEventListener('keypress', w3c_slidy.key_press);
@@ -84,8 +87,8 @@ var initClient = function() {
             if(myid == id) eval(editor.getValue());
             else originalDemoRun(myid);
         }
-    };        
-        
+    };
+    
     try {
         var canvas = document.getElementById("canvas1");
         var graphDataSize = 50;
@@ -155,151 +158,148 @@ var initClient = function() {
         console.log('Unable to attach Processing.JS to canvas because ' + ex);
     }
 
-    try {
-        var socket = io.connect('');
-        var myfuncs = {
-            'digitalWrite': [ 'pin', 'value' ],
-            'digitalRead': [ 'pin' ],
-            'analogRead': [ 'pin' ],
-            'analogWrite': [ 'pin', 'value', 'freq' ],
-            'pinMode': [ 'pin', 'direction', 'mux', 'pullup', 'slew' ],
-            'shiftOut': [ 'dataPin', 'clockPin', 'bitOrder', 'val' ],
-            'attachInterrupt': [ 'pin', 'handler', 'mode' ],
-            'detachInterrupt': [ 'pin' ],
-            'getPinMode': [ 'pin' ],
-            'getEeproms': [],
-            'platform': [],
-            'shell': [ 'command' ],
-            'echo': [ 'data' ],
-            'doEval': [ 'evalFunc' ],
-            'addLoop': [ 'loopFunc', 'loopDelay' ],
-            'getLoops': [],
-            'removeLoop': [ 'loopid' ],
-            'removeLoops': [],
-            'readTextFile': [ 'filename' ],
-            'writeTextFile': [ 'filename', 'data' ]
-        };
-        for(var x in myfuncs) {
-            socket.on(x, function(data) {
-                seqcall(data);
-            });
-            var myargs = myfuncs[x];
-            var objString = '';
-            for(var y in myargs) {
-                if(isNaN(y)) continue;  // Need to find the source of this bug
-                objString += ' if(typeof ' + myargs[y] + ' == "function") {\n';
-                objString += '  ' + myargs[y] + ' = ' + myargs[y] + '.toString();\n';
-                objString += ' }\n';
-                objString += ' calldata.' + myargs[y] + ' = ' + myargs[y] + ';\n';
-            }
-            myargs.push('callback');
-            var argsString = myargs.join(', ');
-            var handyfunc = x + ' = ' +
-                'function (' + argsString + ') {\n' +
-                ' var calldata = {};\n' +
-                objString +
-                ' if(callback) {\n' +
-                '  seqnum++;\n' +
-                '  callbacks[seqnum] = callback;\n' +
-                '  calldata.seq = seqnum;\n' +
-                ' }\n' +
-                ' socket.emit("' + x + '", calldata);\n' +
-                '};\n';
-            eval(handyfunc);
-        }
-
+    var onSocketIOLoaded = function() {
         try {
-            var addedShellListener = false;
-            $('#shell').terminal(
-                function(command, term) {
-                    if(!addedShellListener) {
-                        socket.on('shell', function(s) {
-                            term.echo(s);
-                        });
-                        addedShellListener = true;
-                    }
-                    shell(command);
-                },
-                {
-                    greetings: "BeagleBone bash shell",
-                    name: "bash",
-                    height: 600,
-                    prompt: 'bash>'
+            var socket = io.connect('');
+            var myfuncs = {
+                'digitalWrite': [ 'pin', 'value' ],
+                'digitalRead': [ 'pin' ],
+                'analogRead': [ 'pin' ],
+                'analogWrite': [ 'pin', 'value', 'freq' ],
+                'pinMode': [ 'pin', 'direction', 'mux', 'pullup', 'slew' ],
+                'shiftOut': [ 'dataPin', 'clockPin', 'bitOrder', 'val' ],
+                'attachInterrupt': [ 'pin', 'handler', 'mode' ],
+                'detachInterrupt': [ 'pin' ],
+                'getPinMode': [ 'pin' ],
+                'getEeproms': [],
+                'platform': [],
+                'shell': [ 'command' ],
+                'echo': [ 'data' ],
+                'doEval': [ 'evalFunc' ],
+                'addLoop': [ 'loopFunc', 'loopDelay' ],
+                'getLoops': [],
+                'removeLoop': [ 'loopid' ],
+                'removeLoops': [],
+                'readTextFile': [ 'filename' ],
+                'writeTextFile': [ 'filename', 'data' ]
+            };
+            for(var x in myfuncs) {
+                socket.on(x, function(data) {
+                    seqcall(data);
+                });
+                var myargs = myfuncs[x];
+                var objString = '';
+                for(var y in myargs) {
+                    if(isNaN(y)) continue;  // Need to find the source of this bug
+                    objString += ' if(typeof ' + myargs[y] + ' == "function") {\n';
+                    objString += '  ' + myargs[y] + ' = ' + myargs[y] + '.toString();\n';
+                    objString += ' }\n';
+                    objString += ' calldata.' + myargs[y] + ' = ' + myargs[y] + ';\n';
                 }
-            );
+                myargs.push('callback');
+                var argsString = myargs.join(', ');
+                var handyfunc = x + ' = ' +
+                    'function (' + argsString + ') {\n' +
+                    ' var calldata = {};\n' +
+                    objString +
+                    ' if(callback) {\n' +
+                    '  seqnum++;\n' +
+                    '  callbacks[seqnum] = callback;\n' +
+                    '  calldata.seq = seqnum;\n' +
+                    ' }\n' +
+                    ' socket.emit("' + x + '", calldata);\n' +
+                    '};\n';
+                eval(handyfunc);
+            }
+    
+            try {
+                var addedShellListener = false;
+                $('#shell').terminal(
+                    function(command, term) {
+                        if(!addedShellListener) {
+                            socket.on('shell', function(s) {
+                                term.echo(s);
+                            });
+                            addedShellListener = true;
+                        }
+                        shell(command);
+                    },
+                    {
+                        greetings: "BeagleBone bash shell",
+                        name: "bash",
+                        height: 600,
+                        prompt: 'bash>'
+                    }
+                );
+            } catch(ex) {
+                console.log("Unable to open shell terminal window due to " + ex);
+            }
+            var js_term = {};
+            var dir = function(obj) {
+                var y = [];
+                for(var x in obj) {
+                    if(obj.hasOwnProperty(x)) {
+                        y.push(x);
+                    }
+                }
+                return y.join(', ');
+            }                
+            js_term.term = function(command, term) {
+                if(command !== '') {
+                    var result = eval(command);
+                    if (result !== undefined) {
+                        term.echo(String(result));
+                    }
+                }
+            };
+            js_term.args = {
+                    greetings: 'Javascript Interpreter',
+                    name: 'js_demo',
+                    height: 300,
+                    prompt: 'js>'
+            };
+            openJSTerm = function(id) {
+                var myJSTerm = document.getElementById(id);            
+                if(myJSTerm.hasTerminal && myJSTerm.isEnabled) {
+                    $(myJSTerm).terminal.disable();
+                    myJSTerm.isEnabled = false;
+                } else {
+                    $(myJSTerm).terminal(js_term.term, js_term.args);
+                    myJSTerm.isEnabled = true;
+                }
+                myJSTerm.hasTerminal = true;
+            };
+    
+            var setMuxSelect = function(data) {
+                var pinname = data.pin;
+                if(data.options) {
+                    var muxSelect = "<select class='mux'>\n";
+                    for(var option in data.options) {
+                        if(isNaN(option)) continue;
+                        var pinFunction = data.options[option];
+                        var muxSelected = "";
+                        // Select the signal the pin is currently muxed to
+                        if(option == data.mux) {
+                            muxSelected = "selected=true";
+                        }
+                        muxSelect += "<option " + muxSelected + ">" + option + ": " + pinFunction + "</option>";
+                    }
+                    muxSelect += "</select>\n";
+                    $("#" + pinname + "_name").html(muxSelect);
+                    //console.log(pinname + ": " + pinMode);
+                }
+            };
+            
+            //setup handler for receiving the strict with all the expansion pins from the server
+            platform(completeMux);
         } catch(ex) {
-            console.log("Unable to open shell terminal window due to " + ex);
+            console.log("Unable to attach socket functions due to " + ex);
         }
-        var js_term = {};
-        var dir = function(obj) {
-            var y = [];
-            for(var x in obj) {
-                if(obj.hasOwnProperty(x)) {
-                    y.push(x);
-                }
-            }
-            return y.join(', ');
-        }                
-        js_term.term = function(command, term) {
-            if(command !== '') {
-                var result = eval(command);
-                if (result !== undefined) {
-                    term.echo(String(result));
-                }
-            }
-        };
-        js_term.args = {
-                greetings: 'Javascript Interpreter',
-                name: 'js_demo',
-                height: 300,
-                prompt: 'js>'
-        };
-        openJSTerm = function(id) {
-            var myJSTerm = document.getElementById(id);            
-            if(myJSTerm.hasTerminal && myJSTerm.isEnabled) {
-                $(myJSTerm).terminal.disable();
-                myJSTerm.isEnabled = false;
-            } else {
-                $(myJSTerm).terminal(js_term.term, js_term.args);
-                myJSTerm.isEnabled = true;
-            }
-            myJSTerm.hasTerminal = true;
-        };
+    };
+    
+    completeMux(exports.bone);
+    loadScript('/socket.io/socket.io.js', onSocketIOLoaded);
 
-        var setMuxSelect = function(data) {
-            var pinname = data.pin;
-            if(data.options) {
-                var muxSelect = "<select class='mux'>\n";
-                for(var option in data.options) {
-                    if(isNaN(option)) continue;
-                    var pinFunction = data.options[option];
-                    var muxSelected = "";
-                    // Select the signal the pin is currently muxed to
-                    if(option == data.mux) {
-                        muxSelected = "selected=true";
-                    }
-                    muxSelect += "<option " + muxSelected + ">" + option + ": " + pinFunction + "</option>";
-                }
-                muxSelect += "</select>\n";
-                $("#" + pinname + "_name").html(muxSelect);
-                //console.log(pinname + ": " + pinMode);
-            }
-        };
-        
-        //setup handler for receiving the strict with all the expansion pins from the server
-        platform(function(data) {
-            bone = data.platform;
-            for(var pinname in bone) {
-                $("#" + pinname + "_name").html(bone[pinname].name);
-                if(bone[pinname].mux) {
-                    getPinMode(bone[pinname], setMuxSelect);
-                }
-            }
-        });
-    } catch(ex) {
-        console.log("Unable to attach socket functions due to " + ex);
-    }
-        
     $("#i2c1").hover(
         function () {
             printPin("P9_17");
@@ -336,17 +336,21 @@ var initClient = function() {
     );
 };
 
+var loadScript = function(url, callback) {
+    var head = document.getElementsByTagName('head')[0];
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = url;
+    script.charset = 'UTF-8';
+    var scriptObj = head.appendChild(script);
+    scriptObj.onload = callback;
+}
+
 // based loosely on http://stackoverflow.com/questions/950087/include-javascript-file-inside-javascript-file
 var loadScripts = function() {
     var url = scriptUrls.shift();
     if(url) {
-        var head = document.getElementsByTagName('head')[0];
-        var script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = url;
-	script.charset = 'UTF-8';
-        var scriptObj = head.appendChild(script);
-        scriptObj.onload = loadScripts;
+        loadScript(url, loadScripts);
     } else {
         initClient();
     }
