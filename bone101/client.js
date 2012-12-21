@@ -304,7 +304,7 @@ var initClient = function() {
     var getDefaultMode = function(pin, callback) {
         callback({pin:exports.bone[pin]});
     };
-    completeMux(exports.bone, getDefaultMode);
+    completeMux({platform:exports.bone}, getDefaultMode);
     loadScript('/socket.io/socket.io.js', onSocketIOLoaded);
 
     $("#i2c1").hover(
