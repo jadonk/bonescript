@@ -302,7 +302,9 @@ var initClient = function() {
     };
     
     var getDefaultMode = function(pin, callback) {
-        callback({pin:exports.bone[pin]});
+        var mode = exports.bone[pin.key];
+        mode.pin = pin.key;
+        callback(mode);
     };
     completeMux({platform:exports.bone}, getDefaultMode);
     loadScript('/socket.io/socket.io.js', onSocketIOLoaded);
