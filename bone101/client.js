@@ -69,7 +69,7 @@ var setMuxSelect = function(data) {
 };
 
 var completeMux = function(data, onMux) {
-    var bone = data.platform;
+    bone = data.platform;
     for(var pinname in bone) {
         $("#" + pinname + "_name").html(bone[pinname].name);
         if(bone[pinname].mux) {
