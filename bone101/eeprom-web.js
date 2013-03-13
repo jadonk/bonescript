@@ -5,10 +5,13 @@ $(document).ready(function() {
     //setup handler for receiving the strict with all the expansion pins from the server
     socket.on('getEeproms', function (data) {
         eeproms = data;
+        var bonename = eeproms['/sys/bus/i2c/drivers/at24/1-0050/eeprom'].boardName;
         var boneversion = eeproms['/sys/bus/i2c/drivers/at24/1-0050/eeprom'].version.substr(2);
         var boneserial = eeproms['/sys/bus/i2c/drivers/at24/1-0050/eeprom'].serialNumber;
 
-        var bonestring = "BeagleBone " + boneversion + "<br/>";
+        var bonestring = "BeagleBone ";
+        if(bonename.match("A335BNLT")) bonestring += "Black ";
+        bonestring += " revision " + boneversion + "<br/>";
         bonestring += "Serial number: " + boneserial + "<br/>";
 
         printPin(eeproms, '/sys/bus/i2c/drivers/at24/3-0054/eeprom');
