@@ -1,18 +1,23 @@
-require('bonescript');
+// Import functions for interacting with hardware
+var b = require('bonescript');
 
-ledPin = bone.P8_3;
-ledPin2 = bone.USR3;
+var ledPin = "P8_3";
+var ledPin2 = "USR3";
 
-setup = function() {
-    pinMode(ledPin, OUTPUT);
-    pinMode(ledPin2, OUTPUT);
-};
+// Initialize pins as outputs
+b.pinMode(ledPin, b.OUTPUT);
+b.pinMode(ledPin2, b.OUTPUT);
 
-loop = function() {
-    digitalWrite(ledPin, HIGH);
-    digitalWrite(ledPin2, HIGH);
-    delay(1000);
-    digitalWrite(ledPin, LOW);
-    digitalWrite(ledPin2, LOW);
-    delay(1000);
+// Call function to toggle LEDs every 100ms
+setTimeout(toggleLEDs, 100);
+
+// Assume LEDs are off by default
+var state = b.LOW;
+
+// Define function to change the state of the LEDs
+function toggleLEDs() {
+    if(state == b.HIGH) state = b.LOW;
+    else state = b.HIGH;
+    b.digitalWrite(ledPin, state);
+    b.digitalWrite(ledPin2, state);
 };
