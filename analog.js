@@ -1,13 +1,13 @@
-require('bonescript');
+var b = require('bonescript');
 
-inputPin = bone.P9_36;
-outputPin = bone.P8_13;
+inputPin = "P9_36";
+outputPin = "P8_13";
 
-setup = function() {
-    pinMode(outputPin, OUTPUT);
-};
+b.pinMode(outputPin, b.OUTPUT);
+loop();
 
-loop = function() {
-    var value = analogRead(inputPin);
-    analogWrite(outputPin, value);
+function loop() {
+    var value = b.analogRead(inputPin);
+    b.analogWrite(outputPin, value);
+    setTimeout(loop, 1);
 };
