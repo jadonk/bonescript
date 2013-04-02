@@ -14,7 +14,7 @@ b.digitalWrite(outputPin, b.LOW);
 b.pinMode(ledPin, b.OUTPUT);
 b.attachInterrupt(inputPin, setLED, b.CHANGE);
 toggle();
- 
+
 function setLED(x) {
     b.digitalWrite(ledPin, x.value);
 }
