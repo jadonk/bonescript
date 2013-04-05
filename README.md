@@ -6,7 +6,7 @@ starting with support for BeagleBone.
 
 Information on the language is available at http://nodejs.org.
 
-To get started, try running the 'nod blinkled.js' on a BeagleBone.
+To get started, try running 'node blinkled.js' on a BeagleBone.
 
 Additional documentation is available at http://beagleboard.org/bonescript.
 
