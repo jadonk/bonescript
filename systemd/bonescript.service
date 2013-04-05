@@ -1,8 +1,8 @@
 [Unit]
-Description=Beaglebone 101 presentation
+Description=Bonescript server
 ConditionPathExists=|/var/lib/cloud9
 
 [Service]
-WorkingDirectory=/var/lib/cloud9/node_modules/bonescript
+WorkingDirectory=/node_modules/bonescript
 ExecStart=/usr/bin/node server.js
 SyslogIdentifier=bonescript
