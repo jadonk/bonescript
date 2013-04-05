@@ -23,7 +23,7 @@ distribution other than what comes with the board, you can install it using
 'git':
 
 ````sh
-git clone git://github.com/jadonk/bonescript /node\_modules/bonescript
+git clone git://github.com/jadonk/bonescript /node_modules/bonescript
 ````
 
 If you are looking to update to the latest revision, use 'opkg' to perform
@@ -59,8 +59,8 @@ Here's an example:
 ````javascript
 var b = require('bonescript');
 
-b.pinMode('P8\_12', b.INPUT);
-b.pinMode('P8\_13', b.OUTPUT);
+b.pinMode('P8_12', b.INPUT);
+b.pinMode('P8_13', b.OUTPUT);
 
 setInterval(copyInputToOutput, 100);
 
