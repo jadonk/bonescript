@@ -1,4 +1,3 @@
-===============
 Getting started
 ===============
 
@@ -17,7 +16,24 @@ and to further provide support for rapidly creating GUIs for your embedded
 applications through the use of HTML5/JavaScript web pages.
 
 
-==================
+Installation
+------------
+Bonescript comes installed on your BeagleBone, but if you are using a
+distribution other than what comes with the board, you can install it using
+'git':
+
+````sh
+git clone git://github.com/jadonk/bonescript /node\_modules/bonescript
+````
+
+If you are looking to update to the latest revision, use 'opkg' to perform
+the update:
+
+````sh
+opkg update
+opkg install bonescript
+````
+
 Note on code state
 ==================
 
@@ -26,7 +42,6 @@ frequent basis.  Many of the fancier peripherals aren't yet supported
 except through performing file I/O.
 
 
-========
 Template
 ========
 
@@ -41,25 +56,26 @@ in your physical computing productivity.
 
 Here's an example:
 
-    var b = require('bonescript');
+````javascript
+var b = require('bonescript');
 
-    b.pinMode('P8_12', b.INPUT);
-    b.pinMode('P8_13', b.OUTPUT);
+b.pinMode('P8\_12', b.INPUT);
+b.pinMode('P8\_13', b.OUTPUT);
 
-    setInterval(copyInputToOutput, 100);
+setInterval(copyInputToOutput, 100);
 
-    function copyInputToOutput() {
-        b.digitalRead('P8_12', writeToOutput);
-        function writeToOutput(x) {
-            b.digitalWrite('P8_13', x.value);
-        }
+function copyInputToOutput() {
+    b.digitalRead('P8_12', writeToOutput);
+    function writeToOutput(x) {
+        b.digitalWrite('P8_13', x.value);
     }
+}
+````
 
-The 'P8_12' and 'P8_13' are pin names on the board and the above example
-would copy the input value at P8_12 to the output P8_13 every 100 ms.
+The 'P8\_12' and 'P8\_13' are pin names on the board and the above example
+would copy the input value at P8\_12 to the output P8\_13 every 100 ms.
 
 
-===
 API
 ===
 
@@ -67,41 +83,42 @@ When a callback is provided, the functions will behave asynchronously.
 Without a callback provided, the functions will synchronize and complete
 before returning.
 
-Digital I/O, Analog I/O, and Advanced I/O:
-analogRead(pin, [callback]) -> value
-analogWrite(pin, value, [freq], [callback])
-attachInterrupt(pin, handler, mode, [callback])
-detachInterrupt(pin, [callback])
-digitalRead(pin, [calback]) -> value
-digitalWrite(pin, value, [callback])
-getEeproms([callback]) -> eeproms
-pinMode(pin, direction, [mux], [pullup], [slew], [callback])
-getPinMode(pin, [callback]) -> pinMode
-shiftOut(dataPin, clockPin, bitOrder, val, [callback])
+Digital I/O, Analog I/O, and Advanced I/O
+-----------------------------------------
+* analogRead(pin, [callback]) -> value
+* analogWrite(pin, value, [freq], [callback])
+* attachInterrupt(pin, handler, mode, [callback])
+* detachInterrupt(pin, [callback])
+* digitalRead(pin, [calback]) -> value
+* digitalWrite(pin, value, [callback])
+* getEeproms([callback]) -> eeproms
+* pinMode(pin, direction, [mux], [pullup], [slew], [callback])
+* getPinMode(pin, [callback]) -> pinMode
+* shiftOut(dataPin, clockPin, bitOrder, val, [callback])
 
-Bits/Bytes, Math, Trigonometry and Random Numbers:
-lowByte(value)
-highByte(value)
-bitRead(value, bitnum)
-bitWrite(value, bitnum, bitdata) 
-bitSet(value, bitnum) 
-bitClear(value, bitnum) 
-bit(bitnum)
-min(x, y)
-max(x, y)
-abs(x)
-constrain(x, a, b)
-map(value, fromLow, fromHigh, toLow, toHigh)
-pow(x, y)
-sqrt(x)
-sin(radians)
-cos(radians)
-tan(radians)
-randomSeed(x)
-random([min], max)
+Bits/Bytes, Math, Trigonometry and Random Numbers
+-------------------------------------------------
+* lowByte(value)
+* highByte(value)
+* bitRead(value, bitnum)
+* bitWrite(value, bitnum, bitdata) 
+* bitSet(value, bitnum) 
+* bitClear(value, bitnum) 
+* bit(bitnum)
+* min(x, y)
+* max(x, y)
+* abs(x)
+* constrain(x, a, b)
+* map(value, fromLow, fromHigh, toLow, toHigh)
+* pow(x, y)
+* sqrt(x)
+* sin(radians)
+* cos(radians)
+* tan(radians)
+* randomSeed(x)
+* random([min], max)
 
 
-===================
 Note on performance
 ===================
 
@@ -123,10 +140,6 @@ in real-time on several fronts:
 * Adding real-time patches to the kernel
 
 
-================================
-Note on asynchronous programming
-================================
-
 The JavaScript language provides some features that I think are really cool
 for doing embedded programming and node.js does some things to help enable
 that.  The primary one is that the I/O functions are all asynchronous.  For
@@ -136,7 +149,6 @@ than other languages for doing this is that it keeps the full context around
 the handler, so you don't have to worry about it.
 
 
-=================
 Short-term issues
 =================
 
