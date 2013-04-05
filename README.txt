@@ -2,23 +2,28 @@
 Getting started
 ===============
 
+Bonescript is a node.js library for physical computing on embedded Linux,
+starting with support for BeagleBone.
+
 Information on the language is available at http://nodejs.org.
 
-To get started, try running the blinkled.js app.
+To get started, try running the 'nod blinkled.js' on a BeagleBone.
+
+Additional documentation is available at http://beagleboard.org/bonescript.
+
+The concept is to use Arduino-like functions written in JavaScript to
+simplify learning how to do physical computing tasks under embedded Linux
+and to further provide support for rapidly creating GUIs for your embedded
+applications through the use of HTML5/JavaScript web pages.
+
 
 ==================
 Note on code state
 ==================
 
-There is actually very little here right now, but I'm sharing this framework
-to provide people with a starting point concept.  You can update this code
-by performing 'git pull' in the Cloud9 IDE command bar at the bottom or by
-performing the same command from the shell in the /var/lib/cloud9 folder.
-
-I expect to have something that provides most of the Arduino functions and is
-generally usable by Summer 2012.  The use of Arduino functions is for both
-familiarity and because they represent a set of functions that new users have
-been able to comprehend and utilize for interesting things.
+There's still a lot of development going on, so be sure to check back on a 
+frequent basis.  Many of the fancier peripherals aren't yet supported
+except through performing file I/O.
 
 
 ========
@@ -26,54 +31,53 @@ Template
 ========
 
 For a Bonescript application, you must currently manually 'require' the
-bonescript library.  You will then typically define two functions, one called
-'setup' and another one called 'loop'.  Bonescript will execute these
-functions for you:
+bonescript library.  Functions are then referenced through the object
+provided back from require.
 
-    require('bonescript');
+I started out trying to provide Arduino-like setup/loop functions, but the
+idea really isn't a good match for JavaScript.  Using JavaScript's native
+flow works best, but the familiar functions are enough to give you a boost
+in your physical computing productivity.
 
-    setup = function() {
-      // Your setup function
+Here's an example:
+
+    var b = require('bonescript');
+
+    b.pinMode('P8_12', b.INPUT);
+    b.pinMode('P8_13', b.OUTPUT);
+
+    setInterval(copyInputToOutput, 100);
+
+    function copyInputToOutput() {
+        b.digitalRead('P8_12', writeToOutput);
+        function writeToOutput(x) {
+            b.digitalWrite('P8_13', x.value);
+        }
     }
 
-    loop = function() {
-     // Your function to run in a loop
-    }
-
-You can also make loop an array of functions such that you can have several
-parallel operations.
+The 'P8_12' and 'P8_13' are pin names on the board and the above example
+would copy the input value at P8_12 to the output P8_13 every 100 ms.
 
 
 ===
 API
 ===
 
+When a callback is provided, the functions will behave asynchronously.
+Without a callback provided, the functions will synchronize and complete
+before returning.
 
-All functions in the ** categories take an optional callback.
-
--------------
-New functions**
--------------
-addLoop(loopFunc, loopDelay)
-getLoops() -> loops
-removeLoop(loopid)
-doEval(evalFunc) -> value
-
------------------
-Arduino functions
------------------
-Digital I/O, Analog I/O, Advanced I/O and Time:**
-analogRead(pin) -> value
-analogWrite(pin, value, [freq])
-attachInterrupt(pin, handler, mode)
-detachInterrupt(pin)
-delay(milliseconds)
-digitalRead(pin) -> value
-digitalWrite(pin, value)
+Digital I/O, Analog I/O, and Advanced I/O:
+analogRead(pin, [callback]) -> value
+analogWrite(pin, value, [freq], [callback])
+attachInterrupt(pin, handler, mode, [callback])
+detachInterrupt(pin, [callback])
+digitalRead(pin, [calback]) -> value
+digitalWrite(pin, value, [callback])
 getEeproms([callback]) -> eeproms
-getPinMode(pin) -> pinMode
-pinMode(pin, direction, [mux], [pullup], [slew])
-shiftOut(dataPin, clockPin, bitOrder, val)
+pinMode(pin, direction, [mux], [pullup], [slew], [callback])
+getPinMode(pin, [callback]) -> pinMode
+shiftOut(dataPin, clockPin, bitOrder, val, [callback])
 
 Bits/Bytes, Math, Trigonometry and Random Numbers:
 lowByte(value)
@@ -131,21 +135,12 @@ that respond to events in the system.  What makes JavaScript so much easier
 than other languages for doing this is that it keeps the full context around
 the handler, so you don't have to worry about it.
 
-Microcontroller users, however, are quite accustomed to programming operation
-after operation in a sequential manner, rather than using events to trigger
-operations.  My solution will be to utilize the 'setup' and 'loop' constructs
-that provide something familiar, but to then layer-on the idea of having
-handlers for events and multiple loops.  Stay tuned.
-
 
 =================
 Short-term issues
 =================
 
-* Need a real pinmux driver
-* The rate of toggling a GPIO is too low.  Without going to PWM, I need to add
-  a mechanism for speeding up back-to-back accesses.
-* Delay operations currently fully load the CPU.  The concept of 'fibers' that
-  add threads to node.js is a good compromise that can be abstracted away from
-  the user.
+* The state of the ARM Linux kernel with regards to handling loading drivers
+  using devicetree is still in a lot of flux.  Many of the interfaces
+  Bonescript utilizes are being rewritten and refactored.
 
