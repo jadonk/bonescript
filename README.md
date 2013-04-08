@@ -1,6 +1,5 @@
 Getting started
 ===============
-
 Bonescript is a node.js library for physical computing on embedded Linux,
 starting with support for BeagleBone.
 
@@ -18,25 +17,26 @@ applications through the use of HTML5/JavaScript web pages.
 
 Installation
 ------------
-Bonescript comes installed on your BeagleBone, but if you are using a
-distribution other than what comes with the board, you can install it using
-'git':
-
-````sh
-git clone git://github.com/jadonk/bonescript /node_modules/bonescript
-````
-
-If you are looking to update to the latest revision, use 'opkg' to perform
-the update:
+Bonescript comes installed on your BeagleBone.  If you are looking to update
+to the latest revision, use 'opkg' to perform the update:
 
 ````sh
 opkg update
 opkg install bonescript
 ````
 
+Support for other distributions is a work in progress.
+
+
+Launching applications persistently
+-----------------------------------
+To have your applications launch on startup, simply drop them into the
+/var/lib/cloud9/autorun folder.  Moving them out of that folder will kill
+the processes.  You are expected to only drop in already bug-free apps into
+this folder as there isn't a good way to perform debug on them.
+
 Note on code state
 ==================
-
 There's still a lot of development going on, so be sure to check back on a 
 frequent basis.  Many of the fancier peripherals aren't yet supported
 except through performing file I/O.
@@ -44,7 +44,6 @@ except through performing file I/O.
 
 Template
 ========
-
 For a Bonescript application, you must currently manually 'require' the
 bonescript library.  Functions are then referenced through the object
 provided back from require.
@@ -78,7 +77,6 @@ would copy the input value at P8\_12 to the output P8\_13 every 100 ms.
 
 API
 ===
-
 When a callback is provided, the functions will behave asynchronously.
 Without a callback provided, the functions will synchronize and complete
 before returning.
@@ -121,7 +119,6 @@ Bits/Bytes, Math, Trigonometry and Random Numbers
 
 Note on performance
 ===================
-
 This code is totally unoptimized.  The list of possible optimizations that run
 through my head is staggering.  The good news is that I think it can all be
 done without impacting the API, primarily thanks to the introspection
@@ -151,7 +148,6 @@ the handler, so you don't have to worry about it.
 
 Short-term issues
 =================
-
 * The state of the ARM Linux kernel with regards to handling loading drivers
   using devicetree is still in a lot of flux.  Many of the interfaces
   Bonescript utilizes are being rewritten and refactored.
