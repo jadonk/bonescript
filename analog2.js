@@ -8,4 +8,4 @@ function loop() {
     var value = b.analogRead(inputPin);
     console.log(value);
     setTimeout(loop, 1);
-};
+}
