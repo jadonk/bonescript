@@ -1,7 +1,7 @@
 var b = require('bonescript');
 
 var outputPin = "P8_13";
-var inputPin = "P8_14";
+var inputPin = "P9_12";
 var outputPin2 = "P8_15";
 var inputPin2 = "P8_16";
 var ledPin = "USR3";
