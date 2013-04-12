@@ -1,18 +1,20 @@
-require('bonescript');
+var b = require('bonescript');
 
-ledPin = bone.P8_3;
-ledPin2 = bone.USR3;
+var ledPin = "P8_13";
+var ledPin2 = "USR3";
 
-setup = function() {
-    pinMode(ledPin, OUTPUT);
-    pinMode(ledPin2, OUTPUT);
-};
+b.pinMode(ledPin, b.OUTPUT);
+b.pinMode(ledPin2, b.OUTPUT);
 
-loop = function() {
-    digitalWrite(ledPin, HIGH);
-    digitalWrite(ledPin2, HIGH);
-    delay(1000);
-    digitalWrite(ledPin, LOW);
-    digitalWrite(ledPin2, LOW);
-    delay(1000);
-};
+var state = b.LOW;
+b.digitalWrite(ledPin, state);
+b.digitalWrite(ledPin2, state);
+
+setInterval(toggle, 1000);
+
+function toggle() {
+    if(state == b.LOW) state = b.HIGH;
+    else state = b.LOW;
+    b.digitalWrite(ledPin, state);
+    b.digitalWrite(ledPin2, state);
+}

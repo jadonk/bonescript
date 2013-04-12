@@ -1,25 +1,26 @@
-require('bonescript');
+var b = require('bonescript');
 
-outputPin = bone.P8_3;
-inputPin = bone.P8_5;
-ledPin = bone.USR3;
-mydelay = 100;
+var outputPin = "P8_13";
+var inputPin = "P8_19";
+var ledPin = "USR3";
+var mydelay = 100;
+var state = b.LOW;
 
-setup = function() {
-    console.log('Please connect ' + inputPin.key + ' to ' + outputPin.key +
-        ' with a 1kohm resistor');
-    pinMode(inputPin, INPUT);
-    pinMode(outputPin, OUTPUT);
-    digitalWrite(outputPin, LOW);
-    pinMode(ledPin, OUTPUT);
-    attachInterrupt(inputPin, function(x) {
-        digitalWrite(ledPin, x.value);
-    }, CHANGE);
-};
+console.log('Please connect ' + inputPin + ' to ' + outputPin +
+    ' with a 1kohm resistor');
+b.pinMode(inputPin, b.INPUT);
+b.pinMode(outputPin, b.OUTPUT);
+b.digitalWrite(outputPin, b.LOW);
+b.pinMode(ledPin, b.OUTPUT);
+b.attachInterrupt(inputPin, setLED, b.CHANGE);
+toggle();
 
-loop = function() {
-    digitalWrite(outputPin, HIGH);
-    delay(mydelay);
-    digitalWrite(outputPin, LOW);
-    delay(mydelay);
-};
+function setLED(x) {
+    b.digitalWrite(ledPin, x.value);
+}
+
+function toggle() {
+    state = (state == b.LOW) ? b.HIGH : b.LOW;
+    b.digitalWrite(outputPin, state);
+    setTimeout(toggle, mydelay);
+}
