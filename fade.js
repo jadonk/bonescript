@@ -4,10 +4,9 @@ var b = require('bonescript');
 var awValue = 0.01;
 var awDirection = 1;
 var awPin = "P8_13";
-var awMux = 4;
 
 // configure pin 
-b.pinMode(awPin, 'out', awMux);
+b.pinMode(awPin, b.OUTPUT);
 
 // call function to update brightness every 10ms
 setInterval(fade, 10);
