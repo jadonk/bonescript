@@ -48,7 +48,7 @@ is a brief introduction to the directories and files included.
 
 * node_modules
 
-The Bonescript source code,currently it depends on `express`, `socket.io`, 'systemd` and `winston`, for more information to the specified library, please refer to their homepage or wiki.
+The Bonescript source code,currently it depends on `express`, `socket.io`, `systemd` and `winston`, for more information to the specified library, please refer to their homepage or wiki.
 
 * etc
 
