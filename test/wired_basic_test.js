@@ -3,7 +3,7 @@ var b = require('bonescript');
 b.setDate(Date().toString(), doEcho);
 
 function doEcho(x) {
-    if(x.stdout != null) throw('setDate returned ' + JSON.stringify(x));
+    if(x.stdout !== null) throw('setDate returned ' + JSON.stringify(x));
     b.echo('test', doGetPlatform);
 }
 
@@ -28,17 +28,17 @@ function onGetPinMode(x) {
 }
 
 function onPinModeInput(x) {
-    if(x.value != true) throw('pinMode(input) returned ' + JSON.stringify(x));
+    if(x.value !== true) throw('pinMode(input) returned ' + JSON.stringify(x));
     b.pinMode('P9_23', b.OUTPUT, 7, 'disabled', 'fast', onPinModeOutput);
 }
 
 function onPinModeOutput(x) {
-    if(x.value != true) throw('pinMode(output) returned ' + JSON.stringify(x));
+    if(x.value !== true) throw('pinMode(output) returned ' + JSON.stringify(x));
     b.digitalWrite('P9_23', b.LOW, onDigitalWriteLow);
 }
 
 function onDigitalWriteLow(x) {
-    if(x.data != null) throw('digitalWrite(low) returned ' + JSON.stringify(x));
+    if(x.data !== null) throw('digitalWrite(low) returned ' + JSON.stringify(x));
     b.digitalRead('P9_24', onDigitalReadLow);
 }
 
@@ -48,7 +48,7 @@ function onDigitalReadLow(x) {
 }
 
 function onDigitalWriteHigh(x) {
-    if(x.data != null) throw('digitalWrite(high) returned ' + JSON.stringify(x));
+    if(x.data !== null) throw('digitalWrite(high) returned ' + JSON.stringify(x));
     b.digitalRead('P9_24', onDigitalReadHigh);
 }
 
@@ -58,7 +58,7 @@ function onDigitalReadHigh(x) {
 }
 
 function onAnalogWrite(x) {
-    if(x.value != true) throw('analogWrite returned ' + JSON.stringify(x));
+    if(x.value !== true) throw('analogWrite returned ' + JSON.stringify(x));
     setTimeout(doAnalogRead, 1000);
 }
 
@@ -73,12 +73,12 @@ function onAnalogRead(x) {
 }
 
 function onWriteTextFile(x) {
-    if(x.err != null) throw('writeTextFile returned ' + JSON.stringify(x));
+    if(x.err !== null) throw('writeTextFile returned ' + JSON.stringify(x));
     b.readTextFile('/tmp/basic_test', onReadTextFile);
 }
 
 function onReadTextFile(x) {
-    if(x.err != null) throw('readTextFile returned ' + JSON.stringify(x));
+    if(x.err !== null) throw('readTextFile returned ' + JSON.stringify(x));
     if(x.data != 'So far so good')
         throw('onReadTextFile returned ' + JSON.stringify(x));
     complete();
