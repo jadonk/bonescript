@@ -1,15 +1,15 @@
 var b = require('bonescript');
 
-b.setDate(Date().toString(), doEcho);
+b.setDate(Date().toString(), onSetDate);
 
-function doEcho(x) {
+function onSetDate(x) {
     if(x.stdout !== null) {
         err('setDate returned ' + JSON.stringify(x));
     }
-    b.echo('test', doGetPlatform);
+    b.echo('test', onEcho);
 }
 
-function doGetPlatform(x) {
+function onEcho(x) {
     if(x.data != 'test') err('doEcho returned ' + JSON.stringify(x));
     b.getPlatform(onGetPlatform);
 }
