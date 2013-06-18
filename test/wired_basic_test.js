@@ -1,6 +1,18 @@
 var b = require('bonescript');
 
-b.setDate(Date().toString(), onSetDate);
+b.getPlatform(onGetPlatform);
+
+function onGetPlatform(x) {
+    if(!x.name || !x.serialNumber || !x.version)
+        err('getPlatform returned ' + JSON.stringify(x));
+    console.log('Name = ' + x.name);
+    console.log('S/N = ' + x.serialNumber);
+    console.log('Version = ' + x.version);
+    console.log('BoneScript version = ' + x.bonescript);
+    if(x.bonescript != '0.2.2'))
+        err('BoneScript 0.2.2 required');
+    b.setDate(Date().toString(), onSetDate);
+}
 
 function onSetDate(x) {
     if(x.stdout !== null) {
@@ -11,16 +23,6 @@ function onSetDate(x) {
 
 function onEcho(x) {
     if(x.data != 'test') err('doEcho returned ' + JSON.stringify(x));
-    b.getPlatform(onGetPlatform);
-}
-
-function onGetPlatform(x) {
-    if(!x.name || !x.serialNumber || !x.version || (x.bonescript != '0.2.2'))
-        err('getPlatform returned ' + JSON.stringify(x));
-    console.log('Name = ' + x.name);
-    console.log('S/N = ' + x.serialNumber);
-    console.log('Version = ' + x.version);
-    console.log('BoneScript version = ' + x.bonescript);
     b.getPinMode('P9_20', onGetPinMode);
 }
 
