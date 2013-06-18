@@ -41,6 +41,14 @@ There's still a lot of development going on, so be sure to check back on a
 frequent basis.  Many of the fancier peripherals aren't yet supported
 except through performing file I/O.
 
+Directory layout
+----------------
+* attic: Stuff not to throw away, but not in a good state
+* demo: Examples showing how to use the BoneScript library
+* etc: Configuration files to be placed in target distro
+* node\_modules: Library code
+* systemd: Configuration files for systemd to start services
+* test: Automated test code
 
 Template
 ========
