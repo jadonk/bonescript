@@ -41,6 +41,30 @@ There's still a lot of development going on, so be sure to check back on a
 frequent basis.  Many of the fancier peripherals aren't yet supported
 except through performing file I/O.
 
+Brief introduction to the file structures
+==================
+To get developers(or potential contributors) know Bonescript better, below
+is a brief introduction to the directories and files included.
+
+* node_modules
+
+The Bonescript source code,currently it depends on `express`, `socket.io`, `systemd` and `winston`, for more information to the specified library, please refer to their homepage or wiki.
+
+* etc
+
+The environment file for Bonescript.
+
+* systemd
+
+The bonescript-autorun service configuration files.
+
+* attic
+
+A nice demo about using Bonescript as a Weather Station, utilizing BMP085 to get pressure and temperature, SHT21 to get humidity and TSL2550 as the Light Sensor.
+
+* usage-demos
+
+Small demos to focus on the usage of Bonescript, do refer to them to get a real quick start with Bonescript.
 
 Template
 ========
