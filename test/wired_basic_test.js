@@ -9,7 +9,7 @@ function onGetPlatform(x) {
     console.log('S/N = ' + x.serialNumber);
     console.log('Version = ' + x.version);
     console.log('BoneScript version = ' + x.bonescript);
-    if(x.bonescript != '0.2.2'))
+    if(x.bonescript != '0.2.2')
         err('BoneScript 0.2.2 required');
     b.setDate(Date().toString(), onSetDate);
 }
