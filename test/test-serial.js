@@ -1,31 +1,3 @@
-/*
-var serialport = require('serialport');
-var serialPort = new serialport.SerialPort("/dev/ttyO1", {
-    baudrate: 115200
-});
-
-serialPort.on('open', onSerialPortOpen);
-serialPort.on('data', onSerialPortData);
-
-function onSerialPortOpen() {
-    writeRepeatedly();
-}
-
-function writeRepeatedly() {
-    serialPort.write('Open', onSerialWrite);
-}
-
-function onSerialWrite(err, results) {
-    console.log('err = ' + err);
-    console.log('results = ' + results);
-    setTimeout(writeRepeatedly, 1000);
-}
-
-function onSerialPortData(data) {
-    console.log('data = ' + data);
-}
-*/
-
 var b = require('bonescript');
 var port = '/dev/ttyO1';
 var options = { baudrate: 115200 };
