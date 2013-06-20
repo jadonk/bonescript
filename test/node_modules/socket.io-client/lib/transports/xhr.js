@@ -12,7 +12,7 @@
    *
    * @api public
    */
-  
+
   exports.XHR = XHR;
 
   /**
@@ -129,7 +129,7 @@
   /**
    * Disconnects the established `XHR` connection.
    *
-   * @returns {Transport} 
+   * @returns {Transport}
    * @api public
    */
 
@@ -187,7 +187,11 @@
 
   XHR.check = function (socket, xdomain) {
     try {
-      if (io.util.request(xdomain)) {
+      var request = io.util.request(xdomain),
+          usesXDomReq = (global.XDomainRequest && request instanceof XDomainRequest),
+          socketProtocol = (socket && socket.options && socket.options.secure ? 'https:' : 'http:'),
+          isXProtocol = (global.location && socketProtocol != global.location.protocol);
+      if (request && !(usesXDomReq && isXProtocol)) {
         return true;
       }
     } catch(e) {}
@@ -196,14 +200,14 @@
   };
 
   /**
-   * Check if the XHR transport supports corss domain requests.
-   * 
+   * Check if the XHR transport supports cross domain requests.
+   *
    * @returns {Boolean}
    * @api public
    */
 
-  XHR.xdomainCheck = function () {
-    return XHR.check(null, true);
+  XHR.xdomainCheck = function (socket) {
+    return XHR.check(socket, true);
   };
 
 })(
