@@ -158,9 +158,10 @@ function onSerialOutOpen(x) {
 
 function doSerialWrite() {
     console.log('Testing serialWrite');
-    serial.data = new Buffer(255);
-    for(var i = 0; i < 255; i++) {
-        serial.data.writeUInt8(i, i);
+    serial.size = 2000;
+    serial.data = new Buffer(serial.size);
+    for(var i = 0; i < serial.size; i++) {
+        serial.data.writeUInt8(i%255, i);
     }
     serial.offset = 0;
     b.serialWrite(serial.out.port, serial.data, onSerialWrite);
@@ -179,7 +180,7 @@ function onSerialInData(x) {
             err('invalid serial data ' + JSON.stringify(x));
         serial.offset++;
     }
-    if(serial.offset >= 255) complete();
+    if(serial.offset >= serial.size) complete();
 }
 
 function complete() {
