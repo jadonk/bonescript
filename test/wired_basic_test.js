@@ -1,15 +1,21 @@
 var b = require('bonescript');
 var serial = {
-    port: '/dev/ttyO1',
-    options: { baudrate: 115200 },
+    in: {
+        port: '/dev/ttyO1',
+        options: { baudrate: 115200 }
+    },
+    out: {
+        port: '/dev/ttyO4',
+        options: { baudrate: 115200 },
+    }
 };
 
-var pinDW = 'P9_11';
-var pinDR = 'P9_13';
+var pinDW = 'P9_12';
+var pinDR = 'P9_14';
 var pinGM = 'P9_20';
 var pinAW = 'P9_21';
 var pinAR = 'P9_35';
-var pinST = 'P9_24';
+var pinST = 'P9_13';
 var pinSR = 'P9_26';
 
 var supported = {
@@ -125,33 +131,55 @@ function onReadTextFile(x) {
 }
 
 function doSerial() {
-    console.log('Testing serialOpen');
-    b.serialOpen(serial.port, serial.options, onSerialOpen);
+    console.log('Testing serialOpen(in)');
+    b.serialOpen(serial.in.port, serial.in.options, onSerialInOpen);
 }
 
-function onSerialOpen(x) {
-    if(x.err) err('serialOpen returned' + JSON.stringify(x));
+function onSerialInOpen(x) {
+    if(x.err) err('serialOpen(in) returned' + JSON.stringify(x));
+    if(x.event == 'open') {
+        console.log('Testing serialOpen(out)');
+        b.serialOpen(serial.out.port, serial.out.options, onSerialOutOpen);
+    }
+    if(x.event == 'data') {
+        onSerialInData(x);
+    }
+}
+
+function onSerialOutOpen(x) {
+    if(x.err) err('serialOpen(out) returned' + JSON.stringify(x));
     if(x.event == 'open') {
         doSerialWrite();
     }
     if(x.event == 'data') {
-        onSerialData(x);
+        err('Unexpected data on serial output port: ' + JSON.stringify(x));
     }
 }
 
 function doSerialWrite() {
     console.log('Testing serialWrite');
-    b.serialWrite(serial.port, 'Still seems okay', onSerialWrite);
+    serial.data = new Buffer(255);
+    for(var i = 0; i < 255; i++) {
+        serial.data.writeUInt8(i, i);
+    }
+    serial.offset = 0;
+    b.serialWrite(serial.out.port, serial.data, onSerialWrite);
 }
 
 function onSerialWrite(x) {
     if(x.err) err('serialWrite returned' + JSON.stringify(x));
 }
 
-function onSerialData(x) {
-    if(x.data != 'Still seems okay') 
-        err('serial data does not match ' + JSON.stringify(x));
-    complete();
+function onSerialInData(x) {
+    if(x.data.length < 1) 
+        err('invalid serial data ' + JSON.stringify(x));
+    console.log('Recieved ' + x.data.length + ' bytes');
+    for(var i = 0; i < x.data.length; i++) {
+        if(x.data.readUInt8(i) != serial.data[serial.offset])
+            err('invalid serial data ' + JSON.stringify(x));
+        serial.offset++;
+    }
+    if(serial.offset >= 255) complete();
 }
 
 function complete() {
