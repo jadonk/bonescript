@@ -1,21 +1,39 @@
 var b = require('bonescript');
-var port = '/dev/ttyO1';
+var rxport = '/dev/ttyO1';
+var txport = '/dev/ttyO4';
 var options = { baudrate: 115200 };
+var teststring = "This is the string I'm sending out as a test";
 
-b.serialOpen(port, options, onSerial);
+b.serialOpen(rxport, options, onRxSerial);
 
-function onSerial(x) {
+function onRxSerial(x) {
+    if(x.err) throw('***FAIL*** ' + JSON.stringify(x));
+    if(x.event == 'open') {
+        b.serialOpen(txport, options, onTxSerial);
+    }
+    if(x.event == 'data') {
+        console.log('rx (' + x.data.length +
+                    ') = ' + x.data.toString('ascii'));
+    }
+}
+
+function onTxSerial(x) {
     if(x.err) throw('***FAIL*** ' + JSON.stringify(x));
     if(x.event == 'open') {
         writeRepeatedly();
     }
     if(x.event == 'data') {
-        console.log('data = ' + x.data.toString('ascii'));
+        console.log('tx (' + x.data.length +
+                    ') = ' + x.data.toString('ascii'));
     }
 }
 
+function printJSON(x) {
+    console.log(JSON.stringify(x));
+}
+
 function writeRepeatedly() {
-    b.serialWrite(port, 'Open', onSerialWrite);
+    b.serialWrite(txport, teststring, onSerialWrite);
 }
 
 function onSerialWrite(x) {
