@@ -10,7 +10,7 @@ function onSerial(x) {
         writeRepeatedly();
     }
     if(x.event == 'data') {
-        console.log('data = ' + x.data);
+        console.log('data = ' + x.data.toString('ascii'));
     }
 }
 
