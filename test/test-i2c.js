@@ -23,4 +23,5 @@ function onWriteByte(err) {
 
 function onReadBytes(err, res) {
     console.log('readBytes = ' + JSON.stringify(arguments));
+    if(err.event == 'callback') process.exit(0);
 }
