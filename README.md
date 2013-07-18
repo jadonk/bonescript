@@ -89,8 +89,8 @@ When a callback is provided, the functions will behave asynchronously.
 Without a callback provided, the functions will synchronize and complete
 before returning.
 
-Digital I/O, Analog I/O, and Advanced I/O
------------------------------------------
+Digital and Analog I/O
+----------------------
 * analogRead(pin, [callback]) -> value
 * analogWrite(pin, value, [freq], [callback])
 * attachInterrupt(pin, handler, mode, [callback])
@@ -101,6 +101,23 @@ Digital I/O, Analog I/O, and Advanced I/O
 * pinMode(pin, direction, [mux], [pullup], [slew], [callback])
 * getPinMode(pin, [callback]) -> pinMode
 * shiftOut(dataPin, clockPin, bitOrder, val, [callback])
+
+Serial
+------
+Uses https://github.com/voodootikigod/node-serialport
+* serialOpen(port, options, [callback])
+* serialWrite(port, data, [callback])
+
+I2C
+---
+Uses https://github.com/korevec/node-i2c
+* i2cOpen(port, address, options, [callback])
+* i2cScan(port, [callback])
+* i2cWriteByte(port, byte, [callback])
+* i2cWriteBytes(port, command, bytes, [callback])
+* i2cReadByte(port, [callback])
+* i2cReadBytes(port, command, length, [callback])
+* i2cStream(port, command, length, [callback])
 
 Bits/Bytes, Math, Trigonometry and Random Numbers
 -------------------------------------------------
