@@ -7,6 +7,7 @@ var teststring = "This is the string I'm sending out as a test";
 b.serialOpen(rxport, options, onRxSerial);
 
 function onRxSerial(x) {
+    console.log('rx.event = ' + x.event);
     if(x.err) throw('***FAIL*** ' + JSON.stringify(x));
     if(x.event == 'open') {
         b.serialOpen(txport, options, onTxSerial);
@@ -18,6 +19,7 @@ function onRxSerial(x) {
 }
 
 function onTxSerial(x) {
+    console.log('tx.event = ' + x.event);
     if(x.err) throw('***FAIL*** ' + JSON.stringify(x));
     if(x.event == 'open') {
         writeRepeatedly();
@@ -37,7 +39,7 @@ function writeRepeatedly() {
 }
 
 function onSerialWrite(x) {
-    console.log('x = ' + JSON.stringify(x));
-    setTimeout(writeRepeatedly, 1000);
+    if(x.err) console.log('onSerialWrite err = ' + x.err);
+    if(x.event == 'callback') setTimeout(writeRepeatedly, 1000);
 }
 
