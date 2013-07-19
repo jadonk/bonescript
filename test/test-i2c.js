@@ -9,7 +9,7 @@ b.i2cReadBytes(port, null, 12, onReadBytes);
 
 function onI2C(x) {
     if(x.event == 'data') {
-        console.log('data = ' + JSON.stringify(data));
+        console.log('data = ' + JSON.stringify(x.data));
     }
 }
 
