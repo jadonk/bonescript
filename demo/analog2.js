@@ -1,6 +1,6 @@
 var b = require('bonescript');
 
-inputPin = "P9_36";
+var inputPin = "P9_36";
 
 loop();
 
