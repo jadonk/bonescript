@@ -1,6 +1,7 @@
 var b = require('bonescript');
 var port = '/dev/i2c-0'
 var address = 0x50;
+var data = [0xAA, 0x55, 0x33, 0xEE, 65, 51, 51, 53, 66, 78, 76, 84];
 
 b.i2cOpen(port, address, {}, onI2C);
 b.i2cScan(port, onScan);
