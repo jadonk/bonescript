@@ -57,8 +57,10 @@
                     b.digitalWrite(S_CLEAR, b.HIGH);
                     b.i2cOpen(port, address, {}, onI2C);
                     
-                    function onI2C() {
-                        b.i2cWriteBytes(port, 0x2a, [0x00], nextA);
+                    function onI2C(x) {
+                        if(x.event == 'return') {
+                            b.i2cWriteBytes(port, 0x2a, [0x00], nextA);
+                        }
                     }
                 
                     function nextA() {

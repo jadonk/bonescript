@@ -57,8 +57,10 @@
                 readBUTTON(); // Start button updates
                 readPOT(); // Start potentiometer updates
 
-                function onI2C() {
-                    b.i2cWriteBytes(port, 0x2a, [0x00], onI2C_A);
+                function onI2C(x) {
+                    if(x.event == 'return') {
+                        b.i2cWriteBytes(port, 0x2a, [0x00], onI2C_A);
+                    }
                 }
 
                 function onI2C_A() {
