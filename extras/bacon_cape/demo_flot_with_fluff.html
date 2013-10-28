@@ -11,7 +11,7 @@
             width:850px;
             height:425px;
             padding:10px 5px 0 0;
-        	margin: 15px auto 30px auto;
+            margin: 15px auto 30px auto;
         	border: 1px solid #ddd;
         	background: #fff;
         	background: linear-gradient(#f6f6f6 0, #fff 50px);
@@ -26,6 +26,11 @@
         	-webkit-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         "></div>
         <div style="clear:both;"></div>
+        <p>buttonStatus = <span id="buttonStatus"></span></p>
+        <p>sliderStatus = <span id="sliderStatus"></span></p>
+        <p>X = <span id="X"></span></p>
+        <p>Y = <span id="Y"></span></p>
+        <p>Z = <span id="Z"></span></p>
         <script>
             $(document).ready( function() {          
                 // Get the BoneScript library and begin app
@@ -35,10 +40,19 @@
                     var buttonStatus = 0;
                     var sliderStatus = 0;
                     var sliderReadIdle = true;
-                    
+                    var update7SegIdle = true;
+                    var LED_RED = 'P9_42';
+                    var LED_BLUE = 'P9_16';
+                    var LED_GREEN = 'P9_14';
                     var BUTTON = 'P8_19';
                     var POT = 'P9_36';
-                    
+                    var S_DATA = 'P9_18';
+                    var S_CLOCK = 'P9_22';
+                    var S_LATCH = 'P9_17';
+                    var S_CLEAR = 'P9_15';
+                    var segDigits = [ 0xC0, 0xF9, 0xA4, 0xB0, 0x99, 0x92, 0x82, 0xF8, 0x80, 0x90 ];                
+                    var port = '/dev/i2c-2'
+                    var address = 0x1c;
                     var container = $("#myplot");
                     var maximum = container.outerWidth() / 2 || 300;
                     var data = [];
@@ -117,7 +131,18 @@
                         return series;
                     }
                     
+                    b.pinMode(LED_RED, b.OUTPUT);
+                    b.pinMode(LED_BLUE, b.OUTPUT);
                     b.pinMode(BUTTON, b.INPUT);
+                    b.pinMode(S_DATA, b.OUTPUT);
+                    b.pinMode(S_CLOCK, b.OUTPUT);
+                    b.pinMode(S_LATCH, b.OUTPUT);
+                    b.pinMode(S_CLEAR, b.OUTPUT);
+                    b.digitalWrite(S_DATA, b.LOW);
+                    b.digitalWrite(S_CLOCK, b.LOW);
+                    b.digitalWrite(S_LATCH, b.LOW);
+                    b.digitalWrite(S_CLEAR, b.HIGH);
+                    b.i2cOpen(port, address, {}, onI2C);
 
                     setInterval(drawGraph, 20);
 
@@ -131,6 +156,20 @@
                         pushData(sliderStatus);
                         plot.setData(getData());
                         plot.draw();
+                    }
+
+                    function onI2C(x) {
+                        if(x.event == 'return') {
+                            b.i2cWriteBytes(port, 0x2a, [0x00], nextA);
+                        }
+                    }
+                
+                    function nextA() {
+                        b.i2cWriteBytes(port, 0x0e, [0x00], nextB);
+                    }
+                    
+                    function nextB() {
+                        b.i2cWriteBytes(port, 0x2a, [0x01], doUpdate);
                     }
 
                     function doSliderRead() {
@@ -147,7 +186,47 @@
                         if(!x.err && typeof x.value == 'number') {
                             sliderReadIdle = true;
                             sliderStatus = x.value.toFixed(3);
+                            if(update7SegIdle) {
+                                update7SegIdle = false;
+                                $('#sliderStatus').html(sliderStatus);
+                                write7Seg(parseInt(sliderStatus*10, 10));
+                            }
                         }
+                    }
+                    
+                    function write7Seg(x) {
+                        var c = segDigits[x%10];
+                        b.shiftOut(S_DATA, S_CLOCK, b.MSBFIRST, c, onShiftOut);
+                    }
+                    
+                    function onShiftOut(x) {
+                        b.digitalWrite(S_LATCH, b.HIGH, onLatchHigh);
+                    }
+                    
+                    function onLatchHigh(x) {
+                        b.digitalWrite(S_LATCH, b.LOW, onLatchLow);
+                    }
+                    
+                    function onLatchLow() {
+                        update7SegIdle = true;
+                    }
+                    
+                    function onReadBytes(x) {
+                        if(x.event == 'callback') {
+                            var gX = convertToG(x.res[0]);
+                            var gY = convertToG(x.res[2]);
+                            var gZ = convertToG(x.res[4]);
+                            $('#X').html(gX);
+                            $('#Y').html(gY);
+                            $('#Z').html(gZ);
+                        }
+                    }                    
+                    
+                    function convertToG(x) {
+                        if(x >= 128) x = -((x^0xFF)+1); // Get two's complement
+                        x = x / 64; // Scale to G
+                        x = x.toFixed(3); // Limit decimal places
+                        return(x);
                     }
                     
                     // Handle data back from button
