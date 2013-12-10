@@ -18,11 +18,10 @@ applications through the use of HTML5/JavaScript web pages.
 Installation
 ------------
 Bonescript comes installed on your BeagleBone.  If you are looking to update
-to the latest revision, use 'opkg' to perform the update:
+to the latest revision, use 'npm' to perform the update:
 
 ````sh
-opkg update
-opkg install bonescript
+npm install -g bonescript
 ````
 
 Support for other distributions is a work in progress.
