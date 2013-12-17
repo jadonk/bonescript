@@ -6,7 +6,7 @@ var awDirection = 1;
 var awPin = "P8_13";
 
 // configure pin 
-b.pinMode(awPin, b.OUTPUT);
+b.pinMode(awPin, b.ANALOG_OUTPUT);
 
 // call function to update brightness every 10ms
 setInterval(fade, 10);
