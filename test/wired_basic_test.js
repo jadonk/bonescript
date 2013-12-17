@@ -20,7 +20,8 @@ var pinSR = 'P9_26';
 
 var supported = {
     '0.2.2': true,
-    '0.2.3': true
+    '0.2.3': true,
+    '0.2.4': true
 };
 var version = undefined;
 
