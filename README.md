@@ -21,7 +21,7 @@ Bonescript comes installed on your BeagleBone.  If you are looking to update
 to the latest revision, use 'npm' to perform the update:
 
 ````sh
-npm install -g bonescript
+TERM=none npm install -g bonescript
 ````
 
 Support for other distributions is a work in progress.
