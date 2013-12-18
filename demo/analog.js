@@ -1,7 +1,7 @@
 var b = require('bonescript');
 
 var inputPin = "P9_36";
-var outputPin = "P8_13";
+var outputPin = "P9_14";
 
 b.pinMode(outputPin, b.OUTPUT);
 loop();
