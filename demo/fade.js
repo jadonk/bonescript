@@ -3,7 +3,7 @@ var b = require('bonescript');
 // setup starting conditions
 var awValue = 0.01;
 var awDirection = 1;
-var awPin = "P8_13";
+var awPin = "P9_14";
 
 // configure pin 
 b.pinMode(awPin, b.ANALOG_OUTPUT);
