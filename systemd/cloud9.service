@@ -1,0 +1,9 @@
+[Unit]
+Description=Cloud9 IDE
+ConditionPathExists=|/var/lib/cloud9
+
+[Service]
+WorkingDirectory=/opt/cloud9
+EnvironmentFile=/etc/default/cloud9
+ExecStart=/usr/bin/node server.js -w /var/lib/cloud9
+SyslogIdentifier=cloud9ide
