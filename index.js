@@ -5,7 +5,6 @@ var fs = require('fs');
 var child_process = require('child_process');
 var winston = require('winston');
 var os = require('os');
-var fibers = require('fibers');
 var hw_oldkernel = require('./src/hw_oldkernel');
 var hw_capemgr = require('./src/hw_capemgr');
 var hw_simulator = require('./src/hw_simulator');
@@ -16,6 +15,7 @@ var iic = require('./src/iic');
 var my = require('./src/my');
 var package_json = require('./package.json');
 var g = require('./src/constants');
+var fibers = my.require('fibers');
 var epoll = my.require('epoll');
 
 var debug = process.env.DEBUG ? true : false;

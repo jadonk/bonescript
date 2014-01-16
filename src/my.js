@@ -5,13 +5,25 @@
 var fs = require('fs');
 var winston = require('winston');
 var child_process = require('child_process');
-var fibers = require('fibers');
 var bone = require('./bone');
 var g = require('./constants');
-
 var debug = process.env.DEBUG ? true : false;
-
 var sysfsFiles = {};
+
+exports.require = function(packageName, onfail) {
+    var y = {};
+    try {
+        y = require(packageName);
+        y.exists = true;
+    } catch(ex) {
+        y.exists = false;
+        if(debug) winston.debug("Optional package '" + packageName + "' not loaded");
+        if(onfail) onfail();
+    }
+    return(y);
+};
+
+var fibers = exports.require('fibers');
 
 exports.is_capemgr = function(callback) {
     return(exports.find_sysfsFile('capemgr', '/sys/devices', 'bone_capemgr.', callback));
@@ -244,19 +256,6 @@ exports.myeval = function(x) {
         throw('myeval error: ' + ex);
     }
     winston.debug('result = ' + y);
-    return(y);
-};
-
-exports.require = function(packageName, onfail) {
-    var y = {};
-    try {
-        y = require(packageName);
-        y.exists = true;
-    } catch(ex) {
-        y.exists = false;
-        if(debug) winston.debug("Optional package '" + packageName + "' not loaded");
-        if(onfail) onfail();
-    }
     return(y);
 };
 
