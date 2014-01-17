@@ -1,9 +1,9 @@
 var b = require('bonescript');
 
-var outputPin = "P8_13";
-var inputPin = "P9_12";
-var outputPin2 = "P8_15";
-var inputPin2 = "P8_16";
+var outputPin = "P9_14";
+var inputPin = "P8_19";
+var outputPin2 = "P9_16";
+var inputPin2 = "P9_15";
 var ledPin = "USR3";
 var ledPin2 = "USR2";
 var mydelay = 100;

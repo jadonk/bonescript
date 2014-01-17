@@ -11,18 +11,18 @@ _bonescript.modules = {};
 _bonescript._callbacks = {};
 _bonescript._seqnum = 0;
 _bonescript.on = {};
-_bonescript.on.connect = function(){};
-_bonescript.on.connecting = function(){};
-_bonescript.on.disconnect = function(){};
-_bonescript.on.connect_failed = function(){};
-_bonescript.on.error = function(){};
-_bonescript.on.reconnect = function(){};
-_bonescript.on.reconnect_failed = function(){};
-_bonescript.on.reconnecting = function(){};
-_bonescript.on.initialized = function(){};
+_bonescript.on.connect = function(){ console.log('socket.io: connect'); };
+_bonescript.on.connecting = function(){ console.log('socket.io: connecting'); };
+_bonescript.on.disconnect = function(){ console.log('socket.io: disconnect'); };
+_bonescript.on.connect_failed = function(){ console.log('socket.io: connect_failed'); };
+_bonescript.on.error = function(){ console.log('socket.io: error'); };
+_bonescript.on.reconnect = function(){ console.log('socket.io: reconnect'); };
+_bonescript.on.reconnect_failed = function(){ console.log('socket.io: reconnect_failed'); };
+_bonescript.on.reconnecting = function(){ console.log('socket.io: reconnecting'); };
+_bonescript.on.initialized = function(){ console.log('socket.io: initialized'); };
 
 function _onSocketIOLoaded() {
-    //console.log("socket.io loaded");
+    console.log("socket.io loaded");
     var socket = io.connect('http://192.168.7.2:80');
     socket.on('require', getRequireData);
     socket.on('bonescript', _seqcall);
@@ -39,7 +39,7 @@ function _onSocketIOLoaded() {
     function getRequireData(m) {
         if(!m.module || !m.data)
             throw('Invalid "require" message sent for "' + m.module + '"');
-        //console.log('Initialized module: ' + m.module);
+        console.log('Initialized module: ' + m.module);
         _bonescript.modules[m.module] = {};
         for(var x in m.data) {
             if(!m.data[x].type || !m.data[x].name || (typeof m.data[x].value == 'undefined'))
@@ -78,6 +78,7 @@ function _onSocketIOLoaded() {
                 _bonescript.modules[m.module][m.data[x].name] = m.data[x].value;
             }
         }
+        _bonescript.modules[m.module].socket = socket;
         _bonescript.on.initialized();
     }
 }
@@ -96,11 +97,11 @@ var require = function(module) {
     if(typeof _bonescript.modules[module] == 'undefined')
         throw 'Module "' + module + '" is not currently available';
     return(_bonescript.modules[module]);
-}
+};
 
 var test = function() {
     try {
-        //console.log('Loading ' + process.argv[2]);
+        console.log('Loading ' + process.argv[2]);
         var script = fs.readFileSync(process.argv[2], 'ascii');
         //console.log('Executing: ' + script);
         eval(script);
@@ -108,7 +109,7 @@ var test = function() {
         console.log('***FAIL*** ' + ex);
         process.exit(-2);
     }
-}
+};
 
 _bonescript.on.initialized = test;
 _onSocketIOLoaded();

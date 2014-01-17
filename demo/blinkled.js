@@ -1,6 +1,6 @@
 var b = require('bonescript');
 
-var ledPin = "P8_13";
+var ledPin = "P9_14";
 var ledPin2 = "USR3";
 
 b.pinMode(ledPin, b.OUTPUT);

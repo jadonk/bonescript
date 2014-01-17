@@ -1,0 +1,50 @@
+<!-- Task #8 - Use BoneScript within a web page to display potentiometer voltage -->
+<html>
+    <head>
+        <title>Bacon Cape Task #8</title>
+        <script src="http://192.168.7.2/static/jquery.js"></script>
+        <script src="http://192.168.7.2/static/bonescript.js"></script>
+    </head>
+    <body>
+        <h1>Bacon Cape Task #8</h1>
+        <h2>sliderStatus = <span id="sliderStatus"></span></h2>
+        <script>
+            // Connect with board connected at fixed USB address
+            // and execute run() upon initialization
+            setTargetAddress("192.168.7.2", { initialized: run });
+            
+            // The demo BoneScript application within the 'run()' function
+            function run() {
+                /*
+                 * Setup
+                 */
+                var b = require("bonescript"); // Read BoneScript library
+                
+                // Map used pins
+                var POT = 'P9_36';
+
+                /*
+                 * Add handlers
+                 */
+                setInterval(readPOT, 100); // Call readPOT() every 100ms
+
+                /*
+                 * Define functions
+                 */
+                function readPOT() {
+                    // Fetch slider location using asynchronous callback
+                    // function onAnalogRead()
+                    b.analogRead(POT, onAnalogRead);
+                }
+                
+                // Handle data back from potentiometer
+                function onAnalogRead(x) {
+                    if(!x.err) {
+                        sliderStatus = x.value.toFixed(2);
+                        $('#sliderStatus').html(sliderStatus);
+                    }
+                }
+            }
+        </script>
+    </body>
+</html>

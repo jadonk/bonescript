@@ -1,13 +1,13 @@
 var b = require('bonescript');
 
-inputPin = "P9_36";
-outputPin = "P8_13";
+var inputPin = "P9_36";
+var outputPin = "P9_14";
 
-b.pinMode(outputPin, b.OUTPUT);
+b.pinMode(outputPin, b.ANALOG_OUTPUT);
 loop();
 
 function loop() {
     var value = b.analogRead(inputPin);
     b.analogWrite(outputPin, value);
     setTimeout(loop, 1);
-};
+}

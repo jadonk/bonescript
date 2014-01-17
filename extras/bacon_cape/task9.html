@@ -1,0 +1,135 @@
+<!-- Task #9 - Use BoneScript within a web page to display Bacon Cape status -->
+<html>
+    <head>
+        <title>Bacon Cape Task #9</title>
+        <script src="http://192.168.7.2/static/jquery.js"></script>
+        <script src="http://192.168.7.2/static/bonescript.js"></script>
+    </head>
+    <body>
+        <h1>Bacon Cape Task #9</h1>
+        <p>buttonStatus = <span id="buttonStatus"></span></p>
+        <p>sliderStatus = <span id="sliderStatus"></span></p>
+        <p>X = <span id="X"></span></p>
+        <p>Y = <span id="Y"></span></p>
+        <p>Z = <span id="Z"></span></p>
+        <script>   
+            // Connect with board connected at fixed USB address
+            // and execute run() upon initialization
+            setTargetAddress("192.168.7.2", { initialized: run });
+            
+            // The demo BoneScript application within the 'run()' function
+            function run() {
+                /*
+                 * Setup
+                 */
+                var b = require('bonescript');
+
+                var brightness = 0;
+                var buttonStatus = 0;
+                var sliderStatus = 0;
+                var lastSliderValue = 0;
+                var port = '/dev/i2c-2'
+                var address = 0x1c;
+                var LED_RED = 'P9_42';
+                var LED_BLUE = 'P9_16';
+                var LED_GREEN = 'P9_14';
+                var BUTTON = 'P8_19';
+                var POT = 'P9_36';
+                var S_DATA = 'P9_18';
+                var S_CLOCK = 'P9_22';
+                var S_LATCH = 'P9_17';
+                var S_CLEAR = 'P9_15';
+                var segDigits = [ 0xC0, 0xF9, 0xA4, 0xB0, 0x99, 0x92, 0x82, 0xF8, 0x80, 0x90 ];
+
+                b.pinMode(LED_RED, b.OUTPUT);
+                b.pinMode(LED_BLUE, b.OUTPUT);
+                b.pinMode(BUTTON, b.INPUT);
+                b.pinMode(S_DATA, b.OUTPUT);
+                b.pinMode(S_CLOCK, b.OUTPUT);
+                b.pinMode(S_LATCH, b.OUTPUT);
+                b.pinMode(S_CLEAR, b.OUTPUT);
+                b.digitalWrite(S_DATA, b.LOW);
+                b.digitalWrite(S_CLOCK, b.LOW);
+                b.digitalWrite(S_LATCH, b.LOW);
+                b.digitalWrite(S_CLEAR, b.HIGH);
+
+                b.i2cOpen(port, address, {}, onI2C); // Initialize accelerometer
+                readBUTTON(); // Start button updates
+                readPOT(); // Start potentiometer updates
+
+                function onI2C(x) {
+                    if(x.event == 'return') {
+                        b.i2cWriteBytes(port, 0x2a, [0x00], onI2C_A);
+                    }
+                }
+
+                function onI2C_A() {
+                    b.i2cWriteBytes(port, 0x0e, [0x00], onI2C_B);
+                }
+
+                function onI2C_B() {
+                    b.i2cWriteBytes(port, 0x2a, [0x01], readAccel); // ready to read
+                }
+
+                // Fetch accelerometer status
+                function readAccel() {
+                    b.i2cReadBytes(port, 1, 6, onReadBytes);
+                }
+
+                function onReadBytes(x) {
+                    if(x.event == 'callback') {
+                        var gX = convertToG(x.res[0]);
+                        var gY = convertToG(x.res[2]);
+                        var gZ = convertToG(x.res[4]);
+                        $('#X').html(gX);
+                        $('#Y').html(gY);
+                        $('#Z').html(gZ);
+                        setTimeout(readAccel, 200); // read again in 200ms
+                    }
+                }                    
+
+                function readBUTTON() {
+                    b.digitalRead(BUTTON, onReadBUTTON);
+                }
+
+                function onReadBUTTON(x) {
+                    buttonStatus = x.value;
+                    $('#buttonStatus').html(buttonStatus);
+                    b.digitalWrite(LED_BLUE, x.value ? b.LOW : b.HIGH);
+                    setTimeout(readBUTTON, 100); // Read button again in 100ms
+                }
+
+                function readPOT() {
+                    b.analogRead(POT, onReadPOT);
+                }
+
+                function onReadPOT(x) {
+                    sliderStatus = x.value.toFixed(2);
+                    $('#sliderStatus').html(sliderStatus);
+                    write7Seg(sliderStatus);            
+                    setTimeout(readPOT, 100); // Read potentiometer again in 100ms
+                }
+
+                function write7Seg(x) {
+                    var c = segDigits[parseInt(x*10,10)%10];
+                    b.shiftOut(S_DATA, S_CLOCK, b.MSBFIRST, c, onShiftOut);
+                }
+
+                function onShiftOut(x) {
+                    b.digitalWrite(S_LATCH, b.HIGH, onLatchHigh);
+                }
+
+                function onLatchHigh(x) {
+                    b.digitalWrite(S_LATCH, b.LOW);
+                }
+
+                function convertToG(x) {
+                    if(x >= 128) x = -((x^0xFF)+1); // Get two's complement
+                    x = x / 64; // Scale to G
+                    x = x.toFixed(2); // Limit decimal places
+                    return(x);
+                }
+            }
+        </script>
+    </body>
+</html>

@@ -78,6 +78,7 @@ function _onSocketIOLoaded() {
                 _bonescript.modules[m.module][m.data[x].name] = m.data[x].value;
             }
         }
+        _bonescript.modules[m.module].socket = socket;
         _bonescript.on.initialized();
     }
 }
