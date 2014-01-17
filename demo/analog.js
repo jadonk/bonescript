@@ -3,7 +3,7 @@ var b = require('bonescript');
 var inputPin = "P9_36";
 var outputPin = "P9_14";
 
-b.pinMode(outputPin, b.OUTPUT);
+b.pinMode(outputPin, b.ANALOG_OUTPUT);
 loop();
 
 function loop() {
