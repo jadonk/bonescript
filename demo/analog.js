@@ -10,4 +10,4 @@ function loop() {
     var value = b.analogRead(inputPin);
     b.analogWrite(outputPin, value);
     setTimeout(loop, 1);
-};
+}

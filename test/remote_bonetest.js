@@ -97,7 +97,7 @@ var require = function(module) {
     if(typeof _bonescript.modules[module] == 'undefined')
         throw 'Module "' + module + '" is not currently available';
     return(_bonescript.modules[module]);
-}
+};
 
 var test = function() {
     try {
@@ -109,7 +109,7 @@ var test = function() {
         console.log('***FAIL*** ' + ex);
         process.exit(-2);
     }
-}
+};
 
 _bonescript.on.initialized = test;
 _onSocketIOLoaded();

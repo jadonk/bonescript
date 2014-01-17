@@ -15,15 +15,15 @@ var pinDR = 'P9_14';
 var pinGM = 'P9_20';
 var pinAW = 'P9_21';
 var pinAR = 'P9_35';
-var pinST = 'P9_13';
-var pinSR = 'P9_26';
+//var pinST = 'P9_13';
+//var pinSR = 'P9_26';
 
 var supported = {
     '0.2.2': true,
     '0.2.3': true,
     '0.2.4': true
 };
-var version = undefined;
+var version;
 
 var timeout = setTimeout(onTimeout, 10000);
 

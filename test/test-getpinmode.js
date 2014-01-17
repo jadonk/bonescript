@@ -9,7 +9,7 @@ console.log(JSON.stringify(b.getPinMode('P9_14')));
 console.log(JSON.stringify(b.getPinMode('P9_35')));
 
 console.log(JSON.stringify(b.getPinMode('P9_15')));
-b.writeTextFile('/sys/class/gpio/unexport', ''+b.bone.pins['P9_15'].gpio);
+b.writeTextFile('/sys/class/gpio/unexport', ''+b.bone.pins.P9_15.gpio);
 console.log(JSON.stringify(b.getPinMode('P9_15')));
 b.pinMode('P9_15', b.OUTPUT);
 console.log(JSON.stringify(b.getPinMode('P9_15')));
