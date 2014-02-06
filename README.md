@@ -5,7 +5,10 @@ starting with support for BeagleBone.
 
 Information on the language is available at http://nodejs.org.
 
-To get started, try running 'node blinkled.js' on a BeagleBone.
+To check the version and see BoneScript is in your path, try running:
+````sh
+node -pe "require('bonescript').getPlatform().bonescript"
+````
 
 Additional documentation is available at http://beagleboard.org/bonescript.
 

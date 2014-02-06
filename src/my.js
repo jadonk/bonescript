@@ -101,7 +101,7 @@ exports.create_dt = function(pin, data, template, load, force_create) {
     var dtboFilename = '/lib/firmware/' + fragment + '-00A0.dtbo';
     if(force_create || !exports.file_existsSync(dtboFilename)) {
         var templateFilename = require.resolve('bonescript').replace('index.js',
-            template + '_template.dts');
+            'dts/' + template + '_template.dts');
         winston.debug('templateFilename = ' + templateFilename);
         var dts = fs.readFileSync(templateFilename, 'utf8');
         dts = dts.replace(/!PIN_KEY!/g, pin.key);

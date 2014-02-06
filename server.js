@@ -6,7 +6,7 @@ var child_process = require('child_process');
 var http = require('http');
 var url = require('url');
 var winston = require('winston');
-var b = require('../bonescript');
+var b = require('bonescript');
 var socketio = require('socket.io');
 var express = require('express');
 
@@ -15,7 +15,8 @@ myrequire('systemd', function() {
 });
 
 var port = (process.env.LISTEN_PID > 0) ? 'systemd' : 80;
-listen(port, '/usr/share/bone101');
+var directory = (process.env.SERVER_DIR) ? process.env.SERVER_DIR : '/var/lib/cloud9';
+listen(port, directory);
 
 function listen(port, directory) {
     var app = express();
@@ -42,7 +43,7 @@ function handler(req, res) {
     var uri = parsedUrl.pathname;
     var host = 'http://' + req.headers.host;
     if(uri == '/bonescript.js') {
-        fs.readFile('bonescript.js', 'utf8', sendFile);
+        fs.readFile('src/bonescript.js', 'utf8', sendFile);
     }
 }
 
