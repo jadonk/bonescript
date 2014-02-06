@@ -106,5 +106,6 @@ exports.readEeproms = function(eeproms) {
 
 exports.readPlatform = function(platform) {
     winston.info('readPlatform()');
+    platform.name = 'BeagleBone Simulator';
     return(platform);
 };
