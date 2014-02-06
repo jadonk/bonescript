@@ -19,7 +19,7 @@
   "homepage": "http://beagleboard.org/bonescript",
   "repository": {
     "type": "git",
-    "url": "git://github.com/jadonk/bonescript/node_modules/bonescript"
+    "url": "git://github.com/jadonk/bonescript"
   },
   "main": "index",
   "engines": {
