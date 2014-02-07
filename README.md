@@ -97,6 +97,15 @@ When a callback is provided, the functions will behave asynchronously.
 Without a callback provided, the functions will synchronize and complete
 before returning.
 
+System
+------
+* getPlatform([callback]) -> platform
+* getEeproms([callback]) -> eeproms
+* echo(data, [callback]) -> data
+* readTextFile(filename, [callback]) -> data
+* writeTextFile(filename, data, [callback])
+* setDate(date, [callback])
+
 Digital and Analog I/O
 ----------------------
 * analogRead(pin, [callback]) -> value
@@ -105,7 +114,6 @@ Digital and Analog I/O
 * detachInterrupt(pin, [callback])
 * digitalRead(pin, [calback]) -> value
 * digitalWrite(pin, value, [callback])
-* getEeproms([callback]) -> eeproms
 * pinMode(pin, direction, [mux], [pullup], [slew], [callback])
 * getPinMode(pin, [callback]) -> pinMode
 * shiftOut(dataPin, clockPin, bitOrder, val, [callback])
@@ -178,10 +186,10 @@ that respond to events in the system.  What makes JavaScript so much easier
 than other languages for doing this is that it keeps the full context around
 the handler, so you don't have to worry about it.
 
-
-Short-term issues
-=================
-* The state of the ARM Linux kernel with regards to handling loading drivers
-  using devicetree is still in a lot of flux.  Many of the interfaces
-  Bonescript utilizes are being rewritten and refactored.
+Plans
+=====
+* SPI support
+* PRU support
+* Handling array of pins in pinMode and getPinMode
+* Saving off created dtbo and writing configuration to cape EEPROM
 
