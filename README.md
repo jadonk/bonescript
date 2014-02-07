@@ -51,12 +51,15 @@ except through performing file I/O.
 
 Directory layout
 ----------------
-* attic: Stuff not to throw away, but not in a good state
-* demo: Examples showing how to use the BoneScript library
+* autorun.js: Node.JS app to run apps dropped in the autorun folder
+* index.js: Main BoneScript source code
+* package.json: NPM.JS package descriptor
+* server.js: BoneScript web server to serve up remote procedure calls
+* dts: Devicetree templates
 * etc: Configuration files to be placed in target distro
-* node\_modules: Library code
+* src: Library source code
 * systemd: Configuration files for systemd to start services
-* test: Automated test code
+* test: To-be-automated test code
 
 Template
 ========
