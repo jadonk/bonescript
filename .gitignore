@@ -2,3 +2,4 @@
 .DS_Store
 bonescript.log
 *~
+node_modules
