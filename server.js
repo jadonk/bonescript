@@ -6,7 +6,6 @@ var child_process = require('child_process');
 var http = require('http');
 var url = require('url');
 var winston = require('winston');
-var b = require('bonescript');
 var socketio = require('socket.io');
 var express = require('express');
 
