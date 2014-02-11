@@ -32,7 +32,8 @@
     "systemd": "0.2.6",
     "winston": "0.6.2",
     "express": "3.1.0",
-    "epoll": "0.0.7"
+    "epoll": "0.0.7",
+    "fibers": "1.0.1"
   },
   "devDependencies": {},
   "scripts": {

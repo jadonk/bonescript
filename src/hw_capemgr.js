@@ -55,17 +55,7 @@ exports.readPinMux = function(pin, mode, callback) {
             callback(mode);
         }
     };
-    if(callback) {
-        my.file_exists(pinctrlFile, tryPinctrl);
-    } else {
-        try {
-            var data2 = fs.readFileSync(pinctrlFile, 'utf8');
-            mode = parse.modeFromPinctrl(data2, muxRegOffset, 0x44e10800, mode);
-        } catch(ex) {
-            if(debug) winston.debug('getPinMode(' + pin.key + '): ' + ex);
-        }
-    }
-    return(mode);
+    my.file_exists(pinctrlFile, tryPinctrl);
 };
 
 exports.setPinMode = function(pin, pinData, template, resp) {
@@ -158,33 +148,20 @@ exports.writeGPIOValue = function(pin, value, callback) {
         }
     }
     if(debug) winston.debug("gpioFile = " + gpioFile[pin.key]);
-    if(callback) {
-        fs.writeFile(gpioFile[pin.key], '' + value, null, callback);
-    } else {
-        try {
-            fs.writeFileSync(gpioFile[pin.key], '' + value, null);
-        } catch(ex) {
-            winston.error("Unable to write to " + gpioFile[pin.key]);
-        }
-    }
+    fs.writeFile(gpioFile[pin.key], '' + value, null, callback);
 };
 
 exports.readGPIOValue = function(pin, resp, callback) {
     var gpioFile = '/sys/class/gpio/gpio' + pin.gpio + '/value';
-    if(callback) {
-        var readFile = function(err, data) {
-            if(err) {
-                resp.err = 'digitalRead error: ' + err;
-                winston.error(resp.err);
-            }
-            resp.value = parseInt(data, 2);
-            callback(resp);
-        };
-        fs.readFile(gpioFile, readFile);
-        return(true);
-    }
-    resp.value = parseInt(fs.readFileSync(gpioFile), 2);
-    return(resp);
+    var readFile = function(err, data) {
+        if(err) {
+            resp.err = 'digitalRead error: ' + err;
+            winston.error(resp.err);
+        }
+        resp.value = parseInt(data, 2);
+        callback(resp);
+    };
+    fs.readFile(gpioFile, readFile);
 };
 
 exports.enableAIN = function() {
@@ -199,28 +176,15 @@ exports.enableAIN = function() {
 
 exports.readAIN = function(pin, resp, callback) {
     var ainFile = ainPrefix + pin.ain.toString();
-    if(callback) {
-        var readFile = function(err, data) {
-            if(err) {
-                resp.err = 'analogRead error: ' + err;
-                winston.error(resp.err);
-            }
-            resp.value = parseInt(data, 10) / 1800;
-            callback(resp);
-        };
-        fs.readFile(ainFile, readFile);
-        return(resp);
-    }
-    resp.value = parseInt(fs.readFileSync(ainFile), 10);
-    if(isNaN(resp.value)) {
-        resp.err = 'analogRead(' + pin.key + ') returned ' + resp.value;
-        winston.error(resp.err);
-    }
-    resp.value = resp.value / 1800;
-    if(isNaN(resp.value)) {
-        resp.err = 'analogRead(' + pin.key + ') scaled to ' + resp.value;
-    }
-    return(resp);
+    var readFile = function(err, data) {
+        if(err) {
+            resp.err = 'analogRead error: ' + err;
+            winston.error(resp.err);
+        }
+        resp.value = parseInt(data, 10) / 1800;
+        callback(resp);
+    };
+    fs.readFile(ainFile, readFile);
 };
 
 exports.writeGPIOEdge = function(pin, mode) {
