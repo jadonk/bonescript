@@ -33,7 +33,8 @@ opkg update
 opkg install python-misc python-modules
 ````
 
-Debian and Ubuntu prerequisites (credit to http://learn.adafruit.com/introduction-to-the-beaglebone-black-device-tree/compiling-an-overlay):
+Debian and Ubuntu prerequisites:
+* Credit to http://learn.adafruit.com/introduction-to-the-beaglebone-black-device-tree/compiling-an-overlay
 ````sh
 sudo apt-get install -y build-essential g++ python-setuptools python2.7-dev
 wget -c https://raw.github.com/RobertCNelson/tools/master/pkgs/dtc.sh
