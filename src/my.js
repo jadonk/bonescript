@@ -279,12 +279,11 @@ exports.pin_data = function(slew, direction, pullup, mux) {
 // Inspired by
 //   https://github.com/luciotato/waitfor/blob/master/waitfor.js
 //   https://github.com/0ctave/node-sync/blob/master/lib/sync.js
-exports.wait_for = function(fn, myargs, result_name) {
+exports.wait_for = function(fn, myargs, result_name, no_error) {
     var fiber = fibers.current;    
     var yielded = false;
     var args = [];
     var result;
-    
 
     for(var i in fn.args) {
         if(fn.args[i] == 'callback') {
@@ -295,11 +294,17 @@ exports.wait_for = function(fn, myargs, result_name) {
     }
 
     if(typeof fiber == 'undefined') {
-        var stack = new Error().stack;
-        var err = 'As of BoneScript 0.2.5, synchronous calls must be made\n' +
-            'within a fiber such as within loop() or setup():\n' + stack;
-        winston.error(err);
-        throw(err);
+        if(no_error) {
+            // No callback required (fire and forget)
+            fn.apply(this, args);
+            return;
+        } else {
+            var stack = new Error().stack;
+            var err = 'As of BoneScript 0.2.5, synchronous calls must be made\n' +
+                'within a fiber such as within loop() or setup():\n' + stack;
+            winston.error(err);
+            throw(err);
+        }
     }
     
     fn.apply(this, args);
@@ -310,6 +315,7 @@ exports.wait_for = function(fn, myargs, result_name) {
     
     function myCallback(x) {
         if(myCallback.called) return;
+        if(typeof fiber == 'undefined' && no_error) return;
         if(typeof result_name == 'undefined') {
             result = x;
         } else if(typeof x[result_name] != 'undefined') {

@@ -105,7 +105,7 @@ f.getPinMode.args = ['pin', 'callback'];
 
 f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
     if(typeof callback == 'undefined') {
-        return(my.wait_for(f.pinMode, arguments, 'value'));
+        return(my.wait_for(f.pinMode, arguments, 'value', true));
     }
     pin = my.getpin(pin);
     if(debug) winston.debug('pinMode(' + [pin.key, direction, mux, pullup, slew] + ');');
@@ -208,7 +208,7 @@ f.pinMode.args = ['pin', 'direction', 'mux', 'pullup', 'slew', 'callback'];
 
 f.digitalWrite = function(pin, value, callback) {
     if(typeof callback == 'undefined') {
-        return(my.wait_for(f.digitalWrite, arguments, 'err'));
+        return(my.wait_for(f.digitalWrite, arguments, 'err', true));
     }
     var myCallback = function(resp) {
         callback({'err': resp, 'complete':true});
@@ -270,7 +270,7 @@ f.analogRead.args = ['pin', 'callback'];
 
 f.shiftOut = function(dataPin, clockPin, bitOrder, val, callback) {
     if(typeof callback == 'undefined') {
-        return(my.wait_for(f.shiftOut, arguments, 'err'));
+        return(my.wait_for(f.shiftOut, arguments, 'err', true));
     }
     dataPin = my.getpin(dataPin);
     clockPin = my.getpin(clockPin);
@@ -313,7 +313,7 @@ f.shiftOut.args = ['dataPin', 'clockPin', 'bitOrder', 'val', 'callback'];
 
 f.attachInterrupt = function(pin, handler, mode, callback) {
     if(typeof callback == 'undefined') {
-        return(my.wait_for(f.attachInterrupt, arguments, 'attached'));
+        return(my.wait_for(f.attachInterrupt, arguments, 'attached', true));
     }
     pin = my.getpin(pin);
     if(debug) winston.debug('attachInterrupt(' + [pin.key, handler, mode] + ');');
@@ -380,7 +380,7 @@ f.attachInterrupt.args = ['pin', 'handler', 'mode', 'callback'];
 
 f.detachInterrupt = function(pin, callback) {
     if(typeof callback == 'undefined') {
-        return(my.wait_for(f.detachInterrupt, arguments, 'detached'));
+        return(my.wait_for(f.detachInterrupt, arguments, 'detached', true));
     }
     pin = my.getpin(pin);
     if(debug) winston.debug('detachInterrupt(' + [pin.key] + ');');
@@ -399,7 +399,7 @@ f.detachInterrupt.args = ['pin', 'callback'];
 // That guide isn't useful for the new pwm_test interface
 f.analogWrite = function(pin, value, freq, callback) {
     if(typeof callback == 'undefined') {
-        return(my.wait_for(f.analogWrite, arguments, 'err'));
+        return(my.wait_for(f.analogWrite, arguments, 'err', true));
     }
     pin = my.getpin(pin);
     if(debug) winston.debug('analogWrite(' + [pin.key,value,freq] + ');');
@@ -480,7 +480,7 @@ f.readTextFile.args = ['filename', 'callback'];
 
 f.writeTextFile = function(filename, data, callback) {
     if(typeof callback == 'undefined') {
-        return(my.wait_for(f.writeTextFile, arguments, 'err'));
+        return(my.wait_for(f.writeTextFile, arguments, 'err', true));
     }    
     fs.writeFile(filename, data, 'ascii', cb);
     
@@ -525,7 +525,7 @@ f.echo.args = ['data', 'callback'];
 
 f.setDate = function(date, callback) {
     if(typeof callback == 'undefined') {
-        return(my.wait_for(f.setDate, arguments, 'error'));
+        return(my.wait_for(f.setDate, arguments, 'error', true));
     }    
     child_process.exec('date -s "' + date + '"', dateResponse);
     
