@@ -186,18 +186,20 @@ f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
         // Enable GPIO
         if(mux == 7) {
             // Export the GPIO controls
-            resp = hw.exportGPIOControls(pin, direction, resp);
-            if(typeof resp.err != 'undefined') {
-                if(typeof gpio[n] == 'undefined') {
-                    delete gpio[n];
-                }
-                callback(resp);
-                return;
-            } else {
-                gpio[n] = true;
-            }
+            resp = hw.exportGPIOControls(pin, direction, resp, onExport);        
         } else {
             delete gpio[n];
+            callback(resp);
+        }
+    }
+    
+    function onExport(resp) {
+        if(typeof resp.err != 'undefined') {
+            if(typeof gpio[n] == 'undefined') {
+                delete gpio[n];
+            }
+        } else {
+            gpio[n] = true;
         }
         callback(resp);
     }
