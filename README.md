@@ -1,6 +1,6 @@
 Getting started
 ===============
-Bonescript is a node.js library for physical computing on embedded Linux,
+BoneScript is a node.js library for physical computing on embedded Linux,
 starting with support for BeagleBone.
 
 Information on the language is available at http://nodejs.org.
