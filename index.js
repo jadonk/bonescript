@@ -535,6 +535,18 @@ f.setDate = function(date, callback) {
 };
 f.setDate.args = ['date', 'callback'];
 
+f.sleep = function(ms) {
+    var fiber = fibers.current;
+    if(typeof fiber == 'undefined') {
+        winston.error('sleep may only be called within the setup or run functions');
+        return;
+    }
+    setTimeout(function() {
+        fiber.run();
+    }, ms);
+    fibers.yield();
+};
+
 // Exported variables
 exports.bone = bone; // this likely needs to be platform and be detected
 for(var x in f) {
