@@ -242,9 +242,9 @@ f.digitalRead = function(pin, callback) {
     function analogValue(x) {
         if(typeof x.value == 'undefined') return;
         if(x.value > 0.5) {
-            x.value = b.HIGH;
+            x.value = g.HIGH;
         } else {
-            x.value = b.LOW;
+            x.value = g.LOW;
         }
     }
 };
