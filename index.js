@@ -17,7 +17,7 @@ var package_json = require('./package.json');
 var g = require('./src/constants');
 var epoll = my.require('epoll');
 
-var debug = false;
+var debug = process.env.DEBUG ? true : false;
 
 // Detect if we are on a Beagle
 var hw = hw_simulator;
