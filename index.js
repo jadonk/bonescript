@@ -4,6 +4,7 @@
 var fs = require('fs');
 var child_process = require('child_process');
 var winston = require('winston');
+var os = require('os');
 var hw_oldkernel = require('./src/hw_oldkernel');
 var hw_capemgr = require('./src/hw_capemgr');
 var hw_simulator = require('./src/hw_simulator');
@@ -489,8 +490,18 @@ f.getPlatform = function(callback) {
     var platform = {
         'platform': bone,
         'name': "BeagleBone",
-        'bonescript': package_json.version
+        'bonescript': package_json.version,
+        'os': {}
     };
+    platform.os.hostname = os.hostname();
+    platform.os.type = os.type();
+    platform.os.arch = os.arch();
+    platform.os.release = os.release();
+    platform.os.uptime = os.uptime();
+    platform.os.loadavg = os.loadavg();
+    platform.os.totalmem = os.totalmem();
+    platform.os.freemem = os.freemem();
+    platform.os.networkInterfaces = os.networkInterfaces();
     platform = hw.readPlatform(platform);
     if(callback) callback(platform);
     return(platform);
