@@ -11,7 +11,7 @@ var g = require('./constants');
 
 var capemgr;
 
-var debug = false;
+var debug = process.env.DEBUG ? true : false;
 
 exports.file_exists = fs.exists;
 exports.file_existsSync = fs.existsSync;
@@ -318,7 +318,7 @@ exports.wait_for = function(fn, myargs, result_name) {
         if(typeof x.err != 'undefined' && x.err) {
             //var fn_name = fn.toString().substr('function '.length);
             //fn_name = fn_name.substr(0, fn_name.indexOf('('));
-            winston.error(fn.name + ': ' + x.err);
+            if(debug) winston.debug(fn.name + ' ' + x.err);
         }
         myCallback.called = true;
         if(yielded) fiber.run();

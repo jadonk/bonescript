@@ -102,28 +102,48 @@ exports.setLEDPinToGPIO = function(pin, resp) {
     return(resp);
 };
 
-exports.exportGPIOControls = function(pin, direction, resp) {
+exports.exportGPIOControls = function(pin, direction, resp, callback) {
     var n = pin.gpio;
-    var exists = my.file_existsSync(gpioFile[pin.key]);
-    if(exists) {
-        if(debug) winston.debug("gpio: " + n + " already exported.");
-        fs.writeFileSync("/sys/class/gpio/gpio" + n + "/direction",
-            direction, null);
-    } else {
-        try {
+    my.file_exists(gpioFile[pin.key], onFileExists);
+    
+    function onFileExists(exists) {
+        if(exists) {
+            if(debug) winston.debug("gpio: " + n + " already exported.");
+            fs.writeFile("/sys/class/gpio/gpio" + n + "/direction",
+                direction, null, onGPIODirectionSet);
+        } else {
             if(debug) winston.debug("exporting gpio: " + n);
-            fs.writeFileSync("/sys/class/gpio/export", "" + n, null);
-            if(debug) winston.debug("setting gpio " + n +
-                " direction to " + direction);
-            fs.writeFileSync("/sys/class/gpio/gpio" + n + "/direction",
-                direction, null);
-        } catch(ex2) {
-            resp.value = false;
-            resp.err = 'Unable to export gpio-' + n + ': ' + ex2;
-            if(debug) winston.debug(resp.err);
-            var gpioUsers =
-                fs.readFileSync('/sys/kernel/debug/gpio', 'utf-8');
-            gpioUsers = gpioUsers.split('\n');
+            fs.writeFile("/sys/class/gpio/export", "" + n, null, onGPIOExport);
+        }
+    }
+ 
+    function onGPIOExport(err) {
+        if(err) onError(err);
+        if(debug) winston.debug("setting gpio " + n +
+            " direction to " + direction);
+        fs.writeFile("/sys/class/gpio/gpio" + n + "/direction",
+            direction, null, onGPIODirectionSet);
+    }
+
+    function onGPIODirectionSet(err) {
+        if(err) onError(err);
+        else callback(resp);
+    }
+    
+    function onError(err) {
+        resp.err = 'Unable to export gpio-' + n + ': ' + err;
+        resp.value = false;
+        if(debug) winston.debug(resp.err);
+        findOwner();
+    }
+    
+    function findOwner() {
+        fs.readFile('/sys/kernel/debug/gpio', 'utf-8', onGPIOUsers);
+    }
+    
+    function onGPIOUsers(err, data) {
+        if(!err) {
+            var gpioUsers = data.split('\n');
             for(var x in gpioUsers) {
                 var y = gpioUsers[x].match(/gpio-(\d+)\s+\((\S+)\s*\)/);
                 if(y && y[1] == n) {
@@ -132,8 +152,9 @@ exports.exportGPIOControls = function(pin, direction, resp) {
                 }
             }
         }
+        callback(resp);
     }
-    return(resp);
+    
 };
 
 exports.writeGPIOValue = function(pin, value, callback) {
