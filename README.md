@@ -126,6 +126,7 @@ Serial
 Uses https://github.com/voodootikigod/node-serialport
 * serialOpen(port, options, [callback])
 * serialWrite(port, data, [callback])
+* serialParsers is serialport.parsers
 
 I2C
 ---

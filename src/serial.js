@@ -20,3 +20,5 @@ m.doOpen = function(args) {
 
 exports.serialOpen = my.wrapOpen(m, ['options']);
 exports.serialWrite = my.wrapCall(m, 'write', ['data'], ['err', 'results']);
+
+exports.serialParsers = m.module.exists ? m.module.parsers : {};
