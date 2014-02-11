@@ -1,7 +1,7 @@
 var b = require('bonescript');
 var rxport = '/dev/ttyO1';
 var txport = '/dev/ttyO4';
-var options = { baudrate: 115200 };
+var options = { baudrate: 115200, parser: b.serialParsers.readline('\n') };
 var teststring = "This is the string I'm sending out as a test";
 
 b.serialOpen(rxport, options, onRxSerial);
