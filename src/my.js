@@ -9,9 +9,37 @@ var fibers = require('fibers');
 var bone = require('./bone');
 var g = require('./constants');
 
-var capemgr;
-
 var debug = process.env.DEBUG ? true : false;
+
+var sysfsFiles = {};
+
+exports.is_capemgr = function(callback) {
+    return(exports.find_sysfsFile('capemgr', '/sys/devices', 'bone_capemgr.', callback));
+};
+
+exports.is_ocp = function(callback) {
+    return(exports.find_sysfsFile('ocp', '/sys/devices', 'ocp.', callback));
+};
+
+exports.find_sysfsFile = function(name, path, prefix, callback) {
+    if(typeof sysfsFiles[name] == 'undefined') {
+        if(callback) {
+            sysfsFiles[name] = exports.file_find(path, prefix, 1, onFindCapeMgr);
+        } else {
+            sysfsFiles[name] = exports.file_find(path, prefix, 1);
+        }
+    } else {
+        if(callback) callback({path: sysfsFiles[name]});
+    }
+    
+    function onFindCapeMgr(resp) {
+        if(typeof resp.path == 'undefined') sysfsFiles[name] = false;
+        else sysfsFiles[name] = resp.path;
+        callback(resp);
+    }
+    
+    return(sysfsFiles[name]);
+};
 
 exports.file_exists = fs.exists;
 exports.file_existsSync = fs.existsSync;
@@ -21,86 +49,150 @@ if(typeof exports.file_exists == 'undefined') {
     exports.file_existsSync = path.existsSync;
 }
 
-exports.file_find = function(path, prefix, attempts) {
+exports.file_find = function(path, prefix, attempts, callback) {
+    var resp = {};
+    resp.attempts = 0;
     if(typeof attempts == 'undefined') attempts = 1;
-    for(var i = 0; i < attempts; i++) {
-        try {
-            var files = fs.readdirSync(path);
-            for(var j in files) {
-                if(files[j].indexOf(prefix) === 0) {
-                    return(path + '/' + files[j]);
-                }
+    
+    if(callback) {
+        fs.readdir(path, onReadDir);
+    } else {
+        while(resp.attempts < attempts) {
+            try {
+                var files = fs.readdirSync(path);
+                onReadDir(null, files);
+            } catch(ex) {
+                if(debug) winston.debug('Error reading ' + path);
+                return(resp.path);        
             }
-        } catch(ex) {
+            if(resp.path) return(resp.path);
+        }
+        return(resp.path);
+    }
+    
+    function onReadDir(err, files) {
+        resp.attempts++;
+        if(err) {
+            resp.err = 'Error listing directory ' + path + ': ' + err;
+            if(callback) callback(resp);
+            return;
+        }
+        for(var j in files) {
+            if(files[j].indexOf(prefix) === 0) {
+                resp.path = path + '/' + files[j];
+                if(callback) callback(resp);
+                return;
+            }
+        }
+        if(callback) {
+            if(resp.attempts >= attempts) {
+                resp.err = 'Did not find ' + prefix + ' in ' + path;
+                callback(resp);
+            } else {
+                fs.readdir(path, onReadDir);
+            }
         }
     }
-};
-
-exports.is_capemgr = function() {
-    if(typeof capemgr == 'undefined') {
-        capemgr = exports.file_find('/sys/devices', 'bone_capemgr.');
-        if(typeof capemgr == 'undefined') capemgr = false;
-    }
-    return(capemgr);
+    
+    return(resp.path);
 };
 
 // Note, this just makes sure there was an attempt to load the
 // devicetree fragment, not if it was successful
-exports.load_dt = function(name, pin) {
-    if(!exports.is_capemgr()) return(false);
-    var slots = fs.readFileSync(capemgr + '/slots', 'ascii');
-    if(slots.indexOf(name) < 0) {
-        try {
-            fs.writeFileSync(capemgr + '/slots', name);
-        } catch(ex) {
-            var slotRegex = new RegExp('\\d+(?=\\s*:.*,bs.*' + pin.key + ')', 'gm');
-            var slot = slots.match(slotRegex);
-            if(slot[0]) {
-                if(debug) winston.debug('Attempting to unload conflicting slot ' +
-                    slot[0] + ' for ' + name);
-                try {
-                    fs.writeFileSync(capemgr + '/slots', '-'+slot[0]);
-                    fs.writeFileSync(capemgr + '/slots', name);
-                } catch(ex2) {
-                    winston.error('Unable to unload conflicting ' +
-                        'capemgr slot for ' + name + ': ' + ex2);
-                    return(false);
-                }
-            } else {
-                winston.error('Unable to load capemgr slot for ' + name + ': ' + ex);
-                return(false);
-            }
+exports.load_dt = function(name, pin, resp, callback) {
+    var slotsFile;
+    var lastSlots;
+    var writeAttempts = 0;
+    var readAttempts = 0;
+    if(pin) {
+        var slotRegex = new RegExp('\\d+(?=\\s*:.*,bs.*' + pin.key + ')', 'gm');
+    }
+    exports.is_capemgr(onFindCapeMgr);
+    
+    function onFindCapeMgr(x) {
+        if(typeof x.path == 'undefined') {
+            resp.err = "CapeMgr not found: " + x.err;
+            callback(resp);
+            return;
+        }
+        slotsFile = x.path + '/slots';
+        fs.readFile(slotsFile, 'ascii', onReadSlots);
+    }
+    
+    function onReadSlots(err, slots) {
+        readAttempts++;
+        if(err) {
+            resp.err = 'Unable to read from CapeMgr slots: ' + err;
+            callback(resp);
+            return;
+        }
+        lastSlots = slots;
+        if(slots.indexOf(name) >= 0) {
+            // Fragment is already loaded
+            callback(resp);
+        } else if (readAttempts <= 1) {
+            // Attempt to load fragment
+            fs.writeFile(slotsFile, name, 'ascii', onWriteSlots);
+        } else {
+            resp.err = 'Error waiting for CapeMgr slot to load';
+            callback(resp);
         }
     }
-    return(exports.wait_on_dt(name));
-};
-
-exports.wait_on_dt = function(name) {
-    var slots;
-    if(!exports.is_capemgr()) return(false);
-    for(var i = 0; i < 20000; i++) {
-        slots = fs.readFileSync(capemgr + '/slots', 'ascii');
-        if(slots.indexOf(name) >= 0) return(true);
-    }
-    winston.error('Failed to find devicetree fragment: ' + name);
-    winston.info(slots);
-    return(false);
-};
-
-exports.create_dt = function(pin, data, template, load, force_create) {
-    var handler = function(error, stdout, stderr) {
-        winston.debug('handler = ' + JSON.stringify(arguments));
-        if(!error && load) {
-            exports.load_dt(fragment, pin);
+    
+    function onWriteSlots(err) {
+        writeAttempts++;
+        if(err) {
+            resp.err = 'Write to CapeMgr slots failed: ' + err;
+            if(pin && writeAttempts <= 1) unloadSlot();
+            else callback(resp);
+            return;
         }
-    };
+        fs.readFile(slotsFile, 'ascii', onReadSlots);
+    }
+    
+    function unloadSlot() {
+        var slot = lastSlots.match(slotRegex);
+        if(slot && slot[0]) {
+            if(debug) winston.debug('Attempting to unload conflicting slot ' +
+                slot[0] + ' for ' + name);
+            fs.writeFile(slotsFile, '-'+slot[0], 'ascii', onUnloadSlot);
+        } else {
+            callback(resp);
+        }
+    }
 
+    function onUnloadSlot(err) {
+        if(err) {
+            resp.err = "Unable to unload conflicting slot: " + err;
+            callback(resp);
+            return;
+        }
+        fs.writeFile(slotsFile, name, 'ascii', onWriteSlots);
+    }
+};
+
+exports.create_dt = function(pin, data, template, load, force_create, resp, callback) {
     template = template || 'bspm';
     load = (typeof load === 'undefined') ? true : load;
     var fragment = template + '_' + pin.key + '_' + data.toString(16);
     var dtsFilename = '/lib/firmware/' + fragment + '-00A0.dts';
     var dtboFilename = '/lib/firmware/' + fragment + '-00A0.dtbo';
-    if(force_create || !exports.file_existsSync(dtboFilename)) {
+    
+    if(force_create) {
+        createDTS();
+    } else {
+        exports.file_exists(dtboFilename, onDTBOExists);
+    }
+    
+    function onDTBOExistsTest(exists) {
+        if(exists) {
+            onDTBOExists();
+        } else {
+            createDTS();
+        }
+    }
+
+    function createDTS() {
         var templateFilename = require.resolve('bonescript').replace('index.js',
             'dts/' + template + '_template.dts');
         winston.debug('templateFilename = ' + templateFilename);
@@ -115,17 +207,30 @@ exports.create_dt = function(pin, data, template, load, force_create) {
             dts = dts.replace(/!PWM_INDEX!/g, pin.pwm.index);
             dts = dts.replace(/!DUTY_CYCLE!/g, 500000);
         }
-        fs.writeFileSync(dtsFilename, dts);
-        winston.debug('fragment = ' + fragment);
-        var command = 'dtc -O dtb -o ' + dtboFilename + ' -b 0 -@ ' + dtsFilename;
-        winston.debug('command = ' + command);
-        child_process.exec(command, handler);
-    } else {
-        if(load) return(exports.load_dt(fragment, pin));
+        fs.writeFile(dtsFilename, dts, 'ascii', onDTSWrite);
     }
     
-    if(load) return(exports.wait_on_dt(fragment));
-    return(false);
+    function onDTSWrite(err) {
+        if(err) {
+            resp.err = 'Error writing ' + dtsFilename + ': ' + err;
+            if(debug) winston.debug(resp.err);
+            callback(resp);
+            return;
+        }
+        var command = 'dtc -O dtb -o ' + dtboFilename + ' -b 0 -@ ' + dtsFilename;
+        child_process.exec(command, dtcHandler);
+    }
+    
+    function dtcHandler(error, stdout, stderr) {
+        if(debug) winston.debug('dtcHandler: ' +
+            JSON.stringify({error:error, stdout:stdout, stderr:stderr}));
+        if(!error) onDTBOExists();
+    }
+    
+    function onDTBOExists() {
+        if(load) exports.load_dt(fragment, pin, resp, callback);
+        else callback(resp);
+    }
 };
 
 exports.myeval = function(x) {
@@ -297,7 +402,6 @@ exports.wait_for = function(fn, myargs, result_name, no_error) {
         if(no_error) {
             // No callback required (fire and forget)
             fn.apply(this, args);
-            return;
         } else {
             var stack = new Error().stack;
             var err = 'As of BoneScript 0.2.5, synchronous calls must be made\n' +
@@ -305,17 +409,17 @@ exports.wait_for = function(fn, myargs, result_name, no_error) {
             winston.error(err);
             throw(err);
         }
-    }
-    
-    fn.apply(this, args);
-    if(!myCallback.called) {
-        yielded = true;
-        fibers.yield();
+    } else {
+        fn.apply(this, args);
+        if(!myCallback.called) {
+            yielded = true;
+            fibers.yield();
+        }    
     }
     
     function myCallback(x) {
+        if(debug) winston.debug('Callback: ' + fn.name + ' ' + x.err);
         if(myCallback.called) return;
-        if(typeof fiber == 'undefined' && no_error) return;
         if(typeof result_name == 'undefined') {
             result = x;
         } else if(typeof x[result_name] != 'undefined') {
@@ -327,6 +431,7 @@ exports.wait_for = function(fn, myargs, result_name, no_error) {
             if(debug) winston.debug(fn.name + ' ' + x.err);
         }
         myCallback.called = true;
+        if(typeof fiber == 'undefined' && no_error) return;
         if(yielded) fiber.run();
     }
     
