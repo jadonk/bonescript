@@ -21,18 +21,18 @@ var epoll = my.require('epoll');
 var debug = process.env.DEBUG ? true : false;
 
 // Detect if we are on a Beagle
-var hw = hw_simulator;
-try {
-    var cpuinfo = fs.readFileSync('/proc/cpuinfo', 'utf-8');
-    if(debug) winston.debug('cpuinfo = ' + cpuinfo);
+var hw;
+if(os.type() == 'Linux' || os.arch() == 'arm') {
     if(my.is_capemgr()) {
         hw = hw_capemgr;
+        if(debug) winston.debug('Using CapeMgr interface');
     } else {
         hw = hw_oldkernel;
+        if(debug) winston.debug('Using 3.2 kernel interface');
     }
-} catch(ex) {
+} else {
     hw = hw_simulator;
-    if(debug) winston.debug('Using simulator mode: ' + ex);
+    if(debug) winston.debug('Using simulator mode');
 }
 
 if(debug) {
