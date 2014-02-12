@@ -535,7 +535,7 @@ f.setDate = function(date, callback) {
 };
 f.setDate.args = ['date', 'callback'];
 
-f.sleep = function(ms) {
+f.delay = function(ms) {
     var fiber = fibers.current;
     if(typeof fiber == 'undefined') {
         winston.error('sleep may only be called within the setup or run functions');
