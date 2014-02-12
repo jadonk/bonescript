@@ -164,13 +164,17 @@ f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
     var pinData = my.pin_data(slew, direction, pullup, mux);
 
     // May be required: mount -t debugfs none /sys/kernel/debug
-    resp = hw.setPinMode(pin, pinData, template, resp);
-    if(typeof resp.err != 'undefined') {
-        if(debug) winston.debug('Unable to configure mux for pin ' + pin + ': ' + resp.err);
-        // It might work if the pin is already muxed to desired mode
-        f.getPinMode(pin, pinModeTestMode);
-    } else {
-        pinModeTestGPIO();
+    hw.setPinMode(pin, pinData, template, resp, onSetPinMode);
+    
+    function onSetPinMode(x) {
+        resp = x;
+        if(typeof resp.err != 'undefined') {
+            if(debug) winston.debug('Unable to configure mux for pin ' + pin + ': ' + resp.err);
+            // It might work if the pin is already muxed to desired mode
+            f.getPinMode(pin, pinModeTestMode);
+        } else {
+            pinModeTestGPIO();
+        }
     }
     
     function pinModeTestMode(mode) {
@@ -261,8 +265,24 @@ f.analogRead = function(pin, callback) {
         f.digitalRead(pin, callback);
     } else {
         if(!ain) {
-            ain = hw.enableAIN();
+            hw.enableAIN(onEnableAIN);
+        } else {
+            doAnalogRead();
         }
+    }
+    
+    function onEnableAIN(x) {
+        if(x.err) {
+            resp.err = "Error enabling analog inputs: " + x.err;
+            if(debug) winston.debug(resp.err);
+            callback(resp);
+            return;
+        }
+        ain = true;
+        doAnalogRead();
+    }
+    
+    function doAnalogRead() {
         hw.readAIN(pin, resp, callback);
     }
 }; 

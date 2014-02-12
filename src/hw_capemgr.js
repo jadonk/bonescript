@@ -58,34 +58,74 @@ exports.readPinMux = function(pin, mode, callback) {
     my.file_exists(pinctrlFile, tryPinctrl);
 };
 
-exports.setPinMode = function(pin, pinData, template, resp) {
+exports.setPinMode = function(pin, pinData, template, resp, callback) {
+    if(debug) winston.debug('hw.setPinMode(' + [pin.key, pinData, template, resp] + ');');
     if(template == 'bspm') {
         gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
-        if(pin.led) {
-            gpioFile[pin.key] = '/sys/class/leds/beaglebone::' + pin.led + '/brightness';
-        }
+        doCreateDT(resp);
     } else if(template == 'bspwm') {
-        if(!my.load_dt('am33xx_pwm')) {
-            resp.err = 'Error loading am33xx_pwm devicetree overlay';
-            return(resp);
+        my.load_dt('am33xx_pwm', null, resp, doCreateDT);
+    } else {
+        resp.err = 'Unknown pin mode template';
+        callback(resp);
+    }
+    
+    function doCreateDT(resp) {
+        if(resp.err) {
+            callback(resp);
+            return;
+        }
+        my.create_dt(pin, pinData, template, true, false, resp, onCreateDT);
+    }
+    
+    function onCreateDT(resp) {
+        if(resp.err) {
+            callback(resp);
+            return;
+        }
+        if(template == 'bspwm') {
+            my.file_find('/sys/devices', 'ocp.', 1, onFindOCP);
+        }
+        
+        function onFindOCP(ocp) {
+            if(ocp.err) {
+                resp.err = "Error searching for ocp: " + ocp.err;
+                if(debug) winston.debug(resp.err);
+                callback(resp);
+                return;
+            }
+            my.file_find(ocp.path, 'bs_pwm_test_' + pin.key + '.', 1, onFindPWM);
+        }
+        
+        function onFindPWM(pwm_test) {
+            if(pwm_test.err) {
+                resp.err = "Error searching for pwm_test: " + pwm_test.err;
+                if(debug) winston.debug(resp.err);
+                callback(resp);
+                return;
+            }
+            my.file_find(pwm_test.path, 'period', 1, onFindPeriod);
+            
+            function onFindPeriod(period) {
+                if(period.err) {
+                    resp.err = "Error searching for period: " + period.err;
+                    if(debug) winston.debug(resp.err);
+                    callback(resp);
+                    return;
+                }  
+                pwmPrefix[pin.pwm.name] = pwm_test.path;
+                fs.writeFile(pwm_test.path+'/polarity', 0, 'ascii', onPolarityWrite);
+            }        
+        }
+        
+        function onPolarityWrite(err) {
+            if(err) {
+                resp.err = "Error writing PWM polarity: " + err;
+                if(debug) winston.debug(resp.err);
+            }
+            callback(resp);
         }
     }
-    if(!my.create_dt(pin, pinData, template)) {
-        resp.err = 'Error loading devicetree overlay for ' + pin.key + ' using template ' + template;
-        return(resp);
-    }
-    if(template == 'bspwm') {
-        try {
-            var ocp = my.file_find('/sys/devices', 'ocp.');
-            var pwm_test = my.file_find(ocp, 'bs_pwm_test_' + pin.key + '.', 10000);
-            my.file_find(pwm_test, 'period', 10000);
-            pwmPrefix[pin.pwm.name] = pwm_test;
-            fs.writeFileSync(pwm_test+'/polarity', 0);
-        } catch(ex) {
-            resp.err = 'Error enabling PWM controls: ' + ex;
-        }
-    }
-    return(resp);
 };
 
 exports.setLEDPinToGPIO = function(pin, resp) {
@@ -185,27 +225,50 @@ exports.readGPIOValue = function(pin, resp, callback) {
     fs.readFile(gpioFile, readFile);
 };
 
-exports.enableAIN = function() {
-    var helper = "";
-    if(my.load_dt('cape-bone-iio')) {
-        var ocp = my.file_find('/sys/devices', 'ocp.', 1000);
-        helper = my.file_find(ocp, 'helper.', 10000);
-        ainPrefix = helper + '/AIN';
+exports.enableAIN = function(callback) {
+    var resp = {};
+    var ocp = my.is_ocp();
+    if(!ocp) {
+        resp.err = 'enableAIN: Unable to open ocp file';
+        if(debug) winston.debug(resp.err);
+        callback(resp);
+        return;
     }
-    return(helper.length > 1);
+    
+    my.load_dt('cape-bone-iio', null, {}, onLoadDT);
+    
+    function onLoadDT(x) {
+        if(x.err) {
+            callback(x);
+            return;
+        }
+        my.find_sysfsFile('helper', ocp, 'helper.', onHelper);
+    }
+
+    function onHelper(x) {
+        if(x.err || !x.path) {
+            resp.err = 'Error enabling analog inputs: ' + x.err;
+            if(debug) winston.debug(resp.err);
+        } else {
+            ainPrefix = x.path + '/AIN';
+            if(debug) winston.debug("Setting ainPrefix to " + ainPrefix);
+        }
+        callback(x);
+    }
 };
 
 exports.readAIN = function(pin, resp, callback) {
     var ainFile = ainPrefix + pin.ain.toString();
-    var readFile = function(err, data) {
+    fs.readFile(ainFile, readFile);
+    
+    function readFile(err, data) {
         if(err) {
             resp.err = 'analogRead error: ' + err;
             winston.error(resp.err);
         }
         resp.value = parseInt(data, 10) / 1800;
         callback(resp);
-    };
-    fs.readFile(ainFile, readFile);
+    }
 };
 
 exports.writeGPIOEdge = function(pin, mode) {
@@ -219,7 +282,8 @@ exports.writeGPIOEdge = function(pin, mode) {
     return(resp);
 };
 
-exports.writePWMFreqAndValue = function(pin, pwm, freq, value, resp) {
+exports.writePWMFreqAndValue = function(pin, pwm, freq, value, resp, callback) {
+    if(debug) winston.debug('hw.writePWMFreqAndValue(' + [pin.key,pwm,freq,value,resp] + ');');
     var path = pwmPrefix[pin.pwm.name];
     try {
         var period = Math.round( 1.0e9 / freq ); // period in ns
