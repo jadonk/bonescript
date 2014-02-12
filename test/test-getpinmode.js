@@ -25,7 +25,7 @@ global.setup = function() {
         }
     }
     
-    b.analogWrite('P9_14', 0.1);
+    b.analogWrite('P9_14', 0.9);
     
     console.log(JSON.stringify(b.getPinMode('USR3')));
     console.log(JSON.stringify(b.getPinMode('P9_12')));
@@ -38,4 +38,6 @@ global.setup = function() {
     console.log(JSON.stringify(b.getPinMode('P9_15')));
     b.pinMode('P9_15', b.OUTPUT);
     console.log(JSON.stringify(b.getPinMode('P9_15')));
+
+    console.log('got here: ' + b.analogWrite('P9_14', 0.1));
 };
