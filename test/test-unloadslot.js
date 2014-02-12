@@ -1,5 +1,5 @@
 var fs = require('fs');
-var my = require('../node_modules/bonescript/my.js');
+var my = require('../src/my.js');
 var capemgr = my.is_capemgr();
 var slots = fs.readFileSync(capemgr + '/slots', 'ascii');
 console.log(slots);

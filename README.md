@@ -1,6 +1,6 @@
 Getting started
 ===============
-Bonescript is a node.js library for physical computing on embedded Linux,
+BoneScript is a node.js library for physical computing on embedded Linux,
 starting with support for BeagleBone.
 
 Information on the language is available at http://nodejs.org.
@@ -33,8 +33,23 @@ opkg update
 opkg install python-misc python-modules
 ````
 
-Support for other distributions is a work in progress.
+Debian and Ubuntu prerequisites:
+* Credit to http://learn.adafruit.com/introduction-to-the-beaglebone-black-device-tree/compiling-an-overlay
+````sh
+sudo apt-get install -y build-essential g++ python-setuptools python2.7-dev
+wget -c https://raw.github.com/RobertCNelson/tools/master/pkgs/dtc.sh
+chmod +x dtc.sh
+./dtc.sh
+````
 
+Some steps to consider:
+````sh
+cp bonescript/etc/default/node /etc/default/node
+cp bonescript/etc/profile.d/node.sh /etc/profile.d/node.sh
+cp bonescript/systemd/* /lib/systemd/system
+systemctl enable bonescript.socket
+systemctl enable bonescript-autorun.service
+````
 
 Launching applications persistently
 -----------------------------------
@@ -126,6 +141,7 @@ Serial
 Uses https://github.com/voodootikigod/node-serialport
 * serialOpen(port, options, [callback])
 * serialWrite(port, data, [callback])
+* serialParsers is serialport.parsers
 
 I2C
 ---

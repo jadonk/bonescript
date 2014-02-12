@@ -5,12 +5,13 @@
 var fs = require('fs');
 var winston = require('winston');
 var child_process = require('child_process');
+var fibers = require('fibers');
 var bone = require('./bone');
 var g = require('./constants');
 
 var capemgr;
 
-var debug = false;
+var debug = process.env.DEBUG ? true : false;
 
 exports.file_exists = fs.exists;
 exports.file_existsSync = fs.existsSync;
@@ -273,4 +274,61 @@ exports.pin_data = function(slew, direction, pullup, mux) {
     }
     pinData |= (mux & 0x07);
     return(pinData);
+};
+
+// Inspired by
+//   https://github.com/luciotato/waitfor/blob/master/waitfor.js
+//   https://github.com/0ctave/node-sync/blob/master/lib/sync.js
+exports.wait_for = function(fn, myargs, result_name, no_error) {
+    var fiber = fibers.current;    
+    var yielded = false;
+    var args = [];
+    var result;
+
+    for(var i in fn.args) {
+        if(fn.args[i] == 'callback') {
+            args.push(myCallback);
+        } else {
+            args.push(myargs[i]);
+        }
+    }
+
+    if(typeof fiber == 'undefined') {
+        if(no_error) {
+            // No callback required (fire and forget)
+            fn.apply(this, args);
+            return;
+        } else {
+            var stack = new Error().stack;
+            var err = 'As of BoneScript 0.2.5, synchronous calls must be made\n' +
+                'within a fiber such as within loop() or setup():\n' + stack;
+            winston.error(err);
+            throw(err);
+        }
+    }
+    
+    fn.apply(this, args);
+    if(!myCallback.called) {
+        yielded = true;
+        fibers.yield();
+    }
+    
+    function myCallback(x) {
+        if(myCallback.called) return;
+        if(typeof fiber == 'undefined' && no_error) return;
+        if(typeof result_name == 'undefined') {
+            result = x;
+        } else if(typeof x[result_name] != 'undefined') {
+            result = x[result_name];
+        }
+        if(typeof x.err != 'undefined' && x.err) {
+            //var fn_name = fn.toString().substr('function '.length);
+            //fn_name = fn_name.substr(0, fn_name.indexOf('('));
+            if(debug) winston.debug(fn.name + ' ' + x.err);
+        }
+        myCallback.called = true;
+        if(yielded) fiber.run();
+    }
+    
+    return(result);
 };

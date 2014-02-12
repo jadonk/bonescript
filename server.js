@@ -6,7 +6,6 @@ var child_process = require('child_process');
 var http = require('http');
 var url = require('url');
 var winston = require('winston');
-var b = require('bonescript');
 var socketio = require('socket.io');
 var express = require('express');
 
@@ -14,11 +13,12 @@ myrequire('systemd', function() {
     winston.debug("Startup as socket-activated service under systemd not enabled");
 });
 
-var port = (process.env.LISTEN_PID > 0) ? 'systemd' : 80;
+var port = (process.env.LISTEN_PID > 0) ? 'systemd' : ((process.env.PORT) ? process.env.PORT : 80);
 var directory = (process.env.SERVER_DIR) ? process.env.SERVER_DIR : '/var/lib/cloud9';
 listen(port, directory);
 
 function listen(port, directory) {
+    winston.info("Opening port " + port + " to serve up " + directory);
     var app = express();
     app.use(express.logger());
     app.get('/bonescript.js', handler);
@@ -108,6 +108,7 @@ function addSocketListeners(server) {
             socket.on(message, onFuncMessage);
         };
 
+        var b = require('./index');
         for(var i in b) {
             if(typeof b[i] == 'function') {
                 if(typeof b[i].args != 'undefined') {
