@@ -21,18 +21,18 @@ var epoll = my.require('epoll');
 var debug = process.env.DEBUG ? true : false;
 
 // Detect if we are on a Beagle
-var hw = hw_simulator;
-try {
-    var cpuinfo = fs.readFileSync('/proc/cpuinfo', 'utf-8');
-    if(debug) winston.debug('cpuinfo = ' + cpuinfo);
+var hw;
+if(os.type() == 'Linux' || os.arch() == 'arm') {
     if(my.is_capemgr()) {
         hw = hw_capemgr;
+        if(debug) winston.debug('Using CapeMgr interface');
     } else {
         hw = hw_oldkernel;
+        if(debug) winston.debug('Using 3.2 kernel interface');
     }
-} catch(ex) {
+} else {
     hw = hw_simulator;
-    if(debug) winston.debug('Using simulator mode: ' + ex);
+    if(debug) winston.debug('Using simulator mode');
 }
 
 if(debug) {
@@ -164,13 +164,17 @@ f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
     var pinData = my.pin_data(slew, direction, pullup, mux);
 
     // May be required: mount -t debugfs none /sys/kernel/debug
-    resp = hw.setPinMode(pin, pinData, template, resp);
-    if(typeof resp.err != 'undefined') {
-        if(debug) winston.debug('Unable to configure mux for pin ' + pin + ': ' + resp.err);
-        // It might work if the pin is already muxed to desired mode
-        f.getPinMode(pin, pinModeTestMode);
-    } else {
-        pinModeTestGPIO();
+    hw.setPinMode(pin, pinData, template, resp, onSetPinMode);
+    
+    function onSetPinMode(x) {
+        resp = x;
+        if(typeof resp.err != 'undefined') {
+            if(debug) winston.debug('Unable to configure mux for pin ' + pin + ': ' + resp.err);
+            // It might work if the pin is already muxed to desired mode
+            f.getPinMode(pin, pinModeTestMode);
+        } else {
+            pinModeTestGPIO();
+        }
     }
     
     function pinModeTestMode(mode) {
@@ -261,8 +265,24 @@ f.analogRead = function(pin, callback) {
         f.digitalRead(pin, callback);
     } else {
         if(!ain) {
-            ain = hw.enableAIN();
+            hw.enableAIN(onEnableAIN);
+        } else {
+            doAnalogRead();
         }
+    }
+    
+    function onEnableAIN(x) {
+        if(x.err) {
+            resp.err = "Error enabling analog inputs: " + x.err;
+            if(debug) winston.debug(resp.err);
+            callback(resp);
+            return;
+        }
+        ain = true;
+        doAnalogRead();
+    }
+    
+    function doAnalogRead() {
         hw.readAIN(pin, resp, callback);
     }
 }; 
@@ -535,7 +555,7 @@ f.setDate = function(date, callback) {
 };
 f.setDate.args = ['date', 'callback'];
 
-f.sleep = function(ms) {
+f.delay = function(ms) {
     var fiber = fibers.current;
     if(typeof fiber == 'undefined') {
         winston.error('sleep may only be called within the setup or run functions');
