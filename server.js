@@ -43,7 +43,7 @@ function handler(req, res) {
     var uri = parsedUrl.pathname;
     var host = 'http://' + req.headers.host;
     if(uri == '/bonescript.js') {
-        fs.readFile('src/bonescript.js', 'utf8', sendFile);
+        fs.readFile(__dirname + '/src/bonescript.js', 'utf8', sendFile);
     }
 }
 
