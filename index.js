@@ -216,7 +216,7 @@ f.digitalWrite = function(pin, value, callback) {
         return(my.wait_for(f.digitalWrite, arguments, 'err', true));
     }
     var myCallback = function(resp) {
-        callback({'err': resp, 'complete':true});
+        if(callback) callback({'err': resp, 'complete':true});
     };
     pin = my.getpin(pin);
     if(debug) winston.debug('digitalWrite(' + [pin.key, value] + ');');
@@ -431,7 +431,7 @@ f.analogWrite = function(pin, value, freq, callback) {
     if(typeof pin.pwm == 'undefined') {
         resp.err = 'analogWrite: ' + pin.key + ' does not support analogWrite()';
         winston.error(resp.err);
-        callback(resp);
+        if(callback) callback(resp);
         return;
     }
 
@@ -443,7 +443,7 @@ f.analogWrite = function(pin, value, freq, callback) {
         resp.err = 'analogWrite: ' + pin.key + ' requires pwm ' + pin.pwm.name +
             ' but it is already in use by ' + pwm[pin.pwm.name].key;
         winston.error(resp.err);
-        callback(resp);
+        if(callback) callback(resp);
         return;
     }
 
@@ -469,7 +469,7 @@ f.analogWrite = function(pin, value, freq, callback) {
         pwm[pin.pwm.name].value = value;
     
         // All done
-        callback(resp);
+        if(callback) callback(resp);
     }
 };
 f.analogWrite.args = ['pin', 'value', 'freq', 'callback'];
