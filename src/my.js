@@ -112,6 +112,7 @@ exports.file_find = function(path, prefix, attempts, callback) {
 // Note, this just makes sure there was an attempt to load the
 // devicetree fragment, not if it was successful
 exports.load_dt = function(name, pin, resp, callback) {
+    if(debug) winston.debug('load_dt(' + [name, pin.key, JSON.stringify(resp)] + ')');
     var slotsFile;
     var lastSlots;
     var writeAttempts = 0;
@@ -122,8 +123,10 @@ exports.load_dt = function(name, pin, resp, callback) {
     exports.is_capemgr(onFindCapeMgr);
     
     function onFindCapeMgr(x) {
+        if(debug) winston.debug('onFindCapeMgr: path = ' + x.path);
         if(typeof x.path == 'undefined') {
             resp.err = "CapeMgr not found: " + x.err;
+            winston.error(resp.err);
             callback(resp);
             return;
         }
@@ -135,11 +138,14 @@ exports.load_dt = function(name, pin, resp, callback) {
         readAttempts++;
         if(err) {
             resp.err = 'Unable to read from CapeMgr slots: ' + err;
+            winston.error(resp.err);
             callback(resp);
             return;
         }
         lastSlots = slots;
-        if(slots.indexOf(name) >= 0) {
+        var index = slots.indexOf(name);
+        if(debug) winston.debug('onReadSlots: index = ' + index + ', readAttempts = ' + readAttempts);
+        if(index >= 0) {
             // Fragment is already loaded
             callback(resp);
         } else if (readAttempts <= 1) {
@@ -184,6 +190,7 @@ exports.load_dt = function(name, pin, resp, callback) {
 };
 
 exports.create_dt = function(pin, data, template, load, force_create, resp, callback) {
+    if(debug) winston.debug('create_dt(' + [pin.key, data, template, load, force_create, JSON.stringify(resp)] + ')');
     template = template || 'bspm';
     load = (typeof load === 'undefined') ? true : load;
     var fragment = template + '_' + pin.key + '_' + data.toString(16);
@@ -207,7 +214,7 @@ exports.create_dt = function(pin, data, template, load, force_create, resp, call
     function createDTS() {
         var templateFilename = require.resolve('bonescript').replace('index.js',
             'dts/' + template + '_template.dts');
-        winston.debug('templateFilename = ' + templateFilename);
+        if(debug) winston.debug('Creating template: ' + templateFilename);
         var dts = fs.readFileSync(templateFilename, 'utf8');
         dts = dts.replace(/!PIN_KEY!/g, pin.key);
         dts = dts.replace(/!PIN_DOT_KEY!/g, pin.key.replace(/_/, '.'));
@@ -240,6 +247,7 @@ exports.create_dt = function(pin, data, template, load, force_create, resp, call
     }
     
     function onDTBOExists() {
+        if(debug) winston.debug('onDTBOExists()');
         if(load) exports.load_dt(fragment, pin, resp, callback);
         else callback(resp);
     }

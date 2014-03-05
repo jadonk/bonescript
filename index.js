@@ -128,7 +128,7 @@ f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
         ) {
             var err = 'pinMode only supports ANALOG_OUTPUT for PWM pins: ' + pin.key;
             winston.info(err);
-            callback({value:false, err:err});
+            if(callback) callback({value:false, err:err});
             return;
         }
         direction = g.OUTPUT;
@@ -148,7 +148,7 @@ f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
             resp.err = 'pinMode only supports GPIO output for LEDs: ' + pin.key;
             winston.info(resp.err);
             resp.value = false;
-            callback(resp);
+            if(callback) callback(resp);
             return;
         }
 
@@ -167,6 +167,7 @@ f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
     hw.setPinMode(pin, pinData, template, resp, onSetPinMode);
     
     function onSetPinMode(x) {
+        if(debug) winston.debug('returned from setPinMode');
         resp = x;
         if(typeof resp.err != 'undefined') {
             if(debug) winston.debug('Unable to configure mux for pin ' + pin + ': ' + resp.err);
@@ -193,7 +194,7 @@ f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
             resp = hw.exportGPIOControls(pin, direction, resp, onExport);        
         } else {
             delete gpio[n];
-            callback(resp);
+            if(callback) callback(resp);
         }
     }
     
@@ -205,7 +206,7 @@ f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
         } else {
             gpio[n] = true;
         }
-        callback(resp);
+        if(callback) callback(resp);
     }
 };
 f.pinMode.args = ['pin', 'direction', 'mux', 'pullup', 'slew', 'callback'];

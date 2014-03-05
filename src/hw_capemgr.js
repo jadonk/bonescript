@@ -59,7 +59,7 @@ exports.readPinMux = function(pin, mode, callback) {
 };
 
 exports.setPinMode = function(pin, pinData, template, resp, callback) {
-    if(debug) winston.debug('hw.setPinMode(' + [pin.key, pinData, template, resp] + ');');
+    if(debug) winston.debug('hw.setPinMode(' + [pin.key, pinData, template, JSON.stringify(resp)] + ');');
     if(template == 'bspm') {
         gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
         doCreateDT(resp);
@@ -85,6 +85,8 @@ exports.setPinMode = function(pin, pinData, template, resp, callback) {
         }
         if(template == 'bspwm') {
             my.file_find('/sys/devices', 'ocp.', 1, onFindOCP);
+        } else {
+            callback(resp);
         }
         
         function onFindOCP(ocp) {
@@ -143,6 +145,7 @@ exports.setLEDPinToGPIO = function(pin, resp) {
 };
 
 exports.exportGPIOControls = function(pin, direction, resp, callback) {
+    if(debug) winston.debug('hw.exportGPIOControls(' + [pin.key, direction, resp] + ');');
     var n = pin.gpio;
     my.file_exists(gpioFile[pin.key], onFileExists);
     
