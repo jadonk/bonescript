@@ -8,6 +8,8 @@ var winston = require('winston');
 var ar = '/var/lib/cloud9/autorun';
 var apps = {};
 
+winston.info('Starting bonescript autorun service');
+
 fs.exists(ar, arExists);
 
 function arExists(exists) {
@@ -44,17 +46,29 @@ function appStart(file) {
     }
 
     function appExists(exists) {
+        function onStdout(data) {
+            winston.info('stdout (' + file + '): ' + data);
+        }
+        function onStderr(data) {
+            winston.info('stderr (' + file + '):' + data);
+        }
+                
         if(exists) {
+            if(typeof apps[file] != 'undefined') {
+                winston.info('already running: ' + file);
+                return;
+            }
+            
             if(file.match(/\.js$/)) {
                 winston.info('start: ' + file);
                 apps[file] = child_process.spawn(process.argv[0], [ar + '/' + file]);
                 apps[file].on('close', appClosed);
-                var onStdout = function(data) {
-                    winston.info('stdout (' + file + '): ' + data);
-                };
-                var onStderr = function(data) {
-                    winston.info('stderr (' + file + '):' + data);
-                };
+                apps[file].stdout.on('data', onStdout);
+                apps[file].stderr.on('data', onStderr);
+            } else if(file.match(/\.py$/)) {
+                winston.info('start: ' + file);
+                apps[file] = child_process.spawn('/usr/bin/python', [ar + '/' + file]);
+                apps[file].on('close', appClosed);
                 apps[file].stdout.on('data', onStdout);
                 apps[file].stderr.on('data', onStderr);
             }
@@ -62,7 +76,7 @@ function appStart(file) {
     }
 
     function appClosed(code, signal) {
-        apps[file] = false;
+        delete apps[file];
         if(signal == 'SIGKILL') setTimeout(appTest, 1000);
     }
 }
@@ -84,8 +98,8 @@ function arWatcher(event, filename) {
 }
 
 function appStop(file) {
-    if(apps[file]) {
-        winston.info('stop: ' + file);
+    if(typeof apps[file] != 'undefined') {
+        winston.info('stop: ' + file + ' (pid: ' + apps[file].pid + ')');
         apps[file].kill('SIGKILL');
     }
 }
