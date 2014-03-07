@@ -2,7 +2,4 @@
   "name": "bonescript-test",
   "description": "Tests for BoneScript",
   "version": "0.0.1",
-  "dependencies": {
-    "socket.io-client": "0.8.7"
-  }
 }

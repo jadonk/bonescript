@@ -1,5 +1,7 @@
-var io = require('socket.io-client');
+var io = require('../node_modules/socket.io/node_modules/socket.io-client');
 var fs = require('fs');
+
+var clientName = process.env.TARGET_NAME || 'http://192.168.7.2:80';
 
 if(process.argv.length != 3) {
     console.log('Usage: node ' + process.argv[1] + ' <app.js>');
@@ -23,7 +25,7 @@ _bonescript.on.initialized = function(){ console.log('socket.io: initialized'); 
 
 function _onSocketIOLoaded() {
     console.log("socket.io loaded");
-    var socket = io.connect('http://192.168.7.2:80');
+    var socket = io.connect(clientName);
     socket.on('require', getRequireData);
     socket.on('bonescript', _seqcall);
     socket.on('connect', _bonescript.on.connect);
