@@ -1,0 +1,36 @@
+/*
+ * This is a template-generated file from BoneScript
+ */
+
+/dts-v1/;
+/plugin/;
+
+/{
+    compatible = "ti,beaglebone", "ti,beaglebone-black";
+    part_number = "BS_PINMODE_!PIN_KEY!_!DATA!";
+
+    exclusive-use =
+        "!PIN_DOT_KEY!",
+        "!PIN_FUNCTION!";
+
+    fragment@0 {
+        target = <&am33xx_pinmux>;
+        __overlay__ {
+            bs_pinmode_!PIN_KEY!_!DATA!: pinmux_bs_pinmode_!PIN_KEY!_!DATA! {
+                pinctrl-single,pins = <!PIN_OFFSET! !DATA!>;
+            };
+        };
+    };
+
+    fragment@1 {
+        target = <&ocp>;
+        __overlay__ {
+            bs_pinmode_!PIN_KEY!_!DATA!_pinmux {
+                compatible = "bone-pinmux-helper";
+                status = "okay";
+                pinctrl-names = "default";
+                pinctrl-0 = <&bs_pinmode_!PIN_KEY!_!DATA!>;
+            };
+        };
+    };
+};

@@ -1,0 +1,7 @@
+[Unit]
+Description=Bonescript server
+
+[Service]
+WorkingDirectory=/usr/lib/node_modules/bonescript
+ExecStart=/usr/bin/node server.js
+SyslogIdentifier=bonescript

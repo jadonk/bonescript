@@ -1,0 +1,12 @@
+[Unit]
+Description=Bonescript autorun
+ConditionPathExists=|/var/lib/cloud9
+
+[Service]
+WorkingDirectory=/usr/lib/node_modules/bonescript
+EnvironmentFile=/etc/default/node
+ExecStart=/usr/bin/node autorun.js
+SyslogIdentifier=bonescript-autorun
+
+[Install]
+WantedBy=multi-user.target

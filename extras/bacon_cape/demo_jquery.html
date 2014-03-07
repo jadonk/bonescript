@@ -1,0 +1,57 @@
+<!-- jQuery Demo -->
+<html>
+    <head>
+        <title>jQuery Demo</title>
+        <script src="http://192.168.7.2/static/jquery.js"></script>
+        <script src="http://192.168.7.2/static/bonescript.js"></script>
+    </head>
+    <body>
+        <h1>jQuery Demo</h1>
+        <p>buttonStatus = <span id="buttonStatus"></span></p>
+        <p>sliderStatus = <span id="sliderStatus"></span></p>
+        <script>   
+            // Connect with board connected at fixed USB address
+            // and execute run() upon initialization
+            setTargetAddress("192.168.7.2", { initialized: run });
+            
+            // The demo BoneScript application within the 'run()' function
+            function run() {
+                /*
+                 * Setup
+                 */
+                var b = require('bonescript');
+
+                var buttonStatus = 0;
+                var sliderStatus = 0;
+                
+                var BUTTON = 'P8_19';
+                var POT = 'P9_36';
+
+                b.pinMode(BUTTON, b.INPUT);
+
+                readBUTTON(); // Start button updates
+                readPOT(); // Start potentiometer updates
+
+                function readBUTTON() {
+                    b.digitalRead(BUTTON, onReadBUTTON);
+                }
+
+                function onReadBUTTON(x) {
+                    buttonStatus = x.value;
+                    $('#buttonStatus').html(buttonStatus);
+                    setTimeout(readBUTTON, 100); // Read button again in 100ms
+                }
+
+                function readPOT() {
+                    b.analogRead(POT, onReadPOT);
+                }
+
+                function onReadPOT(x) {
+                    sliderStatus = x.value.toFixed(2);
+                    $('#sliderStatus').html(sliderStatus);
+                    setTimeout(readPOT, 100); // Read potentiometer again in 100ms
+                }
+            }
+        </script>
+    </body>
+</html>

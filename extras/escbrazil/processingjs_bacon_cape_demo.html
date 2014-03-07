@@ -1,0 +1,188 @@
+<html>
+    <head>
+        <title>Bacon Cape Processing.JS Demo</title>
+        <script src="http://192.168.7.2/static/jquery.js"></script>
+        <script src="http://192.168.7.2/static/processing.js"></script>
+        <script src="http://192.168.7.2/static/bonescript.js"></script>
+    </head>
+    <body>
+        <h1>Bacon Cape Processing.JS Demo</h1>
+        <canvas id="mysketch"></canvas>
+        <p>buttonStatus = <span id="buttonStatus"></span></p>
+        <p>sliderStatus = <span id="sliderStatus"></span></p>
+        <p>X = <span id="X"></span></p>
+        <p>Y = <span id="Y"></span></p>
+        <p>Z = <span id="Z"></span></p>
+        <script>   
+            var canvas = document.getElementById("mysketch");
+            var p = new Processing(canvas, sketchProc);            
+            function sketchProc(pjs) {          
+                // Sketch global variables
+                var radius = 50.0;
+                var X, Y;
+                var nX, nY;
+                var delay = 16;
+                var brightness = 0;
+                var buttonStatus = 0;
+                var sliderStatus = 0;
+                var lastSliderValue = 0;
+                var LED_RED = 'P9_42';
+                var LED_BLUE = 'P9_16';
+                var LED_GREEN = 'P9_14';
+                var BUTTON = 'P8_19';
+                var POT = 'P9_36';
+                var S_DATA = 'P9_18';
+                var S_CLOCK = 'P9_22';
+                var S_LATCH = 'P9_17';
+                var S_CLEAR = 'P9_15';
+                
+                var segDigits = [ 0xC0, 0xF9, 0xA4, 0xB0, 0x99, 0x92, 0x82, 0xF8, 0x80, 0x90 ];
+                
+                // Get the BoneScript library and begin updating the canvas
+                setTargetAddress('192.168.7.2', {initialized: run});
+                function run() {
+                    var b = require('bonescript');
+                    var port = '/dev/i2c-2'
+                    var address = 0x1c;
+                    b.pinMode(LED_RED, b.OUTPUT);
+                    b.pinMode(LED_BLUE, b.OUTPUT);
+                    b.pinMode(BUTTON, b.INPUT);
+                    b.pinMode(S_DATA, b.OUTPUT);
+                    b.pinMode(S_CLOCK, b.OUTPUT);
+                    b.pinMode(S_LATCH, b.OUTPUT);
+                    b.pinMode(S_CLEAR, b.OUTPUT);
+                    b.digitalWrite(S_DATA, b.LOW);
+                    b.digitalWrite(S_CLOCK, b.LOW);
+                    b.digitalWrite(S_LATCH, b.LOW);
+                    b.digitalWrite(S_CLEAR, b.HIGH);
+                    b.i2cOpen(port, address, {}, onI2C);
+                    
+                    function onI2C() {
+                        b.i2cWriteBytes(port, 0x2a, [0x00], nextA);
+                    }
+                
+                    function nextA() {
+                        b.i2cWriteBytes(port, 0x0e, [0x00], nextB);
+                    }
+                    
+                    function nextB() {
+                        b.i2cWriteBytes(port, 0x2a, [0x01], pjs.setup);
+                    }
+                
+                    // Setup the Processing Canvas
+                    pjs.setup = function() {
+                        pjs.size(256, 256);
+                        pjs.strokeWeight(10);
+                        pjs.frameRate(15);
+                        X = pjs.width / 2;
+                        Y = pjs.height / 2;
+                        nX = X;
+                        nY = Y;  
+                    }
+                    
+                    // Main draw loop
+                    pjs.draw = function() {
+                        // Calculate some fading values based on the frame count
+                        radius = 50.0 + (15-sliderStatus)*pjs.sin(pjs.frameCount / 4);
+                        brightness = (radius - 40.0) / 20.0;
+                        
+                        // Set the RGB LED color based on the status of the button
+                        if(buttonStatus) {
+                            b.digitalWrite(LED_RED, 1);
+                            b.digitalWrite(LED_BLUE, 0);
+                        } else {
+                            b.digitalWrite(LED_RED, 0);            
+                            b.digitalWrite(LED_BLUE, 1);
+                        }
+                      
+                        // Track circle to new destination
+                        X+=(nX-X)/delay;
+                        Y+=(nY-Y)/delay;
+                      
+                        // Fill canvas grey
+                        pjs.background(100);
+                      
+                        // Set fill-color to blue or red, based on button status
+                        if(buttonStatus) pjs.fill(200, 30, 20)
+                        else pjs.fill(0, 121, 184);
+                      
+                        // Set stroke-color white
+                        pjs.stroke(255); 
+                      
+                        // Draw circle
+                        pjs.ellipse(X, Y, radius, radius);
+                        
+                        // Fetch slider location for next time
+                        b.analogRead(POT, onAnalogRead);
+                        
+                        // Fetch accelerometer status
+                        b.i2cReadBytes(port, 1, 6, onReadBytes);
+                        
+                        // Fetch button status
+                        b.digitalRead(BUTTON, onDigitalRead);
+                    }
+                    
+                    // Get things started
+                    pjs.setup();
+                    
+                    // Handle data back from potentiometer
+                    function onAnalogRead(x) {
+                        if(!x.err && (x.value >= 0) && (x.value <= 1)) {
+                            if(Math.abs(x.value - lastSliderValue) > 0.05) {
+                                lastSliderValue = x.value;
+                                sliderStatus = parseInt(x.value*10, 10);
+                                $('#sliderStatus').html(sliderStatus);
+                                write7Seg(sliderStatus);            
+                            }
+                        }
+                    }
+                    
+                    function write7Seg(x) {
+                        var c = segDigits[x%10];
+                        b.shiftOut(S_DATA, S_CLOCK, b.MSBFIRST, c, onShiftOut);
+                    }
+                    
+                    function onShiftOut(x) {
+                        b.digitalWrite(S_LATCH, b.HIGH, onLatchHigh);
+                    }
+                    
+                    function onLatchHigh(x) {
+                        b.digitalWrite(S_LATCH, b.LOW);
+                    }
+                    
+                    function onWriteByte(x) {
+                        if(x.event == 'callback') {
+                            b.i2cReadBytes(port, 1, 6, onReadBytes);
+                        }
+                    }
+                    
+                    function onReadBytes(x) {
+                        if(x.event == 'callback') {
+                            var gX = convertToG(x.res[0]);
+                            var gY = convertToG(x.res[2]);
+                            var gZ = convertToG(x.res[4]);
+                            $('#X').html(gX);
+                            $('#Y').html(gY);
+                            $('#Z').html(gZ);
+                            nX = 128 - (gX/2)*256;
+                            nY = (gY/2)*256 + 128;
+                        }
+                    }                    
+                    
+                    function convertToG(x) {
+                        if(x >= 128) x = -((x^0xFF)+1); // Get two's complement
+                        x = x / 64; // Scale to G
+                        x = x.toFixed(2); // Limit decimal places
+                        return(x);
+                    }
+                    
+                    // Handle data back from button
+                    function onDigitalRead(x) {
+                        buttonStatus = (x.value == b.LOW) ? 1 : 0;
+                        $('#buttonStatus').html(buttonStatus);
+                    }
+                }         
+            }
+        </script>
+    </body>
+</html>

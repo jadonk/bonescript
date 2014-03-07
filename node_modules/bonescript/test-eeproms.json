@@ -1,0 +1,687 @@
+{
+  "test-lcd7-cape.eeprom": {
+    "type": "cape",
+    "header": "aa5533ee",
+    "formatRev": "A0",
+    "boardName": "BeagleBone LCD Cape",
+    "version": "01",
+    "manufacturer": "BeagleBoardToys",
+    "partNumber": "BB-BONE-LCD7-01",
+    "numPins": 30,
+    "serialNumber": "52114P130000",
+    "currentVDD_3V3EXP": 2,
+    "currentVDD_5V": 2,
+    "currentSYS_5V": 2,
+    "DCSupplied": 2000,
+    "mux": {
+      "P8_20": {
+        "used": "used",
+        "direction": "in",
+        "rx": "enabled",
+        "pullup": "pullup",
+        "mode": 7,
+        "function": "gpio1_31"
+      },
+      "P8_27": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_vsync"
+      },
+      "P8_28": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_pclk"
+      },
+      "P8_29": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_hsync"
+      },
+      "P8_30": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_ac_bias_en"
+      },
+      "P8_31": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data14"
+      },
+      "P8_32": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data15"
+      },
+      "P8_33": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data13"
+      },
+      "P8_34": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data11"
+      },
+      "P8_35": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data12"
+      },
+      "P8_36": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data10"
+      },
+      "P8_37": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data8"
+      },
+      "P8_38": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data9"
+      },
+      "P8_39": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data6"
+      },
+      "P8_40": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data7"
+      },
+      "P8_41": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data4"
+      },
+      "P8_42": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data5"
+      },
+      "P8_43": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data2"
+      },
+      "P8_44": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data3"
+      },
+      "P8_45": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data0"
+      },
+      "P8_46": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data1"
+      },
+      "P9_14": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 6,
+        "function": "ehrpwm1a"
+      },
+      "P9_15": {
+        "used": "used",
+        "direction": "in",
+        "rx": "enabled",
+        "pullup": "pullup",
+        "mode": 7,
+        "function": "gpio1_16"
+      },
+      "P9_16": {
+        "used": "used",
+        "direction": "in",
+        "rx": "enabled",
+        "pullup": "pullup",
+        "mode": 7,
+        "function": "gpio1_19"
+      },
+      "P9_23": {
+        "used": "used",
+        "direction": "in",
+        "rx": "enabled",
+        "pullup": "pullup",
+        "mode": 7,
+        "function": "gpio1_17"
+      },
+      "P9_37": {
+        "used": "used",
+        "function": "ain2"
+      },
+      "P9_38": {
+        "used": "used",
+        "function": "ain3"
+      },
+      "P9_39": {
+        "used": "used",
+        "function": "ain0"
+      },
+      "P9_40": {
+        "used": "used",
+        "function": "ain1"
+      },
+      "P9_42": {
+        "used": "used",
+        "direction": "in",
+        "rx": "enabled",
+        "pullup": "pullup",
+        "mode": 7,
+        "function": "gpio0_7"
+      }
+    }
+  }
+  , "test-lcd35-cape.eeprom": {
+    "type": "cape",
+    "header": "aa5533ee",
+    "formatRev": "A0",
+    "boardName": "BeagleBone LCD Cape",
+    "version": "01",
+    "manufacturer": "BeagleBoardToys",
+    "partNumber": "BB-BONE-LCD3-01",
+    "numPins": 30,
+    "serialNumber": "08124P130000",
+    "currentVDD_3V3EXP": 2,
+    "currentVDD_5V": 2,
+    "currentSYS_5V": 2,
+    "DCSupplied": 0,
+    "mux": {
+      "P8_20": {
+        "used": "used",
+        "direction": "in",
+        "rx": "enabled",
+        "pullup": "pullup",
+        "mode": 7,
+        "function": "gpio1_31"
+      },
+      "P8_27": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_vsync"
+      },
+      "P8_28": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_pclk"
+      },
+      "P8_29": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_hsync"
+      },
+      "P8_30": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_ac_bias_en"
+      },
+      "P8_31": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data14"
+      },
+      "P8_32": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data15"
+      },
+      "P8_33": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data13"
+      },
+      "P8_34": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data11"
+      },
+      "P8_35": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data12"
+      },
+      "P8_36": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data10"
+      },
+      "P8_37": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data8"
+      },
+      "P8_38": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data9"
+      },
+      "P8_39": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data6"
+      },
+      "P8_40": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data7"
+      },
+      "P8_41": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data4"
+      },
+      "P8_42": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data5"
+      },
+      "P8_43": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data2"
+      },
+      "P8_44": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data3"
+      },
+      "P8_45": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data0"
+      },
+      "P8_46": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data1"
+      },
+      "P9_14": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 6,
+        "function": "ehrpwm1a"
+      },
+      "P9_15": {
+        "used": "used",
+        "direction": "in",
+        "rx": "enabled",
+        "pullup": "pullup",
+        "mode": 7,
+        "function": "gpio1_16"
+      },
+      "P9_16": {
+        "used": "used",
+        "direction": "in",
+        "rx": "enabled",
+        "pullup": "pullup",
+        "mode": 7,
+        "function": "gpio1_19"
+      },
+      "P9_23": {
+        "used": "used",
+        "direction": "in",
+        "rx": "enabled",
+        "pullup": "pullup",
+        "mode": 7,
+        "function": "gpio1_17"
+      },
+      "P9_37": {
+        "used": "used",
+        "function": "ain2"
+      },
+      "P9_38": {
+        "used": "used",
+        "function": "ain3"
+      },
+      "P9_39": {
+        "used": "used",
+        "function": "ain0"
+      },
+      "P9_40": {
+        "used": "used",
+        "function": "ain1"
+      },
+      "P9_42": {
+        "used": "used",
+        "direction": "in",
+        "rx": "enabled",
+        "pullup": "pullup",
+        "mode": 7,
+        "function": "gpio0_7"
+      }
+    }
+  }
+  , "test-dvi-cape.eeprom": {
+    "type": "cape",
+    "header": "aa5533ee",
+    "formatRev": "A0",
+    "boardName": "BeagleBone DVI-D CAPE",
+    "version": "01",
+    "manufacturer": "Beagleboardtoys",
+    "partNumber": "BB-BONE-DVID-01",
+    "numPins": 25,
+    "serialNumber": "WWYYDVIDnnnn",
+    "currentVDD_3V3EXP": 2,
+    "currentVDD_5V": 2,
+    "currentSYS_5V": 2,
+    "DCSupplied": 0,
+    "mux": {
+      "P8_27": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_vsync"
+      },
+      "P8_28": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_pclk"
+      },
+      "P8_29": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_hsync"
+      },
+      "P8_30": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_ac_bias_en"
+      },
+      "P8_31": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data14"
+      },
+      "P8_32": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data15"
+      },
+      "P8_33": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data13"
+      },
+      "P8_34": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data11"
+      },
+      "P8_35": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data12"
+      },
+      "P8_36": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data10"
+      },
+      "P8_37": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data8"
+      },
+      "P8_38": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data9"
+      },
+      "P8_39": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data6"
+      },
+      "P8_40": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data7"
+      },
+      "P8_41": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data4"
+      },
+      "P8_42": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data5"
+      },
+      "P8_43": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data2"
+      },
+      "P8_44": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data3"
+      },
+      "P8_45": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data0"
+      },
+      "P8_46": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "disabled",
+        "mode": 0,
+        "function": "lcd_data1"
+      }
+    }
+  },
+ "TowerTech-TT3201-CAN-Cape.eeprom": {
+    "type": "cape",
+    "header": "aa5533ee",
+    "formatRev": "A0",
+    "boardName": "TT3201 CAN Cape",
+    "version": "01",
+    "manufacturer": "TowerTech",
+    "partNumber": "TT3201-001",
+    "numPins": 30,
+    "serialNumber": "12050100002",
+    "currentVDD_3V3EXP": 1,
+    "currentVDD_5V": 0,
+    "currentSYS_5V": 0,
+    "DCSupplied": 0,
+    "mux": {
+      "P9_26": {
+        "used": "used",
+        "direction": "out",
+        "pullup": "pulldown",
+        "mode": 2,
+        "function": "d_can1_tx"
+      },
+      "P9_24": {
+        "used": "used",
+        "direction": "in",
+        "rx": "enabled",
+        "pullup": "pullup",
+        "mode": 2,
+        "function": "d_can1_rx"
+      },
+      "P9_27": {
+        "used": "used",
+        "direction": "in",
+        "rx": "enabled",
+        "pullup": "pullup",
+        "mode": 7,
+        "function": "gpio3_19"
+      },
+      "P9_25": {
+        "used": "used",
+        "direction": "in",
+        "rx": "enabled",
+        "pullup": "pullup",
+        "mode": 7,
+        "function": "gpio3_21"
+      },
+      "P9_42": {
+        "used": "used",
+        "direction": "out",
+        "rx": "enabled",
+        "pullup": "pullup",
+        "mode": 2,
+        "function": "spi1_cs1"
+      },
+      "P9_28": {
+        "used": "used",
+        "direction": "out",
+        "rx": "enabled",
+        "pullup": "pullup",
+        "mode": 3,
+        "function": "spi1_cs0"
+      },
+      "P9_31": {
+        "used": "used",
+        "direction": "out",
+        "rx": "enabled",
+        "pullup": "pullup",
+        "mode": 3,
+        "function": "spi1_sclk"
+      },
+      "P9_29": {
+        "used": "used",
+        "direction": "out",
+        "rx": "enabled",
+        "pullup": "pullup",
+        "mode": 3,
+        "function": "spi1_d0"
+      },
+      "P9_30": {
+        "used": "used",
+        "direction": "in",
+        "rx": "enabled",
+        "pullup": "pullup",
+        "mode": 3,
+        "function": "spi1_d1"
+      }
+    }
+  }
+}
