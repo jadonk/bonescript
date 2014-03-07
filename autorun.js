@@ -71,13 +71,32 @@ function appStart(file) {
                 apps[file].on('close', appClosed);
                 apps[file].stdout.on('data', onStdout);
                 apps[file].stderr.on('data', onStderr);
+            } else if(file.match(/\.ino$/)) {
+                winston.info('start: ' + file);
+                apps[file] = child_process.spawn('/usr/bin/make', 
+                    [
+                        "-f",
+                        "/var/lib/cloud9/extras/Userspace-Arduino/Makefile",
+                        "TARGET=" + file.replace(/\.ino$/, ''),
+                        "LOCAL_INO_SRCS=" + file,
+                        "LOCAL_C_SRCS=",
+                        "LOCAL_CPP_SRCS=",
+                        "LOCAL_PDE_SRCS=",
+                        "LOCAL_AS_SRCS=",
+                        "COMMON_DEPS="
+                    ],
+                    { 'cwd': ar }
+                );
+                apps[file].on('close', appClosed);
+                apps[file].stdout.on('data', onStdout);
+                apps[file].stderr.on('data', onStderr);
             }
         }
     }
 
     function appClosed(code, signal) {
         delete apps[file];
-        if(signal == 'SIGKILL') setTimeout(appTest, 1000);
+        if(signal == 'SIGTERM') setTimeout(appTest, 1000);
     }
 }
 
@@ -100,6 +119,6 @@ function arWatcher(event, filename) {
 function appStop(file) {
     if(typeof apps[file] != 'undefined') {
         winston.info('stop: ' + file + ' (pid: ' + apps[file].pid + ')');
-        apps[file].kill('SIGKILL');
+        apps[file].kill('SIGTERM');
     }
 }
