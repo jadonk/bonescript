@@ -1,7 +1,19 @@
 var fs = require('fs');
 var winston = require('winston');
+var bone = require('./bone.js');
+
+var jsonFile = process.env.JSON_FILE;
 
 var gpioFile = {};
+var pins = bone.pins;
+
+jsonFileUpdate();
+
+function jsonFileUpdate() {
+    if(jsonFile) {
+        fs.writeFile(jsonFile, JSON.stringify(pins, null, 4), 'ascii');
+    }
+}
 
 exports.logfile = 'bonescript.log';
 exports.readPWMFreqAndValue = function(pin, pwm) {
@@ -9,10 +21,14 @@ exports.readPWMFreqAndValue = function(pin, pwm) {
     var mode = {};
     mode.freq = pwm.freq;
     mode.value = pwm.value;
+    if(jsonFile) {
+        pins[pin.key].mode = mode;
+        jsonFileUpdate();
+    }
     return(mode);
 };
 
-exports.readGPIODirection = function(n, gpio) {
+exports.readGPIODirection = function(n, gpio, pin) {
     winston.info('readGPIODirection(' + [n] + ')');
     var mode = {};
     if(typeof gpio[n] != 'undefined') {
@@ -23,11 +39,18 @@ exports.readGPIODirection = function(n, gpio) {
         }
         mode.direction = gpio[n].direction;
     }
+    if(jsonFile) {
+        pins[pin.key].mode = mode;
+        jsonFileUpdate();
+    }
     return(mode);
 };
 
 exports.readPinMux = function(pin, mode, callback) {
     winston.info('readPinMux(' + [pin.key] + ')');
+    if(jsonFile) {
+        mode = (typeof pins[pin.key].mode == 'undefined') ? {} : pins[pin.key].mode;
+    }
     if(callback) {
         callback(mode);
     }
@@ -37,6 +60,12 @@ exports.readPinMux = function(pin, mode, callback) {
 exports.setPinMode = function(pin, pinData, template, resp) {
     winston.info('setPinMode(' + [pin.key, pinData, template] + ')');
     gpioFile[pin.key] = true;
+    if(jsonFile) {
+        var mode = (typeof pins[pin.key].mode == 'undefined') ? {} : pins[pin.key].mode;
+        mode.pinData = pinData;
+        pins[pin.key].mode = mode;
+        jsonFileUpdate();
+    }
     return(resp);
 };
 
@@ -47,11 +76,23 @@ exports.setLEDPinToGPIO = function(pin, resp) {
 
 exports.exportGPIOControls = function(pin, direction, resp) {
     winston.info('expertGPIOControls(' + [pin.key, direction] + ')');
+    if(jsonFile) {
+        var mode = (typeof pins[pin.key].mode == 'undefined') ? {} : pins[pin.key].mode;
+        mode.direction = direction;
+        pins[pin.key].mode = mode;
+        jsonFileUpdate();
+    }
     return(resp);
 };
 
 exports.writeGPIOValue = function(pin, value, callback) {
     winston.info('writeGPIOValue(' + [pin.key, value] + ')');
+    if(jsonFile) {
+        var mode = (typeof pins[pin.key].mode == 'undefined') ? {} : pins[pin.key].mode;
+        mode.value = value;
+        pins[pin.key].mode = mode;
+        jsonFileUpdate();
+    }
     if(callback) {
         callback();
     }
@@ -59,6 +100,12 @@ exports.writeGPIOValue = function(pin, value, callback) {
 
 exports.readGPIOValue = function(pin, resp, callback) {
     winston.info('readGPIOValue(' + [pin.key] + ')');
+    if(jsonFile) {
+        var mode = (typeof pins[pin.key].mode == 'undefined') ? {} : pins[pin.key].mode;
+        mode.value = value;
+        pins[pin.key].mode = mode;
+        jsonFileUpdate();
+    }
     if(callback) {
         callback(0);
         return(true);

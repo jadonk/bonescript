@@ -90,7 +90,7 @@ f.getPinMode = function(pin, callback) {
     // Get GPIO settings if applicable
     if((typeof pin.gpio != 'undefined')) {
         var n = pin.gpio;
-        mode.gpio = hw.readGPIODirection(n, gpio);
+        mode.gpio = hw.readGPIODirection(n, gpio, pin);
         if(typeof gpio[n] == 'undefined') {
             mode.gpio.allocated = false;
         } else {
