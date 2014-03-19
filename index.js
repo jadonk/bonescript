@@ -46,30 +46,255 @@ if(debug) {
 
 if(debug) winston.debug('index.js loaded');
 
-var f = {};
-
 // Keep track of allocated resources
 var gpio = {};
 var gpioInt = {};
 var pwm = {};
 var ain = false;
 
-// returned object has:
-//  mux: index of mux mode
-//  options: array of mode names
-//  slew: 'fast' or 'slow'
-//  rx: 'enabled' or 'disabled'
-//  pullup: 'diabled', 'pullup' or 'pulldown'
-//  pin: key string for pin
-//  name: pin name
-//  pwm: object if pwm enabled, undefind otherwise
-//    freq: frequency of PWM
-//    value: duty cycle of PWM as number between 0 and 1
-//  gpio: object if GPIO enabled, undefined otherwise
-//    active: GPIO is enabled by the kernel
-//    allocated: boolean for if it is allocated by this application
-//    direction: 'in' or 'out' (allocated might be false)
-f.getPinMode = function(pin, callback) {
+var f = {
+    getPlatform: {
+        args: [
+            { name: 'callback', required: true }
+        ]
+    },
+    pinMode: {
+        args: [
+            { name: 'pin', required: true },
+            { name: 'direction', required: true },
+            { name: 'mux', required: false },
+            { name: 'pullup', required: false },
+            { name: 'slew', required: false },
+            { name: 'callback', required: false }
+        ],
+        retval: { name: 'success', type: typeof false },
+        callback: {
+            args: [
+                {
+                    name: 'retval', type: typeof {},
+                    members: [
+                        {
+                            name: 'value', type: typeof false,
+                            description: 'true on success'
+                        }, {
+                            name: 'err', type: typeof '',
+                            description: 'error status message'
+                        }
+                    ]
+                }
+            ] 
+        }
+    },
+    getPinMode: {
+        args: [
+            { name: 'pin', required: true },
+            { name: 'callback', required: true }
+        ],
+        retval: {
+            name: 'mode', type: typeof {},
+            members: [
+                {
+                    name: 'mux', type: typeof 0,
+                    description: 'index of mux mode'
+                }, {
+                    name: 'options', type: typeof [],
+                    description: 'array of mode names'
+                }, {
+                    name: 'slew', type: typeof '',
+                    description: "'fast' or 'slow'"
+                }, {
+                    name: 'rx', type: typeof '',
+                    description: "'enabled' or 'disabled'"
+                }, {
+                    name: 'pullup', type: typeof '',
+                    description: "'disabled', 'pullup' or 'pulldown'"
+                }, {
+                    name: 'pin', type: typeof '',
+                    description: 'key string for pin'
+                }, {
+                    name: 'name', type: typeof '',
+                    description: 'pin name'
+                }, {
+                    name: 'pwm', type: typeof {},
+                    description: 'object if pwm enabled, undefined otherwise',
+                    members: [
+                        {
+                            name: 'freq', type: typeof 0,
+                            description: 'frequency of PWM'
+                        }, {
+                            name: 'value', type: typeof 0,
+                            description: 'duty cycle of PWM as number between 0 and 1'
+                        }
+                    ]
+                }, {
+                    name: 'gpio',
+                    type: typeof {},
+                    description: 'object if GPIO enabled, otherwise undefined',
+                    members: [
+                        {
+                            name: 'active', type: typeof false,
+                            description: 'GPIO is enabled by the kernel'
+                        }, {
+                            name: 'allocated', type: typeof false,
+                            description: 'boolean for if it is allocated by this application'
+                        }, {
+                            name: 'direction', type: typeof '',
+                            description: "'in' or 'out' (allocated might be false)"
+                        }
+                    ]
+                }
+            ]
+        },
+        callback: { args: [ { name: 'retval' } ] }
+    },
+    digitalWrite: {
+        args: [
+            { name: 'pin', required: true },
+            { name: 'value', required: true },
+            { name: 'callback', required: false }
+        ],
+        retval: { name: 'err', type: typeof '' },
+        callback: { }
+    },
+    digitalRead: {
+        args: [
+            {
+                name: 'pin', required: true
+            }, {
+                name: 'callback', required: true
+            }
+        ],
+        retval: {
+            name: 'value', type: typeof 0
+        },
+        callback: {
+            args: [
+            ]
+        }
+    },
+    shiftOut: {
+        args: [
+            {
+                name: 'dataPin',
+            }, {
+                name: 'clockPin',
+            }, {
+                name: 'bitOrder',
+            }, {
+                name: 'val',
+            }, {
+                name: 'callback'
+            }
+        ],
+        retval: {
+        }
+    },
+    analogWrite: {
+        args: [
+            {
+                name: 'pin',
+            }, {
+                name: 'value',
+            }, {
+                name: 'freq',
+            }, {
+                name: 'callback'
+            }
+        ],
+        retval: {
+        }
+    },
+    analogRead: {
+        args: [
+            {
+                name: 'pin', required: true
+            }, {
+                name: 'callback', required: true
+            }
+        ],
+        retval: {
+        }
+    },
+    attachInterrupt: {
+        args: [
+            {
+                name: 'pin',
+            }, {
+                name: 'handler',
+            }, {
+                name: 'mode',
+            }, {
+                name: 'callback'
+            }
+        ],
+        retval: {
+        }
+    },
+    detachInterrupt: {
+        args: [
+            {
+                name: 'pin',
+            }, {
+                name: 'callback'
+            }
+        ],
+        retval: {
+        }
+    },
+    readTextFile: {
+        args: [
+            {
+                name: 'filename',
+            }, {
+                name: 'callback'
+            }
+        ],
+        retval: {
+        }
+    },
+    writeTextFile: {
+        args: [
+            {
+                name: 'filename',
+            }, {
+                name: 'data'
+            }, {
+                name: 'callback'
+            }
+        ],
+        retval: {
+        }
+    },
+    getEeproms: {
+        args: [
+            { name: 'callback', required: true }
+        ]
+    },
+    echo: {
+        args: [
+            {
+                name: 'data',
+            }, {
+                name: 'callback'
+            }
+        ],
+        retval: {
+        }
+    },
+    setDate: {
+        args: [
+            {
+                name: 'date',
+            }, {
+                name: 'callback'
+            }
+        ],
+        retval: {
+        }
+    }
+};
+
+f.getPinMode.f = function(pin, callback) {
     if(typeof callback == 'undefined') {
         return(my.wait_for(f.getPinMode, arguments));
     }
@@ -101,9 +326,8 @@ f.getPinMode = function(pin, callback) {
     // Get pinmux settings
     hw.readPinMux(pin, mode, callback);
 };
-f.getPinMode.args = ['pin', 'callback'];
 
-f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
+f.pinMode.f = function(pin, direction, mux, pullup, slew, callback) {
     if(typeof callback == 'undefined') {
         return(my.wait_for(f.pinMode, arguments, 'value', true));
     }
@@ -209,7 +433,6 @@ f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
         if(callback) callback(resp);
     }
 };
-f.pinMode.args = ['pin', 'direction', 'mux', 'pullup', 'slew', 'callback'];
 
 f.digitalWrite = function(pin, value, callback) {
     if(typeof callback == 'undefined') {
@@ -224,9 +447,8 @@ f.digitalWrite = function(pin, value, callback) {
 
     hw.writeGPIOValue(pin, value, myCallback);
 };
-f.digitalWrite.args = ['pin', 'value', 'callback'];
 
-f.digitalRead = function(pin, callback) {
+f.digitalRead.f = function(pin, callback) {
     if(typeof callback == 'undefined') {
         return(my.wait_for(f.digitalRead, arguments, 'value'));
     }
@@ -253,9 +475,8 @@ f.digitalRead = function(pin, callback) {
         }
     }
 };
-f.digitalRead.args = ['pin', 'callback'];
 
-f.analogRead = function(pin, callback) {
+f.analogRead.f = function(pin, callback) {
     if(typeof callback == 'undefined') {
         return(my.wait_for(f.analogRead, arguments, 'value'));
     }
@@ -287,9 +508,8 @@ f.analogRead = function(pin, callback) {
         hw.readAIN(pin, resp, callback);
     }
 }; 
-f.analogRead.args = ['pin', 'callback'];
 
-f.shiftOut = function(dataPin, clockPin, bitOrder, val, callback) {
+f.shiftOut.f = function(dataPin, clockPin, bitOrder, val, callback) {
     if(typeof callback == 'undefined') {
         return(my.wait_for(f.shiftOut, arguments, 'err', true));
     }
@@ -330,9 +550,8 @@ f.shiftOut = function(dataPin, clockPin, bitOrder, val, callback) {
         }
     }
 };
-f.shiftOut.args = ['dataPin', 'clockPin', 'bitOrder', 'val', 'callback'];
 
-f.attachInterrupt = function(pin, handler, mode, callback) {
+f.attachInterrupt.f = function(pin, handler, mode, callback) {
     if(typeof callback == 'undefined') {
         return(my.wait_for(f.attachInterrupt, arguments, 'attached', true));
     }
@@ -397,9 +616,8 @@ f.attachInterrupt = function(pin, handler, mode, callback) {
     callback(resp);
     return;
 };
-f.attachInterrupt.args = ['pin', 'handler', 'mode', 'callback'];
 
-f.detachInterrupt = function(pin, callback) {
+f.detachInterrupt.f = function(pin, callback) {
     if(typeof callback == 'undefined') {
         return(my.wait_for(f.detachInterrupt, arguments, 'detached', true));
     }
@@ -414,11 +632,10 @@ f.detachInterrupt = function(pin, callback) {
     delete gpioInt[n];
     callback({'pin':pin, 'detached':true});
 };
-f.detachInterrupt.args = ['pin', 'callback'];
 
 // See http://processors.wiki.ti.com/index.php/AM335x_PWM_Driver's_Guide
 // That guide isn't useful for the new pwm_test interface
-f.analogWrite = function(pin, value, freq, callback) {
+f.analogWrite.f = function(pin, value, freq, callback) {
     if(typeof callback == 'undefined') {
         return(my.wait_for(f.analogWrite, arguments, 'err', true));
     }
@@ -472,9 +689,8 @@ f.analogWrite = function(pin, value, freq, callback) {
         if(callback) callback(resp);
     }
 };
-f.analogWrite.args = ['pin', 'value', 'freq', 'callback'];
 
-f.getEeproms = function(callback) {
+f.getEeproms.f = function(callback) {
     if(typeof callback == 'undefined') {
         return(my.wait_for(f.getEeproms, arguments));
     }    
@@ -485,9 +701,8 @@ f.getEeproms = function(callback) {
     }
     callback(eeproms);
 };
-f.getEeproms.args = ['callback'];
 
-f.readTextFile = function(filename, callback) {
+f.readTextFile.f = function(filename, callback) {
     if(typeof callback == 'undefined') {
         return(my.wait_for(f.readTextFile, arguments, 'data'));
     }    
@@ -497,9 +712,8 @@ f.readTextFile = function(filename, callback) {
         callback({'err':err, 'data':data});
     }
 };
-f.readTextFile.args = ['filename', 'callback'];
 
-f.writeTextFile = function(filename, data, callback) {
+f.writeTextFile.f = function(filename, data, callback) {
     if(typeof callback == 'undefined') {
         return(my.wait_for(f.writeTextFile, arguments, 'err', true));
     }    
@@ -509,9 +723,8 @@ f.writeTextFile = function(filename, data, callback) {
         callback({'err':err});
     }
 };
-f.writeTextFile.args = ['filename', 'data', 'callback'];
 
-f.getPlatform = function(callback) {
+f.getPlatform.f = function(callback) {
     if(typeof callback == 'undefined') {
         return(my.wait_for(f.getPlatform, arguments));
     }    
@@ -533,18 +746,16 @@ f.getPlatform = function(callback) {
     platform = hw.readPlatform(platform);
     callback(platform);
 };
-f.getPlatform.args = ['callback'];
 
-f.echo = function(data, callback) {
+f.echo.f = function(data, callback) {
     if(typeof callback == 'undefined') {
         return(my.wait_for(f.echo, arguments, 'data'));
     }    
     winston.info(data);
     callback({'data': data});
 };
-f.echo.args = ['data', 'callback'];
 
-f.setDate = function(date, callback) {
+f.setDate.f = function(date, callback) {
     if(typeof callback == 'undefined') {
         return(my.wait_for(f.setDate, arguments, 'error', true));
     }    
@@ -554,9 +765,8 @@ f.setDate = function(date, callback) {
         callback({'error': error, 'stdout':stdout, 'stderr':stderr});
     }
 };
-f.setDate.args = ['date', 'callback'];
 
-f.delay = function(ms) {
+exports.delay = function(ms) {
     var fiber = fibers.current;
     if(typeof fiber == 'undefined') {
         winston.error('sleep may only be called within the setup or run functions');
@@ -571,7 +781,8 @@ f.delay = function(ms) {
 // Exported variables
 exports.bone = bone; // this likely needs to be platform and be detected
 for(var x in f) {
-    exports[x] = f[x];
+    exports[x] = f[x].f;
+    exports[x].args = f[x].args;
 }
 for(var x in functions) {
     exports[x] = functions[x];
