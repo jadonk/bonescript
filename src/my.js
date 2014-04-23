@@ -235,11 +235,14 @@ exports.load_dt = function(name, pin, resp, callback) {
         onWriteSlots(resp.err);
     }
     
+    if(debug) winston.debug('load_dt resp: ' + JSON.stringify(resp));
+    if(debug) winston.debug('load_dt return: ' + (typeof resp.err == 'undefined'));
     return(typeof resp.err == 'undefined');
 };
 
 exports.create_dt = function(pin, data, template, load, force_create, resp, callback) {
     if(debug) winston.debug('create_dt(' + [pin.key, data, template, load, force_create, JSON.stringify(resp)] + ')');
+    resp = resp || {};
     template = template || 'bspm';
     load = (typeof load === 'undefined') ? true : load;
     var fragment = template + '_' + pin.key + '_' + data.toString(16);
@@ -312,7 +315,7 @@ exports.create_dt = function(pin, data, template, load, force_create, resp, call
     }
 
     if(callback) callback(resp);    
-    return(resp);
+    return(typeof resp.err == 'undefined');
 };
 
 exports.myeval = function(x) {
