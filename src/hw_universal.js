@@ -297,6 +297,7 @@ exports.writePWMFreqAndValue = function(pin, pwm, freq, value, resp, callback) {
             fs.writeFileSync(path+'/period', period);
         }
         if(debug) winston.debug('Updating PWM duty: ' + duty);
+        //if(duty == 0) winston.error('Updating PWM duty: ' + duty);
         fs.writeFileSync(path+'/duty', duty);
     } catch(ex) {
         resp.err = 'error updating PWM freq and value: ' + path + ', ' + ex;

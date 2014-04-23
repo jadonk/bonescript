@@ -7,6 +7,7 @@ var winston = require('winston');
 var os = require('os');
 var hw_oldkernel = require('./src/hw_oldkernel');
 var hw_capemgr = require('./src/hw_capemgr');
+var hw_universal = require('./src/hw_universal');
 var hw_simulator = require('./src/hw_simulator');
 var bone = require('./src/bone');
 var functions = require('./src/functions');
@@ -23,7 +24,10 @@ var debug = process.env.DEBUG ? true : false;
 // Detect if we are on a Beagle
 var hw;
 if(os.type() == 'Linux' || os.arch() == 'arm') {
-    if(my.is_capemgr()) {
+    if(false) {
+        hw = hw_universal;
+        if(debug) winston.debug('Using Universal Cape interface');
+    } else if(my.is_capemgr()) {
         hw = hw_capemgr;
         if(debug) winston.debug('Using CapeMgr interface');
     } else {
