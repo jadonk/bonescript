@@ -1,5 +1,7 @@
 var winston = require('winston');
 
+var debug = process.env.PARSE_DEBUG ? true : false;
+
 // This parses pinmux data from the register value
 var modeFromStatus = function(pinData, mode) {
     mode = mode || {};
@@ -24,7 +26,7 @@ var modeFromStatus = function(pinData, mode) {
 };
 
 var modeFromOmapMux = function(readout, mode) {
-    winston.debug('' + readout);
+    if(debug) winston.debug('' + readout);
     mode = mode || {};
     // The format read from debugfs looks like this:
     // name: mcasp0_axr0.spi1_d1 (0x44e10998/0x998 = 0x0023), b NA, t NA
@@ -42,7 +44,7 @@ var modeFromOmapMux = function(readout, mode) {
         mode.mux = breakdown[1].split('|')[1].substr(-1);
         // Parse the mux register value, '0x0023' in the above example
         var pinData = parseInt(breakdown[0].split('=')[1].substr(1,6), 16);
-        winston.debug('pinData = ' + pinData);
+        if(debug) winston.debug('pinData = ' + pinData);
         mode = modeFromStatus(pinData, mode);
     } catch(ex2) {
         winston.info('Unable to parse mux mode "' + breakdown + '": ' + ex2);
@@ -66,7 +68,7 @@ var modeFromOmapMux = function(readout, mode) {
 };
 
 var modeFromPinctrl = function(pins, muxRegOffset, muxBase, mode) {
-    winston.debug('' + pins);
+    if(debug) winston.debug('' + pins);
     muxBase = muxBase || 0x44e10800;
     mode = mode || {};
     // The format read from debugfs looks like this:
@@ -79,9 +81,9 @@ var modeFromPinctrl = function(pins, muxRegOffset, muxBase, mode) {
     var pattern = new RegExp('pin ([0-9]+) .([0-9a-f]+). ([0-9a-f]+) pinctrl-single');
     var muxAddress = muxBase + muxRegOffset;
     for(var i = 0; i < numRegistered; i++) {
-        winston.debug('pinLine = ' + pinLines[i + 1]);
+        if(debug) winston.debug('pinLine = ' + pinLines[i + 1]);
         var parsedFields = pattern.exec(pinLines[i + 1]);
-        winston.debug('parsedFields = ' + parsedFields);
+        if(debug) winston.debug('parsedFields = ' + parsedFields);
         //var index = parseInt(parsedFields[1], 10);
         var address = parseInt(parsedFields[2], 16);
         var status = parseInt(parsedFields[3], 16);
