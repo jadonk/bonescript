@@ -8,6 +8,9 @@ var url = require('url');
 var winston = require('winston');
 var socketio = require('socket.io');
 var express = require('express');
+var autorun = require('./src/autorun');
+
+autorun.autorun('/var/lib/cloud9/autorun');
 
 myrequire('systemd', function() {
     winston.debug("Startup as socket-activated service under systemd not enabled");
