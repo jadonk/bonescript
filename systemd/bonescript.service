@@ -1,7 +1,12 @@
 [Unit]
 Description=Bonescript server
+ConditionPathExists=|/var/lib/cloud9
 
 [Service]
-WorkingDirectory=/usr/lib/node_modules/bonescript
-ExecStart=/usr/bin/node server.js
+WorkingDirectory=/var/lib/cloud9
+EnvironmentFile=/etc/default/node
+ExecStart=npm start -g bonescript
 SyslogIdentifier=bonescript
+
+[Install]
+WantedBy=multi-user.target
