@@ -200,7 +200,7 @@ exports.create_dt = function(pin, data, template, load, force_create, resp, call
     if(force_create) {
         createDTS();
     } else {
-        exports.file_exists(dtboFilename, onDTBOExists);
+        exports.file_exists(dtboFilename, onDTBOExistsTest);
     }
     
     function onDTBOExistsTest(exists) {
