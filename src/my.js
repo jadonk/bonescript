@@ -75,7 +75,8 @@ exports.file_find = function(path, prefix, attempts, callback) {
                 onReadDir(null, files);
             } catch(ex) {
                 if(debug) winston.debug('Error reading ' + path);
-                return(resp.path);        
+                return(resp.path);
+                
             }
             if(resp.path) return(resp.path);
         }
@@ -200,7 +201,7 @@ exports.create_dt = function(pin, data, template, load, force_create, resp, call
     if(force_create) {
         createDTS();
     } else {
-        exports.file_exists(dtboFilename, onDTBOExists);
+        exports.file_exists(dtboFilename, onDTBOExistsTest);
     }
     
     function onDTBOExistsTest(exists) {

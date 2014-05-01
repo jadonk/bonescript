@@ -191,7 +191,7 @@ f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
         // Enable GPIO
         if(mux == 7) {
             // Export the GPIO controls
-            resp = hw.exportGPIOControls(pin, direction, resp, onExport);        
+            resp = hw.exportGPIOControls(pin, direction, resp, onExport);
         } else {
             delete gpio[n];
             if(callback) callback(resp);

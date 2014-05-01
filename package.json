@@ -4,7 +4,7 @@
     "email": "jkridner@beagleboard.org",
     "url": "http://blog.hangerhead.com"
   },
-  "name": "bonescript",
+  "name": "obonescript",
   "description": "Physical computing library for embedded Linux",
   "keywords": [
     "embedded",
