@@ -547,7 +547,7 @@ f.echo.args = ['data', 'callback'];
 f.setDate = function(date, callback) {
     if(typeof callback == 'undefined') {
         return(my.wait_for(f.setDate, arguments, 'error', true));
-    }    
+    }
     child_process.exec('date -s "' + date + '"', dateResponse);
     
     function dateResponse(error, stdout, stderr) {

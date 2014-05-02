@@ -422,7 +422,7 @@ exports.wait_for = function(fn, myargs, result_name, no_error) {
         if(!myCallback.called) {
             yielded = true;
             fibers.yield();
-        }    
+        }
     }
     
     function myCallback(x) {
