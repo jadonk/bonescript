@@ -87,7 +87,7 @@ module.exports = {
             var address = parseInt(parsedFields[2], 16);
             var status = parseInt(parsedFields[3], 16);
             if(address == muxAddress) {
-                mode = modeFromStatus(status, mode);
+                mode = module.exports.modeFromStatus(status, mode);
                 return(mode);
             }
         }
