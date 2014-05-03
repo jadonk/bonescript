@@ -3,7 +3,7 @@ var winston = require('winston');
 var my = require('./my');
 var parse = require('./parse');
 
-var debug = true;
+var debug = process.env.DEBUG ? true : false;
 
 var gpioFile = {};
 var pwmPrefix = {};
