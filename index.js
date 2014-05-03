@@ -369,8 +369,6 @@ f.attachInterrupt = function(pin, handler, mode, callback) {
         return;
     }
 
-    handler = (typeof handler === "string") ? my.myeval('(' + handler + ')') : handler;
-
     var intHandler = function(err, fd, events) {
         var m = {};
         if(err) {
