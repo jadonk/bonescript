@@ -1,6 +1,6 @@
 // Copyright (C) 2011 - Texas Instruments, Jason Kridner
 //
-//
+// Modified by Aditya Patadia, Octal Consulting LLP
 var fs = require('fs');
 var child_process = require('child_process');
 var winston = require('winston');
@@ -15,7 +15,6 @@ var iic = require('./src/iic');
 var my = require('./src/my');
 var package_json = require('./package.json');
 var g = require('./src/constants');
-var fibers = my.require('fibers');
 var epoll = my.require('epoll');
 
 var debug = process.env.DEBUG ? true : false;
@@ -488,7 +487,7 @@ f.getEeproms.args = ['callback'];
 f.readTextFile = function(filename, callback) {
     if(typeof callback == 'undefined') {
         return(my.wait_for(f.readTextFile, arguments, 'data'));
-    }    
+    }
     fs.readFile(filename, 'ascii', cb);
     
     function cb(err, data) {
@@ -500,7 +499,7 @@ f.readTextFile.args = ['filename', 'callback'];
 f.writeTextFile = function(filename, data, callback) {
     if(typeof callback == 'undefined') {
         return(my.wait_for(f.writeTextFile, arguments, 'err', true));
-    }    
+    }
     fs.writeFile(filename, data, 'ascii', cb);
     
     function cb(err) {
@@ -512,7 +511,7 @@ f.writeTextFile.args = ['filename', 'data', 'callback'];
 f.getPlatform = function(callback) {
     if(typeof callback == 'undefined') {
         return(my.wait_for(f.getPlatform, arguments));
-    }    
+    }
     var platform = {
         'platform': bone,
         'name': "BeagleBone",
@@ -536,7 +535,7 @@ f.getPlatform.args = ['callback'];
 f.echo = function(data, callback) {
     if(typeof callback == 'undefined') {
         return(my.wait_for(f.echo, arguments, 'data'));
-    }    
+    }
     winston.info(data);
     callback({'data': data});
 };
@@ -553,18 +552,6 @@ f.setDate = function(date, callback) {
     }
 };
 f.setDate.args = ['date', 'callback'];
-
-f.delay = function(ms) {
-    var fiber = fibers.current;
-    if(typeof fiber == 'undefined') {
-        winston.error('sleep may only be called within the setup or run functions');
-        return;
-    }
-    setTimeout(function() {
-        fiber.run();
-    }, ms);
-    fibers.yield();
-};
 
 // Exported variables
 exports.bone = bone; // this likely needs to be platform and be detected
