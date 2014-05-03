@@ -213,7 +213,7 @@ f.pinMode.args = ['pin', 'direction', 'mux', 'pullup', 'slew', 'callback'];
 
 f.digitalWrite = function(pin, value, callback) {
     if(typeof callback == 'undefined') {
-        return(my.wait_for(f.digitalWrite, arguments, 'err', true));
+        hw.writeGPIOValue(pin, value);
     }
     var myCallback = function(resp) {
         if(callback) callback({'err': resp, 'complete':true});
@@ -608,13 +608,3 @@ function run() {
     }
 }
 process.nextTick(run);
-
-// Global variable assignments
-// This section is broken out because it will eventually be deprecated
-function setGlobals() {
-    for(var x in exports) {
-        global[x] = exports[x];
-    }
-    global.run = run;
-}
-exports.setGlobals = setGlobals;

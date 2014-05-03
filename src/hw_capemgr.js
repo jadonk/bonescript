@@ -10,7 +10,7 @@ var gpioFile  = {};
 
 module.exports = {
 
-    logfile :'/var/lib/cloud9/bonescript.log',
+    logfile : '/var/lib/cloud9/bonescript.log',
 
     readPWMFreqAndValue : function(pin, pwm) {
         var mode = {};
@@ -214,6 +214,21 @@ module.exports = {
         }
         if(debug) winston.debug("gpioFile = " + gpioFile[pin.key]);
         fs.writeFile(gpioFile[pin.key], '' + value, null, callback);
+    },
+
+    writeGPIOValueSync : function(pin, value) {
+        if(typeof gpioFile[pin.key] == 'undefined') {
+            gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
+            if(pin.led) {
+                gpioFile[pin.key] = "/sys/class/leds/beaglebone:";
+                gpioFile[pin.key] += "green:" + pin.led + "/brightness";
+            }
+            if(!my.file_existsSync(gpioFile[pin.key])) {
+                winston.error("Unable to find gpio: " + gpioFile[pin.key]);
+            }
+        }
+        if(debug) winston.debug("gpioFile = " + gpioFile[pin.key]);
+        fs.writeFileSync(gpioFile[pin.key], '' + value, null);
     },
 
     readGPIOValue : function(pin, resp, callback) {
