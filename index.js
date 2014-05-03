@@ -212,17 +212,17 @@ f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
 f.pinMode.args = ['pin', 'direction', 'mux', 'pullup', 'slew', 'callback'];
 
 f.digitalWrite = function(pin, value, callback) {
-    if(typeof callback == 'undefined') {
-        hw.writeGPIOValueSync(pin, value);
-    }
     var myCallback = function(resp) {
         if(callback) callback({'err': resp, 'complete':true});
     };
     pin = my.getpin(pin);
     if(debug) winston.debug('digitalWrite(' + [pin.key, value] + ');');
     value = parseInt(Number(value), 2) ? 1 : 0;
-
-    hw.writeGPIOValue(pin, value, myCallback);
+    if(typeof callback == 'undefined') {
+        hw.writeGPIOValueSync(pin, value);
+    } else {
+        hw.writeGPIOValue(pin, value, myCallback);
+    }
 };
 f.digitalWrite.args = ['pin', 'value', 'callback'];
 
