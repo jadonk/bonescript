@@ -11,22 +11,24 @@ var g = require('./constants');
 var debug = process.env.DEBUG ? true : false;
 var sysfsFiles = {};
 
+function myRequire(packageName, onfail) {
+    var y = {};
+    try {
+        y = require(packageName);
+        y.exists = true;
+    } catch(ex) {
+        y.exists = false;
+        if(debug) winston.debug("Optional package '" + packageName + "' not loaded");
+        if(onfail) onfail();
+    }
+    return(y);
+}
+
+var fibers = myRequire("fibers");
+
 module.exports = {
 
-    fibers : module.exports.require('fibers'),
-
-    require : function(packageName, onfail) {
-        var y = {};
-        try {
-            y = require(packageName);
-            y.exists = true;
-        } catch(ex) {
-            y.exists = false;
-            if(debug) winston.debug("Optional package '" + packageName + "' not loaded");
-            if(onfail) onfail();
-        }
-        return(y);
-    },
+    require : myRequire,
 
     is_capemgr : function(callback) {
         return(module.exports.find_sysfsFile('capemgr', '/sys/devices', 'bone_capemgr.', callback));
@@ -394,7 +396,7 @@ module.exports = {
     //   https://github.com/luciotato/waitfor/blob/master/waitfor.js
     //   https://github.com/0ctave/node-sync/blob/master/lib/sync.js
     wait_for : function(fn, myargs, result_name, no_error) {
-        var fiber = module.exports.fibers.current;
+        var fiber = fibers.current;
         var yielded = false;
         var args = [];
         var result;
@@ -422,7 +424,7 @@ module.exports = {
             fn.apply(this, args);
             if(!myCallback.called) {
                 yielded = true;
-                module.exports.fibers.yield();
+                fibers.yield();
             }
         }
         
