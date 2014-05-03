@@ -58,7 +58,7 @@ module.exports = {
 
     // Returns the value shifted right by 8 bits
     highByte : function(value) {
-        return ( this.lowByte(value >>8));
+        return ( module.exports.lowByte(value >>8));
     },
 
     // Returns the value of the bit number specified (return:0 or 1) 

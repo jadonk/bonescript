@@ -2,6 +2,7 @@ var fs = require('fs');
 var winston = require('winston');
 var my = require('./my');
 var parse = require('./parse');
+var debug = process.env.DEBUG ? true : false;
 
 module.exports = {
 
@@ -40,7 +41,7 @@ module.exports = {
         var readPinctrl = function(err, data){
             if(err) {
                 mode.err = 'readPinctrl error: ' + err;
-                if(process.env.NODE_ENV === "development") winston.debug(mode.err);
+                if(debug) winston.debug(mode.err);
                 callback(mode);
             }
             mode = parse.modeFromPinctrl(data, muxRegOffset, 0x44e10800, mode);
@@ -50,7 +51,7 @@ module.exports = {
             if(exists) {
                 fs.readFile(pinctrlFile, 'utf8', readPinctrl);
             } else {
-                if(process.env.NODE_ENV === "development") winston.debug('getPinMode(' + pin.key + '): no valid mux data');
+                if(debug) winston.debug('getPinMode(' + pin.key + '): no valid mux data');
                 callback(mode);
             }
         };
@@ -58,7 +59,7 @@ module.exports = {
     },
 
     setPinMode : function(pin, pinData, template, resp, callback) {
-        if(process.env.NODE_ENV === "development") winston.debug('hw.setPinMode(' + [pin.key, pinData, template, JSON.stringify(resp)] + ');');
+        if(debug) winston.debug('hw.setPinMode(' + [pin.key, pinData, template, JSON.stringify(resp)] + ');');
         if(template == 'bspm') {
             module.exports.gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
             doCreateDT(resp);
@@ -91,7 +92,7 @@ module.exports = {
             function onFindOCP(ocp) {
                 if(ocp.err) {
                     resp.err = "Error searching for ocp: " + ocp.err;
-                    if(process.env.NODE_ENV === "development") winston.debug(resp.err);
+                    if(debug) winston.debug(resp.err);
                     callback(resp);
                     return;
                 }
@@ -101,7 +102,7 @@ module.exports = {
             function onFindPWM(pwm_test) {
                 if(pwm_test.err) {
                     resp.err = "Error searching for pwm_test: " + pwm_test.err;
-                    if(process.env.NODE_ENV === "development") winston.debug(resp.err);
+                    if(debug) winston.debug(resp.err);
                     callback(resp);
                     return;
                 }
@@ -110,7 +111,7 @@ module.exports = {
                 function onFindPeriod(period) {
                     if(period.err) {
                         resp.err = "Error searching for period: " + period.err;
-                        if(process.env.NODE_ENV === "development") winston.debug(resp.err);
+                        if(debug) winston.debug(resp.err);
                         callback(resp);
                         return;
                     }
@@ -122,7 +123,7 @@ module.exports = {
             function onPolarityWrite(err) {
                 if(err) {
                     resp.err = "Error writing PWM polarity: " + err;
-                    if(process.env.NODE_ENV === "development") winston.debug(resp.err);
+                    if(debug) winston.debug(resp.err);
                 }
                 callback(resp);
             }
@@ -144,24 +145,24 @@ module.exports = {
     },
 
     exportGPIOControls : function(pin, direction, resp, callback) {
-        if(process.env.NODE_ENV === "development") winston.debug('hw.exportGPIOControls(' + [pin.key, direction, resp] + ');');
+        if(debug) winston.debug('hw.exportGPIOControls(' + [pin.key, direction, resp] + ');');
         var n = pin.gpio;
         my.file_exists(module.exports.gpioFile[pin.key], onFileExists);
         
         function onFileExists(exists) {
             if(exists) {
-                if(process.env.NODE_ENV === "development") winston.debug("gpio: " + n + " already exported.");
+                if(debug) winston.debug("gpio: " + n + " already exported.");
                 fs.writeFile("/sys/class/gpio/gpio" + n + "/direction",
                     direction, null, onGPIODirectionSet);
             } else {
-                if(process.env.NODE_ENV === "development") winston.debug("exporting gpio: " + n);
+                if(debug) winston.debug("exporting gpio: " + n);
                 fs.writeFile("/sys/class/gpio/export", "" + n, null, onGPIOExport);
             }
         }
      
         function onGPIOExport(err) {
             if(err) onError(err);
-            if(process.env.NODE_ENV === "development") winston.debug("setting gpio " + n +
+            if(debug) winston.debug("setting gpio " + n +
                 " direction to " + direction);
             fs.writeFile("/sys/class/gpio/gpio" + n + "/direction",
                 direction, null, onGPIODirectionSet);
@@ -175,7 +176,7 @@ module.exports = {
         function onError(err) {
             resp.err = 'Unable to export gpio-' + n + ': ' + err;
             resp.value = false;
-            if(process.env.NODE_ENV === "development") winston.debug(resp.err);
+            if(debug) winston.debug(resp.err);
             findOwner();
         }
         
@@ -190,7 +191,7 @@ module.exports = {
                     var y = gpioUsers[x].match(/gpio-(\d+)\s+\((\S+)\s*\)/);
                     if(y && y[1] == n) {
                         resp.err += '\nconsumed by ' + y[2];
-                        if(process.env.NODE_ENV === "development") winston.debug(resp.err);
+                        if(debug) winston.debug(resp.err);
                     }
                 }
             }
@@ -210,7 +211,7 @@ module.exports = {
                 winston.error("Unable to find gpio: " + module.exports.gpioFile[pin.key]);
             }
         }
-        if(process.env.NODE_ENV === "development") winston.debug("gpioFile = " + module.exports.gpioFile[pin.key]);
+        if(debug) winston.debug("gpioFile = " + module.exports.gpioFile[pin.key]);
         fs.writeFile(module.exports.gpioFile[pin.key], '' + value, null, callback);
     },
 
@@ -232,7 +233,7 @@ module.exports = {
         var ocp = my.is_ocp();
         if(!ocp) {
             resp.err = 'enableAIN: Unable to open ocp file';
-            if(process.env.NODE_ENV === "development") winston.debug(resp.err);
+            if(debug) winston.debug(resp.err);
             callback(resp);
             return;
         }
@@ -250,10 +251,10 @@ module.exports = {
         function onHelper(x) {
             if(x.err || !x.path) {
                 resp.err = 'Error enabling analog inputs: ' + x.err;
-                if(process.env.NODE_ENV === "development") winston.debug(resp.err);
+                if(debug) winston.debug(resp.err);
             } else {
                 module.exports.ainPrefix = x.path + '/AIN';
-                if(process.env.NODE_ENV === "development") winston.debug("Setting ainPrefix to " + module.exports.ainPrefix);
+                if(debug) winston.debug("Setting ainPrefix to " + module.exports.ainPrefix);
             }
             callback(x);
         }
@@ -285,7 +286,7 @@ module.exports = {
     },
 
     writePWMFreqAndValue : function(pin, pwm, freq, value, resp, callback) {
-        if(process.env.NODE_ENV === "development") winston.debug('hw.writePWMFreqAndValue(' + [pin.key,pwm,freq,value,resp] + ');');
+        if(debug) winston.debug('hw.writePWMFreqAndValue(' + [pin.key,pwm,freq,value,resp] + ');');
         var path = module.exports.pwmPrefix[pin.pwm.name];
         try {
             var period = Math.round( 1.0e9 / freq ); // period in ns
