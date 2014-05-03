@@ -286,7 +286,7 @@ f.analogRead = function(pin, callback) {
     function doAnalogRead() {
         hw.readAIN(pin, resp, callback);
     }
-}; 
+};
 f.analogRead.args = ['pin', 'callback'];
 
 f.shiftOut = function(dataPin, clockPin, bitOrder, val, callback) {
