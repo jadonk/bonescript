@@ -257,20 +257,6 @@ module.exports = {
         }
     },
 
-    myeval : function(x) {
-        if(debug) winston.debug('myeval("' + x + '");');
-        var y;
-        try {
-            y = eval(x);
-        } catch(ex) {
-            y = undefined;
-            winston.error('myeval error: ' + ex);
-            throw('myeval error: ' + ex);
-        }
-        if(debug) winston.debug('result = ' + y);
-        return(y);
-    },
-
     getpin : function(pin) {
         if(typeof pin == 'object') return(pin);
         else if(typeof pin == 'string') return(bone.pins[pin]);
