@@ -216,21 +216,6 @@ module.exports = {
         fs.writeFile(gpioFile[pin.key], '' + value, null, callback);
     },
 
-    writeGPIOValueSync : function(pin, value) {
-        if(typeof gpioFile[pin.key] == 'undefined') {
-            gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
-            if(pin.led) {
-                gpioFile[pin.key] = "/sys/class/leds/beaglebone:";
-                gpioFile[pin.key] += "green:" + pin.led + "/brightness";
-            }
-            if(!my.file_existsSync(gpioFile[pin.key])) {
-                winston.error("Unable to find gpio: " + gpioFile[pin.key]);
-            }
-        }
-        if(debug) winston.debug("gpioFile = " + gpioFile[pin.key]);
-        fs.writeFileSync(gpioFile[pin.key], '' + value);
-    },
-
     readGPIOValue : function(pin, resp, callback) {
         var gpioFile = '/sys/class/gpio/gpio' + pin.gpio + '/value';
         var readFile = function(err, data) {
@@ -303,7 +288,7 @@ module.exports = {
 
     writePWMFreqAndValue : function(pin, pwm, freq, value, resp, callback) {
         if(debug) winston.debug('hw.writePWMFreqAndValue(' + [pin.key,pwm,freq,value,resp] + ');');
-        var path = pwmPrefix[pin.pwm.name];
+        var path = pwmPrefix[pin.pwm.name];§
         try {
             var period = Math.round( 1.0e9 / freq ); // period in ns
             var duty = Math.round( period * value );
