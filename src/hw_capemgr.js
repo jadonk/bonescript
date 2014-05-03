@@ -288,7 +288,7 @@ module.exports = {
 
     writePWMFreqAndValue : function(pin, pwm, freq, value, resp, callback) {
         if(debug) winston.debug('hw.writePWMFreqAndValue(' + [pin.key,pwm,freq,value,resp] + ');');
-        var path = pwmPrefix[pin.pwm.name];§
+        var path = pwmPrefix[pin.pwm.name];
         try {
             var period = Math.round( 1.0e9 / freq ); // period in ns
             var duty = Math.round( period * value );
