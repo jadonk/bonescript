@@ -213,7 +213,7 @@ f.pinMode.args = ['pin', 'direction', 'mux', 'pullup', 'slew', 'callback'];
 
 f.digitalWrite = function(pin, value, callback) {
     if(typeof callback == 'undefined') {
-        hw.writeGPIOValue(pin, value);
+        hw.writeGPIOValueSync(pin, value);
     }
     var myCallback = function(resp) {
         if(callback) callback({'err': resp, 'complete':true});
