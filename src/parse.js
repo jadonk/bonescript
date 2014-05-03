@@ -44,7 +44,7 @@ module.exports = {
             // Parse the mux register value, '0x0023' in the above example
             var pinData = parseInt(breakdown[0].split('=')[1].substr(1,6), 16);
             winston.debug('pinData = ' + pinData);
-            mode = modeFromStatus(pinData, mode);
+            mode = module.exports.modeFromStatus(pinData, mode);
         } catch(ex2) {
             winston.info('Unable to parse mux mode "' + breakdown + '": ' + ex2);
         }
