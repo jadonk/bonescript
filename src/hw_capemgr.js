@@ -4,6 +4,7 @@ var my = require('./my');
 var parse = require('./parse');
 
 var debug = process.env.DEBUG ? true : false;
+
 var ainPrefix = "";
 var pwmPrefix = {};
 var gpioFile  = {};

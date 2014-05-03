@@ -44,8 +44,6 @@ if(debug) {
     winston.setLevels(winston.config.syslog.levels);
 }
 
-if(debug) winston.debug('index.js loaded');
-
 var f = {};
 
 // Keep track of allocated resources
@@ -477,7 +475,7 @@ f.analogWrite.args = ['pin', 'value', 'freq', 'callback'];
 f.getEeproms = function(callback) {
     if(typeof callback == 'undefined') {
         return(my.wait_for(f.getEeproms, arguments));
-    }    
+    }
     var eeproms = {};
     eeproms = hw.readEeproms(eeproms);
     if(eeproms == {}) {
@@ -586,25 +584,4 @@ for(var x in g) {
     exports[x] = g[x];
 }
 
-var alreadyRan = false;
-function run() {
-    if(debug) winston.debug('Calling run()');
-    if(alreadyRan) return(false);
-    alreadyRan = true;
-    // 'setup' and 'loop' are globals that may or may not be defined
-    if(typeof global.setup == 'function' || typeof global.loop == 'function') {
-        fibers(function() {
-            if(typeof global.setup == 'function') {
-                winston.debug('Running setup()');
-                global.setup();
-            }
-            if(typeof global.loop == 'function') {
-                if(debug) winston.debug('Starting loop()');
-                while(1) {
-                    global.loop();
-                }
-            }
-        }).run();
-    }
-}
-process.nextTick(run);
+if(debug) winston.debug('index.js loaded');
