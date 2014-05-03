@@ -191,7 +191,9 @@ exports.load_dt = function(name, pin, resp, callback) {
 };
 
 exports.create_dt = function(pin, data, template, load, force_create, resp, callback) {
-    if(debug) winston.debug('create_dt(' + [pin.key, data, template, load, force_create, JSON.stringify(resp)] + ')');
+    if(debug){
+        winston.debug('create_dt(' + [pin.key, data, template, load, force_create, JSON.stringify(resp)] + ')');
+    }
     template = template || 'bspm';
     load = (typeof load === 'undefined') ? true : load;
     var fragment = template + '_' + pin.key + '_' + data.toString(16);
