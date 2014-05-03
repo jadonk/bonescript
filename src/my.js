@@ -1,7 +1,7 @@
 // Copyright (C) 2013 - Texas Instruments, Jason Kridner
 //
 // This is meant to hold some private functions
-//
+// Modified by Aditya Patadia, Octal Consulting LLP
 var fs = require('fs');
 var winston = require('winston');
 var child_process = require('child_process');
@@ -9,6 +9,7 @@ var bone = require('./bone');
 var g = require('./constants');
 var debug = process.env.DEBUG ? true : false;
 var sysfsFiles = {};
+
 
 
 module.exports = {

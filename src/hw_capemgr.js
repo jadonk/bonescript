@@ -2,20 +2,21 @@ var fs = require('fs');
 var winston = require('winston');
 var my = require('./my');
 var parse = require('./parse');
+
 var debug = process.env.DEBUG ? true : false;
+var ainPrefix = "";
+var pwmPrefix = {};
+var gpioFile  = {};
 
 module.exports = {
 
     logfile :'/var/lib/cloud9/bonescript.log',
-    ainPrefix : "",
-    pwmPrefix : {},
-    gpioFile  : {},
 
     readPWMFreqAndValue : function(pin, pwm) {
         var mode = {};
         try {
-            var period = fs.readFileSync(module.exports.pwmPrefix[pin.pwm.name]+'/period');
-            var duty = fs.readFileSync(module.exports.pwmPrefix[pin.pwm.name]+'/duty');
+            var period = fs.readFileSync(pwmPrefix[pin.pwm.name]+'/period');
+            var duty = fs.readFileSync(pwmPrefix[pin.pwm.name]+'/duty');
             mode.freq = 1.0e9 / period;
             mode.value = duty / period;
         } catch(ex) {
@@ -61,7 +62,7 @@ module.exports = {
     setPinMode : function(pin, pinData, template, resp, callback) {
         if(debug) winston.debug('hw.setPinMode(' + [pin.key, pinData, template, JSON.stringify(resp)] + ');');
         if(template == 'bspm') {
-            module.exports.gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
+            gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
             doCreateDT(resp);
         } else if(template == 'bspwm') {
             my.load_dt('am33xx_pwm', null, resp, doCreateDT);
@@ -115,7 +116,7 @@ module.exports = {
                         callback(resp);
                         return;
                     }
-                    module.exports.pwmPrefix[pin.pwm.name] = pwm_test.path;
+                    pwmPrefix[pin.pwm.name] = pwm_test.path;
                     fs.writeFile(pwm_test.path+'/polarity', 0, 'ascii', onPolarityWrite);
                 }
             }
@@ -147,7 +148,7 @@ module.exports = {
     exportGPIOControls : function(pin, direction, resp, callback) {
         if(debug) winston.debug('hw.exportGPIOControls(' + [pin.key, direction, resp] + ');');
         var n = pin.gpio;
-        my.file_exists(module.exports.gpioFile[pin.key], onFileExists);
+        my.file_exists(gpioFile[pin.key], onFileExists);
         
         function onFileExists(exists) {
             if(exists) {
@@ -201,18 +202,18 @@ module.exports = {
     },
 
     writeGPIOValue : function(pin, value, callback) {
-        if(typeof module.exports.gpioFile[pin.key] == 'undefined') {
-            module.exports.gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
+        if(typeof gpioFile[pin.key] == 'undefined') {
+            gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
             if(pin.led) {
-                module.exports.gpioFile[pin.key] = "/sys/class/leds/beaglebone:";
-                module.exports.gpioFile[pin.key] += "green:" + pin.led + "/brightness";
+                gpioFile[pin.key] = "/sys/class/leds/beaglebone:";
+                gpioFile[pin.key] += "green:" + pin.led + "/brightness";
             }
-            if(!my.file_existsSync(module.exports.gpioFile[pin.key])) {
-                winston.error("Unable to find gpio: " + module.exports.gpioFile[pin.key]);
+            if(!my.file_existsSync(gpioFile[pin.key])) {
+                winston.error("Unable to find gpio: " + gpioFile[pin.key]);
             }
         }
-        if(debug) winston.debug("gpioFile = " + module.exports.gpioFile[pin.key]);
-        fs.writeFile(module.exports.gpioFile[pin.key], '' + value, null, callback);
+        if(debug) winston.debug("gpioFile = " + gpioFile[pin.key]);
+        fs.writeFile(gpioFile[pin.key], '' + value, null, callback);
     },
 
     readGPIOValue : function(pin, resp, callback) {
@@ -253,15 +254,15 @@ module.exports = {
                 resp.err = 'Error enabling analog inputs: ' + x.err;
                 if(debug) winston.debug(resp.err);
             } else {
-                module.exports.ainPrefix = x.path + '/AIN';
-                if(debug) winston.debug("Setting ainPrefix to " + module.exports.ainPrefix);
+                ainPrefix = x.path + '/AIN';
+                if(debug) winston.debug("Setting ainPrefix to " + ainPrefix);
             }
             callback(x);
         }
     },
 
     readAIN : function(pin, resp, callback) {
-        var ainFile = module.exports.ainPrefix + pin.ain.toString();
+        var ainFile = ainPrefix + pin.ain.toString();
         fs.readFile(ainFile, readFile);
         
         function readFile(err, data) {
@@ -287,7 +288,7 @@ module.exports = {
 
     writePWMFreqAndValue : function(pin, pwm, freq, value, resp, callback) {
         if(debug) winston.debug('hw.writePWMFreqAndValue(' + [pin.key,pwm,freq,value,resp] + ');');
-        var path = module.exports.pwmPrefix[pin.pwm.name];
+        var path = pwmPrefix[pin.pwm.name];
         try {
             var period = Math.round( 1.0e9 / freq ); // period in ns
             var duty = Math.round( period * value );
