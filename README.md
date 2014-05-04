@@ -1,13 +1,24 @@
 Getting started
 ===============
-BoneScript is a node.js library for physical computing on embedded Linux,
+
+Fork
+----
+This is a fork of https://github.com/jadonk/bonescript. While the APIs are 
+same as original bonescript, we have changed many things under the hood. 
+
+This fork is created to make bonescript faster, fix bugs and make it work in 
+simulator mode under Mac OSX. We will also try to bring all features of bonescript
+as and when new version of bonescript is released. If we are lagging behind, just
+ping us and we will update.
+
+OctalBoneScript is a node.js library for physical computing on embedded Linux,
 starting with support for BeagleBone.
 
 Information on the language is available at http://nodejs.org.
 
 To check the version and see BoneScript is in your path, try running:
 ````sh
-node -pe "require('bonescript').getPlatform().bonescript"
+node -pe "require('octalbonescript').getPlatform().bonescript"
 ````
 
 Additional documentation is available at http://beagleboard.org/bonescript.
@@ -24,7 +35,7 @@ BoneScript comes installed on your BeagleBone. To update
 to the latest revision or install it on another distribution, use 'npm':
 
 ````sh
-TERM=none npm install -g bonescript
+TERM=none npm install -g octalbonescript
 ````
 
 Angstrom prerequisites:
@@ -90,7 +101,7 @@ in your physical computing productivity.
 Here's an example:
 
 ````javascript
-var b = require('bonescript');
+var b = require('octalbonescript');
 
 b.pinMode('P8_12', b.INPUT);
 b.pinMode('P8_13', b.OUTPUT);
