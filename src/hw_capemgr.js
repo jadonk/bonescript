@@ -214,7 +214,11 @@ module.exports = {
             }
         }
         if(debug) winston.debug("gpioFile = " + gpioFile[pin.key]);
-        fs.writeFile(gpioFile[pin.key], '' + value, null, callback);
+        fs.writeFile(gpioFile[pin.key], '' + value, null, onWriteGPIO);
+        function onWriteGPIO(err){
+            if(err) winston.err(" Writing to GPIO failed: "+err);
+            if(typeof callback == 'function') callback(err);
+        }
     },
 
     readGPIOValue : function(pin, resp, callback) {
@@ -287,7 +291,7 @@ module.exports = {
         return(resp);
     },
 
-    writePWMFreqAndValue : function(pin, pwm, freq, value, resp, callback) {
+    writePWMFreqAndValue : function(pin, pwm, freq, value, resp) {
         if(debug) winston.debug('hw.writePWMFreqAndValue(' + [pin.key,pwm,freq,value,resp] + ');');
         var path = pwmPrefix[pin.pwm.name];
         try {
