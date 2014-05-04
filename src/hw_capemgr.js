@@ -216,7 +216,7 @@ module.exports = {
         if(debug) winston.debug("gpioFile = " + gpioFile[pin.key]);
         fs.writeFile(gpioFile[pin.key], '' + value, null, onWriteGPIO);
         function onWriteGPIO(err){
-            if(err) winston.error(" Writing to GPIO failed: "+err);
+            if(err) winston.error("Writing to GPIO failed: "+err);
             if(typeof callback == 'function') callback(err);
         }
     },
