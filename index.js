@@ -12,6 +12,7 @@ var bone = require('./src/bone');
 var functions = require('./src/functions');
 var serial = require('./src/serial');
 var iic = require('./src/iic');
+var fibers = my.require('fibers');
 var my = require('./src/my');
 var package_json = require('./package.json');
 var g = require('./src/constants');
@@ -551,6 +552,19 @@ f.setDate = function(date, callback) {
 };
 f.setDate.args = ['date', 'callback'];
 
+f.delay = function(ms) {
+    var fiber = fibers.current;
+    if(typeof fiber == 'undefined') {
+        winston.error('sleep may only be called within the setup or run functions');
+        return;
+    }
+    setTimeout(function() {
+        fiber.run();
+    }, ms);
+    fibers.yield();
+};
+
+
 // Exported variables
 exports.bone = bone; // this likely needs to be platform and be detected
 for(var x in f) {
@@ -568,5 +582,28 @@ for(var x in iic) {
 for(var x in g) {
     exports[x] = g[x];
 }
+
+var alreadyRan = false;
+function run() {
+    if(debug) winston.debug('Calling run()');
+    if(alreadyRan) return(false);
+    alreadyRan = true;
+    // 'setup' and 'loop' are globals that may or may not be defined
+    if(typeof global.setup == 'function' || typeof global.loop == 'function') {
+        fibers(function() {
+            if(typeof global.setup == 'function') {
+                winston.debug('Running setup()');
+                global.setup();
+            }
+            if(typeof global.loop == 'function') {
+                if(debug) winston.debug('Starting loop()');
+                while(1) {
+                    global.loop();
+                }
+            }
+        }).run();
+    }
+}
+process.nextTick(run);
 
 if(debug) winston.debug('index.js loaded');

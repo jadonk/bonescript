@@ -214,14 +214,7 @@ module.exports = {
             }
         }
         if(debug) winston.debug("gpioFile = " + gpioFile[pin.key]);
-        fs.writeFile(gpioFile[pin.key], '' + value, null, writeFile);
-
-        function writeFile(err) {
-            if(err) {
-                winston.error(err);
-            }
-            callback(err);
-        }
+        fs.writeFile(gpioFile[pin.key], '' + value, null, callback);
     },
 
     readGPIOValue : function(pin, resp, callback) {
