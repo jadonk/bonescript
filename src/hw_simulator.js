@@ -61,7 +61,7 @@ module.exports = {
     writeGPIOValue : function(pin, value, callback) {
         winston.info('writeGPIOValue(' + [pin.key, value] + ')');
         if(callback) {
-            callback();
+            setImmediate(callback);
         }
     },
 
