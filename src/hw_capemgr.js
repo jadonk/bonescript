@@ -218,8 +218,7 @@ module.exports = {
 
         function writeFile(err) {
             if(err) {
-                resp.err = 'digitalWrite error: ' + err;
-                winston.error(resp.err);
+                winston.error(err);
             }
             callback(err);
         }
