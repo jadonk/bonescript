@@ -216,7 +216,7 @@ module.exports = {
         }
 
         function createDTS() {
-            var templateFilename = require.resolve('obonescript').replace('index.js',
+            var templateFilename = require.resolve('octalbonescript').replace('index.js',
                 'dts/' + template + '_template.dts');
             if(debug) winston.debug('Creating template: ' + templateFilename);
             var dts = fs.readFileSync(templateFilename, 'utf8');
