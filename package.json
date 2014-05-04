@@ -1,10 +1,10 @@
 {
   "author": {
-    "name": "Jason Kridner",
-    "email": "jkridner@beagleboard.org",
-    "url": "http://blog.hangerhead.com"
+    "name": "Aditya Patadia",
+    "email": "aditya@patadia.org",
+    "url": "http://aditya.patadia.org"
   },
-  "name": "obonescript",
+  "name": "octalbonescript",
   "description": "Physical computing library for embedded Linux",
   "keywords": [
     "embedded",
@@ -13,7 +13,9 @@
     "beaglebone",
     "physical",
     "gpio",
-    "arduino"
+    "arduino",
+    "bonescript",
+    "octalbonescript"
   ],
   "version": "0.2.5",
   "homepage": "http://beagleboard.org/bonescript",
@@ -32,12 +34,13 @@
     "systemd": "0.2.6",
     "winston": "0.6.2",
     "express": "3.1.0",
-    "epoll": "0.0.7",
     "fibers": "1.0.1"
   },
   "devDependencies": {},
   "scripts": {
     "start": "node server.js"
   },
-  "optionalDependencies": {}
+  "optionalDependencies": {
+    "epoll": "0.0.7"
+  }
 }
