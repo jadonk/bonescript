@@ -16,7 +16,7 @@
     "bonescript",
     "octalbonescript"
   ],
-  "version": "0.2.10",
+  "version": "0.2.11",
   "homepage": "http://beagleboard.org/bonescript",
   "repository": {
     "type": "git",

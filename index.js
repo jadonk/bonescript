@@ -18,7 +18,7 @@ var g = require('./src/constants');
 var fibers = my.require('fibers');
 var epoll = my.require('epoll');
 
-var debug = process.env.DEBUG ? true : false;
+var debug = (process.env.DEBUG.indexOf("bone")===-1) ? false : true;
 
 // Detect if we are on a Beagle
 var hw;

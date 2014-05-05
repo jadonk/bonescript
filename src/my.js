@@ -8,7 +8,7 @@ var child_process = require('child_process');
 var bone = require('./bone');
 var g = require('./constants');
 
-var debug = process.env.DEBUG ? true : false;
+var debug = (process.env.DEBUG.indexOf("bone")===-1) ? false : true;
 var sysfsFiles = {};
 
 function myRequire(packageName, onfail) {
@@ -114,7 +114,13 @@ module.exports = {
     // Note, this just makes sure there was an attempt to load the
     // devicetree fragment, not if it was successful
     load_dt : function(name, pin, resp, callback) {
-        if(debug) winston.debug('load_dt(' + [name, JSON.stringify(resp)] + ')');
+        if(debug) {
+            if(pin){
+                winston.debug('load_dt(' + [name, pin.key, JSON.stringify(resp)] + ')');
+            } else {
+                winston.debug('load_dt(' + [name, JSON.stringify(resp)] + ')');
+            }
+        }
         var slotsFile;
         var lastSlots;
         var writeAttempts = 0;
