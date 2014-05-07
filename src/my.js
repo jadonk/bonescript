@@ -9,6 +9,7 @@ var bone = require('./bone');
 var g = require('./constants');
 
 var debug = (process.env.DEBUG.indexOf("bone")===-1) ? false : true;
+
 var sysfsFiles = {};
 
 function myRequire(packageName, onfail) {

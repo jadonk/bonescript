@@ -36,9 +36,14 @@ if(os.type() == 'Linux' || os.arch() == 'arm') {
 }
 
 if(debug) {
+    winston.remove(winston.transports.Console);
     winston.add(winston.transports.File, {
         filename: hw.logfile,
         level: 'warn'
+    });
+    winston.add(winston.transports.Console, {
+        level: 'debug',
+        colorize: true
     });
 } else {
     winston.setLevels(winston.config.syslog.levels);
