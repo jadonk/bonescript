@@ -8,7 +8,12 @@ var child_process = require('child_process');
 var bone = require('./bone');
 var g = require('./constants');
 
-var debug = (process.env.DEBUG.indexOf("bone")===-1) ? false : true;
+var debug;
+if(process.env.DEBUG && process.env.DEBUG.indexOf("bone")!==-1){
+    debug = true;
+} else {
+    debug = false;
+}
 
 var sysfsFiles = {};
 

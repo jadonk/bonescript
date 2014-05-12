@@ -5,7 +5,12 @@ var eeprom = require('./eeprom');
 var hw_capemgr = require('./hw_capemgr');
 var winston = require('winston');
 
-var debug = (process.env.DEBUG.indexOf("bone")===-1) ? false : true;
+var debug;
+if(process.env.DEBUG && process.env.DEBUG.indexOf("bone")!==-1){
+    debug = true;
+} else {
+    debug = false;
+}
 
 var gpioFile = {};
 var pwmPrefix = {};

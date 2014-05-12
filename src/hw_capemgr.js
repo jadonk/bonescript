@@ -3,7 +3,12 @@ var winston = require('winston');
 var my = require('./my');
 var parse = require('./parse');
 
-var debug = (process.env.DEBUG.indexOf("bone")===-1) ? false : true;
+var debug;
+if(process.env.DEBUG && process.env.DEBUG.indexOf("bone")!==-1){
+    debug = true;
+} else {
+    debug = false;
+}
 
 var ainPrefix = "";
 var pwmPrefix = {};
