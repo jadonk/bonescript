@@ -116,7 +116,151 @@ exports.file_find = function(path, prefix, attempts, callback) {
         }
     }
     
-    return(resp);
+    return(resp.path);
+};
+
+// Note, this just makes sure there was an attempt to load the
+// devicetree fragment, not if it was successful
+exports.load_dt = function(name, pin, resp, callback) {
+    if(debug) winston.debug('load_dt(' + [name, pin.key, JSON.stringify(resp)] + ')');
+    var slotsFile;
+    var lastSlots;
+    var writeAttempts = 0;
+    var readAttempts = 0;
+    if(pin) {
+        var slotRegex = new RegExp('\\d+(?=\\s*:.*,bs.*' + pin.key + ')', 'gm');
+    }
+    exports.is_capemgr(onFindCapeMgr);
+    
+    function onFindCapeMgr(x) {
+        if(debug) winston.debug('onFindCapeMgr: path = ' + x.path);
+        if(typeof x.path == 'undefined') {
+            resp.err = "CapeMgr not found: " + x.err;
+            winston.error(resp.err);
+            callback(resp);
+            return;
+        }
+        slotsFile = x.path + '/slots';
+        fs.readFile(slotsFile, 'ascii', onReadSlots);
+    }
+    
+    function onReadSlots(err, slots) {
+        readAttempts++;
+        if(err) {
+            resp.err = 'Unable to read from CapeMgr slots: ' + err;
+            winston.error(resp.err);
+            callback(resp);
+            return;
+        }
+        lastSlots = slots;
+        var index = slots.indexOf(name);
+        if(debug) winston.debug('onReadSlots: index = ' + index + ', readAttempts = ' + readAttempts);
+        if(index >= 0) {
+            // Fragment is already loaded
+            callback(resp);
+        } else if (readAttempts <= 1) {
+            // Attempt to load fragment
+            fs.writeFile(slotsFile, name, 'ascii', onWriteSlots);
+        } else {
+            resp.err = 'Error waiting for CapeMgr slot to load';
+            callback(resp);
+        }
+    }
+    
+    function onWriteSlots(err) {
+        writeAttempts++;
+        if(err) {
+            resp.err = 'Write to CapeMgr slots failed: ' + err;
+            if(pin && writeAttempts <= 1) unloadSlot();
+            else callback(resp);
+            return;
+        }
+        fs.readFile(slotsFile, 'ascii', onReadSlots);
+    }
+    
+    function unloadSlot() {
+        var slot = lastSlots.match(slotRegex);
+        if(slot && slot[0]) {
+            if(debug) winston.debug('Attempting to unload conflicting slot ' +
+                slot[0] + ' for ' + name);
+            fs.writeFile(slotsFile, '-'+slot[0], 'ascii', onUnloadSlot);
+        } else {
+            callback(resp);
+        }
+    }
+
+    function onUnloadSlot(err) {
+        if(err) {
+            resp.err = "Unable to unload conflicting slot: " + err;
+            callback(resp);
+            return;
+        }
+        fs.writeFile(slotsFile, name, 'ascii', onWriteSlots);
+    }
+};
+
+exports.create_dt = function(pin, data, template, load, force_create, resp, callback) {
+    if(debug) winston.debug('create_dt(' + [pin.key, data, template, load, force_create, JSON.stringify(resp)] + ')');
+    template = template || 'bspm';
+    load = (typeof load === 'undefined') ? true : load;
+    var fragment = template + '_' + pin.key + '_' + data.toString(16);
+    var dtsFilename = '/lib/firmware/' + fragment + '-00A0.dts';
+    var dtboFilename = '/lib/firmware/' + fragment + '-00A0.dtbo';
+    
+    if(force_create) {
+        createDTS();
+    } else {
+        exports.file_exists(dtboFilename, onDTBOExistsTest);
+    }
+    
+    function onDTBOExistsTest(exists) {
+        if(exists) {
+            onDTBOExists();
+        } else {
+            createDTS();
+        }
+    }
+
+    function createDTS() {
+        var templateFilename = require.resolve('bonescript').replace('index.js',
+            'dts/' + template + '_template.dts');
+        if(debug) winston.debug('Creating template: ' + templateFilename);
+        var dts = fs.readFileSync(templateFilename, 'utf8');
+        dts = dts.replace(/!PIN_KEY!/g, pin.key);
+        dts = dts.replace(/!PIN_DOT_KEY!/g, pin.key.replace(/_/, '.'));
+        dts = dts.replace(/!PIN_FUNCTION!/g, pin.options[data&7]);
+        dts = dts.replace(/!PIN_OFFSET!/g, pin.muxRegOffset);
+        dts = dts.replace(/!DATA!/g, '0x' + data.toString(16));
+        if(pin.pwm) {
+            dts = dts.replace(/!PWM_MODULE!/g, pin.pwm.module);
+            dts = dts.replace(/!PWM_INDEX!/g, pin.pwm.index);
+            dts = dts.replace(/!DUTY_CYCLE!/g, 500000);
+        }
+        fs.writeFile(dtsFilename, dts, 'ascii', onDTSWrite);
+    }
+    
+    function onDTSWrite(err) {
+        if(err) {
+            resp.err = 'Error writing ' + dtsFilename + ': ' + err;
+            if(debug) winston.debug(resp.err);
+            callback(resp);
+            return;
+        }
+        var command = 'dtc -O dtb -o ' + dtboFilename + ' -b 0 -@ ' + dtsFilename;
+        child_process.exec(command, dtcHandler);
+    }
+    
+    function dtcHandler(error, stdout, stderr) {
+        if(debug) winston.debug('dtcHandler: ' +
+            JSON.stringify({error:error, stdout:stdout, stderr:stderr}));
+        if(!error) onDTBOExists();
+    }
+    
+    function onDTBOExists() {
+        if(debug) winston.debug('onDTBOExists()');
+        if(load) exports.load_dt(fragment, pin, resp, callback);
+        else callback(resp);
+    }
 };
 
 exports.myeval = function(x) {
