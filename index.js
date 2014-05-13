@@ -46,12 +46,7 @@ if(debug) {
 
 if(debug) winston.debug('index.js loaded');
 
-// Keep track of allocated resources
-var gpio = {};
-var gpioInt = {};
-var pwm = {};
-var ain = false;
-
+// Define major BoneScript function call parameters
 var f = {
     getPlatform: {
         args: [
@@ -62,9 +57,9 @@ var f = {
         args: [
             { name: 'pin', required: true },
             { name: 'direction', required: true },
-            { name: 'mux', required: false },
+            { name: 'mux', required: false, value: 7 },
             { name: 'pullup', required: false },
-            { name: 'slew', required: false },
+            { name: 'slew', required: false, value: 'fast' },
             { name: 'callback', required: false }
         ],
         retval: { name: 'success', type: typeof false },
@@ -175,13 +170,13 @@ var f = {
     shiftOut: {
         args: [
             {
-                name: 'dataPin',
+                name: 'dataPin', required: true
             }, {
-                name: 'clockPin',
+                name: 'clockPin', required: true
             }, {
                 name: 'bitOrder',
             }, {
-                name: 'val',
+                name: 'val', required: true
             }, {
                 name: 'callback'
             }
@@ -192,13 +187,13 @@ var f = {
     analogWrite: {
         args: [
             {
-                name: 'pin',
+                name: 'pin', required: true
             }, {
-                name: 'value',
+                name: 'value', required: true
             }, {
-                name: 'freq',
+                name: 'freq', required: false
             }, {
-                name: 'callback'
+                name: 'callback', required: false
             }
         ],
         retval: {
@@ -244,7 +239,7 @@ var f = {
     readTextFile: {
         args: [
             {
-                name: 'filename',
+                name: 'filename', required: true
             }, {
                 name: 'callback'
             }
@@ -255,9 +250,9 @@ var f = {
     writeTextFile: {
         args: [
             {
-                name: 'filename',
+                name: 'filename', required: true
             }, {
-                name: 'data'
+                name: 'data', required: true
             }, {
                 name: 'callback'
             }
@@ -294,110 +289,88 @@ var f = {
     }
 };
 
-f.getPinMode.f = function(pin, callback) {
-    if(typeof callback == 'undefined') {
-        return(my.wait_for(f.getPinMode, arguments));
-    }
-    pin = my.getpin(pin);
-    if(debug) winston.debug('getPinMode(' + pin.key + ');');
-    var mode = {'pin': pin.key, 'name': pin.name};
-    if(pin.options) mode.options = pin.options;
-
-    // Get PWM settings if applicable
-    if(
-        (typeof pin.pwm != 'undefined')                 // pin has PWM capabilities
-        && (typeof pwm[pin.pwm.name] != 'undefined')    // PWM used for this pin is enabled
-        && (pin.key == pwm[pin.pwm.name].key)           // PWM is allocated for this pin
-    ) {
-        mode.pwm = hw.readPWMFreqAndValue(pin, pwm[pin.pwm.name]);
-    }
-
-    // Get GPIO settings if applicable
-    if((typeof pin.gpio != 'undefined')) {
-        var n = pin.gpio;
-        mode.gpio = hw.readGPIODirection(n, gpio, pin);
-        if(typeof gpio[n] == 'undefined') {
-            mode.gpio.allocated = false;
+// These exported BoneScript functions:
+// * Are an array of functions of type 'function(state, callback) {}'
+// * Always return 'state', potentially with modifications
+// * Always call 'callback' exactly once, if defined
+// * Always confirms 'callback' is defined before calling it
+// * Run synchronously if 'callback' is not defined
+// * Will be called asynchronously always if called within a fiber
+function bonescript_fn(fnName) {
+    var fn = function() {
+        var fiber = fibers.current;
+        var yielded = false;
+        var retval = true;
+        var state = {};
+        state.args = my.get_args(arguments, f, fnName);
+        if(debug) winston.debug(fnName + '(' + JSON.stringify(state.args) + ')');
+        if(state.args.callback) {
+            my.run_async(f[fnName].fns, fnName, asyncCallback, state);
+        } else if(fiber) {
+            my.run_async(f[fnName].fns, fnName, fibersCallback, state);
+            if(!fibersCallback.called) {
+                yielded = true;
+                fibers.yield();
+            }
         } else {
-            mode.gpio.allocated = true;
-        }
-    }
-
-    // Get pinmux settings
-    hw.readPinMux(pin, mode, callback);
-};
-
-f.pinMode.f = function(pin, direction, mux, pullup, slew, callback) {
-    if(typeof callback == 'undefined') {
-        return(my.wait_for(f.pinMode, arguments, 'value', true));
-    }
-    pin = my.getpin(pin);
-    if(debug) winston.debug('pinMode(' + [pin.key, direction, mux, pullup, slew] + ');');
-    if(direction == g.INPUT_PULLUP) pullup = 'pullup';
-    pullup = pullup || ((direction == g.INPUT) ? 'pulldown' : 'disabled');
-    slew = slew || 'fast';
-    mux = (typeof mux != 'undefined') ? mux : 7; // default to GPIO mode
-    var resp = {value: true};
-    var template = 'bspm';
-    var n = pin.gpio;
-    
-    if(
-        direction == g.ANALOG_OUTPUT
-        || mux == g.ANALOG_OUTPUT
-        || (typeof pin.pwm != 'undefined' && mux == pin.pwm.muxmode)
-    ) {
-        if(
-            (typeof pin.pwm == 'undefined') ||          // pin does not have PWM capability
-            (typeof pin.pwm.muxmode == 'undefined')     // required muxmode is not provided
-        ) {
-            var err = 'pinMode only supports ANALOG_OUTPUT for PWM pins: ' + pin.key;
-            winston.info(err);
-            if(callback) callback({value:false, err:err});
-            return;
-        }
-        direction = g.OUTPUT;
-        mux = pin.pwm.muxmode;
-        template = 'bspwm';
-        pwm[pin.pwm.name] = {'key': pin.key, 'freq': 0};
-    }
-    
-    if(!pin.mux) {
-        if(debug) winston.debug('Invalid pin object for pinMode: ' + pin);
-        throw('Invalid pin object for pinMode: ' + pin);
-    }
-
-    // Handle case where pin is allocated as a gpio-led
-    if(pin.led) {
-        if((direction != g.OUTPUT) || (mux != 7)) {
-            resp.err = 'pinMode only supports GPIO output for LEDs: ' + pin.key;
-            winston.info(resp.err);
-            resp.value = false;
-            if(callback) callback(resp);
-            return;
+            state = my.run_sync(f[fnName].fns, fnName, state);
+            retval = my.get_retval(f, fnName, state);
         }
 
-        resp = hw.setLEDPinToGPIO(pin, resp);
-        if(typeof resp.err == 'undefined') {
-            gpio[n] = true;
+        function fibersCallback(state) {
+            retval = my.get_retval(f, fnName, state);
+            fibersCallback.called = true;
+            if(yielded) fiber.run();
         }
-        callback(resp);
-        return;
-    }
 
-    // Figure out the desired value
-    var pinData = my.pin_data(slew, direction, pullup, mux);
+        function doCallback(state) {
+            my.do_callback(f, fnName, state);
+        }
 
-    // May be required: mount -t debugfs none /sys/kernel/debug
-    hw.setPinMode(pin, pinData, template, resp, onSetPinMode);
-    
-    function onSetPinMode(x) {
-        if(debug) winston.debug('returned from setPinMode');
-        resp = x;
-        if(typeof resp.err != 'undefined') {
-            if(debug) winston.debug('Unable to configure mux for pin ' + pin + ': ' + resp.err);
-            // It might work if the pin is already muxed to desired mode
-            f.getPinMode(pin, pinModeTestMode);
-        } else {
+        return(retval);
+    };
+    return(fn);
+}
+
+f.getPinMode.fns = [
+    hw.cleanupGetPinModeArgs,
+    hw.findOCP,
+    hw.findPWM,
+    hw.readPWMFreq,
+    hw.readPWMValue,
+    hw.existsGPIODirection,
+    hw.readGPIODirection,
+    hw.readGPIOValue,
+    hw.existsPinMux,
+    hw.readPinMux
+];
+
+f.pinMode.fns = [
+    hw.cleanupPinModeArgs,
+    hw.existsLEDPinToGPIO,
+    hw.setLEDPinToGPIO,
+    f.getPinMode.fns,
+    hw.findCapeMgr,
+    hw.readSlots,
+    hw.unloadSlotConflict,
+    hw.readSlots,
+    hw.existsDebugFS,
+    hw.mountDebugFS,
+    hw.existsDTBO,
+    hw.existsDTS,
+    hw.readDTSTemplate,
+    hw.createDTS,
+    hw.createDTBO,
+    hw.loadHelperDTBO,
+    hw.loadDTBO,
+    hw.readSlots,
+    hw.verifySlot,
+    hw.existsGPIODirection,
+    hw.enableGPIOControls,
+    hw.setGPIODirection,
+    hw.findPWM
+];
+
             pinModeTestGPIO();
         }
     }
@@ -702,16 +675,27 @@ f.getEeproms.f = function(callback) {
     callback(eeproms);
 };
 
-f.readTextFile.f = function(filename, callback) {
-    if(typeof callback == 'undefined') {
-        return(my.wait_for(f.readTextFile, arguments, 'data'));
-    }    
-    fs.readFile(filename, 'ascii', cb);
-    
-    function cb(err, data) {
-        callback({'err':err, 'data':data});
+f.readTextFile.fns = [
+    function(state, callback) {
+        if(callback) {
+            fs.readFile(state.args.filename, 'ascii', onReadFile);
+
+            function onReadFile(err, data) {
+                if(err) state.err = 'Unable to read "' + state.args.filename + '": ' + err;
+                state.data = data;
+                callback(state);
+            }
+        } else {
+            try {
+                state.data = fs.readFile(state.args.filename, 'ascii', onReadFile);
+            } catch(ex) {
+                state.err = 'Unable to read "' + state.args.filename + '": ' + err;
+            }
+        }
+
+        return(state);
     }
-};
+];
 
 f.writeTextFile.f = function(filename, data, callback) {
     if(typeof callback == 'undefined') {
@@ -781,7 +765,7 @@ exports.delay = function(ms) {
 // Exported variables
 exports.bone = bone; // this likely needs to be platform and be detected
 for(var x in f) {
-    exports[x] = f[x].f;
+    exports[x] = bonescript_fn(x);
     exports[x].args = f[x].args;
 }
 for(var x in functions) {
