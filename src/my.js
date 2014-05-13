@@ -253,20 +253,6 @@ exports.create_dt = function(pin, data, template, load, force_create, resp, call
     }
 };
 
-exports.myeval = function(x) {
-    winston.debug('myeval("' + x + '");');
-    var y;
-    try {
-        y = eval(x);
-    } catch(ex) {
-        y = undefined;
-        winston.error('myeval error: ' + ex);
-        throw('myeval error: ' + ex);
-    }
-    winston.debug('result = ' + y);
-    return(y);
-};
-
 exports.getpin = function(pin) {
     if(typeof pin == 'object') return(pin);
     else if(typeof pin == 'string') return(bone.pins[pin]);
