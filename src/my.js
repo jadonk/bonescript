@@ -112,7 +112,7 @@ exports.file_find = function(path, prefix, attempts, callback) {
 // Note, this just makes sure there was an attempt to load the
 // devicetree fragment, not if it was successful
 exports.load_dt = function(name, pin, resp, callback) {
-    if(debug) winston.debug('load_dt(' + [name, pin.key, JSON.stringify(resp)] + ')');
+    if(debug) winston.debug('load_dt(' + [name, pin ? pin.key : null, JSON.stringify(resp)] + ')');
     var slotsFile;
     var lastSlots;
     var writeAttempts = 0;
