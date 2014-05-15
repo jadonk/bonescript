@@ -14,8 +14,8 @@ exports.logfile = '/var/lib/cloud9/bonescript.log';
 exports.readPWMFreqAndValue = function(pin, pwm) {
     var mode = {};
     try {
-        var period = fs.readFileSync(pwmPrefix[pin.pwm.name]+'/period');
-        var duty = fs.readFileSync(pwmPrefix[pin.pwm.name]+'/duty');
+        var period = fs.readFileSync(pwmPrefix[pin.pwm.name]+'/period_ns');
+        var duty = fs.readFileSync(pwmPrefix[pin.pwm.name]+'/duty_ns');
         mode.freq = 1.0e9 / period;
         mode.value = duty / period;
     } catch(ex) {
@@ -62,72 +62,20 @@ exports.setPinMode = function(pin, pinData, template, resp, callback) {
     if(debug) winston.debug('hw.setPinMode(' + [pin.key, pinData, template, JSON.stringify(resp)] + ');');
     if(template == 'bspm') {
         gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
-        doCreateDT(resp);
     } else if(template == 'bspwm') {
-        my.load_dt('am33xx_pwm', null, resp, doCreateDT);
+        var p = pin.key + "_pinmux"
+        var pinmux = my.find_sysfsFile(p, my.is_ocp(), p + '.');
+        fs.writeFileSync(pinmux+"/state", 'pwm');
+        pwmPrefix[pin.pwm.name] = '/sys/class/pwm/pwm' + pin.pwm.sysfs;
+        if(!my.file_existsSync(pwmPrefix[pin.pwm.name])) {
+            fs.appendFileSync('/sys/class/pwm/export', pin.pwm.sysfs);
+        }
+        fs.appendFileSync(pwmPrefix[pin.pwm.name]+'/run', 1);
     } else {
         resp.err = 'Unknown pin mode template';
-        callback(resp);
     }
-    
-    function doCreateDT(resp) {
-        if(resp.err) {
-            callback(resp);
-            return;
-        }
-        my.create_dt(pin, pinData, template, true, false, resp, onCreateDT);
-    }
-    
-    function onCreateDT(resp) {
-        if(resp.err) {
-            callback(resp);
-            return;
-        }
-        if(template == 'bspwm') {
-            my.file_find('/sys/devices', 'ocp.', 1, onFindOCP);
-        } else {
-            callback(resp);
-        }
-        
-        function onFindOCP(ocp) {
-            if(ocp.err) {
-                resp.err = "Error searching for ocp: " + ocp.err;
-                if(debug) winston.debug(resp.err);
-                callback(resp);
-                return;
-            }
-            my.file_find(ocp.path, 'bs_pwm_test_' + pin.key + '.', 1, onFindPWM);
-        }
-        
-        function onFindPWM(pwm_test) {
-            if(pwm_test.err) {
-                resp.err = "Error searching for pwm_test: " + pwm_test.err;
-                if(debug) winston.debug(resp.err);
-                callback(resp);
-                return;
-            }
-            my.file_find(pwm_test.path, 'period', 1, onFindPeriod);
-            
-            function onFindPeriod(period) {
-                if(period.err) {
-                    resp.err = "Error searching for period: " + period.err;
-                    if(debug) winston.debug(resp.err);
-                    callback(resp);
-                    return;
-                }  
-                pwmPrefix[pin.pwm.name] = pwm_test.path;
-                fs.writeFile(pwm_test.path+'/polarity', 0, 'ascii', onPolarityWrite);
-            }        
-        }
-        
-        function onPolarityWrite(err) {
-            if(err) {
-                resp.err = "Error writing PWM polarity: " + err;
-                if(debug) winston.debug(resp.err);
-            }
-            callback(resp);
-        }
-    }
+    //if(callback) callback(resp);
+    return(resp);
 };
 
 exports.setLEDPinToGPIO = function(pin, resp) {
@@ -290,15 +238,25 @@ exports.writePWMFreqAndValue = function(pin, pwm, freq, value, resp, callback) {
     var path = pwmPrefix[pin.pwm.name];
     try {
         var period = Math.round( 1.0e9 / freq ); // period in ns
-        var duty = Math.round( period * value );
-        fs.writeFileSync(path+'/duty', 0);
         if(pwm.freq != freq) {
-            if(debug) winston.debug('Updating PWM period: ' + period);
-            fs.writeFileSync(path+'/period', period);
+            if(debug) winston.debug('Stopping PWM');
+            fs.appendFileSync(path+'/run', "0\n");
+            if(debug) winston.debug('Setting duty to 0');
+            fs.appendFileSync(path+'/duty_ns', "0\n");
+            try {
+                if(debug) winston.debug('Updating PWM period: ' + period);
+                fs.appendFileSync(path+'/period_ns', period + "\n");
+            } catch(ex2) {
+                period = fs.readFileSync(path+'/period_ns');
+                winston.info('Unable to update PWM period, period is set to ' + period);
+            }
+            if(debug) winston.debug('Starting PWM');
+            fs.appendFileSync(path+'/run', "1\n");
         }
+        var duty = Math.round( period * value );
         if(debug) winston.debug('Updating PWM duty: ' + duty);
         //if(duty == 0) winston.error('Updating PWM duty: ' + duty);
-        fs.writeFileSync(path+'/duty', duty);
+        fs.appendFileSync(path+'/duty_ns', duty + "\n");
     } catch(ex) {
         resp.err = 'error updating PWM freq and value: ' + path + ', ' + ex;
         winston.error(resp.err);

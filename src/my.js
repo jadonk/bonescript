@@ -33,6 +33,14 @@ exports.is_ocp = function(callback) {
     return(exports.find_sysfsFile('ocp', '/sys/devices', 'ocp.', callback));
 };
 
+exports.is_cape_universal = function(callback) {
+    var ocp = exports.is_ocp();
+    if(debug) winston.debug('is_ocp() = ' + ocp);
+    var cape_universal = exports.find_sysfsFile('cape-universal', ocp, 'cape-universal.', callback);
+    if(debug) winston.debug('is_cape_universal() = ' + cape_universal);
+    return(cape_universal);
+};
+
 exports.find_sysfsFile = function(name, path, prefix, callback) {
     if(typeof sysfsFiles[name] == 'undefined') {
         if(callback) {

@@ -24,7 +24,7 @@ var debug = process.env.DEBUG ? true : false;
 // Detect if we are on a Beagle
 var hw;
 if(os.type() == 'Linux' || os.arch() == 'arm') {
-    if(false) {
+    if(my.is_cape_universal()) {
         hw = hw_universal;
         if(debug) winston.debug('Using Universal Cape interface');
     } else if(my.is_capemgr()) {
@@ -168,41 +168,27 @@ f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
     var pinData = my.pin_data(slew, direction, pullup, mux);
 
     // May be required: mount -t debugfs none /sys/kernel/debug
-    hw.setPinMode(pin, pinData, template, resp, onSetPinMode);
-    
-    function onSetPinMode(x) {
-        if(debug) winston.debug('returned from setPinMode');
-        resp = x;
-        if(typeof resp.err != 'undefined') {
-            if(debug) winston.debug('Unable to configure mux for pin ' + pin + ': ' + resp.err);
-            // It might work if the pin is already muxed to desired mode
-            f.getPinMode(pin, pinModeTestMode);
-        } else {
-            pinModeTestGPIO();
-        }
-    }
-    
-    function pinModeTestMode(mode) {
-        if(mode.mux != mux) {
+    resp = hw.setPinMode(pin, pinData, template, resp);
+
+    if(typeof resp.err != 'undefined') {
+        if(debug) winston.debug('Unable to configure mux for pin ' + pin + ': ' + resp.err);
+        // It might work if the pin is already muxed to desired mode
+        var testmode = f.getPinMode(pin);
+        if(testmode.mux != mux) {
             resp.value = false;
             winston.info(resp.err);
             delete gpio[n];
-        }
-        callback(resp);
-    }
-    
-    function pinModeTestGPIO() {
-        // Enable GPIO
-        if(mux == 7) {
-            // Export the GPIO controls
-            resp = hw.exportGPIOControls(pin, direction, resp, onExport);        
+            callback(resp);
+            return;
         } else {
-            delete gpio[n];
-            if(callback) callback(resp);
+            resp.err = undefined;
         }
     }
     
-    function onExport(resp) {
+    // Enable GPIO
+    if(mux == 7) {
+        // Export the GPIO controls
+        resp = hw.exportGPIOControls(pin, direction, resp);        
         if(typeof resp.err != 'undefined') {
             if(typeof gpio[n] == 'undefined') {
                 delete gpio[n];
@@ -210,8 +196,11 @@ f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
         } else {
             gpio[n] = true;
         }
-        if(callback) callback(resp);
+    } else {
+        delete gpio[n];
     }
+
+    if(callback) callback(resp);
 };
 f.pinMode.args = ['pin', 'direction', 'mux', 'pullup', 'slew', 'callback'];
 
