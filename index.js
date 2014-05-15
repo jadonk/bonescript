@@ -17,6 +17,8 @@ var package_json = require('./package.json');
 var g = require('./src/constants');
 var fibers = my.require('fibers');
 var epoll = my.require('epoll');
+var autorun = require('./src/autorun');
+var server = require('./src/server');
 
 var debug = process.env.DEBUG ? true : false;
 
@@ -584,6 +586,12 @@ for(var x in iic) {
 }
 for(var x in g) {
     exports[x] = g[x];
+}
+for(var x in autorun) {
+    exports[x] = autorun[x];
+}
+for(var x in server) {
+    exports[x] = server[x];
 }
 
 var alreadyRan = false;
