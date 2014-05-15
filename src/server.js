@@ -8,6 +8,9 @@ var url = require('url');
 var winston = require('winston');
 var socketio = require('socket.io');
 var express = require('express');
+var events = require('events');
+
+var serverEmitter = new events.EventEmitter();
 
 var debug = process.env.DEBUG ? true : false;
 
@@ -15,10 +18,23 @@ myrequire('systemd', function() {
     if(debug) winston.debug("Startup as socket-activated service under systemd not enabled");
 });
 
-exports.serverStart = function(port, directory) {
+exports.serverStart = function(port, directory, callback) {
     port = (process.env.LISTEN_PID > 0) ? 'systemd' : ((process.env.PORT) ? process.env.PORT : 80);
     directory = (process.env.SERVER_DIR) ? process.env.SERVER_DIR : '/var/lib/cloud9';
-    listen(port, directory);
+    var server = listen(port, directory);
+    serverEmitter.on('newListner', addServerListener);
+
+    function addServerListener(event, listener) {
+        console.log('got here'); //TODO: not getting here
+        if(debug) winston.debug('Got request to add listener to ' + event);
+        var serverEvent = event.replace(/^server\$/, '');
+        if(serverEvent) {
+           if(debug) winston.debug('Adding listener to server$' + serverEvent);
+           server.on(serverEvent, listener);
+        }
+    }
+
+    return(serverEmitter);
 };
 
 function listen(port, directory) {
@@ -30,6 +46,7 @@ function listen(port, directory) {
     var server = http.createServer(app);
     addSocketListeners(server);
     server.listen(port);
+    return(server);
 }
 
 function handler(req, res) {
@@ -65,10 +82,15 @@ function addSocketListeners(server) {
     function onconnect(socket) {
         winston.debug('Client connected');
 
+        serverEmitter.emit('socket$connect', socket);
+
         // on disconnect
         socket.on('disconnect', function() {
             if(debug) winston.debug('Client disconnected');
+            serverEmitter.emit('socket$disconnect');
         });
+
+        socket.on('message', serverMessage);
 
         spawn(socket);
 
@@ -134,6 +156,10 @@ function addSocketListeners(server) {
 
         socket.emit('require', modmsg);
     }
+}
+
+function serverMessage(message) {
+    serverEmitter.emit('message', message);
 }
 
 function myrequire(packageName, onfail) {
