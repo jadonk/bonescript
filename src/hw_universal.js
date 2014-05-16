@@ -251,5 +251,9 @@ exports.readPlatform = function(platform) {
     platform.serialNumber = fs.readFileSync(my.is_capemgr() +
         '/baseboard/serial-number', 'ascii').trim();
     if(!platform.serialNumber.match(/^[\040-\176]*$/)) delete platform.serialNumber;
+    try {
+        platform.dogtag = fs.readFileSync('/etc/dogtag', 'ascii');
+    } catch(ex) {
+    }
     return(platform);
 };
