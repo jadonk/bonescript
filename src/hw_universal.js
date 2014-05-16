@@ -169,6 +169,8 @@ exports.enableAIN = function(callback) {
                 ainPrefix = helper + '/AIN';
             }
         }
+    } else {
+        if(debug) winston.debug('enableAIN: load of cape-bone-iio failed');
     }
     if(callback) {
         callback({'path': helper})
