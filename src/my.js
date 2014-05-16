@@ -7,8 +7,15 @@ var winston = require('winston');
 var child_process = require('child_process');
 var bone = require('./bone');
 var g = require('./constants');
+var ffi = require("node-ffi");
+
 var debug = process.env.DEBUG ? true : false;
 var sysfsFiles = {};
+
+var libc = new ffi.Library(null, {
+  "system": ["int32", ["string"]]
+});
+var system = libc.system;
 
 exports.require = function(packageName, onfail) {
     var y = {};
@@ -208,7 +215,8 @@ exports.create_dt = function(pin, data, template, load, force_create, resp, call
     if(force_create) {
         createDTS();
     } else {
-        exports.file_exists(dtboFilename, onDTBOExistsTest);
+        var exists = exports.file_existsSync(dtboFilename);
+        onDTBOExistsTest(exists);
     }
     
     function onDTBOExistsTest(exists) {
@@ -234,18 +242,28 @@ exports.create_dt = function(pin, data, template, load, force_create, resp, call
             dts = dts.replace(/!PWM_INDEX!/g, pin.pwm.index);
             dts = dts.replace(/!DUTY_CYCLE!/g, 500000);
         }
-        fs.writeFile(dtsFilename, dts, 'ascii', onDTSWrite);
+        try {
+            fs.writeFileSync(dtsFilename, dts, 'ascii');
+        } catch(ex) {
+            resp.err = ex;
+        }
+        onDTSWrite(resp.err);
     }
     
     function onDTSWrite(err) {
         if(err) {
             resp.err = 'Error writing ' + dtsFilename + ': ' + err;
             if(debug) winston.debug(resp.err);
-            callback(resp);
-            return;
+            if(callback) callback(resp);
+            return(resp);
         }
         var command = 'dtc -O dtb -o ' + dtboFilename + ' -b 0 -@ ' + dtsFilename;
-        child_process.exec(command, dtcHandler);
+        try {
+            system(command);
+        } catch(ex) {
+            resp.err = ex;
+        }
+        dtcHandler(resp.err);
     }
     
     function dtcHandler(error, stdout, stderr) {
@@ -256,9 +274,11 @@ exports.create_dt = function(pin, data, template, load, force_create, resp, call
     
     function onDTBOExists() {
         if(debug) winston.debug('onDTBOExists()');
-        if(load) exports.load_dt(fragment, pin, resp, callback);
-        else callback(resp);
+        if(load) exports.load_dt(fragment, pin, resp);
     }
+
+    if(callback) callback(resp);    
+    return(resp);
 };
 
 exports.myeval = function(x) {

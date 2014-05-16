@@ -33,7 +33,8 @@
     "winston": "0.6.2",
     "express": "3.1.0",
     "epoll": "0.0.7",
-    "fibers": "1.0.1"
+    "fibers": "1.0.1",
+    "node-ffi": "0.5.7"
   },
   "devDependencies": {},
   "scripts": {
