@@ -31,7 +31,7 @@ if(os.type() == 'Linux' || os.arch() == 'arm') {
         if(my.is_cape_universal()) {
             hw = hw_universal;
             if(debug) winston.debug('Using Universal Cape interface');
-        } else 
+        } else {
             hw = hw_capemgr;
             if(debug) winston.debug('Using CapeMgr interface');
         }
@@ -79,12 +79,9 @@ var ain = false;
 //    allocated: boolean for if it is allocated by this application
 //    direction: 'in' or 'out' (allocated might be false)
 f.getPinMode = function(pin, callback) {
-    if(typeof callback == 'undefined') {
-        return(my.wait_for(f.getPinMode, arguments));
-    }
     pin = my.getpin(pin);
     if(debug) winston.debug('getPinMode(' + pin.key + ');');
-    var mode = {'pin': pin.key, 'name': pin.name};
+    var mode = {'pin': pin.key, 'name': pin.name}; 
     if(pin.options) mode.options = pin.options;
 
     // Get PWM settings if applicable
@@ -108,14 +105,12 @@ f.getPinMode = function(pin, callback) {
     }
 
     // Get pinmux settings
-    hw.readPinMux(pin, mode, callback);
+    mode = hw.readPinMux(pin, mode, callback);
+    return(mode);
 };
 f.getPinMode.args = ['pin', 'callback'];
 
 f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
-    if(typeof callback == 'undefined') {
-        return(my.wait_for(f.pinMode, arguments, 'value', true));
-    }
     pin = my.getpin(pin);
     if(debug) winston.debug('pinMode(' + [pin.key, direction, mux, pullup, slew] + ');');
     if(direction == g.INPUT_PULLUP) pullup = 'pullup';
@@ -138,7 +133,7 @@ f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
             var err = 'pinMode only supports ANALOG_OUTPUT for PWM pins: ' + pin.key;
             winston.info(err);
             if(callback) callback({value:false, err:err});
-            return;
+            return(false);
         }
         direction = g.OUTPUT;
         mux = pin.pwm.muxmode;
@@ -158,15 +153,15 @@ f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
             winston.info(resp.err);
             resp.value = false;
             if(callback) callback(resp);
-            return;
+            return(false);
         }
 
         resp = hw.setLEDPinToGPIO(pin, resp);
         if(typeof resp.err == 'undefined') {
             gpio[n] = true;
         }
-        callback(resp);
-        return;
+        if(callback) callback(resp);
+        return(resp.value);
     }
 
     // Figure out the desired value
@@ -178,19 +173,17 @@ f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
     if(typeof resp.err != 'undefined') {
         if(debug) winston.debug('Unable to configure mux for pin ' + pin + ': ' + resp.err);
         // It might work if the pin is already muxed to desired mode
-        var testmode = f.getPinMode(pin);
-        if(testmode.mux != mux) {
+        var currentMode = f.getPinMode(pin);
+        if(currentMode.mux != mux) {
             resp.value = false;
             winston.info(resp.err);
             delete gpio[n];
-            callback(resp);
-            return;
-        } else {
-            resp.err = undefined;
+            if(callback) callback(resp);
+            return(resp.value);
         }
     }
     
-    // Enable GPIO
+    // Enable GPIO and set direction
     if(mux == 7) {
         // Export the GPIO controls
         resp = hw.exportGPIOControls(pin, direction, resp);        
@@ -206,35 +199,42 @@ f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
     }
 
     if(callback) callback(resp);
+    return(resp.value);
 };
 f.pinMode.args = ['pin', 'direction', 'mux', 'pullup', 'slew', 'callback'];
 
 f.digitalWrite = function(pin, value, callback) {
-    if(typeof callback == 'undefined') {
-        return(my.wait_for(f.digitalWrite, arguments, 'err', true));
+    var myCallback = false;
+    if(callback) myCallback = function(resp) {
+        if(!resp || (typeof resp != 'object')) resp = {'data': resp};
     }
-    var myCallback = function(resp) {
-        if(callback) callback({'err': resp, 'complete':true});
-    };
     pin = my.getpin(pin);
     if(debug) winston.debug('digitalWrite(' + [pin.key, value] + ');');
     value = parseInt(Number(value), 2) ? 1 : 0;
 
     hw.writeGPIOValue(pin, value, myCallback);
+    
+    return(true);
 };
 f.digitalWrite.args = ['pin', 'value', 'callback'];
 
 f.digitalRead = function(pin, callback) {
-    if(typeof callback == 'undefined') {
-        return(my.wait_for(f.digitalRead, arguments, 'value'));
-    }
     pin = my.getpin(pin);
     if(debug) winston.debug('digitalRead(' + [pin.key] + ');');
     var resp = {};
     if(typeof pin.ain != 'undefined') {
-        f.analogRead(pin, analogCallback);
+        if(callback) {
+            f.analogRead(pin, analogCallback);
+        } else {
+            resp.value = f.analogRead(pin);
+            if(resp.value >= 0.5) {
+                resp.value = g.HIGH;
+            } else {
+                resp.value = g.LOW;
+            }
+        }
     } else {
-        hw.readGPIOValue(pin, resp, callback);
+        resp = hw.readGPIOValue(pin, resp, callback);
     }
 
     function analogCallback(x) {
@@ -244,60 +244,41 @@ f.digitalRead = function(pin, callback) {
 
     function analogValue(x) {
         if(typeof x.value == 'undefined') return;
-        if(x.value > 0.5) {
+        if(x.value >= 0.5) {
             x.value = g.HIGH;
         } else {
             x.value = g.LOW;
         }
     }
+    
+    return(resp.value);
 };
 f.digitalRead.args = ['pin', 'callback'];
 
 f.analogRead = function(pin, callback) {
-    if(typeof callback == 'undefined') {
-        return(my.wait_for(f.analogRead, arguments, 'value'));
-    }
     pin = my.getpin(pin);
     if(debug) winston.debug('analogRead(' + [pin.key] + ');');
     var resp = {};
+    if(!ain) {
+        ain = hw.enableAIN();
+    }
     if(typeof pin.ain == 'undefined') {
-        f.digitalRead(pin, callback);
+        resp.value = f.digitalRead(pin, callback);
     } else {
-        if(!ain) {
-            hw.enableAIN(onEnableAIN);
-        } else {
-            doAnalogRead();
-        }
+        resp = hw.readAIN(pin, resp, callback);
     }
     
-    function onEnableAIN(x) {
-        if(x.err) {
-            resp.err = "Error enabling analog inputs: " + x.err;
-            if(debug) winston.debug(resp.err);
-            callback(resp);
-            return;
-        }
-        ain = true;
-        doAnalogRead();
-    }
-    
-    function doAnalogRead() {
-        hw.readAIN(pin, resp, callback);
-    }
+    return(resp.value);
 }; 
 f.analogRead.args = ['pin', 'callback'];
 
 f.shiftOut = function(dataPin, clockPin, bitOrder, val, callback) {
-    if(typeof callback == 'undefined') {
-        return(my.wait_for(f.shiftOut, arguments, 'err', true));
-    }
     dataPin = my.getpin(dataPin);
     clockPin = my.getpin(clockPin);
     if(debug) winston.debug('shiftOut(' + [dataPin.key, clockPin.key, bitOrder, val] + ');');
     var i = 0;
     var bit;
     var clock = 0;
-    next();
 
     function next(err) {
         if(debug) winston.debug('i = ' + i);
@@ -327,13 +308,30 @@ f.shiftOut = function(dataPin, clockPin, bitOrder, val, callback) {
             f.digitalWrite(clockPin, g.LOW, next);
         }
     }
+    
+    if(callback) {
+        next();
+    } else {
+        for(i = 0; i < 8; i++) {
+            if(bitOrder == b.LSBFIRST) {
+                bit = val & (1 << i);
+            } else {
+                bit = val & (1 << (7 - i));
+            }
+            
+            if(bit) {
+                f.digitalWrite(dataPin, g.HIGH);
+            } else {
+                f.digitalWrite(dataPin, g.LOW);
+            }
+            f.digitalWrite(clockPin, g.HIGH);
+            f.digitalWrite(clockPin, g.LOW);
+        }
+    }
 };
 f.shiftOut.args = ['dataPin', 'clockPin', 'bitOrder', 'val', 'callback'];
 
 f.attachInterrupt = function(pin, handler, mode, callback) {
-    if(typeof callback == 'undefined') {
-        return(my.wait_for(f.attachInterrupt, arguments, 'attached', true));
-    }
     pin = my.getpin(pin);
     if(debug) winston.debug('attachInterrupt(' + [pin.key, handler, mode] + ');');
     var n = pin.gpio;
@@ -343,8 +341,8 @@ f.attachInterrupt = function(pin, handler, mode, callback) {
     if(!epoll.exists) {
         resp.err = 'attachInterrupt: requires Epoll module';
         if(debug) winston.debug(resp.err);
-        callback(resp);
-        return;
+        if(callback) callback(resp);
+        return(resp.attached);
     }
 
     // Check if pin isn't already configured as GPIO
@@ -353,18 +351,18 @@ f.attachInterrupt = function(pin, handler, mode, callback) {
         if(debug) winston.debug(resp.err);
         resp.attached = false;
         resp.configured = false;
-        callback(resp);
-        return;
+        if(callback) callback(resp);
+        return(resp);
     }
 
     // Check if someone already has a handler configured
     if(typeof gpioInt[n] != 'undefined') {
-    resp.err = 'attachInterrupt: pin ' + pin.key + ' already has an interrupt handler assigned';
-    if(debug) winston.debug(resp.err);
+        resp.err = 'attachInterrupt: pin ' + pin.key + ' already has an interrupt handler assigned';
+        if(debug) winston.debug(resp.err);
         resp.attached = false;
         resp.configured = true;
-        callback(resp);
-        return;
+        if(callback) callback(resp);
+        return(resp.attached);
     }
 
     handler = (typeof handler === "string") ? my.myeval('(' + handler + ')') : handler;
@@ -392,34 +390,29 @@ f.attachInterrupt = function(pin, handler, mode, callback) {
         resp.err = 'attachInterrupt: GPIO input file not opened: ' + ex;
         if(debug) winston.debug(resp.err);
     }
-    callback(resp);
-    return;
+    if(callback) callback(resp);
+    return(resp.attached);
 };
 f.attachInterrupt.args = ['pin', 'handler', 'mode', 'callback'];
 
 f.detachInterrupt = function(pin, callback) {
-    if(typeof callback == 'undefined') {
-        return(my.wait_for(f.detachInterrupt, arguments, 'detached', true));
-    }
     pin = my.getpin(pin);
     if(debug) winston.debug('detachInterrupt(' + [pin.key] + ');');
     var n = pin.gpio;
     if(typeof gpio[n] == 'undefined' || typeof gpioInt[n] == 'undefined') {
-        callback({'pin':pin, 'detached':false});
-        return;
+        if(callback) callback({'pin':pin, 'detached':false});
+        return(false);
     }
     gpioInt[n].epoll.remove(gpioInt[n].valuefd);
     delete gpioInt[n];
-    callback({'pin':pin, 'detached':true});
+    if(callback) callback({'pin':pin, 'detached':true});
+    return(true);
 };
 f.detachInterrupt.args = ['pin', 'callback'];
 
 // See http://processors.wiki.ti.com/index.php/AM335x_PWM_Driver's_Guide
 // That guide isn't useful for the new pwm_test interface
 f.analogWrite = function(pin, value, freq, callback) {
-    if(typeof callback == 'undefined') {
-        return(my.wait_for(f.analogWrite, arguments, 'err', true));
-    }
     pin = my.getpin(pin);
     if(debug) winston.debug('analogWrite(' + [pin.key,value,freq] + ');');
     freq = freq || 2000.0;
@@ -430,7 +423,7 @@ f.analogWrite = function(pin, value, freq, callback) {
         resp.err = 'analogWrite: ' + pin.key + ' does not support analogWrite()';
         winston.error(resp.err);
         if(callback) callback(resp);
-        return;
+        return(false);
     }
 
     // Make sure there is no one else who has the PWM
@@ -442,77 +435,71 @@ f.analogWrite = function(pin, value, freq, callback) {
             ' but it is already in use by ' + pwm[pin.pwm.name].key;
         winston.error(resp.err);
         if(callback) callback(resp);
-        return;
+        return(false);
     }
 
     // Enable PWM controls if not already done
     if(typeof pwm[pin.pwm.name] == 'undefined') {
-        f.getPinMode(pin.key, onGetPinMode);
-    } else {
-        onPinMode();
-    }
-    
-    function onGetPinMode(pinMode) {
+        var pinMode = f.getPinMode(pin.key);
         var slew = pinMode.slew || 'fast';
         var pullup = pinMode.pullup || 'disabled';
-        f.pinMode(pin, g.ANALOG_OUTPUT, pin.pwm.muxmode, pullup, slew, onPinMode);
+        f.pinMode(pin, g.ANALOG_OUTPUT, pin.pwm.muxmode, pullup, slew);
     }
 
-    function onPinMode() {
-        // Perform update
-        resp = hw.writePWMFreqAndValue(pin, pwm[pin.pwm.name], freq, value, resp);
-    
-        // Save off the freq, value and PWM assignment
-        pwm[pin.pwm.name].freq = freq;
-        pwm[pin.pwm.name].value = value;
-    
-        // All done
-        if(callback) callback(resp);
-    }
+    // Perform update
+    resp = hw.writePWMFreqAndValue(pin, pwm[pin.pwm.name], freq, value, resp);
+
+    // Save off the freq, value and PWM assignment
+    pwm[pin.pwm.name].freq = freq;
+    pwm[pin.pwm.name].value = value;
+
+    // All done
+    if(callback) callback(resp);
+    return(true);
 };
 f.analogWrite.args = ['pin', 'value', 'freq', 'callback'];
 
 f.getEeproms = function(callback) {
-    if(typeof callback == 'undefined') {
-        return(my.wait_for(f.getEeproms, arguments));
-    }    
     var eeproms = {};
     eeproms = hw.readEeproms(eeproms);
     if(eeproms == {}) {
         if(debug) winston.debug('No valid EEPROM contents found');
     }
-    callback(eeproms);
+    if(callback) callback(eeproms);
+    return(eeproms);
 };
 f.getEeproms.args = ['callback'];
 
 f.readTextFile = function(filename, callback) {
-    if(typeof callback == 'undefined') {
-        return(my.wait_for(f.readTextFile, arguments, 'data'));
+    if(typeof callback == 'function') {
+        var cb = function(err, data) {
+            callback({'err': err, 'data':data});
+        };
+        fs.readFile(filename, 'ascii', cb);
+    } else {
+        return fs.readFileSync(filename, 'ascii');
     }    
-    fs.readFile(filename, 'ascii', cb);
-    
-    function cb(err, data) {
-        callback({'err':err, 'data':data});
-    }
 };
 f.readTextFile.args = ['filename', 'callback'];
 
 f.writeTextFile = function(filename, data, callback) {
-    if(typeof callback == 'undefined') {
-        return(my.wait_for(f.writeTextFile, arguments, 'err', true));
-    }    
-    fs.writeFile(filename, data, 'ascii', cb);
-    
-    function cb(err) {
-        callback({'err':err});
+    if(typeof callback == 'function') {
+        var cb = function(err) {
+            callback({'err':err});
+        };
+        fs.writeFile(filename, data, 'ascii', cb);
+    } else {
+        try {
+            return fs.writeFileSync(filename, data, 'ascii');
+        } catch(ex) {
+            winston.error("writeTextFile error: " + ex);
+            return(false);
+        }
     }
 };
 f.writeTextFile.args = ['filename', 'data', 'callback'];
 
 f.getPlatform = function(callback) {
-    if(typeof callback == 'undefined') {
-        return(my.wait_for(f.getPlatform, arguments));
-    }    
     var platform = {
         'platform': bone,
         'name': "BeagleBone",
@@ -534,22 +521,18 @@ f.getPlatform = function(callback) {
 f.getPlatform.args = ['callback'];
 
 f.echo = function(data, callback) {
-    if(typeof callback == 'undefined') {
-        return(my.wait_for(f.echo, arguments, 'data'));
-    }    
     winston.info(data);
-    callback({'data': data});
+    if(callback) callback({'data': data});
+    return(data);
 };
 f.echo.args = ['data', 'callback'];
 
 f.setDate = function(date, callback) {
-    if(typeof callback == 'undefined') {
-        return(my.wait_for(f.setDate, arguments, 'error', true));
-    }    
     child_process.exec('date -s "' + date + '"', dateResponse);
     
     function dateResponse(error, stdout, stderr) {
-        callback({'error': error, 'stdout':stdout, 'stderr':stderr});
+        if(typeof callback != 'function') return;
+        else callback({'error': error, 'stdout':stdout, 'stderr':stderr});
     }
 };
 f.setDate.args = ['date', 'callback'];

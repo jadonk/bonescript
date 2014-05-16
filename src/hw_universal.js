@@ -55,7 +55,16 @@ exports.readPinMux = function(pin, mode, callback) {
             callback(mode);
         }
     };
-    my.file_exists(pinctrlFile, tryPinctrl);
+    if(callback) {
+        my.file_exists(pinctrlFile, tryPinctrl);
+    } else {
+        try {
+            var data2 = fs.readFileSync(pinctrlFile, 'utf8');
+            mode = parse.modeFromPinctrl(data2, muxRegOffset, 0x44e10800, mode);
+        } catch(ex) {
+            if(debug) winston.debug('getPinMode(' + pin.key + '): ' + ex);
+        }
+    }
 };
 
 exports.setPinMode = function(pin, pinData, template, resp, callback) {
@@ -121,67 +130,77 @@ exports.writeGPIOValue = function(pin, value, callback) {
         }
     }
     if(debug) winston.debug("gpioFile = " + gpioFile[pin.key]);
-    fs.writeFileSync(gpioFile[pin.key], '' + value);
-    if(callback) callback();
+    if(callback) {
+        fs.writeFile(gpioFile[pin.key], '' + value, null, callback);
+    } else {
+        try {
+            fs.writeFileSync(gpioFile[pin.key], '' + value, null);
+        } catch(ex) {
+            winston.error("Unable to write to " + gpioFile[pin.key]);
+        }
+    }
 };
 
 exports.readGPIOValue = function(pin, resp, callback) {
     var gpioFile = '/sys/class/gpio/gpio' + pin.gpio + '/value';
-    var readFile = function(err, data) {
-        if(err) {
-            resp.err = 'digitalRead error: ' + err;
-            winston.error(resp.err);
-        }
-        resp.value = parseInt(data, 2);
-        callback(resp);
-    };
-    fs.readFile(gpioFile, readFile);
+    if(callback) {
+        var readFile = function(err, data) {
+            if(err) {
+                resp.err = 'digitalRead error: ' + err;
+                winston.error(resp.err);
+            }
+            resp.value = parseInt(data, 2);
+            callback(resp);
+        };
+        fs.readFile(gpioFile, readFile);
+        return(true);
+    }
+    resp.value = parseInt(fs.readFileSync(gpioFile), 2);
+    return(resp);
 };
 
 exports.enableAIN = function(callback) {
-    var resp = {};
-    var ocp = my.is_ocp();
-    if(!ocp) {
-        resp.err = 'enableAIN: Unable to open ocp file';
-        if(debug) winston.debug(resp.err);
-        callback(resp);
-        return;
-    }
-    
-    my.load_dt('cape-bone-iio', null, {}, onLoadDT);
-    
-    function onLoadDT(x) {
-        if(x.err) {
-            callback(x);
-            return;
+    var helper = "";
+    if(my.load_dt('cape-bone-iio')) {
+        var ocp = my.is_ocp();
+        if(ocp) {
+            helper = my.find_sysfsFile('helper', ocp, 'helper.');
+            if(helper) {
+                ainPrefix = helper + '/AIN';
+            }
         }
-        my.find_sysfsFile('helper', ocp, 'helper.', onHelper);
     }
-
-    function onHelper(x) {
-        if(x.err || !x.path) {
-            resp.err = 'Error enabling analog inputs: ' + x.err;
-            if(debug) winston.debug(resp.err);
-        } else {
-            ainPrefix = x.path + '/AIN';
-            if(debug) winston.debug("Setting ainPrefix to " + ainPrefix);
-        }
-        callback(x);
+    if(callback) {
+        callback({'path': helper})
     }
+    return(helper.length > 1);
 };
 
 exports.readAIN = function(pin, resp, callback) {
     var ainFile = ainPrefix + pin.ain.toString();
-    fs.readFile(ainFile, readFile);
-    
-    function readFile(err, data) {
-        if(err) {
-            resp.err = 'analogRead error: ' + err;
-            winston.error(resp.err);
-        }
-        resp.value = parseInt(data, 10) / 1800;
-        callback(resp);
+    if(callback) {
+        var readFile = function(err, data) {
+            if(err) {
+                resp.err = 'analogRead error: ' + err;
+                winston.error(resp.err);
+            }
+            resp.value = parseInt(data, 10) / 1800;
+            callback(resp);
+        };
+        fs.readFile(ainFile, readFile);
+        return(resp);
     }
+    resp.value = parseInt(fs.readFileSync(ainFile), 10);
+    if(isNaN(resp.value)) {
+        resp.err = 'analogRead(' + pin.key + ') returned ' + resp.value;
+        winston.error(resp.err);
+    }
+    resp.value = resp.value / 1800;
+    if(isNaN(resp.value)) {
+        resp.err = 'analogRead(' + pin.key + ') scaled to ' + resp.value;
+        winston.error(resp.err);
+    }
+    return(resp);
 };
 
 exports.writeGPIOEdge = function(pin, mode) {
