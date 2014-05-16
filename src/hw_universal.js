@@ -60,11 +60,12 @@ exports.readPinMux = function(pin, mode, callback) {
 
 exports.setPinMode = function(pin, pinData, template, resp, callback) {
     if(debug) winston.debug('hw.setPinMode(' + [pin.key, pinData, template, JSON.stringify(resp)] + ');');
-    if(template == 'bspm') {
+    var p = pin.key + "_pinmux"
+    var pinmux = my.find_sysfsFile(p, my.is_ocp(), p + '.');
+    if((pinData & 7) == 7) {
         gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
+        fs.writeFileSync(pinmux+"/state", 'gpio');
     } else if(template == 'bspwm') {
-        var p = pin.key + "_pinmux"
-        var pinmux = my.find_sysfsFile(p, my.is_ocp(), p + '.');
         fs.writeFileSync(pinmux+"/state", 'pwm');
         pwmPrefix[pin.pwm.name] = '/sys/class/pwm/pwm' + pin.pwm.sysfs;
         if(!my.file_existsSync(pwmPrefix[pin.pwm.name])) {
@@ -74,7 +75,7 @@ exports.setPinMode = function(pin, pinData, template, resp, callback) {
     } else {
         resp.err = 'Unknown pin mode template';
     }
-    //if(callback) callback(resp);
+    if(callback) callback(resp);
     return(resp);
 };
 
@@ -95,57 +96,17 @@ exports.setLEDPinToGPIO = function(pin, resp) {
 exports.exportGPIOControls = function(pin, direction, resp, callback) {
     if(debug) winston.debug('hw.exportGPIOControls(' + [pin.key, direction, resp] + ');');
     var n = pin.gpio;
-    my.file_exists(gpioFile[pin.key], onFileExists);
+    var exists = my.file_existsSync(gpioFile[pin.key]);
     
-    function onFileExists(exists) {
-        if(exists) {
-            if(debug) winston.debug("gpio: " + n + " already exported.");
-            fs.writeFile("/sys/class/gpio/gpio" + n + "/direction",
-                direction, null, onGPIODirectionSet);
-        } else {
-            if(debug) winston.debug("exporting gpio: " + n);
-            fs.writeFile("/sys/class/gpio/export", "" + n, null, onGPIOExport);
-        }
+    if(!exists) {
+        if(debug) winston.debug("exporting gpio: " + n);
+        fs.writeFileSunc("/sys/class/gpio/export", "" + n, null);
     }
- 
-    function onGPIOExport(err) {
-        if(err) onError(err);
-        if(debug) winston.debug("setting gpio " + n +
-            " direction to " + direction);
-        fs.writeFile("/sys/class/gpio/gpio" + n + "/direction",
-            direction, null, onGPIODirectionSet);
-    }
-
-    function onGPIODirectionSet(err) {
-        if(err) onError(err);
-        else callback(resp);
-    }
-    
-    function onError(err) {
-        resp.err = 'Unable to export gpio-' + n + ': ' + err;
-        resp.value = false;
-        if(debug) winston.debug(resp.err);
-        findOwner();
-    }
-    
-    function findOwner() {
-        fs.readFile('/sys/kernel/debug/gpio', 'utf-8', onGPIOUsers);
-    }
-    
-    function onGPIOUsers(err, data) {
-        if(!err) {
-            var gpioUsers = data.split('\n');
-            for(var x in gpioUsers) {
-                var y = gpioUsers[x].match(/gpio-(\d+)\s+\((\S+)\s*\)/);
-                if(y && y[1] == n) {
-                    resp.err += '\nconsumed by ' + y[2];
-                    if(debug) winston.debug(resp.err);
-                }
-            }
-        }
-        callback(resp);
-    }
-    
+    var directionFile = "/sys/class/gpio/gpio" + n + "/direction";
+    if(debug) winston.debug('Writing GPIO direction(' + direction + ') to ' + 
+        directionFile + ');');
+    fs.writeFileSync(directionFile, direction);
+    return(resp);
 };
 
 exports.writeGPIOValue = function(pin, value, callback) {
@@ -160,7 +121,8 @@ exports.writeGPIOValue = function(pin, value, callback) {
         }
     }
     if(debug) winston.debug("gpioFile = " + gpioFile[pin.key]);
-    fs.writeFile(gpioFile[pin.key], '' + value, null, callback);
+    fs.writeFileSync(gpioFile[pin.key], '' + value);
+    if(callback) callback();
 };
 
 exports.readGPIOValue = function(pin, resp, callback) {
