@@ -128,6 +128,7 @@ exports.file_find = function(path, prefix, attempts, callback) {
 // devicetree fragment, not if it was successful
 exports.load_dt = function(name, pin, resp, callback) {
     if(debug) winston.debug('load_dt(' + [name, pin ? pin.key : null, JSON.stringify(resp)] + ')');
+    resp = resp || {};
     var slotsFile;
     var lastSlots;
     var writeAttempts = 0;
@@ -135,18 +136,25 @@ exports.load_dt = function(name, pin, resp, callback) {
     if(pin) {
         var slotRegex = new RegExp('\\d+(?=\\s*:.*,bs.*' + pin.key + ')', 'gm');
     }
-    exports.is_capemgr(onFindCapeMgr);
+    var capemgr = exports.is_capemgr();
+    onFindCapeMgr({path:capemgr});
     
     function onFindCapeMgr(x) {
         if(debug) winston.debug('onFindCapeMgr: path = ' + x.path);
         if(typeof x.path == 'undefined') {
             resp.err = "CapeMgr not found: " + x.err;
             winston.error(resp.err);
-            callback(resp);
-            return;
+            if(callback) callback(resp);
+            return(false);
         }
         slotsFile = x.path + '/slots';
-        fs.readFile(slotsFile, 'ascii', onReadSlots);
+        var slots;
+        try {
+            slots = fs.readFileSync(slotsFile, 'ascii');
+        } catch(ex) {
+            resp.err = ex;
+        }
+        onReadSlots(resp.err, slots);
     }
     
     function onReadSlots(err, slots) {
@@ -154,18 +162,23 @@ exports.load_dt = function(name, pin, resp, callback) {
         if(err) {
             resp.err = 'Unable to read from CapeMgr slots: ' + err;
             winston.error(resp.err);
-            callback(resp);
-            return;
+            if(callback) callback(resp);
+            return(false);
         }
         lastSlots = slots;
         var index = slots.indexOf(name);
         if(debug) winston.debug('onReadSlots: index = ' + index + ', readAttempts = ' + readAttempts);
         if(index >= 0) {
             // Fragment is already loaded
-            callback(resp);
+            if(callback) callback(resp);
         } else if (readAttempts <= 1) {
             // Attempt to load fragment
-            fs.writeFile(slotsFile, name, 'ascii', onWriteSlots);
+            try {
+                fs.writeFileSync(slotsFile, name, 'ascii');
+            } catch(ex) {
+                resp.err = ex;
+            }
+            onWriteSlots(resp.err);
         } else {
             resp.err = 'Error waiting for CapeMgr slot to load';
             callback(resp);
@@ -177,10 +190,18 @@ exports.load_dt = function(name, pin, resp, callback) {
         if(err) {
             resp.err = 'Write to CapeMgr slots failed: ' + err;
             if(pin && writeAttempts <= 1) unloadSlot();
-            else callback(resp);
-            return;
+            else {
+                if(callback) callback(resp);
+                return(false);
+            }
         }
-        fs.readFile(slotsFile, 'ascii', onReadSlots);
+        var slots;
+        try {
+            slots = fs.readFileSync(slotsFile, 'ascii');
+        } catch(ex) {
+            resp.err = ex;
+        }
+        onReadSlots(resp.err, slots);
     }
     
     function unloadSlot() {
@@ -188,9 +209,15 @@ exports.load_dt = function(name, pin, resp, callback) {
         if(slot && slot[0]) {
             if(debug) winston.debug('Attempting to unload conflicting slot ' +
                 slot[0] + ' for ' + name);
-            fs.writeFile(slotsFile, '-'+slot[0], 'ascii', onUnloadSlot);
+            try {
+                fs.writeFileSync(slotsFile, '-'+slot[0], 'ascii');
+            } catch(ex) {
+                resp.err = ex;
+            }
+            onUnloadSlot(resp.err);
         } else {
-            callback(resp);
+            if(callback) callback(resp);
+            return(false);
         }
     }
 
@@ -200,8 +227,15 @@ exports.load_dt = function(name, pin, resp, callback) {
             callback(resp);
             return;
         }
-        fs.writeFile(slotsFile, name, 'ascii', onWriteSlots);
+        try {
+            fs.writeFileSync(slotsFile, name, 'ascii');
+        } catch(ex) {
+            resp.err = ex;
+        }
+        onWriteSlots(resp.err);
     }
+    
+    return(typeof resp.err == 'undefined');
 };
 
 exports.create_dt = function(pin, data, template, load, force_create, resp, callback) {

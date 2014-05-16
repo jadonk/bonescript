@@ -83,7 +83,7 @@ var ain = false;
 f.getPinMode = function(pin, callback) {
     pin = my.getpin(pin);
     if(debug) winston.debug('getPinMode(' + pin.key + ');');
-    var mode = {'pin': pin.key, 'name': pin.name}; 
+    var mode = {'pin': pin.key, 'name': pin.name};
     if(pin.options) mode.options = pin.options;
 
     // Get PWM settings if applicable
