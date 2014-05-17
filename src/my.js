@@ -7,6 +7,7 @@ var winston = require('winston');
 var child_process = require('child_process');
 var bone = require('./bone');
 var g = require('./constants');
+var ffi = require("node-ffi");
 
 var debug;
 if(process.env.DEBUG && process.env.DEBUG.indexOf("bone")!==-1){
@@ -16,6 +17,11 @@ if(process.env.DEBUG && process.env.DEBUG.indexOf("bone")!==-1){
 }
 
 var sysfsFiles = {};
+
+var libc = new ffi.Library(null, {
+  "system": ["int32", ["string"]]
+});
+var system = libc.system;
 
 function myRequire(packageName, onfail) {
     var y = {};
@@ -38,6 +44,14 @@ module.exports = {
 
     is_capemgr : function(callback) {
         return(module.exports.find_sysfsFile('capemgr', '/sys/devices', 'bone_capemgr.', callback));
+    },
+
+    is_cape_universal : function(callback) {
+        var ocp = exports.is_ocp();
+        if(debug) winston.debug('is_ocp() = ' + ocp);
+        var cape_universal = exports.find_sysfsFile('cape-universal', ocp, 'cape-universal.', callback);
+        if(debug) winston.debug('is_cape_universal() = ' + cape_universal);
+        return(cape_universal);
     },
 
     is_ocp : function(callback) {
@@ -120,13 +134,9 @@ module.exports = {
     // Note, this just makes sure there was an attempt to load the
     // devicetree fragment, not if it was successful
     load_dt : function(name, pin, resp, callback) {
-        if(debug) {
-            if(pin){
-                winston.debug('load_dt(' + [name, pin.key, JSON.stringify(resp)] + ')');
-            } else {
-                winston.debug('load_dt(' + [name, JSON.stringify(resp)] + ')');
-            }
-        }
+        if(debug) winston.debug('load_dt(' + [name, pin ? pin.key : null, JSON.stringify(resp)] + ')');
+        resp = resp || {};
+
         var slotsFile;
         var lastSlots;
         var writeAttempts = 0;
@@ -134,18 +144,25 @@ module.exports = {
         if(pin) {
             var slotRegex = new RegExp('\\d+(?=\\s*:.*,bs.*' + pin.key + ')', 'gm');
         }
-        module.exports.is_capemgr(onFindCapeMgr);
+        var capemgr = exports.is_capemgr();
+        onFindCapeMgr({path:capemgr});
         
         function onFindCapeMgr(x) {
             if(debug) winston.debug('onFindCapeMgr: path = ' + x.path);
             if(typeof x.path == 'undefined') {
                 resp.err = "CapeMgr not found: " + x.err;
                 winston.error(resp.err);
-                callback(resp);
-                return;
+                if(callback) callback(resp);
+                return(false);
             }
             slotsFile = x.path + '/slots';
-            fs.readFile(slotsFile, 'ascii', onReadSlots);
+            var slots;
+            try {
+                slots = fs.readFileSync(slotsFile, 'ascii');
+            } catch(ex) {
+                resp.err = ex;
+            }
+            onReadSlots(resp.err, slots);
         }
         
         function onReadSlots(err, slots) {
@@ -153,18 +170,23 @@ module.exports = {
             if(err) {
                 resp.err = 'Unable to read from CapeMgr slots: ' + err;
                 winston.error(resp.err);
-                callback(resp);
-                return;
+                if(callback) callback(resp);
+                return(false);
             }
             lastSlots = slots;
             var index = slots.indexOf(name);
             if(debug) winston.debug('onReadSlots: index = ' + index + ', readAttempts = ' + readAttempts);
             if(index >= 0) {
                 // Fragment is already loaded
-                callback(resp);
+                if(callback) callback(resp);
             } else if (readAttempts <= 1) {
                 // Attempt to load fragment
-                fs.writeFile(slotsFile, name, 'ascii', onWriteSlots);
+                try {
+                    fs.writeFileSync(slotsFile, name, 'ascii');
+                } catch(ex) {
+                    resp.err = ex;
+                }
+                onWriteSlots(resp.err);
             } else {
                 resp.err = 'Error waiting for CapeMgr slot to load';
                 callback(resp);
@@ -176,10 +198,18 @@ module.exports = {
             if(err) {
                 resp.err = 'Write to CapeMgr slots failed: ' + err;
                 if(pin && writeAttempts <= 1) unloadSlot();
-                else callback(resp);
-                return;
+                else {
+                    if(callback) callback(resp);
+                    return(false);
+                }
             }
-            fs.readFile(slotsFile, 'ascii', onReadSlots);
+            var slots;
+            try {
+                slots = fs.readFileSync(slotsFile, 'ascii');
+            } catch(ex) {
+                resp.err = ex;
+            }
+            onReadSlots(resp.err, slots);
         }
         
         function unloadSlot() {
@@ -187,9 +217,15 @@ module.exports = {
             if(slot && slot[0]) {
                 if(debug) winston.debug('Attempting to unload conflicting slot ' +
                     slot[0] + ' for ' + name);
-                fs.writeFile(slotsFile, '-'+slot[0], 'ascii', onUnloadSlot);
+                try {
+                    fs.writeFileSync(slotsFile, '-'+slot[0], 'ascii');
+                } catch(ex) {
+                    resp.err = ex;
+                }
+                onUnloadSlot(resp.err);
             } else {
-                callback(resp);
+                if(callback) callback(resp);
+                return(false);
             }
         }
 
@@ -199,8 +235,16 @@ module.exports = {
                 callback(resp);
                 return;
             }
-            fs.writeFile(slotsFile, name, 'ascii', onWriteSlots);
+            try {
+                fs.writeFileSync(slotsFile, name, 'ascii');
+            } catch(ex) {
+                resp.err = ex;
+            }
+            onWriteSlots(resp.err);
         }
+        if(debug) winston.debug('load_dt resp: ' + JSON.stringify(resp));
+        if(debug) winston.debug('load_dt return: ' + (typeof resp.err == 'undefined'));
+        return(typeof resp.err == 'undefined');
     },
 
     create_dt : function(pin, data, template, load, force_create, resp, callback) {
@@ -216,7 +260,8 @@ module.exports = {
         if(force_create) {
             createDTS();
         } else {
-            module.exports.file_exists(dtboFilename, onDTBOExistsTest);
+            var exists = exports.file_existsSync(dtboFilename);
+            onDTBOExistsTest(exists);
         }
         
         function onDTBOExistsTest(exists) {
@@ -242,18 +287,28 @@ module.exports = {
                 dts = dts.replace(/!PWM_INDEX!/g, pin.pwm.index);
                 dts = dts.replace(/!DUTY_CYCLE!/g, 500000);
             }
-            fs.writeFile(dtsFilename, dts, 'ascii', onDTSWrite);
+            try {
+                fs.writeFileSync(dtsFilename, dts, 'ascii');
+            } catch(ex) {
+                resp.err = ex;
+            }
+            onDTSWrite(resp.err);
         }
         
         function onDTSWrite(err) {
             if(err) {
                 resp.err = 'Error writing ' + dtsFilename + ': ' + err;
                 if(debug) winston.debug(resp.err);
-                callback(resp);
-                return;
+                if(callback) callback(resp);
+                return(resp);
             }
             var command = 'dtc -O dtb -o ' + dtboFilename + ' -b 0 -@ ' + dtsFilename;
-            child_process.exec(command, dtcHandler);
+            try {
+                system(command);
+            } catch(ex) {
+                resp.err = ex;
+            }
+            dtcHandler(resp.err);
         }
         
         function dtcHandler(error, stdout, stderr) {
@@ -264,9 +319,10 @@ module.exports = {
         
         function onDTBOExists() {
             if(debug) winston.debug('onDTBOExists()');
-            if(load) module.exports.load_dt(fragment, pin, resp, callback);
-            else callback(resp);
+            if(load) exports.load_dt(fragment, pin, resp);
         }
+        if(callback) callback(resp);
+        return(typeof resp.err == 'undefined');
     },
 
     getpin : function(pin) {
