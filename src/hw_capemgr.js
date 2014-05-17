@@ -70,6 +70,7 @@ exports.readPinMux = function(pin, mode, callback) {
 
 exports.setPinMode = function(pin, pinData, template, resp, callback) {
     if(debug) winston.debug('hw.setPinMode(' + [pin.key, pinData, template, JSON.stringify(resp)] + ');');
+    if(debug) winston.debug('typeof callack = ' + typeof callback);
     if(template == 'bspm') {
         gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
         if(callback) {

@@ -28,7 +28,7 @@ var hw;
 if(os.type() == 'Linux' || os.arch() == 'arm') {
     if(my.is_capemgr()) {
         if(!my.is_cape_universal()) {
-            fs.writeFileSync('cape-bonescript', my.is_capemgr()+"/slots");
+            my.load_dt('cape-bonescript');
         }
         if(my.is_cape_universal()) {
             hw = hw_universal;
