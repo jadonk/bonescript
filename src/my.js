@@ -174,6 +174,7 @@ exports.load_dt = function(name, pin, resp, callback) {
         } else if (readAttempts <= 1) {
             // Attempt to load fragment
             try {
+                if(debug) winston.debug('Writing ' + name + ' to ' + slotsFile);
                 fs.writeFileSync(slotsFile, name, 'ascii');
             } catch(ex) {
                 resp.err = ex;
