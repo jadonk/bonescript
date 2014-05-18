@@ -28,7 +28,7 @@ var hw;
 if(os.type() == 'Linux' || os.arch() == 'arm') {
     if(my.is_capemgr()) {
         if(!my.is_cape_universal()) {
-            my.load_dt('cape-bonescript');
+            my.create_dt({"key":"default", "options":{}}, 0, "bonescript", true);
         }
         if(my.is_cape_universal()) {
             hw = hw_universal;
