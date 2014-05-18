@@ -110,7 +110,7 @@ exports.exportGPIOControls = function(pin, direction, resp, callback) {
     
     if(!exists) {
         if(debug) winston.debug("exporting gpio: " + n);
-        fs.writeFileSunc("/sys/class/gpio/export", "" + n, null);
+        fs.writeFileSync("/sys/class/gpio/export", "" + n, null);
     }
     var directionFile = "/sys/class/gpio/gpio" + n + "/direction";
     if(debug) winston.debug('Writing GPIO direction(' + direction + ') to ' + 
