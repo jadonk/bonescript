@@ -64,7 +64,7 @@ function handler(req, res) {
     var uri = parsedUrl.pathname;
     var host = 'http://' + req.headers.host;
     if(uri == '/bonescript.js') {
-        var filename = __dirname + '/src/bonescript.js';
+        var filename = __dirname + '/bonescript.js';
         if(debug) winston.debug('filename = ' + filename)
         fs.readFile(filename, 'utf8', sendFile);
     }
