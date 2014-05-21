@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/jadonk/bonescript.svg?branch=master)](https://travis-ci.org/jadonk/bonescript)
+
 Getting started
 ===============
 BoneScript is a node.js library for physical computing on embedded Linux,
