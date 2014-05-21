@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/jadonk/bonescript.svg?branch=master)](https://travis-ci.org/jadonk/bonescript)
-[![Coverage Status](https://coveralls.io/repos/jadonk/bonescript/badge.png)](https://coveralls.io/r/jadonk/bonescript)
+[![Coverage Status](https://img.shields.io/coveralls/jadonk/bonescript.svg)](https://coveralls.io/r/jadonk/bonescript)
 
 Getting started
 ===============
@@ -49,7 +49,7 @@ Some steps to consider:
 ````sh
 cp bonescript/etc/default/node /etc/default/node
 cp bonescript/etc/profile.d/node.sh /etc/profile.d/node.sh
-cp bonescript/systemd/* /lib/systemd/system
+cp bonescript/systemd/\* /lib/systemd/system
 systemctl enable bonescript.socket
 systemctl enable bonescript-autorun.service
 ````
