@@ -1,8 +1,8 @@
+BoneScript
+==========
 [![Build Status](https://travis-ci.org/jadonk/bonescript.svg?branch=master)](https://travis-ci.org/jadonk/bonescript)
 [![Coverage Status](https://img.shields.io/coveralls/jadonk/bonescript.svg)](https://coveralls.io/r/jadonk/bonescript)
 
-Getting started
-===============
 BoneScript is a node.js library for physical computing on embedded Linux,
 starting with support for BeagleBone.
 
@@ -69,8 +69,8 @@ except through performing file I/O.
 
 Directory layout
 ----------------
-* autorun.js: Node.JS app to run apps dropped in the autorun folder
 * index.js: Main BoneScript source code
+* autorun.js: Node.JS app to run apps dropped in the autorun folder
 * package.json: NPM.JS package descriptor
 * server.js: BoneScript web server to serve up remote procedure calls
 * dts: Devicetree templates
