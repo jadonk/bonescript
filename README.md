@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/jadonk/bonescript.svg?branch=master)](https://travis-ci.org/jadonk/bonescript)
+[![Coverage Status](https://coveralls.io/repos/jadonk/bonescript/badge.png)](https://coveralls.io/r/jadonk/bonescript)
 
 Getting started
 ===============
