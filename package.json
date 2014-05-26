@@ -33,8 +33,7 @@
     "systemd": "0.2.x",
     "winston": "0.7.x",
     "express": "4.1.x",
-    "fibers": "1.0.x",
-    "node-ffi": "0.5.7"
+    "fibers": "1.0.x"
   },
   "devDependencies": {},
   "scripts": {

@@ -62,68 +62,20 @@ module.exports = {
                 callback(mode);
             }
         };
-        if(callback) {
-             my.file_exists(pinctrlFile, tryPinctrl);
-         } else {
-             try {
-                 var data2 = fs.readFileSync(pinctrlFile, 'utf8');
-                 mode = parse.modeFromPinctrl(data2, muxRegOffset, 0x44e10800, mode);
-             } catch(ex) {
-                 if(debug) winston.debug('getPinMode(' + pin.key + '): ' + ex);
-             }
-         }
-         return(mode);
+        my.file_exists(pinctrlFile, tryPinctrl);
     },
 
     setPinMode : function(pin, pinData, template, resp, callback) {
         if(debug) winston.debug('hw.setPinMode(' + [pin.key, pinData, template, JSON.stringify(resp)] + ');');
-        if(debug) winston.debug('typeof callack = ' + typeof callback);
         if(template == 'bspm') {
             gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
-            if(callback) {
-                doCreateDT(resp);
-                return(resp);
-            }
-            if(pin.led) {
-                gpioFile[pin.key] = '/sys/class/leds/beaglebone::' + pin.led + '/brightness';
-            }
+            doCreateDT(resp);
         } else if(template == 'bspwm') {
-            if(callback) {
-                 my.load_dt('am33xx_pwm', null, resp, doCreateDT);
-                 return(resp);
-             }
-             if(!my.load_dt('am33xx_pwm')) {
-                 resp.err = 'Error loading am33xx_pwm devicetree overlay';
-                 return(resp);
-             }
+            my.load_dt('am33xx_pwm', null, resp, doCreateDT);
         } else {
             resp.err = 'Unknown pin mode template';
-            if(callback) {
-                callback(resp);
-                return(resp);
-            }
+            callback(resp);
         }
-        
-        // only synchronous stuff at this point
-        
-        if(!my.create_dt(pin, pinData, template)) {
-            resp.err = 'Error loading devicetree overlay for ' + pin.key + ' using template ' + template;
-            return(resp);
-        }
-        if(template == 'bspwm') {
-            try {
-                var ocp = my.is_ocp();
-                var p = 'bs_pwm_test_' + pin.key;
-                var pwm_test = my.find_sysfsFile(p, ocp, p + '.');
-                pwmPrefix[pin.pwm.name] = pwm_test;
-                fs.writeFileSync(pwm_test+'/polarity', 0);
-            } catch(ex) {
-                resp.err = 'Error enabling PWM controls: ' + ex;
-                winston.error(resp.err);
-            }
-        }
-        
-        // now to define the asynchronous calls
         
         function doCreateDT(resp) {
             if(resp.err) {
@@ -183,7 +135,6 @@ module.exports = {
                 callback(resp);
             }
         }
-        return(resp);
     },
 
     setLEDPinToGPIO : function(pin, resp) {
@@ -203,32 +154,7 @@ module.exports = {
     exportGPIOControls : function(pin, direction, resp, callback) {
         if(debug) winston.debug('hw.exportGPIOControls(' + [pin.key, direction, resp] + ');');
         var n = pin.gpio;
-        if(callback) {
-            my.file_exists(gpioFile[pin.key], onFileExists);
-            return;
-        }
-        var exists = my.file_existsSync(gpioFile[pin.key]);
-        if(exists) {
-            if(debug) winston.debug("gpio: " + n + " already exported.");
-            fs.writeFileSync("/sys/class/gpio/gpio" + n + "/direction",
-                direction, null);
-        } else {
-            try {
-                if(debug) winston.debug("exporting gpio: " + n);
-                fs.writeFileSync("/sys/class/gpio/export", "" + n, null);
-                if(debug) winston.debug("setting gpio " + n +
-                    " direction to " + direction);
-                fs.writeFileSync("/sys/class/gpio/gpio" + n + "/direction",
-                    direction, null);
-            } catch(ex2) {
-                resp.value = false;
-                resp.err = 'Unable to export gpio-' + n + ': ' + ex2;
-                if(debug) winston.debug(resp.err);
-                var gpioUsers =
-                    fs.readFileSync('/sys/kernel/debug/gpio', 'utf-8');
-                gpioUsers = gpioUsers.split('\n');
-            }
-        }
+        my.file_exists(gpioFile[pin.key], onFileExists);
         
         function onFileExists(exists) {
             if(exists) {
@@ -278,7 +204,7 @@ module.exports = {
             }
             callback(resp);
         }
-        return(resp);
+        
     },
 
     writeGPIOValue : function(pin, value, callback) {
@@ -293,77 +219,70 @@ module.exports = {
             }
         }
         if(debug) winston.debug("gpioFile = " + gpioFile[pin.key]);
-        if(callback) {
-            fs.writeFile(gpioFile[pin.key], '' + value, null, callback);
-        } else {
-            try {
-                fs.writeFileSync(gpioFile[pin.key], '' + value, null);
-            } catch(ex) {
-                winston.error("Unable to write to " + gpioFile[pin.key]);
-            }
+        fs.writeFile(gpioFile[pin.key], '' + value, null, onWriteGPIO);
+        function onWriteGPIO(err){
+            if(err) winston.error("Writing to GPIO failed: "+err);
+            if(typeof callback == 'function') callback(err);
         }
     },
 
     readGPIOValue : function(pin, resp, callback) {
         var gpioFile = '/sys/class/gpio/gpio' + pin.gpio + '/value';
-        if(callback) {
-            var readFile = function(err, data) {
-                if(err) {
-                    resp.err = 'digitalRead error: ' + err;
-                    winston.error(resp.err);
-                }
-                resp.value = parseInt(data, 2);
-                callback(resp);
-            };
-            fs.readFile(gpioFile, readFile);
-            return(true);
-        }
-        resp.value = parseInt(fs.readFileSync(gpioFile), 2);
-        return(resp);
+        var readFile = function(err, data) {
+            if(err) {
+                resp.err = 'digitalRead error: ' + err;
+                winston.error(resp.err);
+            }
+            resp.value = parseInt(data, 2);
+            callback(resp);
+        };
+        fs.readFile(gpioFile, readFile);
     },
 
     enableAIN : function(callback) {
-        var helper = "";
-        if(my.load_dt('cape-bone-iio')) {
-            var ocp = my.is_ocp();
-            if(ocp) {
-                helper = my.find_sysfsFile('helper', ocp, 'helper.');
-                if(helper) {
-                    ainPrefix = helper + '/AIN';
-                }
+        var resp = {};
+        var ocp = my.is_ocp();
+        if(!ocp) {
+            resp.err = 'enableAIN: Unable to open ocp file';
+            if(debug) winston.debug(resp.err);
+            callback(resp);
+            return;
+        }
+        
+        my.load_dt('cape-bone-iio', null, {}, onLoadDT);
+        
+        function onLoadDT(x) {
+            if(x.err) {
+                callback(x);
+                return;
             }
+            my.find_sysfsFile('helper', ocp, 'helper.', onHelper);
         }
-        if(callback) {
-            callback({'path': helper});
+
+        function onHelper(x) {
+            if(x.err || !x.path) {
+                resp.err = 'Error enabling analog inputs: ' + x.err;
+                if(debug) winston.debug(resp.err);
+            } else {
+                ainPrefix = x.path + '/AIN';
+                if(debug) winston.debug("Setting ainPrefix to " + ainPrefix);
+            }
+            callback(x);
         }
-        return(helper.length > 1);
     },
 
     readAIN : function(pin, resp, callback) {
         var ainFile = ainPrefix + pin.ain.toString();
-        if(callback) {
-            var readFile = function(err, data) {
-                if(err) {
-                    resp.err = 'analogRead error: ' + err;
-                    winston.error(resp.err);
-                }
-                resp.value = parseInt(data, 10) / 1800;
-                callback(resp);
-            };
-            fs.readFile(ainFile, readFile);
-            return(resp);
+        fs.readFile(ainFile, readFile);
+        
+        function readFile(err, data) {
+            if(err) {
+                resp.err = 'analogRead error: ' + err;
+                winston.error(resp.err);
+            }
+            resp.value = parseInt(data, 10) / 1800;
+            callback(resp);
         }
-        resp.value = parseInt(fs.readFileSync(ainFile), 10);
-        if(isNaN(resp.value)) {
-            resp.err = 'analogRead(' + pin.key + ') returned ' + resp.value;
-            winston.error(resp.err);
-        }
-        resp.value = resp.value / 1800;
-        if(isNaN(resp.value)) {
-            resp.err = 'analogRead(' + pin.key + ') scaled to ' + resp.value;
-            winston.error(resp.err);
-        }
-        return(resp);
     },
 
     writeGPIOEdge : function(pin, mode) {
@@ -385,10 +304,8 @@ module.exports = {
             var duty = Math.round( period * value );
             fs.writeFileSync(path+'/duty', 0);
             if(pwm.freq != freq) {
-                if(debug) winston.debug('Updating PWM period: ' + period);
                 fs.writeFileSync(path+'/period', period);
             }
-            if(debug) winston.debug('Updating PWM duty: ' + duty);
             fs.writeFileSync(path+'/duty', duty);
         } catch(ex) {
             resp.err = 'error updating PWM freq and value: ' + path + ', ' + ex;

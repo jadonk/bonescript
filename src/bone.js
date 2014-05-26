@@ -268,7 +268,6 @@
                 "eeprom": 15,
                 "pwm": {
                     "module": "ehrpwm2",
-                    "sysfs": 6,
                     "index": 1,
                     "muxmode": 4,
                     "path": "ehrpwm.2:1",
@@ -384,7 +383,6 @@
                 "eeprom": 14,
                 "pwm": {
                     "module": "ehrpwm2",
-                    "sysfs": 5,
                     "index": 0,
                     "muxmode": 4,
                     "path": "ehrpwm.2:0",
@@ -662,7 +660,6 @@
                 "eeprom": 56,
                 "pwm": {
                     "module": "ehrpwm1",
-                    "sysfs": 4,
                     "index": 1,
                     "muxmode": 2,
                     "path": "ehrpwm.1:1",
@@ -706,7 +703,6 @@
                 "eeprom": 55,
                 "pwm": {
                     "module": "ehrpwm1",
-                    "sysfs": 3,
                     "index": 0,
                     "muxmode": 2,
                     "path": "ehrpwm.1:0",
@@ -876,7 +872,6 @@
                 "eeprom": 45,
                 "pwm": {
                     "module": "ehrpwm2",
-                    "sysfs": 5,
                     "index": 0,
                     "muxmode": 3,
                     "path": "ehrpwm.2:0",
@@ -902,7 +897,6 @@
                 "eeprom": 46,
                 "pwm": {
                     "module": "ehrpwm2",
-                    "sysfs": 6,
                     "index": 1,
                     "muxmode": 3,
                     "path": "ehrpwm.2:1",
@@ -1022,7 +1016,6 @@
                 "eeprom": 34,
                 "pwm": {
                     "module": "ehrpwm1",
-                    "sysfs": 3,
                     "index": 0,
                     "muxmode": 6,
                     "path": "ehrpwm.1:0",
@@ -1066,7 +1059,6 @@
                 "eeprom": 35,
                 "pwm": {
                     "module": "ehrpwm1",
-                    "sysfs": 4,
                     "index": 1,
                     "muxmode": 6,
                     "path": "ehrpwm.1:1",
@@ -1164,7 +1156,6 @@
                 "eeprom": 1,
                 "pwm": {
                     "module": "ehrpwm0",
-                    "sysfs": 1,
                     "index": 1,
                     "muxmode": 3,
                     "path": "ehrpwm.0:1",
@@ -1190,7 +1181,6 @@
                 "eeprom": 0,
                 "pwm": {
                     "module": "ehrpwm0",
-                    "sysfs": 0,
                     "index": 0,
                     "muxmode": 3,
                     "path": "ehrpwm.0:0",
@@ -1306,7 +1296,6 @@
                 "eeprom": 63,
                 "pwm": {
                     "module": "ecap2",
-                    "sysfs": 7,
                     "index": 2,
                     "muxmode": 4,
                     "path": "ecap.2",
@@ -1332,7 +1321,6 @@
                 "eeprom": 61,
                 "pwm": {
                     "module": "ehrpwm0",
-                    "sysfs": 1,
                     "index": 1,
                     "muxmode": 1,
                     "path": "ehrpwm.0:1",
@@ -1376,7 +1364,6 @@
                 "eeprom": 65,
                 "pwm": {
                     "module": "ehrpwm0",
-                    "sysfs": 0,
                     "index": 0,
                     "muxmode": 1,
                     "path": "ehrpwm.0:0",
@@ -1477,7 +1464,6 @@
                 "eeprom": 4,
                 "pwm": {
                     "module": "ecap0",
-                    "sysfs": 2,
                     "index": 0,
                     "muxmode": 0,
                     "path": "ecap.0",
