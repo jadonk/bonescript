@@ -25,7 +25,13 @@ var util = require('util');
 var winston = require('winston');
 var bone = require('./bone').pins;
 
-var debug = (process.env.DEBUG.indexOf("bone")===-1) ? false : true;
+var debug;
+if(process.env.DEBUG && process.env.DEBUG.indexOf("bone")!==-1){
+    debug = true;
+} else {
+    debug = false;
+}
+
 
 // Function derived from https://github.com/joyent/node/blob/master/lib/buffer.js
 if(!buffer.Buffer.prototype.readUint16BE) {
