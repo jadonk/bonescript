@@ -79,7 +79,8 @@ var ain = false;
 //    direction: 'in' or 'out' (allocated might be false)
 f.getPinMode = function(pin, callback) {
     if(typeof callback == 'undefined') {
-        return(my.wait_for(f.getPinMode, arguments));
+        winston.error("getPinMode() requires callback");
+        return;
     }
     pin = my.getpin(pin);
     if(debug) winston.debug('getPinMode(' + pin.key + ');');
@@ -112,9 +113,6 @@ f.getPinMode = function(pin, callback) {
 f.getPinMode.args = ['pin', 'callback'];
 
 f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
-    if(typeof callback == 'undefined') {
-        return(my.wait_for(f.pinMode, arguments, 'value', true));
-    }
     pin = my.getpin(pin);
     if(debug) winston.debug('pinMode(' + [pin.key, direction, mux, pullup, slew] + ');');
     if(direction == g.INPUT_PULLUP) pullup = 'pullup';
@@ -220,23 +218,24 @@ f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
 f.pinMode.args = ['pin', 'direction', 'mux', 'pullup', 'slew', 'callback'];
 
 f.digitalWrite = function(pin, value, callback) {
-    if(typeof callback == 'undefined') {
-        return(my.wait_for(f.digitalWrite, arguments, 'err', true));
-    }
     var myCallback = function(resp) {
         if(callback) callback({'err': resp, 'complete':true});
     };
     pin = my.getpin(pin);
     if(debug) winston.debug('digitalWrite(' + [pin.key, value] + ');');
     value = parseInt(Number(value), 2) ? 1 : 0;
-
-    hw.writeGPIOValue(pin, value, myCallback);
+    if(typeof callback == 'undefined') {
+        hw.writeGPIOValueSync(pin, value, myCallback);
+    } else {
+        hw.writeGPIOValue(pin, value, myCallback);
+    }
 };
 f.digitalWrite.args = ['pin', 'value', 'callback'];
 
 f.digitalRead = function(pin, callback) {
     if(typeof callback == 'undefined') {
-        return(my.wait_for(f.digitalRead, arguments, 'value'));
+        winston.error("digitalRead() requires callback");
+        return;
     }
     pin = my.getpin(pin);
     if(debug) winston.debug('digitalRead(' + [pin.key] + ');');
@@ -265,7 +264,8 @@ f.digitalRead.args = ['pin', 'callback'];
 
 f.analogRead = function(pin, callback) {
     if(typeof callback == 'undefined') {
-        return(my.wait_for(f.analogRead, arguments, 'value'));
+        winston.error("analogRead() requires callback");
+        return;
     }
     pin = my.getpin(pin);
     if(debug) winston.debug('analogRead(' + [pin.key] + ');');
@@ -283,7 +283,7 @@ f.analogRead = function(pin, callback) {
     function onEnableAIN(x) {
         if(x.err) {
             resp.err = "Error enabling analog inputs: " + x.err;
-            if(debug) winston.debug(resp.err);
+            winston.error(resp.err);
             callback(resp);
             return;
         }
@@ -297,10 +297,62 @@ f.analogRead = function(pin, callback) {
 };
 f.analogRead.args = ['pin', 'callback'];
 
-f.shiftOut = function(dataPin, clockPin, bitOrder, val, callback) {
-    if(typeof callback == 'undefined') {
-        return(my.wait_for(f.shiftOut, arguments, 'err', true));
+// See http://processors.wiki.ti.com/index.php/AM335x_PWM_Driver's_Guide
+// That guide isn't useful for the new pwm_test interface
+f.analogWrite = function(pin, value, freq, callback) {
+    pin = my.getpin(pin);
+    if(debug) winston.debug('analogWrite(' + [pin.key,value,freq] + ');');
+    freq = freq || 2000.0;
+    var resp = {};
+
+    // Make sure the pin has a PWM associated
+    if(typeof pin.pwm == 'undefined') {
+        resp.err = 'analogWrite: ' + pin.key + ' does not support analogWrite()';
+        winston.error(resp.err);
+        if(callback) callback(resp);
+        return;
     }
+
+    // Make sure there is no one else who has the PWM
+    if(
+        (typeof pwm[pin.pwm.name] != 'undefined')   // PWM needed by this pin is already allocated
+         && (pin.key != pwm[pin.pwm.name].key)      // allocation is not by this pin
+    ) {
+        resp.err = 'analogWrite: ' + pin.key + ' requires pwm ' + pin.pwm.name +
+            ' but it is already in use by ' + pwm[pin.pwm.name].key;
+        winston.error(resp.err);
+        if(callback) callback(resp);
+        return;
+    }
+
+    // Enable PWM controls if not already done
+    if(typeof pwm[pin.pwm.name] == 'undefined') {
+        f.getPinMode(pin.key, onGetPinMode);
+    } else {
+        onPinMode();
+    }
+    
+    function onGetPinMode(pinMode) {
+        var slew = pinMode.slew || 'fast';
+        var pullup = pinMode.pullup || 'disabled';
+        f.pinMode(pin, g.ANALOG_OUTPUT, pin.pwm.muxmode, pullup, slew, onPinMode);
+    }
+
+    function onPinMode() {
+        // Perform update
+        resp = hw.writePWMFreqAndValue(pin, pwm[pin.pwm.name], freq, value, resp);
+    
+        // Save off the freq, value and PWM assignment
+        pwm[pin.pwm.name].freq = freq;
+        pwm[pin.pwm.name].value = value;
+    
+        // All done
+        if(callback) callback(resp);
+    }
+};
+f.analogWrite.args = ['pin', 'value', 'freq', 'callback'];
+
+f.shiftOut = function(dataPin, clockPin, bitOrder, val, callback) {
     dataPin = my.getpin(dataPin);
     clockPin = my.getpin(clockPin);
     if(debug) winston.debug('shiftOut(' + [dataPin.key, clockPin.key, bitOrder, val] + ');');
@@ -341,9 +393,6 @@ f.shiftOut = function(dataPin, clockPin, bitOrder, val, callback) {
 f.shiftOut.args = ['dataPin', 'clockPin', 'bitOrder', 'val', 'callback'];
 
 f.attachInterrupt = function(pin, handler, mode, callback) {
-    if(typeof callback == 'undefined') {
-        return(my.wait_for(f.attachInterrupt, arguments, 'attached', true));
-    }
     pin = my.getpin(pin);
     if(debug) winston.debug('attachInterrupt(' + [pin.key, handler, mode] + ');');
     var n = pin.gpio;
@@ -407,7 +456,8 @@ f.attachInterrupt.args = ['pin', 'handler', 'mode', 'callback'];
 
 f.detachInterrupt = function(pin, callback) {
     if(typeof callback == 'undefined') {
-        return(my.wait_for(f.detachInterrupt, arguments, 'detached', true));
+        winston.error("detachInterrupt requires callback");
+        return;
     }
     pin = my.getpin(pin);
     if(debug) winston.debug('detachInterrupt(' + [pin.key] + ');');
@@ -422,67 +472,10 @@ f.detachInterrupt = function(pin, callback) {
 };
 f.detachInterrupt.args = ['pin', 'callback'];
 
-// See http://processors.wiki.ti.com/index.php/AM335x_PWM_Driver's_Guide
-// That guide isn't useful for the new pwm_test interface
-f.analogWrite = function(pin, value, freq, callback) {
-    if(typeof callback == 'undefined') {
-        return(my.wait_for(f.analogWrite, arguments, 'err', true));
-    }
-    pin = my.getpin(pin);
-    if(debug) winston.debug('analogWrite(' + [pin.key,value,freq] + ');');
-    freq = freq || 2000.0;
-    var resp = {};
-
-    // Make sure the pin has a PWM associated
-    if(typeof pin.pwm == 'undefined') {
-        resp.err = 'analogWrite: ' + pin.key + ' does not support analogWrite()';
-        winston.error(resp.err);
-        if(callback) callback(resp);
-        return;
-    }
-
-    // Make sure there is no one else who has the PWM
-    if(
-        (typeof pwm[pin.pwm.name] != 'undefined')   // PWM needed by this pin is already allocated
-         && (pin.key != pwm[pin.pwm.name].key)      // allocation is not by this pin
-    ) {
-        resp.err = 'analogWrite: ' + pin.key + ' requires pwm ' + pin.pwm.name +
-            ' but it is already in use by ' + pwm[pin.pwm.name].key;
-        winston.error(resp.err);
-        if(callback) callback(resp);
-        return;
-    }
-
-    // Enable PWM controls if not already done
-    if(typeof pwm[pin.pwm.name] == 'undefined') {
-        f.getPinMode(pin.key, onGetPinMode);
-    } else {
-        onPinMode();
-    }
-    
-    function onGetPinMode(pinMode) {
-        var slew = pinMode.slew || 'fast';
-        var pullup = pinMode.pullup || 'disabled';
-        f.pinMode(pin, g.ANALOG_OUTPUT, pin.pwm.muxmode, pullup, slew, onPinMode);
-    }
-
-    function onPinMode() {
-        // Perform update
-        resp = hw.writePWMFreqAndValue(pin, pwm[pin.pwm.name], freq, value, resp);
-    
-        // Save off the freq, value and PWM assignment
-        pwm[pin.pwm.name].freq = freq;
-        pwm[pin.pwm.name].value = value;
-    
-        // All done
-        if(callback) callback(resp);
-    }
-};
-f.analogWrite.args = ['pin', 'value', 'freq', 'callback'];
-
 f.getEeproms = function(callback) {
     if(typeof callback == 'undefined') {
-        return(my.wait_for(f.getEeproms, arguments));
+        winston.error("getEeproms requires callback");
+        return;
     }
     var eeproms = {};
     eeproms = hw.readEeproms(eeproms);
@@ -495,7 +488,8 @@ f.getEeproms.args = ['callback'];
 
 f.readTextFile = function(filename, callback) {
     if(typeof callback == 'undefined') {
-        return(my.wait_for(f.readTextFile, arguments, 'data'));
+        winston.error("readTextFile requires callback");
+        return;
     }
     fs.readFile(filename, 'ascii', cb);
     
@@ -507,7 +501,8 @@ f.readTextFile.args = ['filename', 'callback'];
 
 f.writeTextFile = function(filename, data, callback) {
     if(typeof callback == 'undefined') {
-        return(my.wait_for(f.writeTextFile, arguments, 'err', true));
+        winston.error("writeTextFile requires callback");
+        return;
     }
     fs.writeFile(filename, data, 'ascii', cb);
     
@@ -519,7 +514,8 @@ f.writeTextFile.args = ['filename', 'data', 'callback'];
 
 f.getPlatform = function(callback) {
     if(typeof callback == 'undefined') {
-        return(my.wait_for(f.getPlatform, arguments));
+        winston.error("getPlatform requires callback");
+        return;
     }
     var platform = {
         'platform': bone,
@@ -543,7 +539,8 @@ f.getPlatform.args = ['callback'];
 
 f.echo = function(data, callback) {
     if(typeof callback == 'undefined') {
-        return(my.wait_for(f.echo, arguments, 'data'));
+        winston.error("echo requires callback");
+        return;
     }
     winston.info(data);
     callback({'data': data});
@@ -551,28 +548,15 @@ f.echo = function(data, callback) {
 f.echo.args = ['data', 'callback'];
 
 f.setDate = function(date, callback) {
-    if(typeof callback == 'undefined') {
-        return(my.wait_for(f.setDate, arguments, 'error', true));
-    }
     child_process.exec('date -s "' + date + '"', dateResponse);
     
     function dateResponse(error, stdout, stderr) {
-        callback({'error': error, 'stdout':stdout, 'stderr':stderr});
+        if(typeof callback == 'function') {
+            callback({'error': error, 'stdout':stdout, 'stderr':stderr});
+        }
     }
 };
 f.setDate.args = ['date', 'callback'];
-
-f.delay = function(ms) {
-    var fiber = fibers.current;
-    if(typeof fiber == 'undefined') {
-        winston.error('sleep may only be called within the setup or run functions');
-        return;
-    }
-    setTimeout(function() {
-        fiber.run();
-    }, ms);
-    fibers.yield();
-};
 
 
 // Exported variables
@@ -592,28 +576,5 @@ for(var x in iic) {
 for(var x in g) {
     exports[x] = g[x];
 }
-
-var alreadyRan = false;
-function run() {
-    if(debug) winston.debug('Calling run()');
-    if(alreadyRan) return(false);
-    alreadyRan = true;
-    // 'setup' and 'loop' are globals that may or may not be defined
-    if(typeof global.setup == 'function' || typeof global.loop == 'function') {
-        fibers(function() {
-            if(typeof global.setup == 'function') {
-                winston.debug('Running setup()');
-                global.setup();
-            }
-            if(typeof global.loop == 'function') {
-                if(debug) winston.debug('Starting loop()');
-                while(1) {
-                    global.loop();
-                }
-            }
-        }).run();
-    }
-}
-process.nextTick(run);
 
 if(debug) winston.debug('index.js loaded');

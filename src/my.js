@@ -30,8 +30,6 @@ function myRequire(packageName, onfail) {
     return(y);
 }
 
-var fibers = myRequire("fibers");
-
 module.exports = {
 
     require : myRequire,
@@ -179,10 +177,13 @@ module.exports = {
                 else callback(resp);
                 return;
             }
-            fs.readFile(slotsFile, 'ascii', onReadSlots);
+            setTimeout(function(){ //give some time to load slots after updating slots file.
+                fs.readFile(slotsFile, 'ascii', onReadSlots);
+            },100);
         }
         
         function unloadSlot() {
+            if(debug) winston.debug('unloadSlot()');
             var slot = lastSlots.match(slotRegex);
             if(slot && slot[0]) {
                 if(debug) winston.debug('Attempting to unload conflicting slot ' +
@@ -388,63 +389,6 @@ module.exports = {
         }
         pinData |= (mux & 0x07);
         return(pinData);
-    },
-
-    // Inspired by
-    //   https://github.com/luciotato/waitfor/blob/master/waitfor.js
-    //   https://github.com/0ctave/node-sync/blob/master/lib/sync.js
-    wait_for : function(fn, myargs, result_name, no_error) {
-        var fiber = fibers.current;
-        var yielded = false;
-        var args = [];
-        var result;
-
-        for(var i in fn.args) {
-            if(fn.args[i] == 'callback') {
-                args.push(myCallback);
-            } else {
-                args.push(myargs[i]);
-            }
-        }
-
-        if(typeof fiber == 'undefined') {
-            if(no_error) {
-                // No callback required (fire and forget)
-                fn.apply(this, args);
-            } else {
-                var stack = new Error().stack;
-                var err = 'As of BoneScript 0.2.5, synchronous calls must be made\n' +
-                    'within a fiber such as within loop() or setup():\n' + stack;
-                winston.error(err);
-                throw(err);
-            }
-        } else {
-            fn.apply(this, args);
-            if(!myCallback.called) {
-                yielded = true;
-                fibers.yield();
-            }
-        }
-        
-        function myCallback(x) {
-            if(debug) winston.debug('Callback: ' + fn.name + ' ' + x.err);
-            if(myCallback.called) return;
-            if(typeof result_name == 'undefined') {
-                result = x;
-            } else if(typeof x[result_name] != 'undefined') {
-                result = x[result_name];
-            }
-            if(typeof x.err != 'undefined' && x.err) {
-                //var fn_name = fn.toString().substr('function '.length);
-                //fn_name = fn_name.substr(0, fn_name.indexOf('('));
-                if(debug) winston.debug(fn.name + ' ' + x.err);
-            }
-            myCallback.called = true;
-            if(typeof fiber == 'undefined' && no_error) return;
-            if(yielded) fiber.run();
-        }
-        
-        return(result);
     }
 };
 

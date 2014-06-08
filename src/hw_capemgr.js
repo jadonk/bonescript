@@ -109,7 +109,7 @@ module.exports = {
             function onFindPWM(pwm_test) {
                 if(pwm_test.err) {
                     resp.err = "Error searching for pwm_test: " + pwm_test.err;
-                    if(debug) winston.debug(resp.err);
+                    winston.error(resp.err);
                     callback(resp);
                     return;
                 }
@@ -118,7 +118,7 @@ module.exports = {
                 function onFindPeriod(period) {
                     if(period.err) {
                         resp.err = "Error searching for period: " + period.err;
-                        if(debug) winston.debug(resp.err);
+                        winston.error(resp.err);
                         callback(resp);
                         return;
                     }
@@ -223,6 +223,26 @@ module.exports = {
         function onWriteGPIO(err){
             if(err) winston.error("Writing to GPIO failed: "+err);
             if(typeof callback == 'function') callback(err);
+        }
+    },
+
+    writeGPIOValueSync : function(pin, value, callback) {
+        if(typeof gpioFile[pin.key] == 'undefined') {
+            gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
+            if(pin.led) {
+                gpioFile[pin.key] = "/sys/class/leds/beaglebone:";
+                gpioFile[pin.key] += "green:" + pin.led + "/brightness";
+            }
+            if(!my.file_existsSync(gpioFile[pin.key])) {
+                winston.error("Unable to find gpio: " + gpioFile[pin.key]);
+            }
+        }
+        if(debug) winston.debug("gpioFile = " + gpioFile[pin.key]);
+        try {
+            fs.writeFileSync(gpioFile[pin.key], '' + value, null);
+            if(typeof callback == 'function') callback();
+        } catch(err){
+            if(err) winston.error("Writing to GPIO failed: "+err);
         }
     },
 
