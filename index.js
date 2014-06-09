@@ -51,7 +51,11 @@ if(debug) {
         colorize: true
     });
 } else {
-    winston.setLevels(winston.config.syslog.levels);
+    winston.remove(winston.transports.Console);
+     winston.add(winston.transports.Console, {
+        level: 'error',
+        colorize: true
+    });
 }
 
 var f = {};
@@ -82,7 +86,12 @@ f.getPinMode = function(pin, callback) {
         winston.error("getPinMode() requires callback");
         return;
     }
-    pin = my.getpin(pin);
+    if(pin) {
+        pin = my.getpin(pin);
+    } else {
+        winston.error("Pin is not defined");
+        throw("Invalid pin: " + pin);
+    }
     if(debug) winston.debug('getPinMode(' + pin.key + ');');
     var mode = {'pin': pin.key, 'name': pin.name};
     if(pin.options) mode.options = pin.options;
@@ -112,8 +121,13 @@ f.getPinMode = function(pin, callback) {
 };
 f.getPinMode.args = ['pin', 'callback'];
 
-f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
-    pin = my.getpin(pin);
+f.pinMode = function(givenPin, direction, mux, pullup, slew, callback) {
+    if(givenPin) {
+        var pin = my.getpin(givenPin);
+    } else {
+        winston.error("Pin is not defined");
+        throw("Invalid pin: " + pin);
+    }
     if(debug) winston.debug('pinMode(' + [pin.key, direction, mux, pullup, slew] + ');');
     if(direction == g.INPUT_PULLUP) pullup = 'pullup';
     pullup = pullup || ((direction == g.INPUT) ? 'pulldown' : 'disabled');
@@ -134,7 +148,7 @@ f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
         ) {
             var err = 'pinMode only supports ANALOG_OUTPUT for PWM pins: ' + pin.key;
             winston.info(err);
-            if(callback) callback({value:false, err:err});
+            if(callback) callback({value:false, err:err},givenPin);
             return;
         }
         direction = g.OUTPUT;
@@ -154,7 +168,7 @@ f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
             resp.err = 'pinMode only supports GPIO output for LEDs: ' + pin.key;
             winston.info(resp.err);
             resp.value = false;
-            if(callback) callback(resp);
+            if(callback) callback(resp,givenPin);
             return;
         }
 
@@ -162,7 +176,7 @@ f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
         if(typeof resp.err == 'undefined') {
             gpio[n] = true;
         }
-        callback(resp);
+        callback(resp,givenPin);
         return;
     }
 
@@ -190,7 +204,7 @@ f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
             winston.info(resp.err);
             delete gpio[n];
         }
-        callback(resp);
+        if(callback) callback(resp,givenPin);
     }
     
     function pinModeTestGPIO() {
@@ -200,7 +214,7 @@ f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
             resp = hw.exportGPIOControls(pin, direction, resp, onExport);
         } else {
             delete gpio[n];
-            if(callback) callback(resp);
+            if(callback) callback(resp,givenPin);
         }
     }
     
@@ -212,7 +226,7 @@ f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
         } else {
             gpio[n] = true;
         }
-        if(callback) callback(resp);
+        if(callback) callback(resp,givenPin);
     }
 };
 f.pinMode.args = ['pin', 'direction', 'mux', 'pullup', 'slew', 'callback'];
@@ -221,7 +235,12 @@ f.digitalWrite = function(pin, value, callback) {
     var myCallback = function(resp) {
         if(callback) callback({'err': resp, 'complete':true});
     };
-    pin = my.getpin(pin);
+    if(pin) {
+        pin = my.getpin(pin);
+    } else {
+        winston.error("Pin is not defined");
+        throw("Invalid pin: " + pin);
+    }
     if(debug) winston.debug('digitalWrite(' + [pin.key, value] + ');');
     value = parseInt(Number(value), 2) ? 1 : 0;
     if(typeof callback == 'undefined') {

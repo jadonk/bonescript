@@ -299,8 +299,9 @@ module.exports = {
             if(err) {
                 resp.err = 'analogRead error: ' + err;
                 winston.error(resp.err);
+            } else {
+                resp.value = parseInt(data, 10) / 1800;
             }
-            resp.value = parseInt(data, 10) / 1800;
             callback(resp);
         }
     },
