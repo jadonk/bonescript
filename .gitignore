@@ -3,3 +3,4 @@
 bonescript.log
 *~
 node_modules
+.coveralls.yml
