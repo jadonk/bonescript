@@ -25,7 +25,7 @@ var debug = process.env.DEBUG ? true : false;
 
 // Detect if we are on a Beagle
 var hw;
-if(os.type() == 'Linux' || os.arch() == 'arm') {
+if(os.type() == 'Linux' && os.arch() == 'arm') {
     if(my.is_capemgr()) {
         if(!my.is_cape_universal()) {
             my.create_dt({"key":"default", "options":{}}, 0, "bs", true);
