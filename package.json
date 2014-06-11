@@ -45,7 +45,7 @@
   },
   "scripts": {
     "start": "node server.js",
-    "test": "nodeunit test",
+    "test": "NODE_PATH=.. nodeunit test",
     "coveralls": "jscoverage lib && QUICKSORT_COV=1 nodeunit --reporter=lcov test | coveralls"
   }
 }
