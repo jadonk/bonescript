@@ -518,7 +518,8 @@ f.getPlatform = function(callback) {
     platform.os.freemem = os.freemem();
     platform.os.networkInterfaces = os.networkInterfaces();
     platform = hw.readPlatform(platform);
-    callback(platform);
+    if(callback) callback(platform);
+    return(platform);
 };
 f.getPlatform.args = ['callback'];
 
