@@ -27,18 +27,25 @@
   },
   "dependencies": {
     "socket.io": "0.8.7",
-    "serialport": "1.2.5",
-    "i2c": "0.1.4",
     "systemd": "0.2.6",
     "winston": "0.6.2",
     "express": "3.1.0",
-    "epoll": "0.0.7",
+    "ffi": "1.2.6"
+  },
+  "optionalDependencies": {
     "fibers": "1.0.1",
-    "node-ffi": "0.5.7"
+    "serialport": "1.2.5",
+    "i2c": "0.1.4",
+    "epoll": "0.0.7"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "jscoverage": "~0.5.1",
+    "nodeunit": "~0.9.0",
+    "coveralls": "~2.10.0"
+  },
   "scripts": {
-    "start": "node server.js"
-  },
-  "optionalDependencies": {}
+    "start": "node server.js",
+    "test": "nodeunit test",
+    "coveralls": "jscoverage lib && QUICKSORT_COV=1 nodeunit --reporter=lcov test | coveralls"
+  }
 }
