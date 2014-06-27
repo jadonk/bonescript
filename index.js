@@ -7,6 +7,7 @@ var winston = require('winston');
 var os = require('os');
 var hw_oldkernel = require('./src/hw_oldkernel');
 var hw_capemgr = require('./src/hw_capemgr');
+var hw_universal = require('./hw_universal');
 var hw_simulator = require('./src/hw_simulator');
 var bone = require('./src/bone');
 var functions = require('./src/functions');
@@ -29,8 +30,14 @@ if(process.env.DEBUG && process.env.DEBUG.indexOf("bone")!==-1){
 var hw;
 if(os.type() == 'Linux' || os.arch() == 'arm') {
     if(my.is_capemgr()) {
-        hw = hw_capemgr;
-        if(debug) winston.debug('Using CapeMgr interface');
+        if(my.is_cape_universal()) {
+            hw = hw_universal;
+            if(debug) winston.debug('Using Universal Cape interface');
+        } else {
+            my.create_dt({"key":"default", "options":{}}, 0, "bs", true);
+            hw = hw_capemgr;
+            if(debug) winston.debug('Using CapeMgr interface');
+        }
     } else {
         hw = hw_oldkernel;
         if(debug) winston.debug('Using 3.2 kernel interface');
