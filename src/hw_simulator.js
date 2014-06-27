@@ -65,6 +65,13 @@ module.exports = {
         }
     },
 
+    writeGPIOValueSync : function(pin, value, callback) {
+        winston.info('writeGPIOValueSync(' + [pin.key, value] + ')');
+        if(callback) {
+            setImmediate(callback);
+        }
+    },
+
     readGPIOValue : function(pin, resp, callback) {
         winston.info('readGPIOValue(' + [pin.key] + ')');
         if(callback) {
