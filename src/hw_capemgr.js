@@ -16,7 +16,7 @@ var gpioFile  = {};
 
 module.exports = {
 
-    logfile : '/var/lib/cloud9/bonescript.log',
+    logfile : '/var/lib/cloud9/octalbonescript.log',
 
     readPWMFreqAndValue : function(pin, pwm) {
         var mode = {};
@@ -62,7 +62,17 @@ module.exports = {
                 callback(mode);
             }
         };
-        my.file_exists(pinctrlFile, tryPinctrl);
+        if(callback) {
+            my.file_exists(pinctrlFile, tryPinctrl);
+        } else {
+            try {
+                var data2 = fs.readFileSync(pinctrlFile, 'utf8');
+                mode = parse.modeFromPinctrl(data2, muxRegOffset, 0x44e10800, mode);
+            } catch(ex) {
+                if(debug) winston.debug('getPinMode(' + pin.key + '): ' + ex);
+            }
+        }
+        return(mode);
     },
 
     setPinMode : function(pin, pinData, template, resp, callback) {
@@ -74,7 +84,10 @@ module.exports = {
             my.load_dt('am33xx_pwm', null, resp, doCreateDT);
         } else {
             resp.err = 'Unknown pin mode template';
-            callback(resp);
+            if(callback) {
+                callback(resp);
+                return(resp);
+            }
         }
         
         function doCreateDT(resp) {
@@ -135,6 +148,7 @@ module.exports = {
                 callback(resp);
             }
         }
+        return(resp);
     },
 
     setLEDPinToGPIO : function(pin, resp) {
@@ -205,6 +219,7 @@ module.exports = {
             callback(resp);
         }
         
+        return(resp);
     },
 
     writeGPIOValue : function(pin, value, callback) {
@@ -325,8 +340,10 @@ module.exports = {
             var duty = Math.round( period * value );
             fs.writeFileSync(path+'/duty', 0);
             if(pwm.freq != freq) {
+                if(debug) winston.debug('Updating PWM period: ' + period);
                 fs.writeFileSync(path+'/period', period);
             }
+            if(debug) winston.debug('Updating PWM duty: ' + duty);
             fs.writeFileSync(path+'/duty', duty);
         } catch(ex) {
             resp.err = 'error updating PWM freq and value: ' + path + ', ' + ex;

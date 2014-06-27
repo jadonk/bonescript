@@ -42,6 +42,14 @@ module.exports = {
         return(module.exports.find_sysfsFile('ocp', '/sys/devices', 'ocp.', callback));
     },
 
+    is_cape_universal : function(callback) {
+        var ocp = exports.is_ocp();
+        if(debug) winston.debug('is_ocp() = ' + ocp);
+        var cape_universal = exports.find_sysfsFile('cape-universal', ocp, 'cape-universal.', callback);
+        if(debug) winston.debug('is_cape_universal() = ' + cape_universal);
+        return(cape_universal);
+    },
+
     find_sysfsFile : function(name, path, prefix, callback) {
         if(typeof sysfsFiles[name] == 'undefined') {
             if(callback) {
@@ -118,13 +126,7 @@ module.exports = {
     // Note, this just makes sure there was an attempt to load the
     // devicetree fragment, not if it was successful
     load_dt : function(name, pin, resp, callback) {
-        if(debug) {
-            if(pin){
-                winston.debug('load_dt(' + [name, pin.key, JSON.stringify(resp)] + ')');
-            } else {
-                winston.debug('load_dt(' + [name, JSON.stringify(resp)] + ')');
-            }
-        }
+        if(debug) winston.debug('load_dt(' + [name, pin ? pin.key : null, JSON.stringify(resp)] + ')');
         var slotsFile;
         var lastSlots;
         var writeAttempts = 0;
@@ -188,7 +190,10 @@ module.exports = {
             if(slot && slot[0]) {
                 if(debug) winston.debug('Attempting to unload conflicting slot ' +
                     slot[0] + ' for ' + name);
-                fs.writeFile(slotsFile, '-'+slot[0], 'ascii', onUnloadSlot);
+                if(debug) winston.debug('Actually did not attempt because of kernel panic problem');
+                //fs.writeFile(slotsFile, '-'+slot[0], 'ascii', onUnloadSlot);
+                // above line is commented because kernel panic is there when slot is unloaded.
+                onUnloadSlot(null);
             } else {
                 callback(resp);
             }
