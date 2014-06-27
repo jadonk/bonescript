@@ -16,7 +16,6 @@ var iic = require('./src/iic');
 var my = require('./src/my');
 var package_json = require('./package.json');
 var g = require('./src/constants');
-var fibers = my.require('fibers');
 var epoll = my.require('epoll');
 
 var debug;
