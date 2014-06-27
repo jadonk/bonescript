@@ -26,19 +26,12 @@ if(process.env.DEBUG && process.env.DEBUG.indexOf("bone")!==-1){
     debug = false;
 }
 
-if(debug) {
-    winston.remove(winston.transports.Console);
-    winston.add(winston.transports.Console, {
-        level: 'debug',
-        colorize: true
-    });
-} else {
-    winston.remove(winston.transports.Console);
-     winston.add(winston.transports.Console, {
-        level: 'error',
-        colorize: true
-    });
-}
+winston.remove(winston.transports.Console);
+winston.add(winston.transports.Console, {
+    level: 'debug',
+    colorize: true
+});
+
 
 // Detect if we are on a Beagle
 var hw;
@@ -132,12 +125,8 @@ f.getPinMode = function(pin, callback) {
 f.getPinMode.args = ['pin', 'callback'];
 
 f.pinMode = function(givenPin, direction, mux, pullup, slew, callback) {
-    if(givenPin) {
-        var pin = my.getpin(givenPin);
-    } else {
-        winston.error("Pin is not defined");
-        throw("Invalid pin: " + pin);
-    }
+    var pin = my.getpin(givenPin);
+    
     if(debug) winston.debug('pinMode(' + [pin.key, direction, mux, pullup, slew] + ');');
     if(direction == g.INPUT_PULLUP) pullup = 'pullup';
     pullup = pullup || ((direction == g.INPUT) ? 'pulldown' : 'disabled');
@@ -176,7 +165,7 @@ f.pinMode = function(givenPin, direction, mux, pullup, slew, callback) {
     if(pin.led) {
         if((direction != g.OUTPUT) || (mux != 7)) {
             resp.err = 'pinMode only supports GPIO output for LEDs: ' + pin.key;
-            winston.info(resp.err);
+            winston.error(resp.err);
             resp.value = false;
             if(callback) callback(resp,givenPin);
             return;
@@ -200,7 +189,7 @@ f.pinMode = function(givenPin, direction, mux, pullup, slew, callback) {
         if(debug) winston.debug('returned from setPinMode');
         resp = x;
         if(typeof resp.err != 'undefined') {
-            if(debug) winston.debug('Unable to configure mux for pin ' + pin + ': ' + resp.err);
+            winston.error('Unable to configure mux for pin ' + pin + ': ' + resp.err);
             // It might work if the pin is already muxed to desired mode
             f.getPinMode(pin, pinModeTestMode);
         } else {
@@ -211,7 +200,7 @@ f.pinMode = function(givenPin, direction, mux, pullup, slew, callback) {
     function pinModeTestMode(mode) {
         if(mode.mux != mux) {
             resp.value = false;
-            winston.info(resp.err);
+            winston.error(resp.err);
             delete gpio[n];
         }
         if(callback) callback(resp,givenPin);
@@ -430,7 +419,7 @@ f.attachInterrupt = function(pin, handler, mode, callback) {
     // Check if we don't have the required Epoll module
     if(!epoll.exists) {
         resp.err = 'attachInterrupt: requires Epoll module';
-        if(debug) winston.debug(resp.err);
+        winston.error(resp.err);
         callback(resp);
         return;
     }
@@ -438,7 +427,7 @@ f.attachInterrupt = function(pin, handler, mode, callback) {
     // Check if pin isn't already configured as GPIO
     if(typeof gpio[n] == 'undefined') {
         resp.err = 'attachInterrupt: pin ' + pin.key + ' not already configured as GPIO';
-        if(debug) winston.debug(resp.err);
+        winston.error(resp.err);
         resp.attached = false;
         resp.configured = false;
         callback(resp);
@@ -447,8 +436,8 @@ f.attachInterrupt = function(pin, handler, mode, callback) {
 
     // Check if someone already has a handler configured
     if(typeof gpioInt[n] != 'undefined') {
-    resp.err = 'attachInterrupt: pin ' + pin.key + ' already has an interrupt handler assigned';
-    if(debug) winston.debug(resp.err);
+        resp.err = 'attachInterrupt: pin ' + pin.key + ' already has an interrupt handler assigned';
+        winston.error(resp.err);
         resp.attached = false;
         resp.configured = true;
         callback(resp);
@@ -476,7 +465,7 @@ f.attachInterrupt = function(pin, handler, mode, callback) {
         resp.attached = true;
     } catch(ex) {
         resp.err = 'attachInterrupt: GPIO input file not opened: ' + ex;
-        if(debug) winston.debug(resp.err);
+        winston.error(resp.err);
     }
     callback(resp);
     return;
