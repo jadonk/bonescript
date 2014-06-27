@@ -7,7 +7,7 @@ var winston = require('winston');
 var os = require('os');
 var hw_oldkernel = require('./src/hw_oldkernel');
 var hw_capemgr = require('./src/hw_capemgr');
-var hw_universal = require('./hw_universal');
+var hw_universal = require('./src/hw_universal');
 var hw_simulator = require('./src/hw_simulator');
 var bone = require('./src/bone');
 var functions = require('./src/functions');
@@ -24,6 +24,20 @@ if(process.env.DEBUG && process.env.DEBUG.indexOf("bone")!==-1){
     debug = true;
 } else {
     debug = false;
+}
+
+if(debug) {
+    winston.remove(winston.transports.Console);
+    winston.add(winston.transports.Console, {
+        level: 'debug',
+        colorize: true
+    });
+} else {
+    winston.remove(winston.transports.Console);
+     winston.add(winston.transports.Console, {
+        level: 'error',
+        colorize: true
+    });
 }
 
 // Detect if we are on a Beagle
@@ -47,21 +61,10 @@ if(os.type() == 'Linux' || os.arch() == 'arm') {
     if(debug) winston.debug('Using simulator mode');
 }
 
-if(debug) {
-    winston.remove(winston.transports.Console);
+if(debug){
     winston.add(winston.transports.File, {
         filename: hw.logfile,
         level: 'warn'
-    });
-    winston.add(winston.transports.Console, {
-        level: 'debug',
-        colorize: true
-    });
-} else {
-    winston.remove(winston.transports.Console);
-     winston.add(winston.transports.Console, {
-        level: 'error',
-        colorize: true
     });
 }
 

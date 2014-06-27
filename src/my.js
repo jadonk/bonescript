@@ -43,9 +43,9 @@ module.exports = {
     },
 
     is_cape_universal : function(callback) {
-        var ocp = exports.is_ocp();
+        var ocp = module.exports.is_ocp();
         if(debug) winston.debug('is_ocp() = ' + ocp);
-        var cape_universal = exports.find_sysfsFile('cape-universal', ocp, 'cape-universal.', callback);
+        var cape_universal = module.exports.find_sysfsFile('cape-universal', ocp, 'cape-universal.', callback);
         if(debug) winston.debug('is_cape_universal() = ' + cape_universal);
         return(cape_universal);
     },
@@ -127,6 +127,7 @@ module.exports = {
     // devicetree fragment, not if it was successful
     load_dt : function(name, pin, resp, callback) {
         if(debug) winston.debug('load_dt(' + [name, pin ? pin.key : null, JSON.stringify(resp)] + ')');
+        resp = resp || {};
         var slotsFile;
         var lastSlots;
         var writeAttempts = 0;
@@ -161,13 +162,14 @@ module.exports = {
             if(debug) winston.debug('onReadSlots: index = ' + index + ', readAttempts = ' + readAttempts);
             if(index >= 0) {
                 // Fragment is already loaded
-                callback(resp);
+                if(typeof callback == 'function') callback(resp);
+                return;
             } else if (readAttempts <= 1) {
                 // Attempt to load fragment
                 fs.writeFile(slotsFile, name, 'ascii', onWriteSlots);
             } else {
                 resp.err = 'Error waiting for CapeMgr slot to load';
-                callback(resp);
+                if(typeof callback == 'function') callback(resp);
             }
         }
         
@@ -195,14 +197,14 @@ module.exports = {
                 // above line is commented because kernel panic is there when slot is unloaded.
                 onUnloadSlot(null);
             } else {
-                callback(resp);
+                if(typeof callback =='function') callback(resp);
             }
         }
 
         function onUnloadSlot(err) {
             if(err) {
                 resp.err = "Unable to unload conflicting slot: " + err;
-                callback(resp);
+                if(typeof callback =='function') callback(resp);
                 return;
             }
             fs.writeFile(slotsFile, name, 'ascii', onWriteSlots);
