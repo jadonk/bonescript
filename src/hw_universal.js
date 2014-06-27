@@ -113,16 +113,57 @@ module.exports = {
     exportGPIOControls : function(pin, direction, resp, callback) {
         if(debug) winston.debug('hw.exportGPIOControls(' + [pin.key, direction, resp] + ');');
         var n = pin.gpio;
-        var exists = my.file_existsSync(gpioFile[pin.key]);
+        my.file_exists(gpioFile[pin.key], onFileExists);
         
-        if(!exists) {
-            if(debug) winston.debug("exporting gpio: " + n);
-            fs.writeFileSync("/sys/class/gpio/export", "" + n, null);
+        function onFileExists(exists) {
+            if(exists) {
+                if(debug) winston.debug("gpio: " + n + " already exported.");
+                fs.writeFile("/sys/class/gpio/gpio" + n + "/direction",
+                    direction, null, onGPIODirectionSet);
+            } else {
+                if(debug) winston.debug("exporting gpio: " + n);
+                fs.writeFile("/sys/class/gpio/export", "" + n, null, onGPIOExport);
+            }
         }
-        var directionFile = "/sys/class/gpio/gpio" + n + "/direction";
-        if(debug) winston.debug('Writing GPIO direction(' + direction + ') to ' +
-            directionFile + ');');
-        fs.writeFileSync(directionFile, direction);
+     
+        function onGPIOExport(err) {
+            if(err) onError(err);
+            if(debug) winston.debug("setting gpio " + n +
+                " direction to " + direction);
+            fs.writeFile("/sys/class/gpio/gpio" + n + "/direction",
+                direction, null, onGPIODirectionSet);
+        }
+
+        function onGPIODirectionSet(err) {
+            if(err) onError(err);
+            else callback(resp);
+        }
+        
+        function onError(err) {
+            resp.err = 'Unable to export gpio-' + n + ': ' + err;
+            resp.value = false;
+            if(debug) winston.debug(resp.err);
+            findOwner();
+        }
+        
+        function findOwner() {
+            fs.readFile('/sys/kernel/debug/gpio', 'utf-8', onGPIOUsers);
+        }
+        
+        function onGPIOUsers(err, data) {
+            if(!err) {
+                var gpioUsers = data.split('\n');
+                for(var x in gpioUsers) {
+                    var y = gpioUsers[x].match(/gpio-(\d+)\s+\((\S+)\s*\)/);
+                    if(y && y[1] == n) {
+                        resp.err += '\nconsumed by ' + y[2];
+                        if(debug) winston.debug(resp.err);
+                    }
+                }
+            }
+            callback(resp);
+        }
+        
         return(resp);
     },
 
