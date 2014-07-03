@@ -3,18 +3,11 @@ var winston = require('winston');
 
 var gpioFile = {};
 
-var debug;
-if(process.env.DEBUG && process.env.DEBUG.indexOf("bone")!==-1){
-    debug = true;
-} else {
-    debug = false;
-}
-
 module.exports = {
     logfile : 'bonescript.log',
 
     readPWMFreqAndValue : function(pin, pwm) {
-        if(debug) winston.info('readPWMFreqAndValue(' + [pin.key, pwm.key] + ')');
+        winston.info('readPWMFreqAndValue(' + [pin.key, pwm.key] + ')');
         var mode = {};
         mode.freq = pwm.freq;
         mode.value = pwm.value;
@@ -22,7 +15,7 @@ module.exports = {
     },
 
     readGPIODirection : function(n, gpio) {
-        if(debug) winston.info('readGPIODirection(' + [n] + ')');
+        winston.info('readGPIODirection(' + [n] + ')');
         var mode = {};
         if(typeof gpio[n] != 'undefined') {
             if(gpio[n].active) {
@@ -36,7 +29,7 @@ module.exports = {
     },
 
     readPinMux : function(pin, mode, callback) {
-        if(debug) winston.info('readPinMux(' + [pin.key] + ')');
+        winston.info('readPinMux(' + [pin.key] + ')');
         if(callback) {
             callback(mode);
         }
@@ -44,7 +37,7 @@ module.exports = {
     },
 
     setPinMode : function(pin, pinData, template, resp, callback) {
-        if(debug) winston.info('setPinMode(' + [pin.key, pinData, template] + ')');
+        winston.info('setPinMode(' + [pin.key, pinData, template] + ')');
         gpioFile[pin.key] = true;
         if(typeof callback == 'function'){
             callback({});
@@ -53,12 +46,12 @@ module.exports = {
     },
 
     setLEDPinToGPIO : function(pin, resp) {
-        if(debug) winston.info('setLEDPinToGPIO(' + [pin.key] + ')');
+        winston.info('setLEDPinToGPIO(' + [pin.key] + ')');
         return(resp);
     },
 
     exportGPIOControls : function(pin, direction, resp, callback) {
-        if(debug) winston.info('expertGPIOControls(' + [pin.key, direction] + ')');
+        winston.info('expertGPIOControls(' + [pin.key, direction] + ')');
         if(typeof callback == 'function'){
             callback({});
         }
@@ -66,23 +59,20 @@ module.exports = {
     },
 
     writeGPIOValue : function(pin, value, callback) {
-        if(debug) winston.info('writeGPIOValue(' + [pin.key, value] + ')');
+        winston.info('writeGPIOValue(' + [pin.key, value] + ')');
         if(callback) {
-            setImmediate(callback);
+            setTimeout(callback,20);
         }
     },
 
-    writeGPIOValueSync : function(pin, value, callback) {
-        if(debug) winston.info('writeGPIOValueSync(' + [pin.key, value] + ')');
-        if(callback) {
-            setImmediate(callback);
-        }
+    writeGPIOValueSync : function(pin, value) {
+        winston.info('writeGPIOValueSync(' + [pin.key, value] + ')');
     },
 
     readGPIOValue : function(pin, resp, callback) {
-        if(debug) winston.info('readGPIOValue(' + [pin.key] + ')');
+        winston.info('readGPIOValue(' + [pin.key] + ')');
         if(callback) {
-            setImmediate(callback,0);
+            setTimeout(callback,20,0);
             return(true);
         }
         resp.value = 0;
@@ -90,7 +80,7 @@ module.exports = {
     },
 
     enableAIN : function(callback) {
-        if(debug) winston.info('enableAIN()');
+        winston.info('enableAIN()');
         if(typeof callback == 'function'){
             var resp = {};
             resp.err = false;
@@ -100,27 +90,27 @@ module.exports = {
     },
 
     readAIN : function(pin, resp, callback) {
-        if(debug) winston.info('readAIN(' + [pin.key] + ')');
+        winston.info('readAIN(' + [pin.key] + ')');
         resp.value = 0;
         if(callback) {
-            setImmediate(callback,resp);
+            setTimeout(callback,20,resp);
         }
         return(resp);
     },
 
     writeGPIOEdge : function(pin, mode) {
-        if(debug) winston.info('writeGPIOEdge(' + [pin.key, mode] + ')');
+        winston.info('writeGPIOEdge(' + [pin.key, mode] + ')');
         var resp = {};
         return(resp);
     },
 
     writePWMFreqAndValue : function(pin, pwm, freq, value, resp) {
-        if(debug) winston.info('writePWMFreqAndValue(' + [pin.key, pwm.name, freq, value] + ')');
+        winston.info('writePWMFreqAndValue(' + [pin.key, pwm.name, freq, value] + ')');
         return(resp);
     },
 
     readEeproms : function(eeproms) {
-        if(debug) winston.info('readEeproms()');
+        winston.info('readEeproms()');
         var boardName = 'A335BNLT';
         var version = '';
         var serialNumber = '';
@@ -132,7 +122,7 @@ module.exports = {
     },
 
     readPlatform : function(platform) {
-        if(debug) winston.info('readPlatform()');
+        winston.info('readPlatform()');
         platform.name = 'BeagleBone Simulator';
         return(platform);
     }

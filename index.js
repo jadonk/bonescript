@@ -242,7 +242,7 @@ f.digitalWrite = function(pin, value, callback) {
     if(debug) winston.debug('digitalWrite(' + [pin.key, value] + ');');
     value = parseInt(Number(value), 2) ? 1 : 0;
     if(typeof callback == 'undefined') {
-        hw.writeGPIOValueSync(pin, value, myCallback);
+        hw.writeGPIOValueSync(pin, value);
     } else {
         hw.writeGPIOValue(pin, value, myCallback);
     }
