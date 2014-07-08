@@ -98,7 +98,7 @@ exports.autorun = function(dir) {
  
         function appClosed(code, signal) {
             delete apps[file];
-            if(signal == 'SIGTERM') setTimeout(appTest, 1000);
+            setTimeout(appTest, 1000);
         }
     }
     
