@@ -16,7 +16,7 @@
     "bonescript",
     "octalbonescript"
   ],
-  "version": "0.2.23",
+  "version": "0.2.24",
   "homepage": "http://beagleboard.org/bonescript",
   "repository": {
     "type": "git",
@@ -28,7 +28,6 @@
   },
   "dependencies": {
     "socket.io": ">=0.9.15",
-    "serialport": "1.4.x",
     "systemd": "0.2.x",
     "winston": "0.7.x",
     "express": "4.1.x"
@@ -39,6 +38,7 @@
     "epoll": "0.1.x"
   },
   "optionalDependencies": {
-    "i2c": "0.1.x"
+    "i2c": "0.1.x",
+    "serialport": "1.4.x"
   }
 }
