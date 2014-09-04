@@ -25,7 +25,7 @@ var util = require('util');
 var winston = require('winston');
 var bone = require('./bone').pins;
 
-var debug = false;
+var debug = process.env.DEBUG ? true : false;
 
 // Function derived from https://github.com/joyent/node/blob/master/lib/buffer.js
 if(!buffer.Buffer.prototype.readUint16BE) {
@@ -135,7 +135,7 @@ var readEeproms = exports.readEeproms = function(files) {
 
 var fetchEepromData = function(address) {
     try {
-        winston.info('Reading EEPROM at '+address);
+        if(debug) winston.debug('Reading EEPROM at '+address);
         var eepromFile =
             fs.openSync(
                 address,
@@ -144,7 +144,7 @@ var fetchEepromData = function(address) {
         fs.readSync(eepromFile, eepromData, 0, 244, 0);
         return(eepromData);
     } catch(ex) {
-        winston.info('Unable to open EEPROM at '+address+': '+ex);
+        if(debug) winston.debug('Unable to open EEPROM at '+address+': '+ex);
         return(null);
     }
 };
@@ -231,7 +231,7 @@ var parseCapeEeprom = function(x) {
                     var muxReadout= fs.readFileSync('/sys/kernel/debug/omap_mux/'+bone[pin].mux, 'ascii');
                     pinObject.function = muxReadout.split("\n")[2].split("|")[pinObject.mode].replace('signals:', '').trim();
                 } catch(ex) {
-                    winston.info('Unable to read pin mux function name: '+bone[pin].mux);
+                    if(debug) winston.debug('Unable to read pin mux function name: '+bone[pin].mux);
                 }
                 data.mux[pin] = pinObject;
             }

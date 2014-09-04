@@ -26,17 +26,12 @@ var debug = process.env.DEBUG ? true : false;
 // Detect if we are on a Beagle
 var hw;
 if(os.type() == 'Linux' && os.arch() == 'arm') {
-    if(my.is_capemgr()) {
-        if(!my.is_cape_universal()) {
-            my.create_dt({"key":"default", "options":{}}, 0, "bs", true);
-        }
-        if(my.is_cape_universal()) {
-            hw = hw_universal;
-            if(debug) winston.debug('Using Universal Cape interface');
-        } else {
-            hw = hw_capemgr;
-            if(debug) winston.debug('Using CapeMgr interface');
-        }
+    if(my.is_cape_universal()) {
+        hw = hw_universal;
+        if(debug) winston.debug('Using Universal Cape interface');
+    } else if(my.is_capemgr()) {
+        hw = hw_capemgr;
+        if(debug) winston.debug('Using CapeMgr interface');
     } else {
         hw = hw_oldkernel;
         if(debug) winston.debug('Using 3.2 kernel interface');

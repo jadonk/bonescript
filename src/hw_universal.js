@@ -2,6 +2,7 @@ var fs = require('fs');
 var winston = require('winston');
 var my = require('./my');
 var parse = require('./parse');
+var eeprom = require('./eeprom');
 
 var debug = process.env.DEBUG ? true : false;
 
@@ -249,29 +250,27 @@ exports.writePWMFreqAndValue = function(pin, pwm, freq, value, resp, callback) {
 };
 
 exports.readEeproms = function(eeproms) {
-    var boardName = fs.readFileSync(my.is_capemgr() + '/baseboard/board-name',
-            'ascii');
-    var version = fs.readFileSync(my.is_capemgr() + '/baseboard/revision',
-            'ascii');
-    var serialNumber = fs.readFileSync(my.is_capemgr() + '/baseboard/serial-number',
-            'ascii');
-    eeproms['/sys/bus/i2c/drivers/at24/1-0050/eeprom'] = {};
-    eeproms['/sys/bus/i2c/drivers/at24/1-0050/eeprom'].boardName = boardName;
-    eeproms['/sys/bus/i2c/drivers/at24/1-0050/eeprom'].version = version;
-    eeproms['/sys/bus/i2c/drivers/at24/1-0050/eeprom'].serialNumber = serialNumber;
+    var EepromFiles = {
+        '/sys/bus/i2c/drivers/at24/0-0050/eeprom': { type: 'bone' },
+        '/sys/bus/i2c/drivers/at24/2-0054/eeprom': { type: 'cape' },
+        '/sys/bus/i2c/drivers/at24/2-0055/eeprom': { type: 'cape' },
+        '/sys/bus/i2c/drivers/at24/2-0056/eeprom': { type: 'cape' },
+        '/sys/bus/i2c/drivers/at24/2-0057/eeprom': { type: 'cape' }
+    };
+    eeproms = eeprom.readEeproms(EepromFiles);
     return(eeproms);
 };
 
 exports.readPlatform = function(platform) {
-    platform.name = fs.readFileSync(my.is_capemgr() + '/baseboard/board-name',
-        'ascii').trim();
-    if(platform.name == 'A335BONE') platform.name = 'BeagleBone';
-    if(platform.name == 'A335BNLT') platform.name = 'BeagleBone Black';
-    platform.version = fs.readFileSync(my.is_capemgr() + '/baseboard/revision',
-        'ascii').trim();
+    var eeproms = eeprom.readEeproms({
+        '/sys/bus/i2c/drivers/at24/0-0050/eeprom': { type: 'bone' }
+    });
+    var x = eeproms['/sys/bus/i2c/drivers/at24/0-0050/eeprom'];
+    if(x.boardName == 'A335BONE') platform.name = 'BeagleBone';
+    if(x.boardName == 'A335BNLT') platform.name = 'BeagleBone Black';
+    platform.version = x.version;
     if(!platform.version.match(/^[\040-\176]*$/)) delete platform.version;
-    platform.serialNumber = fs.readFileSync(my.is_capemgr() +
-        '/baseboard/serial-number', 'ascii').trim();
+    platform.serialNumber = x.serialNumber;
     if(!platform.serialNumber.match(/^[\040-\176]*$/)) delete platform.serialNumber;
     try {
         platform.dogtag = fs.readFileSync('/etc/dogtag', 'ascii');
