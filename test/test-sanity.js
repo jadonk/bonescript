@@ -1,3 +1,5 @@
+//process.env.DEBUG = true;
+
 exports.testSanity1 = function(test) {
     test.expect(1);
     test.doesNotThrow(function() {
