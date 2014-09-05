@@ -25,8 +25,6 @@ var util = require('util');
 var winston = require('winston');
 var bone = require('./bone').pins;
 
-var debug = false;
-
 // Function derived from https://github.com/joyent/node/blob/master/lib/buffer.js
 if(!buffer.Buffer.prototype.readUint16BE) {
     buffer.Buffer.prototype.readUint16BE = function(offset) {
@@ -194,7 +192,7 @@ var parseCapeEeprom = function(x) {
             var used = (pinData & 0x8000) >> 15;
             if(used || debug) {
                 pinObject.used = used ? 'used' : 'available';
-                if(debug) pinObject.data = x.hexSlice(pinOffset, pinOffset+2);
+                pinObject.data = x.hexSlice(pinOffset, pinOffset+2);
                 var direction = (pinData & 0x6000) >> 13;
                 switch(direction) {
                 case 1:

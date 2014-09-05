@@ -8,13 +8,6 @@ var child_process = require('child_process');
 var bone = require('./bone');
 var g = require('./constants');
 
-var debug;
-if(process.env.DEBUG && process.env.DEBUG.indexOf("bone")!==-1){
-    debug = true;
-} else {
-    debug = false;
-}
-
 var sysfsFiles = {};
 
 function myRequire(packageName, onfail) {
@@ -24,7 +17,7 @@ function myRequire(packageName, onfail) {
         y.exists = true;
     } catch(ex) {
         y.exists = false;
-        if(debug) winston.debug("Optional package '" + packageName + "' not loaded");
+        winston.debug("Optional package '" + packageName + "' not loaded");
         if(onfail) onfail();
     }
     return(y);
@@ -44,9 +37,9 @@ module.exports = {
 
     is_cape_universal : function(callback) {
         var ocp = module.exports.is_ocp();
-        if(debug) winston.debug('is_ocp() = ' + ocp);
+        winston.debug('is_ocp() = ' + ocp);
         var cape_universal = module.exports.find_sysfsFile('cape-universal', ocp, 'cape-universal.', callback);
-        if(debug) winston.debug('is_cape_universal() = ' + cape_universal);
+        winston.debug('is_cape_universal() = ' + cape_universal);
         return(cape_universal);
     },
 
@@ -87,7 +80,7 @@ module.exports = {
                     var files = fs.readdirSync(path);
                     onReadDir(null, files);
                 } catch(ex) {
-                    if(debug) winston.debug('Error reading ' + path);
+                    winston.debug('Error reading ' + path);
                     return(resp.path);
                     
                 }
@@ -126,7 +119,7 @@ module.exports = {
     // Note, this just makes sure there was an attempt to load the
     // devicetree fragment, not if it was successful
     load_dt : function(name, pin, resp, callback) {
-        if(debug) winston.debug('load_dt(' + [name, pin ? pin.key : null, JSON.stringify(resp)] + ')');
+        winston.debug('load_dt(' + [name, pin ? pin.key : null, JSON.stringify(resp)] + ')');
         resp = resp || {};
         var slotsFile;
         var lastSlots;
@@ -138,7 +131,7 @@ module.exports = {
         module.exports.is_capemgr(onFindCapeMgr);
         
         function onFindCapeMgr(x) {
-            if(debug) winston.debug('onFindCapeMgr: path = ' + x.path);
+            winston.debug('onFindCapeMgr: path = ' + x.path);
             if(typeof x.path == 'undefined') {
                 resp.err = "CapeMgr not found: " + x.err;
                 winston.error(resp.err);
@@ -159,7 +152,7 @@ module.exports = {
             }
             lastSlots = slots;
             var index = slots.indexOf(name);
-            if(debug) winston.debug('onReadSlots: index = ' + index + ', readAttempts = ' + readAttempts);
+            winston.debug('onReadSlots: index = ' + index + ', readAttempts = ' + readAttempts);
             if(index >= 0) {
                 // Fragment is already loaded
                 if(typeof callback == 'function') callback(resp);
@@ -187,12 +180,12 @@ module.exports = {
         }
         
         function unloadSlot() {
-            if(debug) winston.debug('unloadSlot()');
+            winston.debug('unloadSlot()');
             var slot = lastSlots.match(slotRegex);
             if(slot && slot[0]) {
-                if(debug) winston.debug('Attempting to unload conflicting slot ' +
+                winston.debug('Attempting to unload conflicting slot ' +
                     slot[0] + ' for ' + name);
-                if(debug) winston.debug('Actually did not attempt because of kernel panic problem');
+                winston.debug('Actually did not attempt because of kernel panic problem');
                 //fs.writeFile(slotsFile, '-'+slot[0], 'ascii', onUnloadSlot);
                 // above line is commented because kernel panic is there when slot is unloaded.
                 onUnloadSlot(null);
@@ -238,7 +231,7 @@ module.exports = {
         function createDTS() {
             var templateFilename = require.resolve('octalbonescript').replace('index.js',
                 'dts/' + template + '_template.dts');
-            if(debug) winston.debug('Creating template: ' + templateFilename);
+            winston.debug('Creating template: ' + templateFilename);
             var dts = fs.readFileSync(templateFilename, 'utf8');
             dts = dts.replace(/!PIN_KEY!/g, pin.key);
             dts = dts.replace(/!PIN_DOT_KEY!/g, pin.key.replace(/_/, '.'));
@@ -256,7 +249,7 @@ module.exports = {
         function onDTSWrite(err) {
             if(err) {
                 resp.err = 'Error writing ' + dtsFilename + ': ' + err;
-                if(debug) winston.debug(resp.err);
+                winston.debug(resp.err);
                 callback(resp);
                 return;
             }
@@ -265,13 +258,13 @@ module.exports = {
         }
         
         function dtcHandler(error, stdout, stderr) {
-            if(debug) winston.debug('dtcHandler: ' +
+            winston.debug('dtcHandler: ' +
                 JSON.stringify({error:error, stdout:stdout, stderr:stderr}));
             if(!error) onDTBOExists();
         }
         
         function onDTBOExists() {
-            if(debug) winston.debug('onDTBOExists()');
+            winston.debug('onDTBOExists()');
             if(load) module.exports.load_dt(fragment, pin, resp, callback);
             else callback(resp);
         }
@@ -286,7 +279,7 @@ module.exports = {
 
     wrapCall : function(m, func, funcArgs, cbArgs) {
         if(!m.module.exists) {
-            if(debug) winston.debug(m.name + ' support module not loaded.');
+            winston.debug(m.name + ' support module not loaded.');
             return(function(){});
         }
         funcArgs.unshift('port');
@@ -329,7 +322,7 @@ module.exports = {
 
     wrapOpen : function(m, openArgs) {
         if(!m.module.exists) {
-            if(debug) winston.debug(m.name + ' support module not loaded.');
+            winston.debug(m.name + ' support module not loaded.');
             return(function(){});
         }
         openArgs.unshift('port');

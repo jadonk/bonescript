@@ -18,18 +18,22 @@ var package_json = require('./package.json');
 var g = require('./src/constants');
 var epoll = my.require('epoll');
 
+winston.remove(winston.transports.Console);
+
 var debug;
 if(process.env.DEBUG && process.env.DEBUG.indexOf("bone")!==-1){
     debug = true;
+    winston.add(winston.transports.Console, {
+        level: 'debug',
+        colorize: true
+    });
 } else {
     debug = false;
+    winston.add(winston.transports.Console, {
+        level: 'info',
+        colorize: true
+    });
 }
-
-winston.remove(winston.transports.Console);
-winston.add(winston.transports.Console, {
-    level: 'debug',
-    colorize: true
-});
 
 
 // Detect if we are on a Beagle

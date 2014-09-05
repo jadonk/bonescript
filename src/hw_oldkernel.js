@@ -5,13 +5,6 @@ var eeprom = require('./eeprom');
 var hw_capemgr = require('./hw_capemgr');
 var winston = require('winston');
 
-var debug;
-if(process.env.DEBUG && process.env.DEBUG.indexOf("bone")!==-1){
-    debug = true;
-} else {
-    debug = false;
-}
-
 var gpioFile = {};
 var pwmPrefix = {};
 
@@ -36,7 +29,7 @@ exports.readPinMux = function(pin, mode, callback) {
     var readOmapMux = function(err, data) {
         if(err) { 
             mode.err = 'readOmapMux error: ' + err;
-            if(debug) winston.debug(mode.err);
+            winston.debug(mode.err);
             callback(mode);
         }
         mode = parse.modeFromOmapMux(data, mode);
@@ -54,7 +47,7 @@ exports.readPinMux = function(pin, mode, callback) {
             var data = fs.readFileSync(muxFile, 'utf8');
             mode = parse.modeFromOmapMux(data, mode);
         } catch(ex) {
-            if(debug) winston.debug('getPinMode(' + pin.key + '): ' + ex);
+            winston.debug('getPinMode(' + pin.key + '): ' + ex);
         }
     }
     return(mode);
@@ -118,7 +111,7 @@ exports.writeGPIOValue = function(pin, value, callback) {
             winston.error("Unable to find gpio: " + gpioFile[pin.key]);
         }
     }
-    if(debug) winston.debug("gpioFile = " + gpioFile[pin.key]);
+    winston.debug("gpioFile = " + gpioFile[pin.key]);
     if(callback) {
         fs.writeFile(gpioFile[pin.key], '' + value, null, callback);
     } else {

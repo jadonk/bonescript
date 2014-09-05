@@ -2,13 +2,7 @@ var fs = require('fs');
 var winston = require('winston');
 var my = require('./my');
 var parse = require('./parse');
-
-var debug;
-if(process.env.DEBUG && process.env.DEBUG.indexOf("bone")!==-1){
-    debug = true;
-} else {
-    debug = false;
-}
+var eeprom = require('./eeprom');
 
 var gpioFile = {};
 var pwmPrefix = {};
@@ -48,7 +42,7 @@ module.exports = {
         var readPinctrl = function(err, data) {
             if(err) {
                 mode.err = 'readPinctrl error: ' + err;
-                if(debug) winston.debug(mode.err);
+                winston.debug(mode.err);
                 callback(mode);
             }
             mode = parse.modeFromPinctrl(data, muxRegOffset, 0x44e10800, mode);
@@ -58,7 +52,7 @@ module.exports = {
             if(exists) {
                 fs.readFile(pinctrlFile, 'utf8', readPinctrl);
             } else {
-                if(debug) winston.debug('getPinMode(' + pin.key + '): no valid mux data');
+                winston.debug('getPinMode(' + pin.key + '): no valid mux data');
                 callback(mode);
             }
         };
@@ -69,14 +63,14 @@ module.exports = {
                 var data2 = fs.readFileSync(pinctrlFile, 'utf8');
                 mode = parse.modeFromPinctrl(data2, muxRegOffset, 0x44e10800, mode);
             } catch(ex) {
-                if(debug) winston.debug('getPinMode(' + pin.key + '): ' + ex);
+                winston.debug('getPinMode(' + pin.key + '): ' + ex);
             }
         }
         return(mode);
     },
 
     setPinMode : function(pin, pinData, template, resp, callback) {
-        if(debug) winston.debug('hw.setPinMode(' + [pin.key, pinData, template, JSON.stringify(resp)] + ');');
+        winston.debug('hw.setPinMode(' + [pin.key, pinData, template, JSON.stringify(resp)] + ');');
         var p = pin.key + "_pinmux";
         var pinmux = my.find_sysfsFile(p, my.is_ocp(), p + '.');
         if((pinData & 7) == 7) {
@@ -111,24 +105,24 @@ module.exports = {
     },
 
     exportGPIOControls : function(pin, direction, resp, callback) {
-        if(debug) winston.debug('hw.exportGPIOControls(' + [pin.key, direction, resp] + ');');
+        winston.debug('hw.exportGPIOControls(' + [pin.key, direction, resp] + ');');
         var n = pin.gpio;
         my.file_exists(gpioFile[pin.key], onFileExists);
         
         function onFileExists(exists) {
             if(exists) {
-                if(debug) winston.debug("gpio: " + n + " already exported.");
+                winston.debug("gpio: " + n + " already exported.");
                 fs.writeFile("/sys/class/gpio/gpio" + n + "/direction",
                     direction, null, onGPIODirectionSet);
             } else {
-                if(debug) winston.debug("exporting gpio: " + n);
+                winston.debug("exporting gpio: " + n);
                 fs.writeFile("/sys/class/gpio/export", "" + n, null, onGPIOExport);
             }
         }
      
         function onGPIOExport(err) {
             if(err) onError(err);
-            if(debug) winston.debug("setting gpio " + n +
+            winston.debug("setting gpio " + n +
                 " direction to " + direction);
             fs.writeFile("/sys/class/gpio/gpio" + n + "/direction",
                 direction, null, onGPIODirectionSet);
@@ -142,7 +136,7 @@ module.exports = {
         function onError(err) {
             resp.err = 'Unable to export gpio-' + n + ': ' + err;
             resp.value = false;
-            if(debug) winston.debug(resp.err);
+            winston.debug(resp.err);
             findOwner();
         }
         
@@ -157,7 +151,7 @@ module.exports = {
                     var y = gpioUsers[x].match(/gpio-(\d+)\s+\((\S+)\s*\)/);
                     if(y && y[1] == n) {
                         resp.err += '\nconsumed by ' + y[2];
-                        if(debug) winston.debug(resp.err);
+                        winston.debug(resp.err);
                     }
                 }
             }
@@ -178,7 +172,7 @@ module.exports = {
                 winston.error("Unable to find gpio: " + gpioFile[pin.key]);
             }
         }
-        if(debug) winston.debug("gpioFile = " + gpioFile[pin.key]);
+        winston.debug("gpioFile = " + gpioFile[pin.key]);
         fs.writeFile(gpioFile[pin.key], '' + value, null, onWriteGPIO);
         function onWriteGPIO(err){
             if(err) winston.error("Writing to GPIO failed: "+err);
@@ -197,7 +191,7 @@ module.exports = {
                 winston.error("Unable to find gpio: " + gpioFile[pin.key]);
             }
         }
-        if(debug) winston.debug("gpioFile = " + gpioFile[pin.key]);
+        winston.debug("gpioFile = " + gpioFile[pin.key]);
         try {
             fs.writeFileSync(gpioFile[pin.key], '' + value, null);
             if(typeof callback == 'function') callback();
@@ -230,7 +224,7 @@ module.exports = {
                 }
             }
         } else {
-            if(debug) winston.debug('enableAIN: load of cape-bone-iio failed');
+            winston.debug('enableAIN: load of cape-bone-iio failed');
         }
         if(callback) {
             callback({'path': helper});
@@ -265,27 +259,27 @@ module.exports = {
     },
 
     writePWMFreqAndValue : function(pin, pwm, freq, value, resp, callback) {
-        if(debug) winston.debug('hw.writePWMFreqAndValue(' + [pin.key,pwm,freq,value,resp] + ');');
+        winston.debug('hw.writePWMFreqAndValue(' + [pin.key,pwm,freq,value,resp] + ');');
         var path = pwmPrefix[pin.pwm.name];
         try {
             var period = Math.round( 1.0e9 / freq ); // period in ns
             if(pwm.freq != freq) {
-                if(debug) winston.debug('Stopping PWM');
+                winston.debug('Stopping PWM');
                 fs.writeFileSync(path+'/run', "0\n");
-                if(debug) winston.debug('Setting duty to 0');
+                winston.debug('Setting duty to 0');
                 fs.writeFileSync(path+'/duty_ns', "0\n");
                 try {
-                    if(debug) winston.debug('Updating PWM period: ' + period);
+                    winston.debug('Updating PWM period: ' + period);
                     fs.writeFileSync(path+'/period_ns', period + "\n");
                 } catch(ex2) {
                     period = fs.readFileSync(path+'/period_ns');
                     winston.info('Unable to update PWM period, period is set to ' + period);
                 }
-                if(debug) winston.debug('Starting PWM');
+                winston.debug('Starting PWM');
                 fs.writeFileSync(path+'/run', "1\n");
             }
             var duty = Math.round( period * value );
-            if(debug) winston.debug('Updating PWM duty: ' + duty);
+            winston.debug('Updating PWM duty: ' + duty);
             //if(duty == 0) winston.error('Updating PWM duty: ' + duty);
             fs.writeFileSync(path+'/duty_ns', duty + "\n");
         } catch(ex) {
@@ -296,29 +290,27 @@ module.exports = {
     },
 
     readEeproms : function(eeproms) {
-        var boardName = fs.readFileSync(my.is_capemgr() + '/baseboard/board-name',
-                'ascii');
-        var version = fs.readFileSync(my.is_capemgr() + '/baseboard/revision',
-                'ascii');
-        var serialNumber = fs.readFileSync(my.is_capemgr() + '/baseboard/serial-number',
-                'ascii');
-        eeproms['/sys/bus/i2c/drivers/at24/1-0050/eeprom'] = {};
-        eeproms['/sys/bus/i2c/drivers/at24/1-0050/eeprom'].boardName = boardName;
-        eeproms['/sys/bus/i2c/drivers/at24/1-0050/eeprom'].version = version;
-        eeproms['/sys/bus/i2c/drivers/at24/1-0050/eeprom'].serialNumber = serialNumber;
+        var EepromFiles = {
+            '/sys/bus/i2c/drivers/at24/0-0050/eeprom': { type: 'bone' },
+            '/sys/bus/i2c/drivers/at24/2-0054/eeprom': { type: 'cape' },
+            '/sys/bus/i2c/drivers/at24/2-0055/eeprom': { type: 'cape' },
+            '/sys/bus/i2c/drivers/at24/2-0056/eeprom': { type: 'cape' },
+            '/sys/bus/i2c/drivers/at24/2-0057/eeprom': { type: 'cape' }
+        };
+        eeproms = eeprom.readEeproms(EepromFiles);
         return(eeproms);
     },
 
     readPlatform : function(platform) {
-        platform.name = fs.readFileSync(my.is_capemgr() + '/baseboard/board-name',
-            'ascii').trim();
-        if(platform.name == 'A335BONE') platform.name = 'BeagleBone';
-        if(platform.name == 'A335BNLT') platform.name = 'BeagleBone Black';
-        platform.version = fs.readFileSync(my.is_capemgr() + '/baseboard/revision',
-            'ascii').trim();
+        var eeproms = eeprom.readEeproms({
+            '/sys/bus/i2c/drivers/at24/0-0050/eeprom': { type: 'bone' }
+        });
+        var x = eeproms['/sys/bus/i2c/drivers/at24/0-0050/eeprom'];
+        if(x.boardName == 'A335BONE') platform.name = 'BeagleBone';
+        if(x.boardName == 'A335BNLT') platform.name = 'BeagleBone Black';
+        platform.version = x.version;
         if(!platform.version.match(/^[\040-\176]*$/)) delete platform.version;
-        platform.serialNumber = fs.readFileSync(my.is_capemgr() +
-            '/baseboard/serial-number', 'ascii').trim();
+        platform.serialNumber = x.serialNumber;
         if(!platform.serialNumber.match(/^[\040-\176]*$/)) delete platform.serialNumber;
         try {
             platform.dogtag = fs.readFileSync('/etc/dogtag', 'ascii');
