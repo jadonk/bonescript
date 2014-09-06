@@ -174,7 +174,7 @@ f.pinMode = function(givenPin, direction, mux, pullup, slew, callback) {
         if(typeof resp.err == 'undefined') {
             gpio[n] = true;
         }
-        callback(resp,givenPin);
+        if(callback) callback(resp,givenPin);
         return;
     }
 
@@ -265,7 +265,7 @@ f.digitalRead = function(pin, callback) {
 
     function analogCallback(x) {
         x = analogValue(x);
-        callback(x);
+        if(callback) callback(x);
     }
 
     function analogValue(x) {
@@ -301,7 +301,7 @@ f.analogRead = function(pin, callback) {
         if(x.err) {
             resp.err = "Error enabling analog inputs: " + x.err;
             winston.error(resp.err);
-            callback(resp);
+            if(callback) callback(resp);
             return;
         }
         ain = true;
@@ -382,7 +382,7 @@ f.shiftOut = function(dataPin, clockPin, bitOrder, val, callback) {
         if(debug) winston.debug('i = ' + i);
         if(debug) winston.debug('clock = ' + clock);
         if(err || i == 8) {
-            callback({'err': err});
+            if(callback) callback({'err': err});
             return;
         }
         if(bitOrder == g.LSBFIRST) {
@@ -419,7 +419,7 @@ f.attachInterrupt = function(pin, handler, mode, callback) {
     if(!epoll.exists) {
         resp.err = 'attachInterrupt: requires Epoll module';
         winston.error(resp.err);
-        callback(resp);
+        if(callback) callback(resp);
         return;
     }
 
@@ -429,7 +429,7 @@ f.attachInterrupt = function(pin, handler, mode, callback) {
         winston.error(resp.err);
         resp.attached = false;
         resp.configured = false;
-        callback(resp);
+        if(callback) callback(resp);
         return;
     }
 
@@ -439,7 +439,7 @@ f.attachInterrupt = function(pin, handler, mode, callback) {
         winston.error(resp.err);
         resp.attached = false;
         resp.configured = true;
-        callback(resp);
+        if(callback) callback(resp);
         return;
     }
 
@@ -466,7 +466,7 @@ f.attachInterrupt = function(pin, handler, mode, callback) {
         resp.err = 'attachInterrupt: GPIO input file not opened: ' + ex;
         winston.error(resp.err);
     }
-    callback(resp);
+    if(callback) callback(resp);
     return;
 };
 f.attachInterrupt.args = ['pin', 'handler', 'mode', 'callback'];
@@ -480,12 +480,12 @@ f.detachInterrupt = function(pin, callback) {
     if(debug) winston.debug('detachInterrupt(' + [pin.key] + ');');
     var n = pin.gpio;
     if(typeof gpio[n] == 'undefined' || typeof gpioInt[n] == 'undefined') {
-        callback({'pin':pin, 'detached':false});
+        if(callback) callback({'pin':pin, 'detached':false});
         return;
     }
     gpioInt[n].epoll.remove(gpioInt[n].valuefd);
     delete gpioInt[n];
-    callback({'pin':pin, 'detached':true});
+    if(callback) callback({'pin':pin, 'detached':true});
 };
 f.detachInterrupt.args = ['pin', 'callback'];
 
@@ -499,7 +499,7 @@ f.getEeproms = function(callback) {
     if(eeproms == {}) {
         if(debug) winston.debug('No valid EEPROM contents found');
     }
-    callback(eeproms);
+    if(callback) callback(eeproms);
 };
 f.getEeproms.args = ['callback'];
 
@@ -511,7 +511,7 @@ f.readTextFile = function(filename, callback) {
     fs.readFile(filename, 'ascii', cb);
     
     function cb(err, data) {
-        callback({'err':err, 'data':data});
+        if(callback) callback({'err':err, 'data':data});
     }
 };
 f.readTextFile.args = ['filename', 'callback'];
@@ -524,7 +524,7 @@ f.writeTextFile = function(filename, data, callback) {
     fs.writeFile(filename, data, 'ascii', cb);
     
     function cb(err) {
-        callback({'err':err});
+        if(callback) callback({'err':err});
     }
 };
 f.writeTextFile.args = ['filename', 'data', 'callback'];
@@ -550,7 +550,7 @@ f.getPlatform = function(callback) {
     platform.os.freemem = os.freemem();
     platform.os.networkInterfaces = os.networkInterfaces();
     platform = hw.readPlatform(platform);
-    callback(platform);
+    if(callback) callback(platform);
 };
 f.getPlatform.args = ['callback'];
 
@@ -560,7 +560,7 @@ f.echo = function(data, callback) {
         return;
     }
     winston.info(data);
-    callback({'data': data});
+    if(callback) callback({'data': data});
 };
 f.echo.args = ['data', 'callback'];
 
