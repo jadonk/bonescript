@@ -23,7 +23,7 @@ var fs = require('fs');
 var buffer = require('buffer');
 var util = require('util');
 var winston = require('winston');
-var bone = require('./bone').pins;
+var pinmap = require('./pinmap').pins;
 
 // Function derived from https://github.com/joyent/node/blob/master/lib/buffer.js
 if(!buffer.Buffer.prototype.readUint16BE) {
@@ -184,9 +184,9 @@ var parseCapeEeprom = function(x) {
     data.currentSYS_5V = x.readUint16BE(240);
     data.DCSupplied = x.readUint16BE(242);
     data.mux = {};
-    for(var pin in bone) {
-        if(typeof bone[pin].eeprom != 'undefined') {
-            var pinOffset = bone[pin].eeprom * 2 + 88;
+    for(var pin in pinmap) {
+        if(typeof pinmap[pin].eeprom != 'undefined') {
+            var pinOffset = pinmap[pin].eeprom * 2 + 88;
             var pinData = x.readUint16BE(pinOffset);
             var pinObject = {};
             var used = (pinData & 0x8000) >> 15;
@@ -226,10 +226,10 @@ var parseCapeEeprom = function(x) {
                 pinObject.mode = (pinData & 0x0007);
                 try {
                     // read mux from debugfs
-                    var muxReadout= fs.readFileSync('/sys/kernel/debug/omap_mux/'+bone[pin].mux, 'ascii');
+                    var muxReadout= fs.readFileSync('/sys/kernel/debug/omap_mux/'+pinmap[pin].mux, 'ascii');
                     pinObject.function = muxReadout.split("\n")[2].split("|")[pinObject.mode].replace('signals:', '').trim();
                 } catch(ex) {
-                    winston.info('Unable to read pin mux function name: '+bone[pin].mux);
+                    winston.info('Unable to read pin mux function name: '+pinmap[pin].mux);
                 }
                 data.mux[pin] = pinObject;
             }
@@ -268,8 +268,8 @@ var fillCapeEepromData = exports.fillCapeEepromData = function(data) {
     eepromData.writeUint16BE(data.currentSYS_5V, 240);
     eepromData.writeUint16BE(data.DCSupplied, 242);
     for(var pin in data.mux) {
-        if(typeof bone[pin].eeprom != 'undefined') {
-            var pinOffset = bone[pin].eeprom * 2 + 88;
+        if(typeof pinmap[pin].eeprom != 'undefined') {
+            var pinOffset = pinmap[pin].eeprom * 2 + 88;
             var pinObject = data.mux[pin];
             var pinData = 0;
             if(pinObject.used == 'used') pinData |= 0x8000;

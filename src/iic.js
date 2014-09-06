@@ -1,11 +1,11 @@
 // Copyright (C) 2013 - Texas Instruments, Jason Kridner
-var bone = require('./bone');
+var pinmap = require('./pinmap');
 var my = require('./my');
 
 var m = {};
 m.name = 'i2c';
 m.module = my.require('i2c');
-m.ports = bone.i2c;
+m.ports = pinmap.i2c;
 m.events = {
     'data': ['data']
 };

@@ -5,7 +5,7 @@
 var fs = require('fs');
 var winston = require('winston');
 var child_process = require('child_process');
-var bone = require('./bone');
+var pinmap = require('./pinmap');
 var g = require('./constants');
 
 var sysfsFiles = {};
@@ -205,9 +205,8 @@ module.exports = {
     },
 
     create_dt : function(pin, data, template, load, force_create, resp, callback) {
-        if(debug){
-            winston.debug('create_dt(' + [pin.key, data, template, load, force_create, JSON.stringify(resp)] + ')');
-        }
+        winston.debug('create_dt(' + [pin.key, data, template, load, force_create, JSON.stringify(resp)] + ')');
+        
         template = template || 'bspm';
         load = (typeof load === 'undefined') ? true : load;
         var fragment = template + '_' + pin.key + '_' + data.toString(16);
@@ -272,8 +271,8 @@ module.exports = {
 
     getpin : function(pin) {
         if(typeof pin == 'object') return(pin);
-        else if(typeof pin == 'string') return(bone.pins[pin]);
-        else if(typeof pin == 'number') return(bone.pinIndex[pin]);
+        else if(typeof pin == 'string') return(pinmap.pins[pin]);
+        else if(typeof pin == 'number') return(pinmap.pinIndex[pin]);
         else throw("Invalid pin: " + pin);
     },
 

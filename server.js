@@ -8,6 +8,7 @@ var url = require('url');
 var winston = require('winston');
 var socketio = require('socket.io');
 var express = require('express');
+var logger = require('morgan')('combined');
 
 myrequire('systemd', function() {
     winston.debug("Startup as socket-activated service under systemd not enabled");
@@ -20,7 +21,7 @@ listen(port, directory);
 function listen(port, directory) {
     winston.info("Opening port " + port + " to serve up " + directory);
     var app = express();
-    app.use(express.logger());
+    app.use(logger);
     app.get('/bonescript.js', handler);
     app.use(express.static(directory));
     var server = http.createServer(app);
@@ -44,20 +45,15 @@ function handler(req, res) {
     var host = 'http://' + req.headers.host;
     if(uri == '/bonescript.js') {
         var filename = __dirname + '/src/bonescript.js';
-        winston.debug('filename = ' + filename)
+        winston.debug('filename = ' + filename);
         fs.readFile(filename, 'utf8', sendFile);
     }
 }
 
 function addSocketListeners(server) {
     var io = socketio.listen(server);
-    io.set('log level', 0);
-    io.set('heartbeats', true);
-    io.set('polling duration', 1);
-    io.set('heartbeat interval', 2);
-    io.set('heartbeat timeout', 10);
     winston.debug('Listening for new socket.io clients');
-    io.sockets.on('connection', onconnect);
+    io.on('connection', onconnect);
     function onconnect(socket) {
         winston.debug('Client connected');
 

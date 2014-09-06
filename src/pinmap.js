@@ -1,3 +1,4 @@
+// this file is renamed from bone.js from original bonescript.
 (function(){
     var bone = {
         pinIndex : [

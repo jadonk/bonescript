@@ -1,11 +1,11 @@
 // Copyright (C) 2013 - Texas Instruments, Jason Kridner
-var bone = require('./bone');
+var pinmap = require('./pinmap');
 var my = require('./my');
 
 var m = {};
 m.name = 'serialport';
 m.module = my.require('serialport');
-m.ports = bone.uarts;
+m.ports = pinmap.uarts;
 m.events = {
     'open': [],
     'data': ['data']

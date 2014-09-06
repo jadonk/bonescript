@@ -5,11 +5,7 @@ var fs = require('fs');
 var child_process = require('child_process');
 var winston = require('winston');
 var os = require('os');
-var hw_oldkernel = require('./src/hw_oldkernel');
-var hw_capemgr = require('./src/hw_capemgr');
-var hw_universal = require('./src/hw_universal');
-var hw_simulator = require('./src/hw_simulator');
-var bone = require('./src/bone');
+var pinmap = require('./src/pinmap');
 var functions = require('./src/functions');
 var serial = require('./src/serial');
 var iic = require('./src/iic');
@@ -40,21 +36,24 @@ if(process.env.DEBUG && process.env.DEBUG.indexOf("bone")!==-1){
 var hw;
 if(os.type() == 'Linux' || os.arch() == 'arm') {
     if(my.is_capemgr()) {
-        if(my.is_cape_universal()) {
-            hw = hw_universal;
-            if(debug) winston.debug('Using Universal Cape interface');
-        } else {
+        if(!my.is_cape_universal()) {
+            winston.debug('Loading Universal Cape interface...');
             my.create_dt({"key":"default", "options":{}}, 0, "bs", true);
-            hw = hw_capemgr;
-            if(debug) winston.debug('Using CapeMgr interface');
+        }
+        if(my.is_cape_universal()) {
+            hw = require('./src/hw_universal');
+            winston.debug('Using Universal Cape interface');
+        } else {
+            hw = require('./src/hw_capemgr');
+            winston.debug('Using CapeMgr interface');
         }
     } else {
-        hw = hw_oldkernel;
-        if(debug) winston.debug('Using 3.2 kernel interface');
+        hw = require('./src/hw_capemgr');
+        winston.debug('Using 3.2 kernel interface');
     }
 } else {
-    hw = hw_simulator;
-    if(debug) winston.debug('Using simulator mode');
+    hw = require('./src/hw_simulator');
+    winston.debug('Using simulator mode');
 }
 
 if(debug){
@@ -98,7 +97,7 @@ f.getPinMode = function(pin, callback) {
         winston.error("Pin is not defined");
         throw("Invalid pin: " + pin);
     }
-    if(debug) winston.debug('getPinMode(' + pin.key + ');');
+    winston.debug('getPinMode(' + pin.key + ');');
     var mode = {'pin': pin.key, 'name': pin.name};
     if(pin.options) mode.options = pin.options;
 
@@ -130,7 +129,7 @@ f.getPinMode.args = ['pin', 'callback'];
 f.pinMode = function(givenPin, direction, mux, pullup, slew, callback) {
     var pin = my.getpin(givenPin);
     
-    if(debug) winston.debug('pinMode(' + [pin.key, direction, mux, pullup, slew] + ');');
+    winston.debug('pinMode(' + [pin.key, direction, mux, pullup, slew] + ');');
     if(direction == g.INPUT_PULLUP) pullup = 'pullup';
     pullup = pullup || ((direction == g.INPUT) ? 'pulldown' : 'disabled');
     slew = slew || 'fast';
@@ -160,7 +159,7 @@ f.pinMode = function(givenPin, direction, mux, pullup, slew, callback) {
     }
     
     if(!pin.mux) {
-        if(debug) winston.debug('Invalid pin object for pinMode: ' + pin);
+        winston.debug('Invalid pin object for pinMode: ' + pin);
         throw('Invalid pin object for pinMode: ' + pin);
     }
 
@@ -189,7 +188,7 @@ f.pinMode = function(givenPin, direction, mux, pullup, slew, callback) {
     hw.setPinMode(pin, pinData, template, resp, onSetPinMode);
     
     function onSetPinMode(x) {
-        if(debug) winston.debug('returned from setPinMode');
+        winston.debug('returned from setPinMode');
         resp = x;
         if(typeof resp.err != 'undefined') {
             winston.error('Unable to configure mux for pin ' + pin + ': ' + resp.err);
@@ -243,7 +242,7 @@ f.digitalWrite = function(pin, value, callback) {
         winston.error("Pin is not defined");
         throw("Invalid pin: " + pin);
     }
-    if(debug) winston.debug('digitalWrite(' + [pin.key, value] + ');');
+    winston.debug('digitalWrite(' + [pin.key, value] + ');');
     value = parseInt(Number(value), 2) ? 1 : 0;
     if(typeof callback == 'undefined') {
         hw.writeGPIOValueSync(pin, value);
@@ -259,7 +258,7 @@ f.digitalRead = function(pin, callback) {
         return;
     }
     pin = my.getpin(pin);
-    if(debug) winston.debug('digitalRead(' + [pin.key] + ');');
+    winston.debug('digitalRead(' + [pin.key] + ');');
     var resp = {};
     if(typeof pin.ain != 'undefined') {
         f.analogRead(pin, analogCallback);
@@ -289,7 +288,7 @@ f.analogRead = function(pin, callback) {
         return;
     }
     pin = my.getpin(pin);
-    if(debug) winston.debug('analogRead(' + [pin.key] + ');');
+    winston.debug('analogRead(' + [pin.key] + ');');
     var resp = {};
     if(typeof pin.ain == 'undefined') {
         f.digitalRead(pin, callback);
@@ -322,7 +321,7 @@ f.analogRead.args = ['pin', 'callback'];
 // That guide isn't useful for the new pwm_test interface
 f.analogWrite = function(pin, value, freq, callback) {
     pin = my.getpin(pin);
-    if(debug) winston.debug('analogWrite(' + [pin.key,value,freq] + ');');
+    winston.debug('analogWrite(' + [pin.key,value,freq] + ');');
     freq = freq || 2000.0;
     var resp = {};
 
@@ -376,15 +375,15 @@ f.analogWrite.args = ['pin', 'value', 'freq', 'callback'];
 f.shiftOut = function(dataPin, clockPin, bitOrder, val, callback) {
     dataPin = my.getpin(dataPin);
     clockPin = my.getpin(clockPin);
-    if(debug) winston.debug('shiftOut(' + [dataPin.key, clockPin.key, bitOrder, val] + ');');
+    winston.debug('shiftOut(' + [dataPin.key, clockPin.key, bitOrder, val] + ');');
     var i = 0;
     var bit;
     var clock = 0;
     next();
 
     function next(err) {
-        if(debug) winston.debug('i = ' + i);
-        if(debug) winston.debug('clock = ' + clock);
+        winston.debug('i = ' + i);
+        winston.debug('clock = ' + clock);
         if(err || i == 8) {
             callback({'err': err});
             return;
@@ -415,7 +414,7 @@ f.shiftOut.args = ['dataPin', 'clockPin', 'bitOrder', 'val', 'callback'];
 
 f.attachInterrupt = function(pin, handler, mode, callback) {
     pin = my.getpin(pin);
-    if(debug) winston.debug('attachInterrupt(' + [pin.key, handler, mode] + ');');
+    winston.debug('attachInterrupt(' + [pin.key, handler, mode] + ');');
     var n = pin.gpio;
     var resp = {'pin':pin, 'attached': false};
 
@@ -481,7 +480,7 @@ f.detachInterrupt = function(pin, callback) {
         return;
     }
     pin = my.getpin(pin);
-    if(debug) winston.debug('detachInterrupt(' + [pin.key] + ');');
+    winston.debug('detachInterrupt(' + [pin.key] + ');');
     var n = pin.gpio;
     if(typeof gpio[n] == 'undefined' || typeof gpioInt[n] == 'undefined') {
         callback({'pin':pin, 'detached':false});
@@ -501,7 +500,7 @@ f.getEeproms = function(callback) {
     var eeproms = {};
     eeproms = hw.readEeproms(eeproms);
     if(eeproms == {}) {
-        if(debug) winston.debug('No valid EEPROM contents found');
+        winston.debug('No valid EEPROM contents found');
     }
     callback(eeproms);
 };
@@ -539,7 +538,7 @@ f.getPlatform = function(callback) {
         return;
     }
     var platform = {
-        'platform': bone,
+        'platform': pinmap,
         'name': "BeagleBone",
         'bonescript': package_json.version,
         'os': {}
@@ -581,7 +580,7 @@ f.setDate.args = ['date', 'callback'];
 
 
 // Exported variables
-exports.bone = bone; // this likely needs to be platform and be detected
+exports.bone = pinmap; // this likely needs to be platform and be detected
 for(var x in f) {
     exports[x] = f[x];
 }
@@ -598,4 +597,4 @@ for(var x in g) {
     exports[x] = g[x];
 }
 
-if(debug) winston.debug('index.js loaded');
+winston.debug('index.js loaded');
