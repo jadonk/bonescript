@@ -8,8 +8,6 @@ var winston = require('winston');
 var gpioFile = {};
 var pwmPrefix = {};
 
-exports.logfile = '/var/lib/cloud9/bonescript.log';
-
 exports.readPWMFreqAndValue = function(pin, pwm) {
     var mode = {};
     try {

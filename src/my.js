@@ -7,8 +7,14 @@ var winston = require('winston');
 var child_process = require('child_process');
 var pinmap = require('./pinmap');
 var g = require('./constants');
+var ffi = require("ffi");
 
 var sysfsFiles = {};
+
+var libc = new ffi.Library(null, {
+  "system": ["int32", ["string"]]
+});
+var system = libc.system;
 
 function myRequire(packageName, onfail) {
     var y = {};
@@ -41,6 +47,11 @@ module.exports = {
         var cape_universal = module.exports.find_sysfsFile('cape-universal', ocp, 'cape-universal.', callback);
         winston.debug('is_cape_universal() = ' + cape_universal);
         return(cape_universal);
+    },
+
+    is_hdmi_enable : function(){
+        var ocp = module.exports.is_ocp();
+        return(module.exports.find_sysfsFile('hdmi', ocp, 'hdmi.'));
     },
 
     find_sysfsFile : function(name, path, prefix, callback) {
@@ -136,7 +147,7 @@ module.exports = {
                 resp.err = "CapeMgr not found: " + x.err;
                 winston.error(resp.err);
                 callback(resp);
-                return;
+                return false;
             }
             slotsFile = x.path + '/slots';
             fs.readFile(slotsFile, 'ascii', onReadSlots);
@@ -148,7 +159,7 @@ module.exports = {
                 resp.err = 'Unable to read from CapeMgr slots: ' + err;
                 winston.error(resp.err);
                 callback(resp);
-                return;
+                return false;
             }
             lastSlots = slots;
             var index = slots.indexOf(name);
@@ -156,7 +167,7 @@ module.exports = {
             if(index >= 0) {
                 // Fragment is already loaded
                 if(typeof callback == 'function') callback(resp);
-                return;
+                return true;
             } else if (readAttempts <= 1) {
                 // Attempt to load fragment
                 fs.writeFile(slotsFile, name, 'ascii', onWriteSlots);
@@ -172,7 +183,7 @@ module.exports = {
                 resp.err = 'Write to CapeMgr slots failed: ' + err;
                 if(pin && writeAttempts <= 1) unloadSlot();
                 else callback(resp);
-                return;
+                return false;
             }
             setTimeout(function(){ //give some time to load slots after updating slots file.
                 fs.readFile(slotsFile, 'ascii', onReadSlots);
@@ -198,10 +209,118 @@ module.exports = {
             if(err) {
                 resp.err = "Unable to unload conflicting slot: " + err;
                 if(typeof callback =='function') callback(resp);
-                return;
+                return false;
             }
             fs.writeFile(slotsFile, name, 'ascii', onWriteSlots);
         }
+    },
+
+    load_dt_sync : function(name, pin, resp) {
+        winston.debug('load_dt(' + [name, pin ? pin.key : null, JSON.stringify(resp)] + ')');
+        resp = resp || {};
+        var slotsFile;
+        var lastSlots;
+        var writeAttempts = 0;
+        var readAttempts = 0;
+        if(pin) {
+            var slotRegex = new RegExp('\\d+(?=\\s*:.*,bs.*' + pin.key + ')', 'gm');
+        }
+        var capemgr = module.exports.is_capemgr();
+        onFindCapeMgr({path:capemgr});
+        
+        function onFindCapeMgr(x) {
+            winston.debug('onFindCapeMgr: path = ' + x.path);
+            if(typeof x.path == 'undefined') {
+                resp.err = "CapeMgr not found: " + x.err;
+                winston.error(resp.err);
+                return(false);
+            }
+            slotsFile = x.path + '/slots';
+            var slots;
+            try {
+                slots = fs.readFileSync(slotsFile, 'ascii');
+            } catch(ex) {
+                resp.err = ex;
+            }
+            onReadSlots(resp.err, slots);
+        }
+        
+        function onReadSlots(err, slots) {
+            readAttempts++;
+            if(err) {
+                resp.err = 'Unable to read from CapeMgr slots: ' + err;
+                winston.error(resp.err);
+                return(false);
+            }
+            lastSlots = slots;
+            var index = slots.indexOf(name);
+            winston.debug('onReadSlots: index = ' + index + ', readAttempts = ' + readAttempts);
+            if(index >= 0) {
+                // Fragment is already loaded
+            } else if (readAttempts <= 1) {
+                // Attempt to load fragment
+                try {
+                    winston.debug('Writing ' + name + ' to ' + slotsFile);
+                    fs.writeFileSync(slotsFile, name, 'ascii');
+                } catch(ex) {
+                    resp.err = ex;
+                }
+                onWriteSlots(resp.err);
+            } else {
+                resp.err = 'Error waiting for CapeMgr slot to load';
+            }
+        }
+        
+        function onWriteSlots(err) {
+            writeAttempts++;
+            if(err) {
+                resp.err = 'Write to CapeMgr slots failed: ' + err;
+                if(pin && writeAttempts <= 1) unloadSlot();
+                else {
+                    return(false);
+                }
+            }
+            var slots;
+            try {
+                slots = fs.readFileSync(slotsFile, 'ascii');
+            } catch(ex) {
+                resp.err = ex;
+            }
+            onReadSlots(resp.err, slots);
+        }
+        
+        function unloadSlot() {
+            var slot = lastSlots.match(slotRegex);
+            if(slot && slot[0]) {
+                winston.debug('Attempting to unload conflicting slot ' +
+                    slot[0] + ' for ' + name);
+                try {
+                    fs.writeFileSync(slotsFile, '-'+slot[0], 'ascii');
+                } catch(ex) {
+                    resp.err = ex;
+                }
+                onUnloadSlot(resp.err);
+            } else {
+                return(false);
+            }
+        }
+
+        function onUnloadSlot(err) {
+            if(err) {
+                resp.err = "Unable to unload conflicting slot: " + err;
+                return;
+            }
+            try {
+                fs.writeFileSync(slotsFile, name, 'ascii');
+            } catch(ex) {
+                resp.err = ex;
+            }
+            onWriteSlots(resp.err);
+        }
+        
+        winston.debug('load_dt resp: ' + JSON.stringify(resp));
+        winston.debug('load_dt return: ' + (typeof resp.err == 'undefined'));
+        return(typeof resp.err == 'undefined');
     },
 
     create_dt : function(pin, data, template, load, force_create, resp, callback) {
@@ -267,6 +386,81 @@ module.exports = {
             if(load) module.exports.load_dt(fragment, pin, resp, callback);
             else callback(resp);
         }
+    },
+
+    create_dt_sync : function(pin, data, template, load, force_create, resp) {
+        winston.debug('create_dt(' + [pin.key, data, template, load, force_create, JSON.stringify(resp)] + ')');
+        resp = resp || {};
+        template = template || 'bspm';
+        load = (typeof load === 'undefined') ? true : load;
+        var fragment = template + '_' + pin.key + '_' + data.toString(16);
+        var dtsFilename = '/lib/firmware/' + fragment + '-00A0.dts';
+        var dtboFilename = '/lib/firmware/' + fragment + '-00A0.dtbo';
+        
+        if(force_create) {
+            createDTS();
+        } else {
+            var exists = module.exports.file_existsSync(dtboFilename);
+            onDTBOExistsTest(exists);
+        }
+        
+        function onDTBOExistsTest(exists) {
+            if(exists) {
+                onDTBOExists();
+            } else {
+                createDTS();
+            }
+        }
+
+        function createDTS() {
+            var templateFilename = require.resolve('octalbonescript').replace('index.js',
+                'dts/' + template + '_template.dts');
+            winston.debug('Creating template: ' + templateFilename);
+            var dts = fs.readFileSync(templateFilename, 'utf8');
+            dts = dts.replace(/!PIN_KEY!/g, pin.key);
+            dts = dts.replace(/!PIN_DOT_KEY!/g, pin.key.replace(/_/, '.'));
+            dts = dts.replace(/!PIN_FUNCTION!/g, pin.options[data&7]);
+            dts = dts.replace(/!PIN_OFFSET!/g, pin.muxRegOffset);
+            dts = dts.replace(/!DATA!/g, '0x' + data.toString(16));
+            if(pin.pwm) {
+                dts = dts.replace(/!PWM_MODULE!/g, pin.pwm.module);
+                dts = dts.replace(/!PWM_INDEX!/g, pin.pwm.index);
+                dts = dts.replace(/!DUTY_CYCLE!/g, 500000);
+            }
+            try {
+                fs.writeFileSync(dtsFilename, dts, 'ascii');
+            } catch(ex) {
+                resp.err = ex;
+            }
+            onDTSWrite(resp.err);
+        }
+        
+        function onDTSWrite(err) {
+            if(err) {
+                resp.err = 'Error writing ' + dtsFilename + ': ' + err;
+                winston.debug(resp.err);
+                return(resp);
+            }
+            var command = 'dtc -O dtb -o ' + dtboFilename + ' -b 0 -@ ' + dtsFilename;
+            try {
+                system(command);
+            } catch(ex) {
+                resp.err = ex;
+            }
+            dtcHandler(resp.err);
+        }
+        
+        function dtcHandler(error, stdout, stderr) {
+            winston.debug('dtcHandler: ' +
+                JSON.stringify({error:error, stdout:stdout, stderr:stderr}));
+            if(!error) onDTBOExists();
+        }
+        
+        function onDTBOExists() {
+            winston.debug('onDTBOExists()');
+            if(load) module.exports.load_dt_sync(fragment, pin, resp);
+        }
+        return(typeof resp.err == 'undefined');
     },
 
     getpin : function(pin) {

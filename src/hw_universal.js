@@ -10,8 +10,6 @@ var ainPrefix = "";
 
 module.exports = {
 
-    logfile:  '/var/lib/cloud9/octalbonescript.log',
-
     readPWMFreqAndValue : function(pin, pwm) {
         var mode = {};
         try {
@@ -215,7 +213,7 @@ module.exports = {
 
     enableAIN : function(callback) {
         var helper = "";
-        if(my.load_dt('cape-bone-iio')) {
+        if(my.load_dt_sync('cape-bone-iio')) {
             var ocp = my.is_ocp();
             if(ocp) {
                 helper = my.find_sysfsFile('helper', ocp, 'helper.');
@@ -224,7 +222,7 @@ module.exports = {
                 }
             }
         } else {
-            winston.debug('enableAIN: load of cape-bone-iio failed');
+            winston.error('enableAIN: load of cape-bone-iio failed');
         }
         if(callback) {
             callback({'path': helper});

@@ -9,8 +9,6 @@ var gpioFile  = {};
 
 module.exports = {
 
-    logfile : '/var/lib/cloud9/octalbonescript.log',
-
     readPWMFreqAndValue : function(pin, pwm) {
         var mode = {};
         try {

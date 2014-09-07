@@ -32,37 +32,6 @@ if(process.env.DEBUG && process.env.DEBUG.indexOf("bone")!==-1){
 }
 
 
-// Detect if we are on a Beagle
-var hw;
-if(os.type() == 'Linux' || os.arch() == 'arm') {
-    if(my.is_capemgr()) {
-        if(!my.is_cape_universal()) {
-            winston.debug('Loading Universal Cape interface...');
-            my.create_dt({"key":"default", "options":{}}, 0, "bs", true);
-        }
-        if(my.is_cape_universal()) {
-            hw = require('./src/hw_universal');
-            winston.debug('Using Universal Cape interface');
-        } else {
-            hw = require('./src/hw_capemgr');
-            winston.debug('Using CapeMgr interface');
-        }
-    } else {
-        hw = require('./src/hw_capemgr');
-        winston.debug('Using 3.2 kernel interface');
-    }
-} else {
-    hw = require('./src/hw_simulator');
-    winston.debug('Using simulator mode');
-}
-
-if(debug){
-    winston.add(winston.transports.File, {
-        filename: hw.logfile,
-        level: 'warn'
-    });
-}
-
 var f = {};
 
 // Keep track of allocated resources
@@ -70,6 +39,31 @@ var gpio = {};
 var gpioInt = {};
 var pwm = {};
 var ain = false;
+
+// Detect if we are on a Beagle
+var hw = null;
+
+if(os.type() == 'Linux' || os.arch() == 'arm') {
+    if(!my.is_cape_universal()) {
+        winston.debug('Loading Universal Cape interface...');
+        my.create_dt_sync({"key":"d", "options":{}}, 0, "bs_univ", true);
+        if(!my.is_hdmi_enable()){
+            winston.debug('Loading HDMI Cape...');
+            my.create_dt_sync({"key":"d", "options":{}}, 0, "bs_hdmi", true);
+        }
+    }
+    if(my.is_cape_universal()) {
+        hw = require('./src/hw_universal');
+        winston.debug('Using Universal Cape interface');
+    } else {
+        hw = require('./src/hw_capemgr');
+        winston.debug('Using CapeMgr interface');
+    }
+} else {
+    hw = require('./src/hw_simulator');
+    winston.debug('Using simulator mode');
+}
+
 
 // returned object has:
 //  mux: index of mux mode

@@ -159,7 +159,7 @@
                 "gpio": 66,
                 "mux": "gpmc_advn_ale",
                 "eeprom": 41,
-                "key": "P8_7",
+                "key": "P8_07",
                 "muxRegOffset": "0x090",
                 "options": [
                     "gpmc_advn_ale",
@@ -177,7 +177,7 @@
                 "gpio": 67,
                 "mux": "gpmc_oen_ren",
                 "eeprom": 44,
-                "key": "P8_8",
+                "key": "P8_08",
                 "muxRegOffset": "0x094",
                 "options": [
                     "gpmc_oen_ren",
@@ -195,7 +195,7 @@
                 "gpio": 69,
                 "mux": "gpmc_ben0_cle",
                 "eeprom": 42,
-                "key": "P8_9",
+                "key": "P8_09",
                 "muxRegOffset": "0x09c",
                 "options": [
                     "gpmc_ben0_cle",

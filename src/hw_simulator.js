@@ -4,7 +4,6 @@ var winston = require('winston');
 var gpioFile = {};
 
 module.exports = {
-    logfile : 'bonescript.log',
 
     readPWMFreqAndValue : function(pin, pwm) {
         winston.info('readPWMFreqAndValue(' + [pin.key, pwm.key] + ')');
