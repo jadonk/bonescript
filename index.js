@@ -81,8 +81,8 @@ if(os.type() == 'Linux' || os.arch() == 'arm') {
 //    allocated: boolean for if it is allocated by this application
 //    direction: 'in' or 'out' (allocated might be false)
 f.getPinMode = function(pin, callback) {
-    if(typeof callback == 'undefined') {
-        winston.error("getPinMode() requires callback");
+    if(typeof callback != 'function') {
+        winston.error("getPinMode() requires callback function");
         return;
     }
     if(pin) {
@@ -101,54 +101,68 @@ f.getPinMode = function(pin, callback) {
         && (typeof pwm[pin.pwm.name] != 'undefined')    // PWM used for this pin is enabled
         && (pin.key == pwm[pin.pwm.name].key)           // PWM is allocated for this pin
     ) {
-        mode.pwm = hw.readPWMFreqAndValue(pin, pwm[pin.pwm.name]);
+        hw.readPWMFreqAndValue(pin, pwm[pin.pwm.name], onReadPWM);
+    } else {
+        onReadPWM(null);
     }
 
-    // Get GPIO settings if applicable
-    if((typeof pin.gpio != 'undefined')) {
+    function onReadPWM(pwm){
+        if(pwm){
+            mode.pwm = pwm;
+        }
+        // Get GPIO settings if applicable
+        if((typeof pin.gpio != 'undefined')) {
+            var n = pin.gpio;
+            hw.readGPIODirection(n, gpio, onReadGPIODirection);
+        } else {
+            hw.readPinState(pin, onReadPinState);
+        }
+    }
+
+    function onReadGPIODirection(direction){
+        mode.gpio = direction;
         var n = pin.gpio;
-        mode.gpio = hw.readGPIODirection(n, gpio);
         if(typeof gpio[n] == 'undefined') {
             mode.gpio.allocated = false;
         } else {
             mode.gpio.allocated = true;
         }
+        hw.readPinState(pin, onReadPinState);
     }
 
-    // Get pinmux settings
-    hw.readPinMux(pin, mode, callback);
+    function onReadPinState(state){
+        mode.pinState = state;
+        getPinMux();
+    }
+
+    function getPinMux(){
+        // Get pinmux settings
+        hw.readPinMux(pin, mode, callback);
+    }
 };
 f.getPinMode.args = ['pin', 'callback'];
 
-f.pinMode = function(givenPin, direction, mux, pullup, slew, callback) {
+f.pinMode = function(givenPin, direction, mode, callback) {
     var pin = my.getpin(givenPin);
     
-    winston.debug('pinMode(' + [pin.key, direction, mux, pullup, slew] + ');');
-    if(direction == g.INPUT_PULLUP) pullup = 'pullup';
-    pullup = pullup || ((direction == g.INPUT) ? 'pulldown' : 'disabled');
-    slew = slew || 'fast';
-    mux = (typeof mux != 'undefined') ? mux : 7; // default to GPIO mode
+    winston.debug('pinMode(' + [pin.key, direction, mode] + ');');
+    if(direction == g.INPUT_PULLUP) mode = "gpio_pu";
+    mode = (typeof mode == 'undefined' || mode == 7) ? "gpio" : mode; // default to GPIO mode
     var resp = {value: true};
-    var template = 'bspm';
     var n = pin.gpio;
     
-    if(
-        direction == g.ANALOG_OUTPUT
-        || mux == g.ANALOG_OUTPUT
-        || (typeof pin.pwm != 'undefined' && mux == pin.pwm.muxmode)
-    ) {
+    if(direction == g.ANALOG_OUTPUT || (typeof pin.pwm != 'undefined' && mux == pin.pwm.muxmode)) {
         if(
             (typeof pin.pwm == 'undefined') ||          // pin does not have PWM capability
             (typeof pin.pwm.muxmode == 'undefined')     // required muxmode is not provided
         ) {
             var err = 'pinMode only supports ANALOG_OUTPUT for PWM pins: ' + pin.key;
             winston.info(err);
-            if(callback) callback({value:false, err:err},givenPin);
+            if(typeof callback == 'function') callback({value:false, err:err},givenPin);
             return;
         }
         direction = g.OUTPUT;
-        mux = pin.pwm.muxmode;
-        template = 'bspwm';
+        mode = "pwm";
         pwm[pin.pwm.name] = {'key': pin.key, 'freq': 0};
     }
     
@@ -159,27 +173,27 @@ f.pinMode = function(givenPin, direction, mux, pullup, slew, callback) {
 
     // Handle case where pin is allocated as a gpio-led
     if(pin.led) {
-        if((direction != g.OUTPUT) || (mux != 7)) {
+        if((direction != g.OUTPUT) || (mode != "gpio")) {
             resp.err = 'pinMode only supports GPIO output for LEDs: ' + pin.key;
             winston.error(resp.err);
             resp.value = false;
-            if(callback) callback(resp,givenPin);
+            if(typeof callback == 'function') callback(resp,givenPin);
             return;
         }
 
-        resp = hw.setLEDPinToGPIO(pin, resp);
-        if(typeof resp.err == 'undefined') {
-            gpio[n] = true;
-        }
-        if(callback) callback(resp,givenPin);
+        hw.setLEDPinToGPIO(pin, resp, onSetLEDPin);
         return;
     }
 
-    // Figure out the desired value
-    var pinData = my.pin_data(slew, direction, pullup, mux);
+    function onSetLEDPin(resp){
+        if(typeof resp.err == 'undefined') {
+            gpio[n] = true;
+        }
+        if(typeof callback == 'function') callback(resp,givenPin);
+    }
 
     // May be required: mount -t debugfs none /sys/kernel/debug
-    hw.setPinMode(pin, pinData, template, resp, onSetPinMode);
+    hw.setPinMode(pin, mode, resp, onSetPinMode);
     
     function onSetPinMode(x) {
         winston.debug('returned from setPinMode');
@@ -192,9 +206,9 @@ f.pinMode = function(givenPin, direction, mux, pullup, slew, callback) {
             pinModeTestGPIO();
         }
     }
-    
-    function pinModeTestMode(mode) {
-        if(mode.mux != mux) {
+
+    function pinModeTestMode(mod) {
+        if(mod.pinState != mode) {
             resp.value = false;
             winston.error(resp.err);
             delete gpio[n];
@@ -204,7 +218,7 @@ f.pinMode = function(givenPin, direction, mux, pullup, slew, callback) {
     
     function pinModeTestGPIO() {
         // Enable GPIO
-        if(mux == 7) {
+        if(mode == "gpio" || mode == "gpio_pu" || mode == "gpio_pd") {
             // Export the GPIO controls
             resp = hw.exportGPIOControls(pin, direction, resp, onExport);
         } else {
@@ -224,7 +238,7 @@ f.pinMode = function(givenPin, direction, mux, pullup, slew, callback) {
         if(callback) callback(resp,givenPin);
     }
 };
-f.pinMode.args = ['pin', 'direction', 'mux', 'pullup', 'slew', 'callback'];
+f.pinMode.args = ['pin', 'direction', "mode", 'callback'];
 
 f.digitalWrite = function(pin, value, callback) {
     var myCallback = function(resp) {

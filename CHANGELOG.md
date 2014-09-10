@@ -1,7 +1,17 @@
 ChangeLog
 ---------
 
-## 0.3.0
+### 0.3.2
+
+* Support for 3.2 kernel has been dropped
+* Required nodejs version is now >= 0.10.24. Effecively, the octalbonescript won't install on Angstrom distribution
+* pinMode now takes only 3 arguments -> (pin, direction, mode). Whereas valid values of mode is "gpio", "gpio_pu", "gpio_pd", "pwm". _pu and _pd indicate pull-up and pull-down modes of the pins.
+
+### 0.3.1
+
+* Small bug fixes
+
+### 0.3.0
 
 * Universal and HDMI cape loaded as per compatibility
 * 2 new dts overlays bs_univ_template and bs_hdmi_template added

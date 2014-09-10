@@ -67,7 +67,7 @@ module.exports = {
     },
 
     modeFromPinctrl : function(pins, muxRegOffset, muxBase, mode) {
-        winston.debug('' + pins);
+        // winston.debug('' + pins);
         muxBase = muxBase || 0x44e10800;
         mode = mode || {};
         // The format read from debugfs looks like this:
@@ -80,13 +80,15 @@ module.exports = {
         var pattern = new RegExp('pin ([0-9]+) .([0-9a-f]+). ([0-9a-f]+) pinctrl-single');
         var muxAddress = muxBase + muxRegOffset;
         for(var i = 0; i < numRegistered; i++) {
-            winston.debug('pinLine = ' + pinLines[i + 1]);
+            // winston.debug('pinLine = ' + pinLines[i + 1]);
             var parsedFields = pattern.exec(pinLines[i + 1]);
-            winston.debug('parsedFields = ' + parsedFields);
+            // winston.debug('parsedFields = ' + parsedFields);
             //var index = parseInt(parsedFields[1], 10);
             var address = parseInt(parsedFields[2], 16);
             var status = parseInt(parsedFields[3], 16);
             if(address == muxAddress) {
+                winston.debug('pinLine = ' + pinLines[i + 1]);
+                winston.debug('parsedFields = ' + parsedFields);
                 mode = module.exports.modeFromStatus(status, mode);
                 return(mode);
             }

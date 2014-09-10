@@ -10,28 +10,47 @@ var ainPrefix = "";
 
 module.exports = {
 
-    readPWMFreqAndValue : function(pin, pwm) {
+    readPWMFreqAndValue : function(pin, pwm, callback) {
         var mode = {};
-        try {
-            var period = fs.readFileSync(pwmPrefix[pin.pwm.name]+'/period_ns');
-            var duty = fs.readFileSync(pwmPrefix[pin.pwm.name]+'/duty_ns');
+        var period  = null;
+        fs.readFile(pwmPrefix[pin.pwm.name]+'/period_ns', "utf8", onReadPeriod);
+
+        function onReadPeriod(err,data){
+            period = data;
+            fs.readFile(pwmPrefix[pin.pwm.name]+'/duty_ns', "utf8", onReadDuty);
+        }
+
+        function onReadDuty(err, duty){
             mode.freq = 1.0e9 / period;
             mode.value = duty / period;
-        } catch(ex) {
+            callback(mode);
         }
-        return(mode);
     },
 
-    readGPIODirection : function(n, gpio) {
+    readGPIODirection : function(n, gpio, callback) {
         var mode = {};
         var directionFile = "/sys/class/gpio/gpio" + n + "/direction";
-        if(my.file_existsSync(directionFile)) {
+        fs.exists(directionFile,function(exists){
+            if(exists){
+                fs.readFile(directionFile, 'utf8', onReadDirection);
+            } else {
+                callback(mode);
+            }
+        });
+
+        function onReadDirection(err, direction){
             mode.active = true;
-            var direction = fs.readFileSync(directionFile, 'utf-8');
-            direction = direction.replace(/^\s+|\s+$/g, '');
-            mode.direction = direction;
+            mode.direction = direction.trim();
+            callback(mode);
         }
-        return(mode);
+    },
+
+    readPinState : function(pin, callback){
+        var p = pin.key + "_pinmux";
+        var pinmux = my.find_sysfsFile(p, my.is_ocp(), p + '.');
+        fs.readFile(pinmux+"/state", 'utf8', function(err, state){
+            callback(state.trim());
+        });
     },
 
     readPinMux : function(pin, mode, callback) {
@@ -67,45 +86,80 @@ module.exports = {
         return(mode);
     },
 
-    setPinMode : function(pin, pinData, template, resp, callback) {
-        winston.debug('hw.setPinMode(' + [pin.key, pinData, template, JSON.stringify(resp)] + ');');
+    setPinMode : function(pin, mode, resp, callback) {
+        winston.debug('hw.setPinMode(' + [pin.key, mode, JSON.stringify(resp)] + ');');
         var p = pin.key + "_pinmux";
         var pinmux = my.find_sysfsFile(p, my.is_ocp(), p + '.');
-        if((pinData & 7) == 7) {
+        if(mode == "gpio" || mode == "gpio_pu" || mode == "gpio_pd") {
             gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
-            fs.writeFileSync(pinmux+"/state", 'gpio');
-        } else if(template == 'bspwm') {
-            fs.writeFileSync(pinmux+"/state", 'pwm');
-            pwmPrefix[pin.pwm.name] = '/sys/class/pwm/pwm' + pin.pwm.sysfs;
-            if(!my.file_existsSync(pwmPrefix[pin.pwm.name])) {
-                fs.appendFileSync('/sys/class/pwm/export', pin.pwm.sysfs);
-            }
-            fs.appendFileSync(pwmPrefix[pin.pwm.name]+'/run', 1);
+            fs.writeFile(pinmux+"/state", mode, onModeComplete);
+        } else if(mode == "pwm") {
+            fs.writeFile(pinmux+"/state", mode, onWriteState); //write mode to the state file...
         } else {
-            resp.err = 'Unknown pin mode template';
+            resp.err = 'This mode is currently not supported by octalbonescript';
+            callback(resp);
         }
-        if(callback) callback(resp);
-        return(resp);
+
+        function onWriteState(err){
+            if(err){
+                resp.err = err;
+                winston.error("onWriteState problem: " + err);
+                if(typeof callback == 'function') callback(resp);
+                return;
+            }
+            pwmPrefix[pin.pwm.name] = '/sys/class/pwm/pwm' + pin.pwm.sysfs;
+            fs.exists(pwmPrefix[pin.pwm.name],function(exists) {
+                if(!exists){
+                    fs.appendFile('/sys/class/pwm/export', pin.pwm.sysfs, onExport); // now export if not exported
+                } else {
+                    fs.appendFile(pwmPrefix[pin.pwm.name]+'/run', 1, onModeComplete); // now start PWM
+                }
+            });
+        }
+
+        function onExport(err){
+            if(err){
+                resp.err = err;
+                winston.error("onExport problem: " + err);
+                if(typeof callback == 'function') callback(resp);
+                return;
+            }
+            fs.appendFile(pwmPrefix[pin.pwm.name]+'/run', 1, onModeComplete); // now start PWM
+        }
+
+        function onModeComplete(err){
+            if(err){
+                resp.err = err;
+                winston.error("onComplete problem: " + err);
+                if(typeof callback == 'function') callback(resp);
+                return;
+            }
+            if(typeof callback == 'function') callback(resp);
+        }
     },
 
-    setLEDPinToGPIO : function(pin, resp) {
+    setLEDPinToGPIO : function(pin, resp, callback) {
         var path = "/sys/class/leds/beaglebone:green:" + pin.led + "/trigger";
+        fs.exists(path, function(exists){
+            if(exists) {
+                fs.writeFile(path, "gpio", onWriteMode);
+            } else {
+                resp.err = "Unable to find LED " + pin.led;
+                winston.error(resp.err);
+                resp.value = false;
+                callback(resp);
+            }
+        });
 
-        if(my.file_existsSync(path)) {
-            fs.writeFileSync(path, "gpio");
-        } else {
-            resp.err = "Unable to find LED " + pin.led;
-            winston.error(resp.err);
-            resp.value = false;
+        function onWriteMode(err){
+            callback(resp);
         }
-
-        return(resp);
     },
 
     exportGPIOControls : function(pin, direction, resp, callback) {
         winston.debug('hw.exportGPIOControls(' + [pin.key, direction, resp] + ');');
         var n = pin.gpio;
-        my.file_exists(gpioFile[pin.key], onFileExists);
+        fs.exists(gpioFile[pin.key], onFileExists);
         
         function onFileExists(exists) {
             if(exists) {

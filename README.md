@@ -1,6 +1,10 @@
 Getting started
 ===============
 
+__Please note that octalbonescript does not work with Angstrom distribution. We recommend that you upgrade your beaglebone to Debian by following link given below__
+
+[http://beagleboard.org/getting-started#update](http://beagleboard.org/getting-started#update)
+
 Fork
 ----
 This is a fork of https://github.com/jadonk/bonescript. While the APIs are 
@@ -36,10 +40,6 @@ wget -c https://raw.github.com/RobertCNelson/tools/master/pkgs/dtc.sh
 chmod +x dtc.sh
 ./dtc.sh
 ````
-
-Please note that octalbonescript __does not__ work with Angstrom distribution. We recommend that you upgrade your beaglebone to Debian by following link given below.
-
-[http://beagleboard.org/getting-started#update](http://beagleboard.org/getting-started#update)
 
 Deviation from Bonescript
 -------------------------
