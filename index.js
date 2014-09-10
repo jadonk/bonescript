@@ -38,7 +38,6 @@ var f = {};
 var gpio = {};
 var gpioInt = {};
 var pwm = {};
-var ain = false;
 
 // Detect if we are on a Beagle
 var hw = null;
