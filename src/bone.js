@@ -16,7 +16,7 @@ var libc = new ffi.Library(null, {
 });
 var system = libc.system;
 
-function myRequire(packageName, onfail) {
+function boneRequire(packageName, onfail) {
     var y = {};
     try {
         y = require(packageName);
@@ -31,7 +31,7 @@ function myRequire(packageName, onfail) {
 
 module.exports = {
 
-    require : myRequire,
+    require : boneRequire,
 
     is_capemgr : function(callback) {
         return(module.exports.find_sysfsFile('capemgr', '/sys/devices', 'bone_capemgr.', callback));
@@ -73,10 +73,6 @@ module.exports = {
         
         return(sysfsFiles[name]);
     },
-
-    file_exists : fs.exists,
-
-    file_existsSync : fs.existsSync,
 
     file_find : function(path, prefix, attempts, callback) {
         var resp = {};
@@ -335,7 +331,7 @@ module.exports = {
         if(force_create) {
             createDTS();
         } else {
-            module.exports.file_exists(dtboFilename, onDTBOExistsTest);
+            fs.exists(dtboFilename, onDTBOExistsTest);
         }
         
         function onDTBOExistsTest(exists) {
@@ -400,7 +396,7 @@ module.exports = {
         if(force_create) {
             createDTS();
         } else {
-            var exists = module.exports.file_existsSync(dtboFilename);
+            var exists = fs.existsSync(dtboFilename);
             onDTBOExistsTest(exists);
         }
         

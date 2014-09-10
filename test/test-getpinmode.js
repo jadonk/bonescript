@@ -20,7 +20,7 @@ global.setup = function() {
     deleteFile('/lib/firmware/bspwm_P9_14_6-00A0.dtbo');
     
     function deleteFile(filename) {
-        if(my.file_existsSync(filename)) {
+        if(fs.existsSync(filename)) {
             fs.unlinkSync(filename);
         }
     }

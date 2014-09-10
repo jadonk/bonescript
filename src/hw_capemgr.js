@@ -1,6 +1,6 @@
 var fs = require('fs');
 var winston = require('winston');
-var my = require('./my');
+var bone = require('./bone');
 var parse = require('./parse');
 
 var ainPrefix = "";
@@ -24,7 +24,7 @@ module.exports = {
     readGPIODirection : function(n, gpio) {
         var mode = {};
         var directionFile = "/sys/class/gpio/gpio" + n + "/direction";
-        if(my.file_existsSync(directionFile)) {
+        if(fs.existsSync(directionFile)) {
             mode.active = true;
             var direction = fs.readFileSync(directionFile, 'utf-8');
             direction = direction.replace(/^\s+|\s+$/g, '');
@@ -54,7 +54,7 @@ module.exports = {
             }
         };
         if(callback) {
-            my.file_exists(pinctrlFile, tryPinctrl);
+            fs.exists(pinctrlFile, tryPinctrl);
         } else {
             try {
                 var data2 = fs.readFileSync(pinctrlFile, 'utf8');
@@ -72,7 +72,7 @@ module.exports = {
             gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
             doCreateDT(resp);
         } else if(template == 'bspwm') {
-            my.load_dt('am33xx_pwm', null, resp, doCreateDT);
+            bone.load_dt('am33xx_pwm', null, resp, doCreateDT);
         } else {
             resp.err = 'Unknown pin mode template';
             if(callback) {
@@ -86,7 +86,7 @@ module.exports = {
                 callback(resp);
                 return;
             }
-            my.create_dt(pin, pinData, template, true, false, resp, onCreateDT);
+            bone.create_dt(pin, pinData, template, true, false, resp, onCreateDT);
         }
         
         function onCreateDT(resp) {
@@ -95,7 +95,7 @@ module.exports = {
                 return;
             }
             if(template == 'bspwm') {
-                my.file_find('/sys/devices', 'ocp.', 1, onFindOCP);
+                bone.file_find('/sys/devices', 'ocp.', 1, onFindOCP);
             } else {
                 callback(resp);
             }
@@ -107,7 +107,7 @@ module.exports = {
                     callback(resp);
                     return;
                 }
-                my.file_find(ocp.path, 'bs_pwm_test_' + pin.key + '.', 1, onFindPWM);
+                bone.file_find(ocp.path, 'bs_pwm_test_' + pin.key + '.', 1, onFindPWM);
             }
             
             function onFindPWM(pwm_test) {
@@ -117,7 +117,7 @@ module.exports = {
                     callback(resp);
                     return;
                 }
-                my.file_find(pwm_test.path, 'period', 1, onFindPeriod);
+                bone.file_find(pwm_test.path, 'period', 1, onFindPeriod);
                 
                 function onFindPeriod(period) {
                     if(period.err) {
@@ -145,7 +145,7 @@ module.exports = {
     setLEDPinToGPIO : function(pin, resp) {
         var path = "/sys/class/leds/beaglebone:green:" + pin.led + "/trigger";
 
-        if(my.file_existsSync(path)) {
+        if(fs.existsSync(path)) {
             fs.writeFileSync(path, "gpio");
         } else {
             resp.err = "Unable to find LED " + pin.led;
@@ -159,7 +159,7 @@ module.exports = {
     exportGPIOControls : function(pin, direction, resp, callback) {
         winston.debug('hw.exportGPIOControls(' + [pin.key, direction, resp] + ');');
         var n = pin.gpio;
-        my.file_exists(gpioFile[pin.key], onFileExists);
+        fs.exists(gpioFile[pin.key], onFileExists);
         
         function onFileExists(exists) {
             if(exists) {
@@ -220,7 +220,7 @@ module.exports = {
                 gpioFile[pin.key] = "/sys/class/leds/beaglebone:";
                 gpioFile[pin.key] += "green:" + pin.led + "/brightness";
             }
-            if(!my.file_existsSync(gpioFile[pin.key])) {
+            if(!fs.existsSync(gpioFile[pin.key])) {
                 winston.error("Unable to find gpio: " + gpioFile[pin.key]);
             }
         }
@@ -239,7 +239,7 @@ module.exports = {
                 gpioFile[pin.key] = "/sys/class/leds/beaglebone:";
                 gpioFile[pin.key] += "green:" + pin.led + "/brightness";
             }
-            if(!my.file_existsSync(gpioFile[pin.key])) {
+            if(!fs.existsSync(gpioFile[pin.key])) {
                 winston.error("Unable to find gpio: " + gpioFile[pin.key]);
             }
         }
@@ -267,7 +267,7 @@ module.exports = {
 
     enableAIN : function(callback) {
         var resp = {};
-        var ocp = my.is_ocp();
+        var ocp = bone.is_ocp();
         if(!ocp) {
             resp.err = 'enableAIN: Unable to open ocp file';
             winston.debug(resp.err);
@@ -275,14 +275,14 @@ module.exports = {
             return;
         }
         
-        my.load_dt('cape-bone-iio', null, {}, onLoadDT);
+        bone.load_dt('cape-bone-iio', null, {}, onLoadDT);
         
         function onLoadDT(x) {
             if(x.err) {
                 callback(x);
                 return;
             }
-            my.find_sysfsFile('helper', ocp, 'helper.', onHelper);
+            bone.find_sysfsFile('helper', ocp, 'helper.', onHelper);
         }
 
         function onHelper(x) {
@@ -344,11 +344,11 @@ module.exports = {
     },
 
     readEeproms : function(eeproms) {
-        var boardName = fs.readFileSync(my.is_capemgr() + '/baseboard/board-name',
+        var boardName = fs.readFileSync(bone.is_capemgr() + '/baseboard/board-name',
                 'ascii');
-        var version = fs.readFileSync(my.is_capemgr() + '/baseboard/revision',
+        var version = fs.readFileSync(bone.is_capemgr() + '/baseboard/revision',
                 'ascii');
-        var serialNumber = fs.readFileSync(my.is_capemgr() + '/baseboard/serial-number',
+        var serialNumber = fs.readFileSync(bone.is_capemgr() + '/baseboard/serial-number',
                 'ascii');
         eeproms['/sys/bus/i2c/drivers/at24/1-0050/eeprom'] = {};
         eeproms['/sys/bus/i2c/drivers/at24/1-0050/eeprom'].boardName = boardName;
@@ -358,14 +358,14 @@ module.exports = {
     },
 
     readPlatform : function(platform) {
-        platform.name = fs.readFileSync(my.is_capemgr() + '/baseboard/board-name',
+        platform.name = fs.readFileSync(bone.is_capemgr() + '/baseboard/board-name',
             'ascii').trim();
         if(platform.name == 'A335BONE') platform.name = 'BeagleBone';
         if(platform.name == 'A335BNLT') platform.name = 'BeagleBone Black';
-        platform.version = fs.readFileSync(my.is_capemgr() + '/baseboard/revision',
+        platform.version = fs.readFileSync(bone.is_capemgr() + '/baseboard/revision',
             'ascii').trim();
         if(!platform.version.match(/^[\040-\176]*$/)) delete platform.version;
-        platform.serialNumber = fs.readFileSync(my.is_capemgr() +
+        platform.serialNumber = fs.readFileSync(bone.is_capemgr() +
             '/baseboard/serial-number', 'ascii').trim();
         if(!platform.serialNumber.match(/^[\040-\176]*$/)) delete platform.serialNumber;
         return(platform);

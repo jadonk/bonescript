@@ -1,6 +1,6 @@
 var fs = require('fs');
 var winston = require('winston');
-var my = require('./my');
+var bone = require('./bone');
 var parse = require('./parse');
 var eeprom = require('./eeprom');
 
@@ -47,7 +47,7 @@ module.exports = {
 
     readPinState : function(pin, callback){
         var p = pin.key + "_pinmux";
-        var pinmux = my.find_sysfsFile(p, my.is_ocp(), p + '.');
+        var pinmux = bone.find_sysfsFile(p, bone.is_ocp(), p + '.');
         fs.readFile(pinmux+"/state", 'utf8', function(err, state){
             callback(state.trim());
         });
@@ -74,7 +74,7 @@ module.exports = {
             }
         };
         if(callback) {
-            my.file_exists(pinctrlFile, tryPinctrl);
+            fs.exists(pinctrlFile, tryPinctrl);
         } else {
             try {
                 var data2 = fs.readFileSync(pinctrlFile, 'utf8');
@@ -89,7 +89,7 @@ module.exports = {
     setPinMode : function(pin, mode, resp, callback) {
         winston.debug('hw.setPinMode(' + [pin.key, mode, JSON.stringify(resp)] + ');');
         var p = pin.key + "_pinmux";
-        var pinmux = my.find_sysfsFile(p, my.is_ocp(), p + '.');
+        var pinmux = bone.find_sysfsFile(p, bone.is_ocp(), p + '.');
         if(mode == "gpio" || mode == "gpio_pu" || mode == "gpio_pd") {
             gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
             fs.writeFile(pinmux+"/state", mode, onModeComplete);
@@ -239,7 +239,7 @@ module.exports = {
                 gpioFile[pin.key] = "/sys/class/leds/beaglebone:";
                 gpioFile[pin.key] += "green:" + pin.led + "/brightness";
             }
-            if(!my.file_existsSync(gpioFile[pin.key])) {
+            if(!fs.existsSync(gpioFile[pin.key])) {
                 winston.error("Unable to find gpio: " + gpioFile[pin.key]);
             }
         }
@@ -268,15 +268,16 @@ module.exports = {
 
     enableAIN : function(callback) {
         var helper = "";
-        my.load_dt('cape-bone-iio', null , null , onLoadCape);
+        bone.load_dt('cape-bone-iio', null , null , onLoadCape);
 
         function onLoadCape(resp){
             if(typeof resp.err != 'undefined') {
                 winston.error('enableAIN: load of cape-bone-iio failed');
+                if(typeof callback == 'function') callback(resp);
             } else {
-                var ocp = my.is_ocp();
+                var ocp = bone.is_ocp();
                 if(ocp) {
-                    helper = my.find_sysfsFile('helper', ocp, 'helper.');
+                    helper = bone.find_sysfsFile('helper', ocp, 'helper.');
                     if(helper) {
                         ainPrefix = helper + '/AIN';
                     }
@@ -316,32 +317,69 @@ module.exports = {
     writePWMFreqAndValue : function(pin, pwm, freq, value, resp, callback) {
         winston.debug('hw.writePWMFreqAndValue(' + [pin.key,pwm,freq,value,resp] + ');');
         var path = pwmPrefix[pin.pwm.name];
-        try {
-            var period = Math.round( 1.0e9 / freq ); // period in ns
-            if(pwm.freq != freq) {
-                winston.debug('Stopping PWM');
-                fs.writeFileSync(path+'/run', "0\n");
-                winston.debug('Setting duty to 0');
-                fs.writeFileSync(path+'/duty_ns', "0\n");
-                try {
-                    winston.debug('Updating PWM period: ' + period);
-                    fs.writeFileSync(path+'/period_ns', period + "\n");
-                } catch(ex2) {
-                    period = fs.readFileSync(path+'/period_ns');
-                    winston.info('Unable to update PWM period, period is set to ' + period);
-                }
-                winston.debug('Starting PWM');
-                fs.writeFileSync(path+'/run', "1\n");
+        var period = Math.round( 1.0e9 / freq ); // period in ns
+
+        if(pwm.freq != freq) {
+            winston.debug('Stopping PWM');
+            fs.writeFile(path+'/run', "0\n", onStopPWM);
+        } else {
+            onStartPWM(null);
+        }
+
+        function onStopPWM(err){
+            if(err) {
+                resp.err = "Fail to stop PWM: " + err;
+                winston.error(resp.err);
+                if(typeof callback == 'function') callback(resp);
+                return;
+            }
+            winston.debug('Setting duty to 0');
+            fs.writeFile(path+'/duty_ns', "0\n", onZeroDuty);
+        }
+
+        function onZeroDuty(err){
+            if(err) {
+                resp.err = "Fail to set duty to 0: " + err;
+                winston.error(resp.err);
+                if(typeof callback == 'function') callback(resp);
+                return;
+            }
+            winston.debug('Updating PWM period: ' + period);
+            fs.writeFile(path+'/period_ns', period + "\n", onWritePeriod);
+        }
+
+        function onWritePeriod(err){
+            if(err) {
+                resp.err = "Fail to update PWM period: " + err;
+                winston.error(resp.err);
+                if(typeof callback == 'function') callback(resp);
+                return;
+            }
+            winston.debug('Starting PWM');
+            fs.writeFile(path+'/run', "1\n", onStartPWM);
+        }
+
+        function onStartPWM(err){
+            if(err) {
+                resp.err = "Fail to start PWM: " + err;
+                winston.error(resp.err);
+                if(typeof callback == 'function') callback(resp);
+                return;
             }
             var duty = Math.round( period * value );
             winston.debug('Updating PWM duty: ' + duty);
-            //if(duty == 0) winston.error('Updating PWM duty: ' + duty);
-            fs.writeFileSync(path+'/duty_ns', duty + "\n");
-        } catch(ex) {
-            resp.err = 'error updating PWM freq and value: ' + path + ', ' + ex;
-            winston.error(resp.err);
+            fs.writeFileSync(path+'/duty_ns', duty + "\n", onWriteDuty);
         }
-        return(resp);
+
+        function onWriteDuty(err){
+            if(err) {
+                resp.err = "Fail to update PWM duty: " + err;
+                winston.error(resp.err);
+                if(typeof callback == 'function') callback(resp);
+                return;
+            }
+            if(typeof callback == 'function') callback(resp);
+        }
     },
 
     readEeproms : function(eeproms) {

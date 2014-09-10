@@ -1,10 +1,10 @@
 // Copyright (C) 2013 - Texas Instruments, Jason Kridner
 var pinmap = require('./pinmap');
-var my = require('./my');
+var bone = require('./bone');
 
 var m = {};
 m.name = 'serialport';
-m.module = my.require('serialport');
+m.module = bone.require('serialport');
 m.ports = pinmap.uarts;
 m.events = {
     'open': [],
@@ -19,7 +19,7 @@ m.doOpen = function(args) {
 };
 
 module.exports = {
-	serialOpen : my.wrapOpen(m, ['options']),
-	serialWrite: my.wrapCall(m, 'write', ['data'], ['err', 'results']),
+	serialOpen : bone.wrapOpen(m, ['options']),
+	serialWrite: bone.wrapCall(m, 'write', ['data'], ['err', 'results']),
 	serialParsers: m.module.exists ? m.module.parsers : {}
 };

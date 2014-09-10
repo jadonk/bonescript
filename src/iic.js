@@ -1,10 +1,10 @@
 // Copyright (C) 2013 - Texas Instruments, Jason Kridner
 var pinmap = require('./pinmap');
-var my = require('./my');
+var bone = require('./bone');
 
 var m = {};
 m.name = 'i2c';
-m.module = my.require('i2c');
+m.module = bone.require('i2c');
 m.ports = pinmap.i2c;
 m.events = {
     'data': ['data']
@@ -19,10 +19,10 @@ m.doOpen = function(args) {
     return(openPort);
 };
 
-exports.i2cOpen = my.wrapOpen(m, ['address', 'options']);
-exports.i2cScan = my.wrapCall(m, 'scan', [], ['err', 'data']);
-exports.i2cWriteByte = my.wrapCall(m, 'writeByte', ['byte'], ['err']);
-exports.i2cWriteBytes = my.wrapCall(m, 'writeBytes', ['command', 'bytes'], ['err']);
-exports.i2cReadByte = my.wrapCall(m, 'readByte', [], ['err', 'res']);
-exports.i2cReadBytes = my.wrapCall(m, 'readBytes', ['command', 'length'], ['err', 'res']);
-exports.i2cStream = my.wrapCall(m, 'stream', ['command', 'length', 'delay'], []);
+exports.i2cOpen = bone.wrapOpen(m, ['address', 'options']);
+exports.i2cScan = bone.wrapCall(m, 'scan', [], ['err', 'data']);
+exports.i2cWriteByte = bone.wrapCall(m, 'writeByte', ['byte'], ['err']);
+exports.i2cWriteBytes = bone.wrapCall(m, 'writeBytes', ['command', 'bytes'], ['err']);
+exports.i2cReadByte = bone.wrapCall(m, 'readByte', [], ['err', 'res']);
+exports.i2cReadBytes = bone.wrapCall(m, 'readBytes', ['command', 'length'], ['err', 'res']);
+exports.i2cStream = bone.wrapCall(m, 'stream', ['command', 'length', 'delay'], []);

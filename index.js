@@ -9,10 +9,10 @@ var pinmap = require('./src/pinmap');
 var functions = require('./src/functions');
 var serial = require('./src/serial');
 var iic = require('./src/iic');
-var my = require('./src/my');
+var bone = require('./src/bone');
 var package_json = require('./package.json');
 var g = require('./src/constants');
-var epoll = my.require('epoll');
+var epoll = bone.require('epoll');
 
 winston.remove(winston.transports.Console);
 
@@ -44,15 +44,15 @@ var ain = false;
 var hw = null;
 
 if(os.type() == 'Linux' || os.arch() == 'arm') {
-    if(!my.is_cape_universal()) {
+    if(!bone.is_cape_universal()) {
         winston.debug('Loading Universal Cape interface...');
-        my.create_dt_sync({"key":"d", "options":{}}, 0, "bs_univ", true);
-        if(!my.is_hdmi_enable()){
+        bone.create_dt_sync({"key":"d", "options":{}}, 0, "bs_univ", true);
+        if(!bone.is_hdmi_enable()){
             winston.debug('Loading HDMI Cape...');
-            my.create_dt_sync({"key":"d", "options":{}}, 0, "bs_hdmi", true);
+            bone.create_dt_sync({"key":"d", "options":{}}, 0, "bs_hdmi", true);
         }
     }
-    if(my.is_cape_universal()) {
+    if(bone.is_cape_universal()) {
         hw = require('./src/hw_universal');
         winston.debug('Using Universal Cape interface');
     } else {
@@ -86,7 +86,7 @@ f.getPinMode = function(pin, callback) {
         return;
     }
     if(pin) {
-        pin = my.getpin(pin);
+        pin = bone.getpin(pin);
     } else {
         winston.error("Pin is not defined");
         throw("Invalid pin: " + pin);
@@ -97,9 +97,9 @@ f.getPinMode = function(pin, callback) {
 
     // Get PWM settings if applicable
     if(
-        (typeof pin.pwm != 'undefined')                 // pin has PWM capabilities
-        && (typeof pwm[pin.pwm.name] != 'undefined')    // PWM used for this pin is enabled
-        && (pin.key == pwm[pin.pwm.name].key)           // PWM is allocated for this pin
+        (typeof pin.pwm != 'undefined') &&              // pin has PWM capabilities
+        (typeof pwm[pin.pwm.name] != 'undefined') &&    // PWM used for this pin is enabled
+        (pin.key == pwm[pin.pwm.name].key)              // PWM is allocated for this pin
     ) {
         hw.readPWMFreqAndValue(pin, pwm[pin.pwm.name], onReadPWM);
     } else {
@@ -143,7 +143,7 @@ f.getPinMode = function(pin, callback) {
 f.getPinMode.args = ['pin', 'callback'];
 
 f.pinMode = function(givenPin, direction, mode, callback) {
-    var pin = my.getpin(givenPin);
+    var pin = bone.getpin(givenPin);
     
     winston.debug('pinMode(' + [pin.key, direction, mode] + ');');
     if(direction == g.INPUT_PULLUP) mode = "gpio_pu";
@@ -151,7 +151,7 @@ f.pinMode = function(givenPin, direction, mode, callback) {
     var resp = {value: true};
     var n = pin.gpio;
     
-    if(direction == g.ANALOG_OUTPUT || (typeof pin.pwm != 'undefined' && mux == pin.pwm.muxmode)) {
+    if(direction == g.ANALOG_OUTPUT || (typeof pin.pwm != 'undefined' && mode == "pwm")) {
         if(
             (typeof pin.pwm == 'undefined') ||          // pin does not have PWM capability
             (typeof pin.pwm.muxmode == 'undefined')     // required muxmode is not provided
@@ -242,14 +242,14 @@ f.pinMode.args = ['pin', 'direction', "mode", 'callback'];
 
 f.digitalWrite = function(pin, value, callback) {
     if(pin) {
-        pin = my.getpin(pin);
+        pin = bone.getpin(pin);
     } else {
         winston.error("Pin is not defined");
         throw("Invalid pin: " + pin);
     }
     winston.debug('digitalWrite(' + [pin.key, value] + ');');
     value = parseInt(Number(value), 2) ? 1 : 0;
-    
+
     if(typeof callback == 'undefined') {
         hw.writeGPIOValueSync(pin, value);
     } else {
@@ -267,7 +267,7 @@ f.digitalRead = function(pin, callback) {
         winston.error("digitalRead() requires callback");
         return;
     }
-    pin = my.getpin(pin);
+    pin = bone.getpin(pin);
     winston.debug('digitalRead(' + [pin.key] + ');');
     var resp = {};
     if(typeof pin.ain != 'undefined') {
@@ -297,13 +297,14 @@ f.analogRead = function(pin, callback) {
         winston.error("analogRead() requires callback");
         return;
     }
-    pin = my.getpin(pin);
+    pin = bone.getpin(pin);
     winston.debug('analogRead(' + [pin.key] + ');');
     var resp = {};
     if(typeof pin.ain == 'undefined') {
         f.digitalRead(pin, callback);
     } else {
         if(!ain) {
+            ain = true;
             hw.enableAIN(onEnableAIN);
         } else {
             doAnalogRead();
@@ -312,12 +313,12 @@ f.analogRead = function(pin, callback) {
     
     function onEnableAIN(x) {
         if(x.err) {
+            ain = false;
             resp.err = "Error enabling analog inputs: " + x.err;
             winston.error(resp.err);
             if(callback) callback(resp);
             return;
         }
-        ain = true;
         doAnalogRead();
     }
     
@@ -330,7 +331,7 @@ f.analogRead.args = ['pin', 'callback'];
 // See http://processors.wiki.ti.com/index.php/AM335x_PWM_Driver's_Guide
 // That guide isn't useful for the new pwm_test interface
 f.analogWrite = function(pin, value, freq, callback) {
-    pin = my.getpin(pin);
+    pin = bone.getpin(pin);
     winston.debug('analogWrite(' + [pin.key,value,freq] + ');');
     freq = freq || 2000.0;
     var resp = {};
@@ -345,8 +346,8 @@ f.analogWrite = function(pin, value, freq, callback) {
 
     // Make sure there is no one else who has the PWM
     if(
-        (typeof pwm[pin.pwm.name] != 'undefined')   // PWM needed by this pin is already allocated
-         && (pin.key != pwm[pin.pwm.name].key)      // allocation is not by this pin
+        (typeof pwm[pin.pwm.name] != 'undefined') &&    // PWM needed by this pin is already allocated
+        (pin.key != pwm[pin.pwm.name].key)              // allocation is not by this pin
     ) {
         resp.err = 'analogWrite: ' + pin.key + ' requires pwm ' + pin.pwm.name +
             ' but it is already in use by ' + pwm[pin.pwm.name].key;
@@ -357,25 +358,21 @@ f.analogWrite = function(pin, value, freq, callback) {
 
     // Enable PWM controls if not already done
     if(typeof pwm[pin.pwm.name] == 'undefined') {
-        f.getPinMode(pin.key, onGetPinMode);
+        f.pinMode(pin, g.ANALOG_OUTPUT, "pwm", onPinMode);
     } else {
         onPinMode();
-    }
-    
-    function onGetPinMode(pinMode) {
-        var slew = pinMode.slew || 'fast';
-        var pullup = pinMode.pullup || 'disabled';
-        f.pinMode(pin, g.ANALOG_OUTPUT, pin.pwm.muxmode, pullup, slew, onPinMode);
     }
 
     function onPinMode() {
         // Perform update
-        resp = hw.writePWMFreqAndValue(pin, pwm[pin.pwm.name], freq, value, resp);
-    
+        resp = hw.writePWMFreqAndValue(pin, pwm[pin.pwm.name], freq, value, resp, onWritePWM);
+    }
+
+    function onWritePWM(resp){
         // Save off the freq, value and PWM assignment
         pwm[pin.pwm.name].freq = freq;
         pwm[pin.pwm.name].value = value;
-    
+
         // All done
         if(callback) callback(resp);
     }
@@ -383,8 +380,8 @@ f.analogWrite = function(pin, value, freq, callback) {
 f.analogWrite.args = ['pin', 'value', 'freq', 'callback'];
 
 f.shiftOut = function(dataPin, clockPin, bitOrder, val, callback) {
-    dataPin = my.getpin(dataPin);
-    clockPin = my.getpin(clockPin);
+    dataPin = bone.getpin(dataPin);
+    clockPin = bone.getpin(clockPin);
     winston.debug('shiftOut(' + [dataPin.key, clockPin.key, bitOrder, val] + ');');
     var i = 0;
     var bit;
@@ -423,7 +420,7 @@ f.shiftOut = function(dataPin, clockPin, bitOrder, val, callback) {
 f.shiftOut.args = ['dataPin', 'clockPin', 'bitOrder', 'val', 'callback'];
 
 f.attachInterrupt = function(pin, handler, mode, callback) {
-    pin = my.getpin(pin);
+    pin = bone.getpin(pin);
     winston.debug('attachInterrupt(' + [pin.key, handler, mode] + ');');
     var n = pin.gpio;
     var resp = {'pin':pin, 'attached': false};
@@ -489,7 +486,7 @@ f.detachInterrupt = function(pin, callback) {
         winston.error("detachInterrupt requires callback");
         return;
     }
-    pin = my.getpin(pin);
+    pin = bone.getpin(pin);
     winston.debug('detachInterrupt(' + [pin.key] + ');');
     var n = pin.gpio;
     if(typeof gpio[n] == 'undefined' || typeof gpioInt[n] == 'undefined') {
