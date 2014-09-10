@@ -220,9 +220,9 @@ module.exports = {
                 gpioFile[pin.key] = "/sys/class/leds/beaglebone:";
                 gpioFile[pin.key] += "green:" + pin.led + "/brightness";
             }
-            if(!my.file_existsSync(gpioFile[pin.key])) {
-                winston.error("Unable to find gpio: " + gpioFile[pin.key]);
-            }
+            fs.exists(gpioFile[pin.key],function(exists) {
+                if(!exists) winston.error("Unable to find gpio: " + gpioFile[pin.key]);
+            });
         }
         winston.debug("gpioFile = " + gpioFile[pin.key]);
         fs.writeFile(gpioFile[pin.key], '' + value, null, onWriteGPIO);
@@ -254,41 +254,44 @@ module.exports = {
 
     readGPIOValue : function(pin, resp, callback) {
         var gpioFile = '/sys/class/gpio/gpio' + pin.gpio + '/value';
-        var readFile = function(err, data) {
+        fs.readFile(gpioFile, onGPIORead);
+
+        function onGPIORead(err, data) {
             if(err) {
                 resp.err = 'digitalRead error: ' + err;
                 winston.error(resp.err);
             }
             resp.value = parseInt(data, 2);
             callback(resp);
-        };
-        fs.readFile(gpioFile, readFile);
+        }
     },
 
     enableAIN : function(callback) {
         var helper = "";
-        if(my.load_dt_sync('cape-bone-iio')) {
-            var ocp = my.is_ocp();
-            if(ocp) {
-                helper = my.find_sysfsFile('helper', ocp, 'helper.');
-                if(helper) {
-                    ainPrefix = helper + '/AIN';
+        my.load_dt('cape-bone-iio', null , null , onLoadCape);
+
+        function onLoadCape(resp){
+            if(typeof resp.err != 'undefined') {
+                winston.error('enableAIN: load of cape-bone-iio failed');
+            } else {
+                var ocp = my.is_ocp();
+                if(ocp) {
+                    helper = my.find_sysfsFile('helper', ocp, 'helper.');
+                    if(helper) {
+                        ainPrefix = helper + '/AIN';
+                    }
                 }
+                if(typeof callback == 'function') callback({'path': helper});
             }
-        } else {
-            winston.error('enableAIN: load of cape-bone-iio failed');
+
         }
-        if(callback) {
-            callback({'path': helper});
-        }
-        return(helper.length > 1);
     },
 
     readAIN : function(pin, resp, callback) {
         var ainFile = ainPrefix + pin.ain.toString();
-        fs.readFile(ainFile, readFile);
+        fs.readFile(ainFile, onReadAIN);
         
-        function readFile(err, data) {
+        function onReadAIN(err, data) {
             if(err) {
                 resp.err = 'analogRead error: ' + err;
                 winston.error(resp.err);

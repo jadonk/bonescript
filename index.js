@@ -241,9 +241,6 @@ f.pinMode = function(givenPin, direction, mode, callback) {
 f.pinMode.args = ['pin', 'direction', "mode", 'callback'];
 
 f.digitalWrite = function(pin, value, callback) {
-    var myCallback = function(resp) {
-        if(callback) callback({'err': resp, 'complete':true});
-    };
     if(pin) {
         pin = my.getpin(pin);
     } else {
@@ -252,10 +249,15 @@ f.digitalWrite = function(pin, value, callback) {
     }
     winston.debug('digitalWrite(' + [pin.key, value] + ');');
     value = parseInt(Number(value), 2) ? 1 : 0;
+    
     if(typeof callback == 'undefined') {
         hw.writeGPIOValueSync(pin, value);
     } else {
-        hw.writeGPIOValue(pin, value, myCallback);
+        hw.writeGPIOValue(pin, value, onWriteGPIO);
+    }
+
+    function onWriteGPIO(resp) {
+        if(callback) callback({'err': resp, 'complete':true});
     }
 };
 f.digitalWrite.args = ['pin', 'value', 'callback'];
