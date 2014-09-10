@@ -268,8 +268,10 @@ module.exports = {
 
     enableAIN : function(callback) {
         var helper = "";
-        bone.load_dt('cape-bone-iio', null , null , onLoadCape);
+        var resp = bone.load_dt_sync('cape-bone-iio');
 
+        onLoadCape(resp);
+        
         function onLoadCape(resp){
             if(typeof resp.err != 'undefined') {
                 winston.error('enableAIN: load of cape-bone-iio failed');

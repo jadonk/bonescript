@@ -212,7 +212,7 @@ module.exports = {
     },
 
     load_dt_sync : function(name, pin, resp) {
-        winston.debug('load_dt(' + [name, pin ? pin.key : null, JSON.stringify(resp)] + ')');
+        winston.debug('load_dt_sync(' + [name, pin ? pin.key : null, JSON.stringify(resp)] + ')');
         resp = resp || {};
         var slotsFile;
         var lastSlots;
@@ -252,7 +252,7 @@ module.exports = {
             var index = slots.indexOf(name);
             winston.debug('onReadSlots: index = ' + index + ', readAttempts = ' + readAttempts);
             if(index >= 0) {
-                // Fragment is already loaded
+                winston.debug(name + " is already loaded"); // do nothing...
             } else if (readAttempts <= 1) {
                 // Attempt to load fragment
                 try {
@@ -385,7 +385,7 @@ module.exports = {
     },
 
     create_dt_sync : function(pin, data, template, load, force_create, resp) {
-        winston.debug('create_dt(' + [pin.key, data, template, load, force_create, JSON.stringify(resp)] + ')');
+        winston.debug('create_dt_sync(' + [pin.key, data, template, load, force_create, JSON.stringify(resp)] + ')');
         resp = resp || {};
         template = template || 'bspm';
         load = (typeof load === 'undefined') ? true : load;

@@ -59,6 +59,8 @@ if(os.type() == 'Linux' || os.arch() == 'arm') {
         hw = require('./src/hw_capemgr');
         winston.debug('Using CapeMgr interface');
     }
+    winston.debug('Enabling analog inputs');
+    hw.enableAIN();
 } else {
     hw = require('./src/hw_simulator');
     winston.debug('Using simulator mode');
@@ -303,26 +305,6 @@ f.analogRead = function(pin, callback) {
     if(typeof pin.ain == 'undefined') {
         f.digitalRead(pin, callback);
     } else {
-        if(!ain) {
-            ain = true;
-            hw.enableAIN(onEnableAIN);
-        } else {
-            doAnalogRead();
-        }
-    }
-    
-    function onEnableAIN(x) {
-        if(x.err) {
-            ain = false;
-            resp.err = "Error enabling analog inputs: " + x.err;
-            winston.error(resp.err);
-            if(callback) callback(resp);
-            return;
-        }
-        doAnalogRead();
-    }
-    
-    function doAnalogRead() {
         hw.readAIN(pin, resp, callback);
     }
 };
