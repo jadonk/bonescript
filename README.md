@@ -41,6 +41,22 @@ chmod +x dtc.sh
 ./dtc.sh
 ````
 
+Additional features not present in original bonescript
+------------------------------------------------------
+
+### Watchdog timer
+
+OctalBoneScript has functionality to use BeagleBone onboard watchdog timer. A sample code is given below.
+
+```node
+b = require('octalbonescript');
+
+b.startWatchdog(); 	// This function starts watchdog timer. The board will reboot if it becomes
+					// unresponsive for more than 60 seconds.
+
+b.stopWatchdog();	// This function stops the watchdog timer.
+```
+
 Deviation from Bonescript
 -------------------------
 OctalBoneScript is completely API compatible with bonescript. There are however a few changes which you should keep in mind while using OctalBoneScript.

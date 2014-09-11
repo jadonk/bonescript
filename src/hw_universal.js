@@ -7,8 +7,32 @@ var eeprom = require('./eeprom');
 var gpioFile = {};
 var pwmPrefix = {};
 var ainPrefix = "";
+var watchdogFile = null;
+var watchdogTimer = null;
 
 module.exports = {
+
+    startWatchdog : function() {
+        if(watchdogFile !== null) {
+            winston.error("Watchdog timer is already running");
+            return false;
+        }
+        fs.open("/dev/watchdog","w+",function(err, fd){
+            watchdogFile = fd;
+            watchdogTimer = setInterval(function(){
+                fs.write(watchdogFile,"\n");
+            },5000);
+        });
+    },
+
+    stopWatchdog : function() {
+        if(watchdogFile === null) {
+            winston.error("Watchdog timer is not running");
+            return false;
+        }
+        clearInterval(watchdogTimer);
+        fs.close(watchdogFile);
+    },
 
     readPWMFreqAndValue : function(pin, pwm, callback) {
         var mode = {};

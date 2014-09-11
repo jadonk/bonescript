@@ -5,6 +5,14 @@ var gpioFile = {};
 
 module.exports = {
 
+    startWatchdog : function() {
+        return true;
+    },
+
+    stopWatchdog : function() {
+        return true;
+    },
+
     readPWMFreqAndValue : function(pin, pwm) {
         winston.info('readPWMFreqAndValue(' + [pin.key, pwm.key] + ')');
         var mode = {};

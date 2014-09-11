@@ -566,6 +566,9 @@ f.setDate = function(date, callback) {
 };
 f.setDate.args = ['date', 'callback'];
 
+f.startWatchdog = hw.startWatchdog;
+
+f.stopWatchdog = hw.stopWatchdog;
 
 // Exported variables
 exports.bone = pinmap; // this likely needs to be platform and be detected

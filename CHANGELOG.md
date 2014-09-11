@@ -6,6 +6,7 @@ ChangeLog
 * Support for 3.2 kernel has been dropped
 * Required nodejs version is now >= 0.10.24. Effecively, the octalbonescript won't install on Angstrom distribution
 * pinMode now takes only 3 arguments -> (pin, direction, mode). Whereas valid values of mode is "gpio", "gpio_pu", "gpio_pd", "pwm". _pu and _pd indicate pull-up and pull-down modes of the pins.
+* Support for WatchDog timer added. It can be accessed via startWatchdog() and stopWatchdog() functions.
 
 ### 0.3.1
 
