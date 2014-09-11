@@ -48,10 +48,11 @@ Additional features not present in original bonescript
 
 OctalBoneScript has functionality to use BeagleBone onboard watchdog timer. A sample code is given below.
 
-```node
+```JavaScript
 b = require('octalbonescript');
 
-b.startWatchdog(); 	// This function starts watchdog timer. The board will reboot if it becomes
+b.startWatchdog(); 	// This function starts watchdog timer. 
+					// The board will reboot if it becomes
 					// unresponsive for more than 60 seconds.
 
 b.stopWatchdog();	// This function stops the watchdog timer.
@@ -62,5 +63,10 @@ Deviation from Bonescript
 OctalBoneScript is completely API compatible with bonescript. There are however a few changes which you should keep in mind while using OctalBoneScript.
 
 * Pins P8_7, P8_8, P8_9 needs to be written as P8_07, P8_08, P8_09 in your code
+* ```pinMode``` function now takes only 4 arguments. Please also note that this function is fully __asynchronous__ therefore use callback to know whether the pinMode execution is complete. Its format is: ```pinmode(pin, direction, mode, callback)```. While first two arguments are similar to bonescript, third argument takes one of the folloing values.
+  1. "gpio" for gpio mode
+  2. "gpio_pu" for gpio input with pullup resistor
+  3. "gpio_pd" for gpio input with pulldown resistor
+  4. "pwm" for analog output pins
 
 We encourage you to report if issues if you face any. We will try our best to resolve errors in the code.
