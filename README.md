@@ -7,13 +7,11 @@ __Please note that octalbonescript does not work with Angstrom distribution. We 
 
 Fork
 ----
-This is a fork of https://github.com/jadonk/bonescript. While the APIs are 
+This is a fork of https://github.com/jadonk/bonescript. While almost all the APIs are 
 same as original bonescript, we have changed many things under the hood. 
 
-This fork is created to make bonescript faster, fix bugs and make it work in 
-simulator mode under Mac OSX. We will also try to bring all features of bonescript
-as and when new version of bonescript is released. If we are lagging behind, just
-ping us and we will update.
+This fork is created to make bonescript more feature rich, faster, fix bugs and make it work in 
+simulator mode under Mac OSX and Linux.
 
 OctalBoneScript is a node.js library for physical computing on embedded Linux,
 starting with support for BeagleBone.
@@ -29,16 +27,7 @@ Installation
 OctalBoneScript can be installed on beaglebone and beaglebone black. Run following command as root.
 
 ````sh
-TERM=none npm install -g octalbonescript
-````
-
-Debian and Ubuntu prerequisites:
-* Credit to http://learn.adafruit.com/introduction-to-the-beaglebone-black-device-tree/compiling-an-overlay
-````sh
-sudo apt-get install -y build-essential g++ python-setuptools python2.7-dev
-wget -c https://raw.github.com/RobertCNelson/tools/master/pkgs/dtc.sh
-chmod +x dtc.sh
-./dtc.sh
+npm install -g octalbonescript
 ````
 
 Additional features not present in original bonescript

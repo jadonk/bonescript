@@ -51,13 +51,9 @@ if(os.type() == 'Linux' || os.arch() == 'arm') {
             bone.create_dt_sync({"key":"d", "options":{}}, 0, "bs_hdmi", true);
         }
     }
-    if(bone.is_cape_universal()) {
-        hw = require('./src/hw_universal');
-        winston.debug('Using Universal Cape interface');
-    } else {
-        hw = require('./src/hw_capemgr');
-        winston.debug('Using CapeMgr interface');
-    }
+    hw = require('./src/hw_universal');
+    winston.debug('Using Universal Cape interface');
+    
     winston.debug('Enabling analog inputs');
     hw.enableAIN();
 } else {

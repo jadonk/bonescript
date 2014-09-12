@@ -1,4 +1,5 @@
 // Copyright (C) 2013 - Texas Instruments, Jason Kridner
+// Modified by Aditya Patadia, Octal Consulting LLP
 var pinmap = require('./pinmap');
 var bone = require('./bone');
 

@@ -19,6 +19,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+// Modified by Aditya Patadia, Octal Consulting LLP
+
 var fs = require('fs');
 var buffer = require('buffer');
 var util = require('util');

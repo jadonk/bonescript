@@ -1,3 +1,4 @@
+// Modified by Aditya Patadia, Octal Consulting LLP
 var winston = require('winston');
 
 module.exports = {

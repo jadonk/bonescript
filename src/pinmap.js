@@ -1,4 +1,5 @@
 // this file is renamed from bone.js from original bonescript.
+// Modified by Aditya Patadia, Octal Consulting LLP
 (function(){
     var bone = {
         pinIndex : [
