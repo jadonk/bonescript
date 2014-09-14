@@ -139,28 +139,39 @@ f.getPinMode = function(pin, callback) {
 };
 f.getPinMode.args = ['pin', 'callback'];
 
-f.pinMode = function(givenPin, direction, mode, callback) {
+f.pinMode = function(givenPin, direction, callback) {
+    if(callback && typeof callback != 'function'){
+        winston.error("As of version 0.4.0, pinMode function takes only 3 arguments (pin, direction, callback). " +
+        "This function is now fully async so we recommend using callback to know completion of this funciton.");
+        throw("pinMode arguments are not valid.");
+    }
+
     var pin = bone.getpin(givenPin);
-    
-    winston.debug('pinMode(' + [pin.key, direction, mode] + ');');
-    if(direction == g.INPUT_PULLUP) mode = "gpio_pu";
-    mode = (typeof mode == 'undefined' || mode == 7) ? "gpio" : mode; // default to GPIO mode
     var resp = {value: true};
     var n = pin.gpio;
     
-    if(direction == g.ANALOG_OUTPUT || (typeof pin.pwm != 'undefined' && mode == "pwm")) {
-        if(
-            (typeof pin.pwm == 'undefined') ||          // pin does not have PWM capability
-            (typeof pin.pwm.muxmode == 'undefined')     // required muxmode is not provided
-        ) {
-            var err = 'pinMode only supports ANALOG_OUTPUT for PWM pins: ' + pin.key;
-            winston.info(err);
+    winston.debug('pinMode(' + [pin.key, direction] + ');');
+
+    if(direction == g.INPUT_PULLUP){
+        mode = "gpio_pu";
+        direction = g.INPUT;
+    } else if(direction == g.INPUT_PULLDOWN){
+        mode = "gpio_pd";
+        direction = g.INPUT;
+    } else if(direction == g.INPUT || direction == g.OUTPUT) {
+        mode = "gpio";
+    } else if(direction == g.ANALOG_OUTPUT) {
+        if(typeof pin.pwm == 'undefined'){
+            var err = 'pinMode supports ANALOG_OUTPUT only for PWM pins: ' + pin.key;
+            winston.error(err);
             if(typeof callback == 'function') callback({value:false, err:err},givenPin);
             return;
         }
-        direction = g.OUTPUT;
         mode = "pwm";
         pwm[pin.pwm.name] = {'key': pin.key, 'freq': 0};
+        direction = g.OUTPUT;
+    } else {
+        throw('Invalid direction value provided to pinMode function.');
     }
     
     if(!pin.mux) {
@@ -170,7 +181,7 @@ f.pinMode = function(givenPin, direction, mode, callback) {
 
     // Handle case where pin is allocated as a gpio-led
     if(pin.led) {
-        if((direction != g.OUTPUT) || (mode != "gpio")) {
+        if((direction != g.OUTPUT)) {
             resp.err = 'pinMode only supports GPIO output for LEDs: ' + pin.key;
             winston.error(resp.err);
             resp.value = false;
@@ -235,7 +246,7 @@ f.pinMode = function(givenPin, direction, mode, callback) {
         if(callback) callback(resp,givenPin);
     }
 };
-f.pinMode.args = ['pin', 'direction', "mode", 'callback'];
+f.pinMode.args = ['pin', 'direction', 'callback'];
 
 f.digitalWrite = function(pin, value, callback) {
     if(pin) {

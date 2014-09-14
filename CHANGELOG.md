@@ -6,7 +6,7 @@ ChangeLog
 * Support for 3.2 kernel has been dropped
 * Individual pin based "hw_capemgr" is no longer supported. Universal cape manager handles all the tasks of pin muxing
 * Required nodejs version is now >= 0.10.24. Effecively, the octalbonescript won't install on Angstrom distribution
-* __BC Break__ ```pinMode``` function now takes only 4 arguments -> (pin, direction, mode, callback). Whereas valid values of mode is "gpio", "gpio_pu", "gpio_pd", "pwm". _pu and _pd indicate pull-up and pull-down modes of the pins
+* __BC Break__ ```pinMode``` function now takes only 3 arguments -> (pin, direction, callback). This function now asserts mode automatically and sets slew rate as fast. Additional direction variable ```INPUT_PULLDOWN``` is also added. 
 * __BC Break__ ```pinMode``` function is now fully async unlike original bonescript. Please use callback to know the status.
 * Support for WatchDog timer added. It can be accessed via ```startWatchdog()``` and ```stopWatchdog()``` functions
 

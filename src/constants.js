@@ -3,7 +3,8 @@
 module.exports = {
 	OUTPUT : "out",
 	INPUT: "in",
-	INPUT_PULLUP: "in_pullup",
+	INPUT_PULLUP: "gpio_pu",
+	INPUT_PULLDOWN: "gpio_pd",
 	HIGH: 1,
 	LOW: 0,
 	LSBFIRST: 1, // used in: shiftOut(dataPin, clockPin, bitOrder, val)
