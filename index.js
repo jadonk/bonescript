@@ -140,7 +140,7 @@ f.getPinMode = function(pin, callback) {
 f.getPinMode.args = ['pin', 'callback'];
 
 f.pinMode = function(givenPin, direction, callback) {
-    if(callback && typeof callback != 'function'){
+    if(arguments.length > 3 || (callback && typeof callback != 'function')){
         winston.error("As of version 0.4.0, pinMode function takes only 3 arguments (pin, direction, callback). " +
         "This function is now fully async so we recommend using callback to know completion of this funciton.");
         throw("pinMode arguments are not valid.");

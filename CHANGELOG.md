@@ -1,7 +1,10 @@
 ChangeLog
 ---------
 
-### 0.4 (Major update. Introduces BC break)
+### 0.4.1
+* Better warning in pinMode
+
+### 0.4.0 (Major update. Introduces BC break)
 
 * Support for 3.2 kernel has been dropped
 * Individual pin based "hw_capemgr" is no longer supported. Universal cape manager handles all the tasks of pin muxing
