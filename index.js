@@ -316,6 +316,26 @@ f.analogRead = function(pin, callback) {
 };
 f.analogRead.args = ['pin', 'callback'];
 
+f.stopAnalog = function(pin, callback){
+    pin = bone.getpin(pin);
+    if(typeof pin.pwm == 'undefined') {
+        resp.err = 'stopAnalog: ' + pin.key + ' does not support stopAnalog()';
+        winston.error(resp.err);
+        if(callback) callback(resp);
+        return;
+    }
+    // Enable PWM controls if not already done
+    if(typeof pwm[pin.pwm.name] == 'undefined') {
+        f.pinMode(pin, g.ANALOG_OUTPUT, onPinMode);
+    } else {
+        onPinMode();
+    }
+
+    function onPinMode() {
+        hw.stopPWM(pin, pwm[pin.pwm.name],callback);
+    }
+};
+
 // See http://processors.wiki.ti.com/index.php/AM335x_PWM_Driver's_Guide
 // That guide isn't useful for the new pwm_test interface
 f.analogWrite = function(pin, value, freq, callback) {
@@ -346,14 +366,14 @@ f.analogWrite = function(pin, value, freq, callback) {
 
     // Enable PWM controls if not already done
     if(typeof pwm[pin.pwm.name] == 'undefined') {
-        f.pinMode(pin, g.ANALOG_OUTPUT, "pwm", onPinMode);
+        f.pinMode(pin, g.ANALOG_OUTPUT, onPinMode);
     } else {
         onPinMode();
     }
 
     function onPinMode() {
         // Perform update
-        resp = hw.writePWMFreqAndValue(pin, pwm[pin.pwm.name], freq, value, resp, onWritePWM);
+        hw.writePWMFreqAndValue(pin, pwm[pin.pwm.name], freq, value, resp, onWritePWM);
     }
 
     function onWritePWM(resp){

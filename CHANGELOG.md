@@ -1,6 +1,9 @@
 ChangeLog
 ---------
 
+### 0.4.2
+* ```stopAnalog(pin, callback)``` function added to ust stop the analog output on given pin. Call ```analogWrite``` again on that pin to start analog output
+
 ### 0.4.1
 * Better warning in pinMode
 

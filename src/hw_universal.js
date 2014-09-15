@@ -341,6 +341,20 @@ module.exports = {
         return(resp);
     },
 
+    stopPWM : function(pin, pwm, callback){
+        var resp = {};
+        var path = pwmPrefix[pin.pwm.name];
+        winston.debug('Stopping PWM');
+        fs.writeFile(path+'/run', "0\n", onStopPWM);
+        function onStopPWM(err){
+            if(err) {
+                resp.err = "Fail to stop PWM: " + err;
+                winston.error(resp.err);
+            }
+            if(typeof callback == 'function') callback(resp);
+        }
+    },
+
     writePWMFreqAndValue : function(pin, pwm, freq, value, resp, callback) {
         winston.debug('hw.writePWMFreqAndValue(' + [pin.key,pwm,freq,value,resp] + ');');
         var path = pwmPrefix[pin.pwm.name];
@@ -350,7 +364,7 @@ module.exports = {
             winston.debug('Stopping PWM');
             fs.writeFile(path+'/run', "0\n", onStopPWM);
         } else {
-            onStartPWM(null);
+            startPWM(null);
         }
 
         function onStopPWM(err){
@@ -372,10 +386,10 @@ module.exports = {
                 return;
             }
             winston.debug('Updating PWM period: ' + period);
-            fs.writeFile(path+'/period_ns', period + "\n", onWritePeriod);
+            fs.writeFile(path+'/period_ns', period + "\n", startPWM);
         }
 
-        function onWritePeriod(err){
+        function startPWM(err){
             if(err) {
                 resp.err = "Fail to update PWM period: " + err;
                 winston.error(resp.err);
