@@ -52,6 +52,7 @@ Deviation from Bonescript
 OctalBoneScript is completely API compatible with bonescript. There are however a few changes which you should keep in mind while using OctalBoneScript.
 
 * Pins P8_7, P8_8, P8_9 needs to be written as P8_07, P8_08, P8_09 in your code
-* ```pinMode``` function now takes only 3 arguments. Please also note that this function is fully __asynchronous__ therefore use callback to know whether the pinMode execution is complete. Its format is: ```pinmode(pin, direction, callback)```. Additional direction variable ```INPUT_PULLDOWN``` is also added. It asserts mode automatically and sets slew rate as fast by default.
+* ```pinMode``` function now takes only 3 arguments. Please also note that this function is fully __asynchronous__ therefore use callback to know whether the pinMode execution is complete. Its format is: ```pinmode(pin, direction, callback)```. Additional direction variable ```INPUT_PULLDOWN``` is also added. It asserts mode automatically and sets slew rate as fast by default
+* ```stopAnalog(pin, callback)``` function added to stop analog output on pin
 
 We encourage you to report if issues if you face any. We will try our best to resolve errors in the code.
