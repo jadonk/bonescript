@@ -1,6 +1,10 @@
 ChangeLog
 ---------
 
+### 0.4.3
+* All the express, socket.io and cloud9 dependencies removed. The library now focuses only on providing better I/O functionality for BeagleBone rather than serving to cloud9 IDE
+* Removed usage of FFI and moved to 'shelljs' to compile universal device tree
+
 ### 0.4.2
 * ```stopAnalog(pin, callback)``` function added to ust stop the analog output on given pin. Call ```analogWrite``` again on that pin to start analog output
 
