@@ -355,6 +355,20 @@ module.exports = {
         }
     },
 
+    startPWM : function(pin, pwm, callback){
+        var resp = {};
+        var path = pwmPrefix[pin.pwm.name];
+        winston.debug('Starting PWM');
+        fs.writeFile(path+'/run', "1\n", onStartPWM);
+        function onStartPWM(err){
+            if(err) {
+                resp.err = "Fail to stop PWM: " + err;
+                winston.error(resp.err);
+            }
+            if(typeof callback == 'function') callback(resp);
+        }
+    },
+
     writePWMFreqAndValue : function(pin, pwm, freq, value, resp, callback) {
         winston.debug('hw.writePWMFreqAndValue(' + [pin.key,pwm,freq,value,resp] + ');');
         var path = pwmPrefix[pin.pwm.name];

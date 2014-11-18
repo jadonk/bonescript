@@ -335,6 +335,28 @@ f.stopAnalog = function(pin, callback){
         hw.stopPWM(pin, pwm[pin.pwm.name],callback);
     }
 };
+f.stopAnalog.args = ['pin', 'callback'];
+
+f.startAnalog = function(pin, callback){
+    pin = bone.getpin(pin);
+    if(typeof pin.pwm == 'undefined') {
+        resp.err = 'startAnalog: ' + pin.key + ' does not support startAnalog()';
+        winston.error(resp.err);
+        if(callback) callback(resp);
+        return;
+    }
+    // Enable PWM controls if not already done
+    if(typeof pwm[pin.pwm.name] == 'undefined') {
+        f.pinMode(pin, g.ANALOG_OUTPUT, onPinMode);
+    } else {
+        onPinMode();
+    }
+
+    function onPinMode() {
+        hw.startPWM(pin, pwm[pin.pwm.name],callback);
+    }
+};
+f.startAnalog.args = ['pin', 'callback'];
 
 // See http://processors.wiki.ti.com/index.php/AM335x_PWM_Driver's_Guide
 // That guide isn't useful for the new pwm_test interface
