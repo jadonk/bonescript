@@ -373,57 +373,34 @@ module.exports = {
         winston.debug('hw.writePWMFreqAndValue(' + [pin.key,pwm,freq,value,resp] + ');');
         var path = pwmPrefix[pin.pwm.name];
         var period = Math.round( 1.0e9 / freq ); // period in ns
+        var duty = Math.round( period * value );
 
-        if(pwm.freq != freq) {
-            winston.debug('Stopping PWM');
-            fs.writeFile(path+'/run', "0\n", onStopPWM);
-        } else {
-            startPWM(null);
-        }
+        var currentDuty;
 
-        function onStopPWM(err){
-            if(err) {
-                resp.err = "Fail to stop PWM: " + err;
-                winston.error(resp.err);
-                if(typeof callback == 'function') callback(resp);
-                return;
+        fs.readFile(path+'/duty_ns',onReadDuty);
+
+        function onReadDuty(err, readDuty){
+            currentDuty = readDuty;
+            if(period >= currentDuty) {
+                fs.writeFile(path+'/period_ns', period, onWritePeriod);
+            } else {
+                 fs.writeFile(path+'/duty_ns', duty, onWriteDuty);
             }
-            winston.debug('Setting duty to 0');
-            fs.writeFile(path+'/duty_ns', "0\n", onZeroDuty);
         }
 
-        function onZeroDuty(err){
-            if(err) {
-                resp.err = "Fail to set duty to 0: " + err;
-                winston.error(resp.err);
-                if(typeof callback == 'function') callback(resp);
-                return;
-            }
-            winston.debug('Updating PWM period: ' + period);
-            fs.writeFile(path+'/period_ns', period + "\n", startPWM);
-        }
-
-        function startPWM(err){
+        function onWritePeriod(err){
             if(err) {
                 resp.err = "Fail to update PWM period: " + err;
                 winston.error(resp.err);
                 if(typeof callback == 'function') callback(resp);
                 return;
             }
-            winston.debug('Starting PWM');
-            fs.writeFile(path+'/run', "1\n", onStartPWM);
-        }
-
-        function onStartPWM(err){
-            if(err) {
-                resp.err = "Fail to start PWM: " + err;
-                winston.error(resp.err);
+            if(period >= currentDuty) {
+                fs.writeFile(path+'/duty_ns', duty, onWriteDuty)
+            } else {
                 if(typeof callback == 'function') callback(resp);
-                return;
             }
-            var duty = Math.round( period * value );
-            winston.debug('Updating PWM duty: ' + duty);
-            fs.writeFileSync(path+'/duty_ns', duty + "\n", onWriteDuty);
+
         }
 
         function onWriteDuty(err){
@@ -433,7 +410,11 @@ module.exports = {
                 if(typeof callback == 'function') callback(resp);
                 return;
             }
-            if(typeof callback == 'function') callback(resp);
+            if(period >= currentDuty) {
+                if(typeof callback == 'function') callback(resp);
+            } else {
+                fs.writeFile(path+'/period_ns', period, onWritePeriod);
+            }
         }
     },
 
