@@ -398,7 +398,7 @@ module.exports = {
             if(period >= currentDuty) {
                 fs.writeFile(path+'/duty_ns', duty, onWriteDuty)
             } else {
-                if(typeof callback == 'function') callback(resp);
+                module.exports.startPWM(pin, pwm, callback);
             }
 
         }
@@ -411,7 +411,7 @@ module.exports = {
                 return;
             }
             if(period >= currentDuty) {
-                if(typeof callback == 'function') callback(resp);
+                module.exports.startPWM(pin, pwm, callback);
             } else {
                 fs.writeFile(path+'/period_ns', period, onWritePeriod);
             }
