@@ -1,14 +1,14 @@
 Getting started
 ===============
 
-__Please note that octalbonescript does not work with Angstrom distribution. We recommend that you upgrade your beaglebone to Debian by following link given below__
+__Please note that Octalbonescript does not recommend Linux Angstrom. We strongly recommend that you upgrade your BeagleBone to Debian by following link given below__
 
 [http://beagleboard.org/getting-started#update](http://beagleboard.org/getting-started#update)
 
 Fork
 ----
 This is a fork of https://github.com/jadonk/bonescript. While almost all the APIs are 
-same as original bonescript, we have changed many things under the hood. 
+same as original bonescript, we have changed many things under the hood leading to a much better, more functional and faster version of the original library. 
 
 This fork is created to make bonescript more feature rich, faster, fix bugs and make it work in 
 simulator mode under Mac OSX and Linux.
@@ -47,12 +47,12 @@ b.startWatchdog(); 	// This function starts watchdog timer.
 b.stopWatchdog();	// This function stops the watchdog timer.
 ```
 
-Deviation from Bonescript
+Differences from bonescript
 -------------------------
-OctalBoneScript is completely API compatible with bonescript. There are however a few changes which you should keep in mind while using OctalBoneScript.
+OctalBoneScript is completely API compatible with actual bonescript. There are however a few changes which you should keep in mind though.
 
-* Pins P8_7, P8_8, P8_9 needs to be written as P8_07, P8_08, P8_09 in your code
-* ```pinMode``` function now takes only 3 arguments. Please also note that this function is fully __asynchronous__ therefore use callback to know whether the pinMode execution is complete. Its format is: ```pinmode(pin, direction, callback)```. Additional direction variable ```INPUT_PULLDOWN``` is also added. It asserts mode automatically and sets slew rate as fast by default
+* Pins P8_7, P8_8, P8_9 have to be denoted as P8_07, P8_08, P8_09 in your code.
+* ```pinMode``` function now takes only 3 arguments. Please also note that this function is fully __asynchronous__ therefore always use callback to know whether the pinMode execution has occured successfully. Its format is: ```pinmode(pin, direction, callback)```. Additional direction variable ```INPUT_PULLDOWN``` is also added. It asserts mode automatically and sets slew rate as fast by default.
 * ```stopAnalog(pin, callback)``` function added to stop analog output on pin
 
-We encourage you to report if issues if you face any. We will try our best to resolve errors in the code.
+We encourage you to report issues rightaway if you face any. We will try our best to be of help.
