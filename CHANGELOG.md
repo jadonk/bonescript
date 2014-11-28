@@ -1,6 +1,12 @@
 ChangeLog
 ---------
 
+### 0.4.6
+* Bug fix for universal cape load when HDMI is not disabled
+
+### 0.4.5
+* Bug fix.
+
 ### 0.4.4
 * Bug fixes in analogWrite function. ```startAnalog(pin, callback)``` function added
 

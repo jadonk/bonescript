@@ -49,6 +49,11 @@ module.exports = {
         return(module.exports.find_sysfsFile('hdmi', ocp, 'hdmi.'));
     },
 
+    is_audio_enable : function(){
+        var ocp = module.exports.is_ocp();
+        return(module.exports.find_sysfsFile('sound', ocp, 'sound.'));
+    },
+
     find_sysfsFile : function(name, path, prefix, callback) {
         if(typeof sysfsFiles[name] == 'undefined') {
             if(callback) {

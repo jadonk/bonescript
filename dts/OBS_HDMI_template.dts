@@ -22,7 +22,7 @@
     compatible = "ti,beaglebone", "ti,beaglebone-black";
 
     /* identification */
-    part-number = "cape-obone-hdmi";
+    part-number = "cape-univ-hdmi";
     version = "00A0";
 
     /* state the resources this cape uses */

@@ -16,7 +16,7 @@
     "bonescript",
     "octalbonescript"
   ],
-  "version": "0.4.5",
+  "version": "0.4.6",
   "homepage": "http://octalbonejs.com",
   "repository": {
     "type": "git",
@@ -27,7 +27,7 @@
     "node": ">= 0.10.24"
   },
   "dependencies": {
-    "winston": "0.7.x",
+    "winston": "0.8.x",
     "shelljs": "0.3.x"
   },
   "devDependencies": {},
