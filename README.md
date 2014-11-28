@@ -1,7 +1,7 @@
 Getting started
 ===============
 
-__Please note that Octalbonescript does not recommend Linux Angstrom. We strongly recommend that you upgrade your BeagleBone to Debian by following link given below__
+__Please note that Octalbonescript does not recommend Linux Angstrom. We strongly recommend that you upgrade your BeagleBone to Debian by following link given below:__
 
 [http://beagleboard.org/getting-started#update](http://beagleboard.org/getting-started#update)
 
