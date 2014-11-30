@@ -42,7 +42,7 @@ var pwm = {};
 // Detect if we are on a Beagle
 var hw = null;
 
-if(os.type() == 'Linux' || os.arch() == 'arm') {
+if(os.type() == 'Linux' && os.arch() == 'arm') {
     if(!bone.is_cape_universal()) {
         winston.debug('Loading Universal Cape interface...');
         bone.create_dt_sync({"key":"d", "options":{}}, 0, "OBS_UNIV", true, true);
