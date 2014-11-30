@@ -26,7 +26,7 @@ if(process.env.DEBUG && process.env.DEBUG.indexOf("bone")!==-1){
 } else {
     debug = false;
     winston.add(winston.transports.Console, {
-        level: 'info',
+        level: 'warn',
         colorize: true
     });
 }
