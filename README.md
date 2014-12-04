@@ -8,7 +8,7 @@ starting with support for BeagleBone.
 
 Information on the language is available at http://nodejs.org.
 
-To check the version and see BoneScript is in your path, try running:
+To check the version and to see if BoneScript is in your path, try running:
 ````sh
 node -pe "require('bonescript').getPlatform().bonescript"
 ````
