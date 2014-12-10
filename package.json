@@ -26,10 +26,10 @@
     "node": ">= 0.8.16"
   },
   "dependencies": {
-    "socket.io": "0.8.7",
+    "socket.io": "1.2.1",
     "systemd": "0.2.6",
     "winston": "0.6.2",
-    "express": "3.1.0",
+    "express": "4.10.4",
     "ffi": "1.2.6"
   },
   "optionalDependencies": {

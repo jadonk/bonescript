@@ -40,7 +40,6 @@ exports.serverStart = function(port, directory, callback) {
 function listen(port, directory) {
     winston.info("Opening port " + port + " to serve up " + directory);
     var app = express();
-    app.use(express.logger());
     app.get('/bonescript.js', handler);
     app.use(express.static(directory));
     var server = http.createServer(app);
@@ -71,14 +70,9 @@ function handler(req, res) {
 }
 
 function addSocketListeners(server) {
-    var io = socketio.listen(server);
-    if(!debug) io.set('log level', 0);
-    io.set('heartbeats', true);
-    io.set('polling duration', 1);
-    io.set('heartbeat interval', 2);
-    io.set('heartbeat timeout', 10);
+    var io = socketio(server);
     if(debug) winston.debug('Listening for new socket.io clients');
-    io.sockets.on('connection', onconnect);
+    io.on('connection', onconnect);
     function onconnect(socket) {
         winston.debug('Client connected');
 
@@ -136,7 +130,7 @@ function addSocketListeners(server) {
             socket.on(message, onFuncMessage);
         };
 
-        var b = require('../index');
+        var b = require('../main');
         for(var i in b) {
             if(typeof b[i] == 'function') {
                 if(typeof b[i].args != 'undefined') {
