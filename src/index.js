@@ -204,6 +204,7 @@ f.digitalWrite = function(pin, value, callback) {
     var myCallback = false;
     if(callback) myCallback = function(resp) {
         if(!resp || (typeof resp != 'object')) resp = {'data': resp};
+        callback(resp);
     }
     pin = my.getpin(pin);
     if(debug) winston.debug('digitalWrite(' + [pin.key, value] + ');');
