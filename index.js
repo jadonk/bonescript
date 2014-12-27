@@ -45,7 +45,7 @@ var hw = null;
 if(os.type() == 'Linux' && os.arch() == 'arm') {
     if(!bone.is_cape_universal()) {
         winston.debug('Loading Universal Cape interface...');
-        bone.create_dt_sync({"key":"d", "options":{}}, 0, "OBS_UNIV", true, true);
+        bone.create_dt_sync({"key":"d", "options":{}}, 0, "OBS_UNIV", true);
         if(!bone.is_audio_enable()){
             winston.debug('Loading AUDIO Cape...');
             bone.create_dt_sync({"key":"d", "options":{}}, 0, "OBS_AUDIO", true);
