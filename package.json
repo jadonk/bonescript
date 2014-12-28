@@ -16,7 +16,7 @@
     "bonescript",
     "octalbonescript"
   ],
-  "version": "0.4.10",
+  "version": "0.4.11",
   "homepage": "http://octalbonejs.com",
   "repository": {
     "type": "git",
@@ -36,6 +36,6 @@
   "scripts": {
   },
   "optionalDependencies": {
-    "i2c": "0.1.x",
+    "i2c": "0.1.x"
   }
 }

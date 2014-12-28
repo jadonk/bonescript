@@ -516,20 +516,16 @@ f.attachInterrupt = function(pin, handler, mode, callback) {
 f.attachInterrupt.args = ['pin', 'handler', 'mode', 'callback'];
 
 f.detachInterrupt = function(pin, callback) {
-    if(typeof callback == 'undefined') {
-        winston.error("detachInterrupt requires callback");
-        return;
-    }
     pin = bone.getpin(pin);
     winston.debug('detachInterrupt(' + [pin.key] + ');');
     var n = pin.gpio;
     if(typeof gpio[n] == 'undefined' || typeof gpioInt[n] == 'undefined') {
-        if(callback) callback({'pin':pin, 'detached':false});
+        if(typeof callback == 'function') callback({'pin':pin, 'detached':false});
         return;
     }
     gpioInt[n].epoll.remove(gpioInt[n].valuefd);
     delete gpioInt[n];
-    if(callback) callback({'pin':pin, 'detached':true});
+    if(typeof callback == 'function') callback({'pin':pin, 'detached':true});
 };
 f.detachInterrupt.args = ['pin', 'callback'];
 
