@@ -145,7 +145,7 @@ f.getPinMode.args = ['pin', 'callback'];
 
 f.pinMode = function(givenPin, direction, callback) {
     if(arguments.length > 3 || (callback && typeof callback != 'function')){
-        winston.error("As of version 0.4.0, pinMode function takes only 3 arguments (pin, direction, callback). " +
+        winston.error("As of version 0.4.0, pinMode function takes only 3 arguments (pin, mode, callback). " +
         "This function is now fully async so we recommend using callback to know completion of this funciton.");
         throw("pinMode arguments are not valid.");
     }
@@ -175,7 +175,7 @@ f.pinMode = function(givenPin, direction, callback) {
         pwm[pin.pwm.name] = {'key': pin.key, 'freq': 0};
         direction = g.OUTPUT;
     } else {
-        throw('Invalid direction value provided to pinMode function.');
+        throw('Invalid mode value provided to pinMode function.');
     }
     
     if(!pin.mux) {

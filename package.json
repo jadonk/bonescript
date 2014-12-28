@@ -16,7 +16,7 @@
     "bonescript",
     "octalbonescript"
   ],
-  "version": "0.4.9",
+  "version": "0.4.10",
   "homepage": "http://octalbonejs.com",
   "repository": {
     "type": "git",
@@ -28,14 +28,14 @@
   },
   "dependencies": {
     "winston": "0.8.x",
-    "shelljs": "0.3.x"
+    "shelljs": "0.3.x",
+    "serialport": "1.4.x",
+    "epoll": "0.1.x"
   },
   "devDependencies": {},
   "scripts": {
-    "epoll": "0.1.x"
   },
   "optionalDependencies": {
     "i2c": "0.1.x",
-    "serialport": "1.4.x"
   }
 }
