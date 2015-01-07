@@ -88,7 +88,7 @@
                 "gpio": 38,
                 "mux": "gpmc_ad6",
                 "eeprom": 26,
-                "key": "P8_3",
+                "key": "P8_03",
                 "muxRegOffset": "0x018",
                 "options": [
                     "gpmc_ad6",
@@ -106,7 +106,7 @@
                 "gpio": 39,
                 "mux": "gpmc_ad7",
                 "eeprom": 27,
-                "key": "P8_4",
+                "key": "P8_04",
                 "muxRegOffset": "0x01c",
                 "options": [
                     "gpmc_ad7",
@@ -124,7 +124,7 @@
                 "gpio": 34,
                 "mux": "gpmc_ad2",
                 "eeprom": 22,
-                "key": "P8_5",
+                "key": "P8_05",
                 "muxRegOffset": "0x008",
                 "options": [
                     "gpmc_ad2",
@@ -142,7 +142,7 @@
                 "gpio": 35,
                 "mux": "gpmc_ad3",
                 "eeprom": 23,
-                "key": "P8_6",
+                "key": "P8_06",
                 "muxRegOffset": "0x00c",
                 "options": [
                     "gpmc_ad3",
