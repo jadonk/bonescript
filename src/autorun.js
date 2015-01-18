@@ -73,6 +73,12 @@ exports.autorun = function(dir) {
                     apps[file].on('close', appClosed);
                     apps[file].stdout.on('data', onStdout);
                     apps[file].stderr.on('data', onStderr);
+                } else if(file.match(/\.sh$/)) {
+                    winston.info('start: ' + file);
+                    apps[file] = child_process.spawn('/bin/bash', [ar + '/' + file]);
+                    apps[file].on('close', appClosed);
+                    apps[file].stdout.on('data', onStdout);
+                    apps[file].stderr.on('data', onStderr);
                 } else if(file.match(/\.ino$/)) {
                     winston.info('start: ' + file);
                     apps[file] = child_process.spawn('/usr/bin/make', 
