@@ -1,5 +1,5 @@
 // Modified by Aditya Patadia, Octal Consulting LLP
-var winston = require('winston');
+var debug = require('debug')('bone');
 
 module.exports = {
     // This parses pinmux data from the register value
@@ -20,13 +20,13 @@ module.exports = {
             mode.pullup = 'pulldown';
             break;
         default:
-            winston.error('Unknown pullup value: '+pullup);
+            console.error('Unknown pullup value: '+pullup);
         }
         return(mode);
     },
 
     modeFromOmapMux : function(readout, mode) {
-        winston.debug('' + readout);
+        debug('' + readout);
         mode = mode || {};
         // The format read from debugfs looks like this:
         // name: mcasp0_axr0.spi1_d1 (0x44e10998/0x998 = 0x0023), b NA, t NA
@@ -36,7 +36,7 @@ module.exports = {
         try {
             breakdown = readout.split('\n');
         } catch(ex) {
-            winston.error('Unable to parse mux readout "' + readout + '": ' + ex);
+            console.error('Unable to parse mux readout "' + readout + '": ' + ex);
             return(mode);
         }
         try {
@@ -44,10 +44,10 @@ module.exports = {
             mode.mux = breakdown[1].split('|')[1].substr(-1);
             // Parse the mux register value, '0x0023' in the above example
             var pinData = parseInt(breakdown[0].split('=')[1].substr(1,6), 16);
-            winston.debug('pinData = ' + pinData);
+            debug('pinData = ' + pinData);
             mode = module.exports.modeFromStatus(pinData, mode);
         } catch(ex2) {
-            winston.error('Unable to parse mux mode "' + breakdown + '": ' + ex2);
+            console.error('Unable to parse mux mode "' + breakdown + '": ' + ex2);
         }
         try {
             mode.options = breakdown[2].split('|');
@@ -56,19 +56,19 @@ module.exports = {
                 try {
                     mode.options[option] = x.replace(/ /g, '').replace('signals:', '');
                 } catch(ex) {
-                    winston.error('Unable to parse option "' + x + '": ' + ex);
+                    console.error('Unable to parse option "' + x + '": ' + ex);
                     mode.options[option] = 'NA';
                 }
             }
         } catch(ex3) {
-            winston.error('Unable to parse options "' + breakdown + '": ' + ex3);
+            console.error('Unable to parse options "' + breakdown + '": ' + ex3);
             mode.options = null;
         }
         return(mode);
     },
 
     modeFromPinctrl : function(pins, muxRegOffset, muxBase, mode) {
-        // winston.debug('' + pins);
+        // debug('' + pins);
         muxBase = muxBase || 0x44e10800;
         mode = mode || {};
         // The format read from debugfs looks like this:
@@ -81,20 +81,20 @@ module.exports = {
         var pattern = new RegExp('pin ([0-9]+) .([0-9a-f]+). ([0-9a-f]+) pinctrl-single');
         var muxAddress = muxBase + muxRegOffset;
         for(var i = 0; i < numRegistered; i++) {
-            // winston.debug('pinLine = ' + pinLines[i + 1]);
+            // debug('pinLine = ' + pinLines[i + 1]);
             var parsedFields = pattern.exec(pinLines[i + 1]);
-            // winston.debug('parsedFields = ' + parsedFields);
+            // debug('parsedFields = ' + parsedFields);
             //var index = parseInt(parsedFields[1], 10);
             var address = parseInt(parsedFields[2], 16);
             var status = parseInt(parsedFields[3], 16);
             if(address == muxAddress) {
-                winston.debug('pinLine = ' + pinLines[i + 1]);
-                winston.debug('parsedFields = ' + parsedFields);
+                debug('pinLine = ' + pinLines[i + 1]);
+                debug('parsedFields = ' + parsedFields);
                 mode = module.exports.modeFromStatus(status, mode);
                 return(mode);
             }
         }
-        //winston.error('Did not find status at ' + muxAddress);
+        //console.error('Did not find status at ' + muxAddress);
         return(mode);
     }
 };

@@ -1,6 +1,6 @@
 // Copyright Aditya Patadia, Octal Consulting LLP
 var fs = require('fs');
-var winston = require('winston');
+var debug = require('debug')('bone');
 var bone = require('./bone');
 var parse = require('./parse');
 var eeprom = require('./eeprom');
@@ -15,7 +15,7 @@ module.exports = {
 
     startWatchdog : function() {
         if(watchdogFile !== null) {
-            winston.error("Watchdog timer is already running");
+            console.error("Watchdog timer is already running");
             return false;
         }
         fs.open("/dev/watchdog","w+",function(err, fd){
@@ -28,7 +28,7 @@ module.exports = {
 
     stopWatchdog : function() {
         if(watchdogFile === null) {
-            winston.error("Watchdog timer is not running");
+            console.error("Watchdog timer is not running");
             return false;
         }
         clearInterval(watchdogTimer);
@@ -84,7 +84,7 @@ module.exports = {
         var readPinctrl = function(err, data) {
             if(err) {
                 mode.err = 'readPinctrl error: ' + err;
-                winston.debug(mode.err);
+                debug(mode.err);
                 callback(mode);
             }
             mode = parse.modeFromPinctrl(data, muxRegOffset, 0x44e10800, mode);
@@ -94,7 +94,7 @@ module.exports = {
             if(exists) {
                 fs.readFile(pinctrlFile, 'utf8', readPinctrl);
             } else {
-                winston.debug('getPinMode(' + pin.key + '): no valid mux data');
+                debug('getPinMode(' + pin.key + '): no valid mux data');
                 callback(mode);
             }
         };
@@ -105,14 +105,14 @@ module.exports = {
                 var data2 = fs.readFileSync(pinctrlFile, 'utf8');
                 mode = parse.modeFromPinctrl(data2, muxRegOffset, 0x44e10800, mode);
             } catch(ex) {
-                winston.debug('getPinMode(' + pin.key + '): ' + ex);
+                debug('getPinMode(' + pin.key + '): ' + ex);
             }
         }
         return(mode);
     },
 
     setPinMode : function(pin, mode, resp, callback) {
-        winston.debug('hw.setPinMode(' + [pin.key, mode, JSON.stringify(resp)] + ');');
+        debug('hw.setPinMode(' + [pin.key, mode, JSON.stringify(resp)] + ');');
         var p = pin.key + "_pinmux";
         var pinmux = bone.find_sysfsFile(p, bone.is_ocp(), p + '.');
         if(mode == "gpio" || mode == "gpio_pu" || mode == "gpio_pd") {
@@ -128,7 +128,7 @@ module.exports = {
         function onWriteState(err){
             if(err){
                 resp.err = err;
-                winston.error("onWriteState problem: " + err);
+                console.error("onWriteState problem: " + err);
                 if(typeof callback == 'function') callback(resp);
                 return;
             }
@@ -145,7 +145,7 @@ module.exports = {
         function onExport(err){
             if(err){
                 resp.err = err;
-                winston.error("onExport problem: " + err);
+                console.error("onExport problem: " + err);
                 if(typeof callback == 'function') callback(resp);
                 return;
             }
@@ -155,7 +155,7 @@ module.exports = {
         function onModeComplete(err){
             if(err){
                 resp.err = err;
-                winston.error("onComplete problem: " + err);
+                console.error("onComplete problem: " + err);
                 if(typeof callback == 'function') callback(resp);
                 return;
             }
@@ -170,7 +170,7 @@ module.exports = {
                 fs.writeFile(path, "gpio", onWriteMode);
             } else {
                 resp.err = "Unable to find LED " + pin.led;
-                winston.error(resp.err);
+                console.error(resp.err);
                 resp.value = false;
                 callback(resp);
             }
@@ -182,24 +182,24 @@ module.exports = {
     },
 
     exportGPIOControls : function(pin, direction, resp, callback) {
-        winston.debug('hw.exportGPIOControls(' + [pin.key, direction, resp] + ');');
+        debug('hw.exportGPIOControls(' + [pin.key, direction, resp] + ');');
         var n = pin.gpio;
         fs.exists(gpioFile[pin.key], onFileExists);
         
         function onFileExists(exists) {
             if(exists) {
-                winston.debug("gpio: " + n + " already exported.");
+                debug("gpio: " + n + " already exported.");
                 fs.writeFile("/sys/class/gpio/gpio" + n + "/direction",
                     direction, null, onGPIODirectionSet);
             } else {
-                winston.debug("exporting gpio: " + n);
+                debug("exporting gpio: " + n);
                 fs.writeFile("/sys/class/gpio/export", "" + n, null, onGPIOExport);
             }
         }
      
         function onGPIOExport(err) {
             if(err) onError(err);
-            winston.debug("setting gpio " + n +
+            debug("setting gpio " + n +
                 " direction to " + direction);
             fs.writeFile("/sys/class/gpio/gpio" + n + "/direction",
                 direction, null, onGPIODirectionSet);
@@ -213,7 +213,7 @@ module.exports = {
         function onError(err) {
             resp.err = 'Unable to export gpio-' + n + ': ' + err;
             resp.value = false;
-            winston.debug(resp.err);
+            debug(resp.err);
             findOwner();
         }
         
@@ -228,7 +228,7 @@ module.exports = {
                     var y = gpioUsers[x].match(/gpio-(\d+)\s+\((\S+)\s*\)/);
                     if(y && y[1] == n) {
                         resp.err += '\nconsumed by ' + y[2];
-                        winston.debug(resp.err);
+                        debug(resp.err);
                     }
                 }
             }
@@ -246,13 +246,13 @@ module.exports = {
                 gpioFile[pin.key] += "green:" + pin.led + "/brightness";
             }
             fs.exists(gpioFile[pin.key],function(exists) {
-                if(!exists) winston.error("Unable to find gpio: " + gpioFile[pin.key]);
+                if(!exists) console.error("Unable to find gpio: " + gpioFile[pin.key]);
             });
         }
-        winston.debug("gpioFile = " + gpioFile[pin.key]);
+        debug("gpioFile = " + gpioFile[pin.key]);
         fs.writeFile(gpioFile[pin.key], '' + value, null, onWriteGPIO);
         function onWriteGPIO(err){
-            if(err) winston.error("Writing to GPIO failed: "+err);
+            if(err) console.error("Writing to GPIO failed: "+err);
             if(typeof callback == 'function') callback(err);
         }
     },
@@ -265,15 +265,15 @@ module.exports = {
                 gpioFile[pin.key] += "green:" + pin.led + "/brightness";
             }
             if(!fs.existsSync(gpioFile[pin.key])) {
-                winston.error("Unable to find gpio: " + gpioFile[pin.key]);
+                console.error("Unable to find gpio: " + gpioFile[pin.key]);
             }
         }
-        winston.debug("gpioFile = " + gpioFile[pin.key]);
+        debug("gpioFile = " + gpioFile[pin.key]);
         try {
             fs.writeFileSync(gpioFile[pin.key], '' + value, null);
             if(typeof callback == 'function') callback();
         } catch(err){
-            if(err) winston.error("Writing to GPIO failed: "+err);
+            if(err) console.error("Writing to GPIO failed: "+err);
         }
     },
 
@@ -284,7 +284,7 @@ module.exports = {
         function onGPIORead(err, data) {
             if(err) {
                 resp.err = 'digitalRead error: ' + err;
-                winston.error(resp.err);
+                console.error(resp.err);
             }
             resp.value = parseInt(data, 2);
             callback(resp);
@@ -299,7 +299,7 @@ module.exports = {
         
         function onLoadCape(resp){
             if(typeof resp.err != 'undefined') {
-                winston.error('enableAIN: load of cape-bone-iio failed');
+                console.error('enableAIN: load of cape-bone-iio failed');
                 if(typeof callback == 'function') callback(resp);
             } else {
                 var ocp = bone.is_ocp();
@@ -322,7 +322,7 @@ module.exports = {
         function onReadAIN(err, data) {
             if(err) {
                 resp.err = 'analogRead error: ' + err;
-                winston.error(resp.err);
+                console.error(resp.err);
             } else {
                 resp.value = parseInt(data, 10) / 1800;
             }
@@ -344,12 +344,12 @@ module.exports = {
     stopPWM : function(pin, pwm, callback){
         var resp = {};
         var path = pwmPrefix[pin.pwm.name];
-        winston.debug('Stopping PWM');
+        debug('Stopping PWM');
         fs.writeFile(path+'/run', "0\n", onStopPWM);
         function onStopPWM(err){
             if(err) {
                 resp.err = "Fail to stop PWM: " + err;
-                winston.error(resp.err);
+                console.error(resp.err);
             }
             if(typeof callback == 'function') callback(resp);
         }
@@ -358,19 +358,19 @@ module.exports = {
     startPWM : function(pin, pwm, callback){
         var resp = {};
         var path = pwmPrefix[pin.pwm.name];
-        winston.debug('Starting PWM');
+        debug('Starting PWM');
         fs.writeFile(path+'/run', "1\n", onStartPWM);
         function onStartPWM(err){
             if(err) {
                 resp.err = "Fail to stop PWM: " + err;
-                winston.error(resp.err);
+                console.error(resp.err);
             }
             if(typeof callback == 'function') callback(resp);
         }
     },
 
     writePWMFreqAndValue : function(pin, pwm, freq, value, resp, callback) {
-        winston.debug('hw.writePWMFreqAndValue(' + [pin.key,pwm,freq,value,resp] + ');');
+        debug('hw.writePWMFreqAndValue(' + [pin.key,pwm,freq,value,resp] + ');');
         var path = pwmPrefix[pin.pwm.name];
         var period = Math.round( 1.0e9 / freq ); // period in ns
         var duty = Math.round( period * value );
@@ -391,7 +391,7 @@ module.exports = {
         function onWritePeriod(err){
             if(err) {
                 resp.err = "Fail to update PWM period: " + err;
-                winston.error(resp.err);
+                console.error(resp.err);
                 if(typeof callback == 'function') callback(resp);
                 return;
             }
@@ -406,7 +406,7 @@ module.exports = {
         function onWriteDuty(err){
             if(err) {
                 resp.err = "Fail to update PWM duty: " + err;
-                winston.error(resp.err);
+                console.error(resp.err);
                 if(typeof callback == 'function') callback(resp);
                 return;
             }

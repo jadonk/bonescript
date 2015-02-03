@@ -1,14 +1,12 @@
 ChangeLog
 ---------
 
-### 0.4.11
+### 1.0.0
+* Debug module used instead of Winston
+
+
+### 0.4.12
 * This version and all pervious versions were bug fixes
-
-### 0.4.6
-* Bug fix for universal cape load when HDMI is not disabled
-
-### 0.4.5
-* Bug fix.
 
 ### 0.4.4
 * Bug fixes in analogWrite function. ```startAnalog(pin, callback)``` function added

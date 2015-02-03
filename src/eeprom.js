@@ -24,7 +24,7 @@
 var fs = require('fs');
 var buffer = require('buffer');
 var util = require('util');
-var winston = require('winston');
+var debug = require('debug')('bone');
 var pinmap = require('./pinmap').pins;
 
 // Function derived from https://github.com/joyent/node/blob/master/lib/buffer.js
@@ -135,7 +135,7 @@ var readEeproms = exports.readEeproms = function(files) {
 
 var fetchEepromData = function(address) {
     try {
-        winston.info('Reading EEPROM at '+address);
+        debug('Reading EEPROM at '+address);
         var eepromFile =
             fs.openSync(
                 address,
@@ -144,7 +144,7 @@ var fetchEepromData = function(address) {
         fs.readSync(eepromFile, eepromData, 0, 244, 0);
         return(eepromData);
     } catch(ex) {
-        winston.info('Unable to open EEPROM at '+address+': '+ex);
+        debug('Unable to open EEPROM at '+address+': '+ex);
         return(null);
     }
 };
@@ -153,7 +153,7 @@ var parseMainEeprom = function(x) {
     var data = {};
     data.header = x.hexSlice(0, 4);
     if(data.header != 'aa5533ee') {
-        winston.error('Unknown EEPROM format: '+data.header);
+        console.error('Unknown EEPROM format: '+data.header);
         return(null);
     }
     data.boardName = x.toString('ascii', 4, 12).trim().replace(/^\x00+|\x00+$/g, '');
@@ -167,12 +167,12 @@ var parseCapeEeprom = function(x) {
     var data = {};
     data.header = x.hexSlice(0, 4);
     if(data.header != 'aa5533ee') {
-        winston.error('Unknown EEPROM format: '+data.header);
+        console.error('Unknown EEPROM format: '+data.header);
         return(null);
     }
     data.formatRev = x.toString('ascii', 4, 6);
     if(data.formatRev != 'A0') {
-        winston.error('Unknown EEPROM format revision: '+data.formatRev);
+        console.error('Unknown EEPROM format revision: '+data.formatRev);
         return(null);
     }
     data.boardName = x.toString('ascii', 6, 38).trim().replace(/^\x00+|\x00+$/g, '');
@@ -207,7 +207,7 @@ var parseCapeEeprom = function(x) {
                     pinObject.direction = 'bidir';
                     break;
                 default:
-                    winston.error('Unknown direction value: '+direction);
+                    console.error('Unknown direction value: '+direction);
                 }
                 pinObject.slew = (pinData & 0x40) ? 'slow' : 'fast';
                 pinObject.rx = (pinData & 0x20) ? 'enabled' : 'disabled';
@@ -223,7 +223,7 @@ var parseCapeEeprom = function(x) {
                     pinObject.pullup = 'pulldown';
                     break;
                 default:
-                    winston.error('Unknown pullup value: '+pullup);
+                    console.error('Unknown pullup value: '+pullup);
                 }
                 pinObject.mode = (pinData & 0x0007);
                 try {
@@ -231,7 +231,7 @@ var parseCapeEeprom = function(x) {
                     var muxReadout= fs.readFileSync('/sys/kernel/debug/omap_mux/'+pinmap[pin].mux, 'ascii');
                     pinObject.function = muxReadout.split("\n")[2].split("|")[pinObject.mode].replace('signals:', '').trim();
                 } catch(ex) {
-                    winston.info('Unable to read pin mux function name: '+pinmap[pin].mux);
+                    debug('Unable to read pin mux function name: '+pinmap[pin].mux);
                 }
                 data.mux[pin] = pinObject;
             }
@@ -286,7 +286,7 @@ var fillCapeEepromData = exports.fillCapeEepromData = function(data) {
                 pinData |= 0x6000;
                 break;
             default:
-                winston.error('Unknown direction value: '+pinObject.direction);
+                console.error('Unknown direction value: '+pinObject.direction);
                 pinData |= 0x2000;
             }
             if(pinObject.slew == 'slow') pinData |= 0x40;
@@ -302,7 +302,7 @@ var fillCapeEepromData = exports.fillCapeEepromData = function(data) {
             case 'pulldown':
                 break;
             default:
-                winston.error('Unknown pullup value: '+pullup);
+                console.error('Unknown pullup value: '+pullup);
             }
             pinData |= (pinObject.mode & 0x0007);
             eepromData.writeUint16BE(pinData, pinOffset);

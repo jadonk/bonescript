@@ -27,7 +27,7 @@
     "node": ">= 0.10.24"
   },
   "dependencies": {
-    "winston": "0.8.x",
+    "debug": "2.1.x",
     "shelljs": "0.3.x",
     "serialport": "1.4.x",
     "epoll": "0.1.x"

@@ -1,5 +1,14 @@
-Getting started
+OctalBoneScript
 ===============
+A more stable, continuously tested and better node.js library for scripting BeagleBone
+
+Installation
+------------
+OctalBoneScript can be installed on beaglebone and beaglebone black. Run following command as root.
+
+````sh
+npm install -g octalbonescript
+````
 
 __Please note that Octalbonescript does not recommend Linux Angstrom. We strongly recommend that you upgrade your BeagleBone to Debian by following link given below:__
 
@@ -21,17 +30,15 @@ simplify learning how to do physical computing tasks under embedded Linux
 and to further provide support for rapidly creating GUIs for your embedded
 applications through the use of HTML5/JavaScript web pages.
 
-
-Installation
-------------
-OctalBoneScript can be installed on beaglebone and beaglebone black. Run following command as root.
-
-````sh
-npm install -g octalbonescript
-````
-
 Additional features not present in original bonescript
 ------------------------------------------------------
+
+### Debug Mode
+Debug mode can be activated as per below
+
+```JavaScript
+DEBUG=bone node yourscript.js
+```
 
 ### Watchdog timer
 
@@ -49,10 +56,10 @@ b.stopWatchdog();	// This function stops the watchdog timer.
 
 Differences from bonescript
 -------------------------
-OctalBoneScript is completely API compatible with actual bonescript. There are however a few changes which you should keep in mind though.
+OctalBoneScript is completely API compatible with actual bonescript. There are a few changes which you should keep in mind though.
 
 * Pins P8_7, P8_8, P8_9 have to be denoted as P8_07, P8_08, P8_09 in your code.
 * ```pinMode``` function now takes only 3 arguments. Please also note that this function is fully __asynchronous__ therefore always use callback to know whether the pinMode execution has occured successfully. Its format is: ```pinmode(pin, direction, callback)```. Additional direction variable ```INPUT_PULLDOWN``` is also added. It asserts mode automatically and sets slew rate as fast by default.
-* ```stopAnalog(pin, callback)``` function added to stop analog output on pin
+* ```startAnalog(pin, callback)``` and ```stopAnalog(pin, callback)``` function added to start/stop analog output on pin
 
 We encourage you to report issues rightaway if you face any. We will try our best to be of help.

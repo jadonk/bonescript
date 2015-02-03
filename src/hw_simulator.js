@@ -1,6 +1,6 @@
 // Modified by Aditya Patadia, Octal Consulting LLP
 var fs = require('fs');
-var winston = require('winston');
+var debug = require('debug')('bone');
 
 var gpioFile = {};
 
@@ -15,7 +15,7 @@ module.exports = {
     },
 
     readPWMFreqAndValue : function(pin, pwm) {
-        winston.info('readPWMFreqAndValue(' + [pin.key, pwm.key] + ')');
+        debug('readPWMFreqAndValue(' + [pin.key, pwm.key] + ')');
         var mode = {};
         mode.freq = pwm.freq;
         mode.value = pwm.value;
@@ -23,7 +23,7 @@ module.exports = {
     },
 
     readGPIODirection : function(n, gpio) {
-        winston.info('readGPIODirection(' + [n] + ')');
+        debug('readGPIODirection(' + [n] + ')');
         var mode = {};
         if(typeof gpio[n] != 'undefined') {
             if(gpio[n].active) {
@@ -37,7 +37,7 @@ module.exports = {
     },
 
     readPinMux : function(pin, mode, callback) {
-        winston.info('readPinMux(' + [pin.key] + ')');
+        debug('readPinMux(' + [pin.key] + ')');
         if(callback) {
             callback(mode);
         }
@@ -45,7 +45,7 @@ module.exports = {
     },
 
     setPinMode : function(pin, pinData, template, resp, callback) {
-        winston.info('setPinMode(' + [pin.key, pinData, template] + ')');
+        debug('setPinMode(' + [pin.key, pinData, template] + ')');
         gpioFile[pin.key] = true;
         if(typeof callback == 'function'){
             callback({});
@@ -54,12 +54,12 @@ module.exports = {
     },
 
     setLEDPinToGPIO : function(pin, resp) {
-        winston.info('setLEDPinToGPIO(' + [pin.key] + ')');
+        debug('setLEDPinToGPIO(' + [pin.key] + ')');
         return(resp);
     },
 
     exportGPIOControls : function(pin, direction, resp, callback) {
-        winston.info('expertGPIOControls(' + [pin.key, direction] + ')');
+        debug('expertGPIOControls(' + [pin.key, direction] + ')');
         if(typeof callback == 'function'){
             callback({});
         }
@@ -67,18 +67,18 @@ module.exports = {
     },
 
     writeGPIOValue : function(pin, value, callback) {
-        winston.info('writeGPIOValue(' + [pin.key, value] + ')');
+        debug('writeGPIOValue(' + [pin.key, value] + ')');
         if(callback) {
             setTimeout(callback,20);
         }
     },
 
     writeGPIOValueSync : function(pin, value) {
-        winston.info('writeGPIOValueSync(' + [pin.key, value] + ')');
+        debug('writeGPIOValueSync(' + [pin.key, value] + ')');
     },
 
     readGPIOValue : function(pin, resp, callback) {
-        winston.info('readGPIOValue(' + [pin.key] + ')');
+        debug('readGPIOValue(' + [pin.key] + ')');
         if(callback) {
             setTimeout(callback,20,0);
             return(true);
@@ -88,7 +88,7 @@ module.exports = {
     },
 
     enableAIN : function(callback) {
-        winston.info('enableAIN()');
+        debug('enableAIN()');
         if(typeof callback == 'function'){
             var resp = {};
             resp.err = false;
@@ -98,7 +98,7 @@ module.exports = {
     },
 
     readAIN : function(pin, resp, callback) {
-        winston.info('readAIN(' + [pin.key] + ')');
+        debug('readAIN(' + [pin.key] + ')');
         resp.value = 0;
         if(callback) {
             setTimeout(callback,20,resp);
@@ -107,18 +107,18 @@ module.exports = {
     },
 
     writeGPIOEdge : function(pin, mode) {
-        winston.info('writeGPIOEdge(' + [pin.key, mode] + ')');
+        debug('writeGPIOEdge(' + [pin.key, mode] + ')');
         var resp = {};
         return(resp);
     },
 
     writePWMFreqAndValue : function(pin, pwm, freq, value, resp) {
-        winston.info('writePWMFreqAndValue(' + [pin.key, pwm.name, freq, value] + ')');
+        debug('writePWMFreqAndValue(' + [pin.key, pwm.name, freq, value] + ')');
         return(resp);
     },
 
     readEeproms : function(eeproms) {
-        winston.info('readEeproms()');
+        debug('readEeproms()');
         var boardName = 'A335BNLT';
         var version = '';
         var serialNumber = '';
@@ -130,7 +130,7 @@ module.exports = {
     },
 
     readPlatform : function(platform) {
-        winston.info('readPlatform()');
+        debug('readPlatform()');
         platform.name = 'BeagleBone Simulator';
         return(platform);
     }
