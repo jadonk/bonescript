@@ -27,14 +27,14 @@ var hw = null;
 if(os.type() == 'Linux' && os.arch() == 'arm') {
     if(!bone.is_cape_universal()) {
         debug('Loading Universal Cape interface...');
-        bone.create_dt_sync({"key":"d", "options":{}}, 0, "OBS_UNIV", true);
+        bone.create_dt_sync("OBS_UNIV");
         if(!bone.is_audio_enable()){
             debug('Loading AUDIO Cape...');
-            bone.create_dt_sync({"key":"d", "options":{}}, 0, "OBS_AUDIO", true);
+            bone.create_dt_sync("OBS_AUDIO");
         }
         if(!bone.is_hdmi_enable()){
             debug('Loading HDMI Cape...');
-            bone.create_dt_sync({"key":"d", "options":{}}, 0, "OBS_HDMI", true);
+            bone.create_dt_sync("OBS_HDMI");
         }
     }
     hw = require('./src/hw_universal');
