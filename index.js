@@ -23,22 +23,22 @@ var pwm = {};
 // Detect if we are on a Beagle
 var hw = null;
 
-if(os.type() == 'Linux' && os.arch() == 'arm') {
-    if(!bone.is_cape_universal()) {
+if (os.type() == 'Linux' && os.arch() == 'arm') {
+    if (!bone.is_cape_universal()) {
         debug('Loading Universal Cape interface...');
         bone.create_dt_sync("OBS_UNIV");
-        if(!bone.is_audio_enable()){
+        if (!bone.is_audio_enable()) {
             debug('Loading AUDIO Cape...');
             bone.create_dt_sync("OBS_AUDIO");
         }
-        if(!bone.is_hdmi_enable()){
+        if (!bone.is_hdmi_enable()) {
             debug('Loading HDMI Cape...');
             bone.create_dt_sync("OBS_HDMI");
         }
     }
     debug('Using Universal Cape interface');
     hw = require('./lib/hw_universal');
-    
+
     debug('Enabling analog inputs');
     hw.enableAIN();
 } else {
@@ -63,40 +63,43 @@ if(os.type() == 'Linux' && os.arch() == 'arm') {
 //    allocated: boolean for if it is allocated by this application
 //    direction: 'in' or 'out' (allocated might be false)
 f.getPinMode = function(pin, callback) {
-    if(typeof callback != 'function') {
+    if (typeof callback != 'function') {
         throw new verror("getPinMode() requires callback function");
     }
-    if(pin) {
+    if (pin) {
         pin = bone.getpin(pin);
     } else {
         throw new verror("Please provide valid pin as first argument");
     }
     debug('getPinMode(' + pin.key + ')');
-    var mode = {'pin': pin.key, 'name': pin.name};
-    if(pin.options) mode.options = pin.options;
+    var mode = {
+        'pin': pin.key,
+        'name': pin.name
+    };
+    if (pin.options) mode.options = pin.options;
 
     // Get PWM settings if applicable
-    if(
-        (typeof pin.pwm != 'undefined') &&              // pin has PWM capabilities
-        (typeof pwm[pin.pwm.name] != 'undefined') &&    // PWM used for this pin is enabled
-        (pin.key == pwm[pin.pwm.name].key)              // PWM is allocated for this pin
+    if (
+        (typeof pin.pwm != 'undefined') && // pin has PWM capabilities
+        (typeof pwm[pin.pwm.name] != 'undefined') && // PWM used for this pin is enabled
+        (pin.key == pwm[pin.pwm.name].key) // PWM is allocated for this pin
     ) {
         hw.readPWMFreqAndValue(pin, pwm[pin.pwm.name], onReadPWM);
     } else {
         onReadPWM(null);
     }
 
-    function onReadPWM(err, pwm){
-        if(err) {
+    function onReadPWM(err, pwm) {
+        if (err) {
             console.error(err.message);
             callback(err, null);
             return;
         }
-        if(pwm){
+        if (pwm) {
             mode.pwm = pwm;
         }
         // Get GPIO settings if applicable
-        if((typeof pin.gpio != 'undefined')) {
+        if ((typeof pin.gpio != 'undefined')) {
             var n = pin.gpio;
             hw.readGPIODirection(n, onReadGPIODirection);
         } else {
@@ -104,15 +107,15 @@ f.getPinMode = function(pin, callback) {
         }
     }
 
-    function onReadGPIODirection(err, direction){
-        if(err){
+    function onReadGPIODirection(err, direction) {
+        if (err) {
             console.error(error.message);
             callback(err, null);
             return;
         }
         mode.gpio = direction;
         var n = pin.gpio;
-        if(typeof gpio[n] == 'undefined') {
+        if (typeof gpio[n] == 'undefined') {
             mode.gpio.allocated = false;
         } else {
             mode.gpio.allocated = true;
@@ -120,8 +123,8 @@ f.getPinMode = function(pin, callback) {
         hw.readPinState(pin, onReadPinState);
     }
 
-    function onReadPinState(err, state){
-        if(err){
+    function onReadPinState(err, state) {
+        if (err) {
             console.error(err.message);
             calback(err, null);
             return;
@@ -132,47 +135,50 @@ f.getPinMode = function(pin, callback) {
 };
 
 f.pinMode = function(givenPin, mode, callback) {
-    if(arguments.length > 3 || (callback && typeof callback != 'function')){
+    if (arguments.length > 3 || (callback && typeof callback != 'function')) {
         console.error("As of version 0.4.0, pinMode function takes only 3 arguments (pin, mode, callback). " +
-        "This function is now fully async so we recommend using callback to know completion of this funciton.");
+            "This function is now fully async so we recommend using callback to know completion of this funciton.");
         throw new verror("pinMode arguments are not valid.");
     }
 
     var pin = bone.getpin(givenPin);
     var n = pin.gpio;
     var direction;
-    
+
     debug('pinMode(' + [pin.key, direction] + ');');
 
-    if(mode == g.INPUT_PULLUP){
+    if (mode == g.INPUT_PULLUP) {
         mode = "gpio_pu";
         direction = g.INPUT;
-    } else if(mode == g.INPUT_PULLDOWN){
+    } else if (mode == g.INPUT_PULLDOWN) {
         mode = "gpio_pd";
         direction = g.INPUT;
-    } else if(mode == g.INPUT || mode == g.OUTPUT) {
+    } else if (mode == g.INPUT || mode == g.OUTPUT) {
         direction = mode;
         mode = "gpio";
-    } else if(mode == g.ANALOG_OUTPUT) {
-        if(typeof pin.pwm == 'undefined'){
+    } else if (mode == g.ANALOG_OUTPUT) {
+        if (typeof pin.pwm == 'undefined') {
             var err = new verror('BeagleBone does not ANALOG_OUTPUT for PWM pin: ' + pin.key);
             console.error(err.message);
-            if(typeof callback == 'function') callback(err, null);
+            if (typeof callback == 'function') callback(err, null);
             return;
         }
         mode = "pwm";
-        pwm[pin.pwm.name] = {'key': pin.key, 'freq': 0};
+        pwm[pin.pwm.name] = {
+            'key': pin.key,
+            'freq': 0
+        };
         direction = g.OUTPUT;
     } else {
         throw new verror('Invalid mode value provided to pinMode function.');
     }
 
     // Handle case where pin is allocated as a gpio-led
-    if(pin.led) {
-        if(direction != g.OUTPUT) {
+    if (pin.led) {
+        if (direction != g.OUTPUT) {
             var err = new verror('pinMode only supports GPIO output for LED pin: ' + pin.key);
             console.error(err.message);
-            if(typeof callback == 'function') callback(err, null);
+            if (typeof callback == 'function') callback(err, null);
             return;
         }
 
@@ -181,56 +187,56 @@ f.pinMode = function(givenPin, mode, callback) {
         return; // since nothing to do more for LED pins
     }
 
-    function onSetLEDPin(err, resp){
-        if(err) {
+    function onSetLEDPin(err, resp) {
+        if (err) {
             console.error(err.message);
-            if(typeof callback == 'function') callback(err, null);
+            if (typeof callback == 'function') callback(err, null);
         } else {
             gpio[n] = true;
-            if(typeof callback == 'function') callback(null, givenPin);
+            if (typeof callback == 'function') callback(null, givenPin);
         }
     }
 
     // May be required: mount -t debugfs none /sys/kernel/debug
     hw.setPinMode(pin, mode, onSetPinMode);
-    
+
     function onSetPinMode(err) {
         debug('returned from setPinMode');
-        if(err) {
+        if (err) {
             err = new verror(err, 'Unable to configure mux for pin ' + pin);
             console.error(err.message);
             // It might work if the pin is already muxed to desired mode
-            if(callback) callback(err, null);
+            if (callback) callback(err, null);
         } else {
             pinModeTestGPIO();
         }
     }
-    
+
     function pinModeTestGPIO() {
         // Enable GPIO
-        if(mode == "gpio" || mode == "gpio_pu" || mode == "gpio_pd") {
+        if (mode == "gpio" || mode == "gpio_pu" || mode == "gpio_pd") {
             // Export the GPIO controls
             resp = hw.exportGPIOControls(pin, direction, onExport);
         } else {
             delete gpio[n];
-            if(callback) callback(null, givenPin);
+            if (callback) callback(null, givenPin);
         }
     }
-    
+
     function onExport(err) {
-        if(err) {
+        if (err) {
             console.error(err.message);
             delete gpio[n];
-            if(callback) callback(err, null);
+            if (callback) callback(err, null);
         } else {
             gpio[n] = true;
-            if(callback) callback(null, givenPin);
+            if (callback) callback(null, givenPin);
         }
     }
 };
 
 f.digitalWrite = function(pin, value, callback) {
-    if(pin) {
+    if (pin) {
         pin = bone.getpin(pin);
     } else {
         throw new verror("Provide pin as first argument to digitalWrite");
@@ -238,7 +244,7 @@ f.digitalWrite = function(pin, value, callback) {
     debug('digitalWrite(' + [pin.key, value] + ');');
     value = parseInt(Number(value), 2) ? 1 : 0;
 
-    if(typeof callback == 'undefined') {
+    if (typeof callback == 'undefined') {
         hw.writeGPIOValueSync(pin, value);
     } else {
         hw.writeGPIOValue(pin, value, callback);
@@ -247,20 +253,20 @@ f.digitalWrite = function(pin, value, callback) {
 
 
 f.digitalRead = function(pin, callback) {
-    if(typeof callback != 'function') {
+    if (typeof callback != 'function') {
         throw new verror("digitalRead() requires callback function");
     }
     pin = bone.getpin(pin);
     debug('digitalRead(' + [pin.key] + ');');
 
-    if(typeof pin.ain != 'undefined') {
+    if (typeof pin.ain != 'undefined') {
         f.analogRead(pin, analogCallback);
     } else {
         hw.readGPIOValue(pin, callback);
     }
 
     function analogCallback(err, resp) {
-        if(err){
+        if (err) {
             console.error(err.message);
             callback(err, null);
         } else {
@@ -270,7 +276,7 @@ f.digitalRead = function(pin, callback) {
     }
 
     function analogValue(resp) {
-        if(resp.value > 0.5) {
+        if (resp.value > 0.5) {
             resp.value = g.HIGH;
         } else {
             resp.value = g.LOW;
@@ -281,13 +287,13 @@ f.digitalRead = function(pin, callback) {
 
 
 f.analogRead = function(pin, callback) {
-    if(typeof callback != 'function') {
+    if (typeof callback != 'function') {
         throw new verror("analogRead() requires callback function");
     }
     pin = bone.getpin(pin);
     debug('analogRead(' + [pin.key] + ');');
 
-    if(typeof pin.ain == 'undefined') {
+    if (typeof pin.ain == 'undefined') {
         f.digitalRead(pin, callback);
     } else {
         hw.readAIN(pin, callback);
@@ -295,38 +301,38 @@ f.analogRead = function(pin, callback) {
 };
 
 
-f.stopAnalog = function(pin, callback){
+f.stopAnalog = function(pin, callback) {
     pin = bone.getpin(pin);
-    if(typeof pin.pwm == 'undefined') {
-        throw new verror( pin.key + ' does not support stopAnalog()');
+    if (typeof pin.pwm == 'undefined') {
+        throw new verror(pin.key + ' does not support stopAnalog()');
     }
     // Enable PWM controls if not already done
-    if(typeof pwm[pin.pwm.name] == 'undefined') {
+    if (typeof pwm[pin.pwm.name] == 'undefined') {
         f.pinMode(pin, g.ANALOG_OUTPUT, onPinMode);
     } else {
         onPinMode();
     }
 
     function onPinMode() {
-        hw.stopPWM(pin, pwm[pin.pwm.name],callback);
+        hw.stopPWM(pin, pwm[pin.pwm.name], callback);
     }
 };
 
 
-f.startAnalog = function(pin, callback){
+f.startAnalog = function(pin, callback) {
     pin = bone.getpin(pin);
-    if(typeof pin.pwm == 'undefined') {
+    if (typeof pin.pwm == 'undefined') {
         throw new verror(pin.key + ' does not support startAnalog()');
     }
     // Enable PWM controls if not already done
-    if(typeof pwm[pin.pwm.name] == 'undefined') {
+    if (typeof pwm[pin.pwm.name] == 'undefined') {
         f.pinMode(pin, g.ANALOG_OUTPUT, onPinMode);
     } else {
         onPinMode();
     }
 
     function onPinMode() {
-        hw.startPWM(pin, pwm[pin.pwm.name],callback);
+        hw.startPWM(pin, pwm[pin.pwm.name], callback);
     }
 };
 
@@ -340,25 +346,25 @@ f.analogWrite = function(pin, value, freq, callback) {
     var resp = {};
 
     // Make sure the pin has a PWM associated
-    if(typeof pin.pwm == 'undefined') {
-        throw new verror( pin.key + ' does not support analogWrite()';
+    if (typeof pin.pwm == 'undefined') {
+        throw new verror(pin.key + ' does not support analogWrite()');
     }
 
     // Make sure there is no one else who has the PWM
-    if(
-        (typeof pwm[pin.pwm.name] != 'undefined') &&    // PWM needed by this pin is already allocated
-        (pin.key != pwm[pin.pwm.name].key)              // allocation is not by this pin
+    if (
+        (typeof pwm[pin.pwm.name] != 'undefined') && // PWM needed by this pin is already allocated
+        (pin.key != pwm[pin.pwm.name].key) // allocation is not by this pin
     ) {
         var err = 'analogWrite: ' + pin.key + ' requires pwm ' + pin.pwm.name +
             ' but it is already in use by ' + pwm[pin.pwm.name].key;
         err = new verror(err);
         console.error(err.message);
-        if(typeof callback == 'function') callback(err);
+        if (typeof callback == 'function') callback(err);
         return;
     }
 
     // Enable PWM controls if not already done
-    if(typeof pwm[pin.pwm.name] == 'undefined') {
+    if (typeof pwm[pin.pwm.name] == 'undefined') {
         f.pinMode(pin, g.ANALOG_OUTPUT, onPinMode);
     } else {
         onPinMode();
@@ -369,9 +375,9 @@ f.analogWrite = function(pin, value, freq, callback) {
         hw.writePWMFreqAndValue(pin, pwm[pin.pwm.name], freq, value, onWritePWM);
     }
 
-    function onWritePWM(err){
+    function onWritePWM(err) {
         // Save off the freq, value and PWM assignment
-        if(err) {
+        if (err) {
             err = new verror(err, "There was an error writing analog value");
             callback(err);
         } else {
@@ -379,7 +385,7 @@ f.analogWrite = function(pin, value, freq, callback) {
             pwm[pin.pwm.name].value = value;
 
             // All done
-            if(callback) callback(null);
+            if (callback) callback(null);
         }
     }
 };
@@ -397,26 +403,28 @@ f.shiftOut = function(dataPin, clockPin, bitOrder, val, callback) {
     function next(err) {
         debug('i = ' + i);
         debug('clock = ' + clock);
-        if(err || i == 8) {
-            if(callback) callback({'err': err});
+        if (err || i == 8) {
+            if (callback) callback({
+                'err': err
+            });
             return;
         }
-        if(bitOrder == g.LSBFIRST) {
+        if (bitOrder == g.LSBFIRST) {
             bit = val & (1 << i);
         } else {
             bit = val & (1 << (7 - i));
         }
-        if(clock === 0) {
+        if (clock === 0) {
             clock = 1;
-            if(bit) {
+            if (bit) {
                 f.digitalWrite(dataPin, g.HIGH, next);
             } else {
                 f.digitalWrite(dataPin, g.LOW, next);
             }
-        } else if(clock == 1) {
+        } else if (clock == 1) {
             clock = 2;
             f.digitalWrite(clockPin, g.HIGH, next);
-        } else if(clock == 2) {
+        } else if (clock == 2) {
             i++;
             clock = 0;
             f.digitalWrite(clockPin, g.LOW, next);
@@ -441,32 +449,34 @@ f.attachInterrupt = function(pin, handler, mode, callback) {
     */
 
     // Check if pin isn't already configured as GPIO
-    if(typeof gpio[n] == 'undefined') {
+    if (typeof gpio[n] == 'undefined') {
         err = new verror('attachInterrupt: pin ' + pin.key + ' not already configured as GPIO');
         console.error(err.message);
-        if(callback) callback(err, null);
+        if (callback) callback(err, null);
         return;
     }
 
     // Check if someone already has a handler configured
-    if(typeof gpioInt[n] != 'undefined') {
+    if (typeof gpioInt[n] != 'undefined') {
         err = new verror('attachInterrupt: pin ' + pin.key + ' already has an interrupt handler assigned');
         console.error(err.message);
-        if(callback) callback(err);
+        if (callback) callback(err);
         return;
     }
 
     var intHandler = function(err, fd, events) {
         var m = {};
-        if(err) {
+        if (err) {
             m.err = err;
         }
         fs.readSync(gpioInt[n].valuefd, gpioInt[n].value, 0, 1, 0);
         m.pin = pin;
         m.value = parseInt(Number(gpioInt[n].value), 2);
-        if(typeof handler =='function') m.output = handler(m);
-        else m.output = {handler:handler};
-        if(m.output && (typeof callback == 'function')) callback(m);
+        if (typeof handler == 'function') m.output = handler(m);
+        else m.output = {
+            handler: handler
+        };
+        if (m.output && (typeof callback == 'function')) callback(m);
     };
 
     try {
@@ -475,11 +485,11 @@ f.attachInterrupt = function(pin, handler, mode, callback) {
         fs.readSync(gpioInt[n].valuefd, gpioInt[n].value, 0, 1, 0);
         gpioInt[n].epoll.add(gpioInt[n].valuefd, epoll.Epoll.EPOLLPRI);
         resp.attached = true;
-    } catch(ex) {
+    } catch (ex) {
         resp.err = 'attachInterrupt: GPIO input file not opened: ' + ex;
         console.error(resp.err);
     }
-    if(callback) callback(resp);
+    if (callback) callback(resp);
     return;
 };
 
@@ -488,32 +498,38 @@ f.detachInterrupt = function(pin, callback) {
     pin = bone.getpin(pin);
     debug('detachInterrupt(' + [pin.key] + ');');
     var n = pin.gpio;
-    if(typeof gpio[n] == 'undefined' || typeof gpioInt[n] == 'undefined') {
-        if(typeof callback == 'function') callback({'pin':pin, 'detached':false});
+    if (typeof gpio[n] == 'undefined' || typeof gpioInt[n] == 'undefined') {
+        if (typeof callback == 'function') callback({
+            'pin': pin,
+            'detached': false
+        });
         return;
     }
     gpioInt[n].epoll.remove(gpioInt[n].valuefd);
     delete gpioInt[n];
-    if(typeof callback == 'function') callback({'pin':pin, 'detached':true});
+    if (typeof callback == 'function') callback({
+        'pin': pin,
+        'detached': true
+    });
 };
 
 
 f.getEeproms = function(callback) {
-    if(typeof callback == 'undefined') {
+    if (typeof callback == 'undefined') {
         console.error("getEeproms requires callback");
         return;
     }
     var eeproms = {};
     eeproms = hw.readEeproms(eeproms);
-    if(eeproms == {}) {
+    if (eeproms == {}) {
         debug('No valid EEPROM contents found');
     }
-    if(callback) callback(eeproms);
+    if (callback) callback(eeproms);
 };
 
 
 f.getPlatform = function(callback) {
-    if(typeof callback == 'undefined') {
+    if (typeof callback == 'undefined') {
         throw new verror("getPlatform requires callback");
     }
     var platform = {
@@ -532,19 +548,22 @@ f.getPlatform = function(callback) {
     platform.os.freemem = os.freemem();
     platform.os.networkInterfaces = os.networkInterfaces();
     platform = hw.readPlatform(platform);
-    if(callback) callback(null, platform);
+    if (callback) callback(null, platform);
 };
 
 
 f.setDate = function(date, callback) {
     child_process.exec('date -s "' + date + '"', dateResponse);
-    
+
     function dateResponse(err, stdout, stderr) {
-        if(err){
+        if (err) {
             err = new verror(err);
-            if ( callback ) callback(err);
+            if (callback) callback(err);
         } else {
-            if ( callback ) callback(null, {'stdout':stdout, 'stderr':stderr});
+            if (callback) callback(null, {
+                'stdout': stdout,
+                'stderr': stderr
+            });
         }
     }
 };
@@ -556,13 +575,13 @@ f.stopWatchdog = hw.stopWatchdog;
 
 // Exported variables
 f.bone = pinmap; // this likely needs to be platform and be detected
-for(var x in serial) {
+for (var x in serial) {
     f[x] = serial[x];
 }
-for(var x in iic) {
+for (var x in iic) {
     f[x] = iic[x];
 }
-for(var x in g) {
+for (var x in g) {
     f[x] = g[x];
 }
 

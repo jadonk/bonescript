@@ -20,14 +20,14 @@
   },
   "dependencies": {
     "debug": "2.1.x",
-    "verror" : "1.6.x",
+    "verror": "1.6.x",
     "shelljs": "0.3.x",
     "serialport": "1.4.x",
     "epoll": "0.1.x"
   },
   "devDependencies": {},
   "scripts": {
-    
+
   },
   "optionalDependencies": {
     "i2c": "0.1.x"
