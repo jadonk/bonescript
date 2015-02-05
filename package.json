@@ -4,17 +4,9 @@
     "url": "http://aditya.patadia.org"
   },
   "name": "octalbonescript",
-  "description": "Physical computing library for embedded Linux",
+  "description": "Physical computing library for embedded Linux and BeagleBone",
   "keywords": [
-    "embedded",
-    "linux",
-    "beagleboard",
-    "beaglebone",
-    "physical",
-    "gpio",
-    "arduino",
-    "bonescript",
-    "octalbonescript"
+    "embedded", "linux", "beagleboard", "beaglebone", "gpio", "bonescript", "octalbonescript"
   ],
   "version": "0.4.12",
   "homepage": "http://octalbonejs.com",
@@ -28,12 +20,14 @@
   },
   "dependencies": {
     "debug": "2.1.x",
+    "verror" : "1.6.x",
     "shelljs": "0.3.x",
     "serialport": "1.4.x",
     "epoll": "0.1.x"
   },
   "devDependencies": {},
   "scripts": {
+    
   },
   "optionalDependencies": {
     "i2c": "0.1.x"

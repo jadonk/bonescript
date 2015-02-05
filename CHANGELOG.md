@@ -1,11 +1,9 @@
 ChangeLog
 ---------
 
-### 1.0.0
-* Debug module used instead of Winston
+__Check https://github.com/theoctal/octalbonescript/releases for changelog.__
 
-
-### 0.4.12
+### 0.4.9
 * This version and all pervious versions were bug fixes
 
 ### 0.4.4

@@ -34,7 +34,7 @@ Additional features not present in original bonescript
 ------------------------------------------------------
 
 ### Debug Mode
-Debug mode can be activated as per below
+Debug mode can be activated as per below.
 
 ```JavaScript
 DEBUG=bone node yourscript.js
