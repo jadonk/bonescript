@@ -12,5 +12,5 @@
 	"RISING": "rising",
 	"FALLING": "falling",
 	"CHANGE": "both",
-	"ANALOG_OUTPUT": "analog_out"
+	"ANALOG_OUTPUT": "pwm"
 }

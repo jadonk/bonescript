@@ -166,7 +166,6 @@ f.pinMode = function(givenPin, mode, callback) {
             if (typeof callback == 'function') callback(err, null);
             return;
         }
-        mode = "pwm";
         pwm[pin.pwm.name] = {
             'key': pin.key,
             'freq': 0
