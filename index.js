@@ -76,7 +76,7 @@ f.getPinMode = function(pin, callback) {
         'pin': pin.key,
         'name': pin.name
     };
-    if (pin.options) mode.options = pin.options;
+    if (pin.modes) mode.modes = pin.modes;
 
     // Get PWM settings if applicable
     if (
@@ -144,6 +144,9 @@ f.pinMode = function(givenPin, mode, callback) {
     var pin = bone.getpin(givenPin);
     var n = pin.gpio;
     var direction;
+    if(pin.modes.indexOf(mode) === -1){
+        throw new verror("Invalid mode supplied for pin: " + givenPin + ". Only following modes are supported: " + pin.modes);
+    }
 
     debug('pinMode(' + [pin.key, direction] + ');');
 
