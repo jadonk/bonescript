@@ -456,6 +456,20 @@ f.attachInterrupt = function(pin, handler, mode, callback) {
         return;
     }
 
+    if (typeof handler != 'function') {
+        err = new verror('attachInterrupt: handler argument must be supplied and it should be a function');
+        console.error(err.message);
+        if (callback) callback(err, null);
+        return;
+    }
+
+    if (mode != g.RISING && mode != g.FALLING && mode != g.BOTH) {
+        err = new verror('attachInterrupt: mode must be "rising", "falling" or "both". Invalid mode argument');
+        console.error(err.message);
+        if (callback) callback(err, null);
+        return;
+    }
+
     // Check if someone already has a handler configured
     if (typeof gpioInt[n] != 'undefined') {
         err = new verror('attachInterrupt: pin ' + pin.key + ' already has an interrupt handler assigned');
@@ -465,18 +479,16 @@ f.attachInterrupt = function(pin, handler, mode, callback) {
     }
 
     var intHandler = function(err, fd, events) {
-        var m = {};
         if (err) {
-            m.err = err;
+            err = new verror(err, "Error during interrupt handler execution");
+            handler(err, null);
+            return;
         }
+        var m = {};
         fs.readSync(gpioInt[n].valuefd, gpioInt[n].value, 0, 1, 0);
         m.pin = pin;
         m.value = parseInt(Number(gpioInt[n].value), 2);
-        if (typeof handler == 'function') m.output = handler(m);
-        else m.output = {
-            handler: handler
-        };
-        if (m.output && (typeof callback == 'function')) callback(m);
+        if (typeof handler == 'function') handler(null, m);
     };
 
     try {
@@ -484,13 +496,12 @@ f.attachInterrupt = function(pin, handler, mode, callback) {
         gpioInt[n].epoll = new epoll.Epoll(intHandler);
         fs.readSync(gpioInt[n].valuefd, gpioInt[n].value, 0, 1, 0);
         gpioInt[n].epoll.add(gpioInt[n].valuefd, epoll.Epoll.EPOLLPRI);
-        resp.attached = true;
+        if (callback) callback(null);
     } catch (ex) {
-        resp.err = 'attachInterrupt: GPIO input file not opened: ' + ex;
-        console.error(resp.err);
+        err = new verror(ex, 'attachInterrupt: GPIO input file not opened');
+        console.error(err.message);
+        if (callback) callback(err);
     }
-    if (callback) callback(resp);
-    return;
 };
 
 
@@ -498,25 +509,21 @@ f.detachInterrupt = function(pin, callback) {
     pin = bone.getpin(pin);
     debug('detachInterrupt(' + [pin.key] + ');');
     var n = pin.gpio;
+    var err;
     if (typeof gpio[n] == 'undefined' || typeof gpioInt[n] == 'undefined') {
-        if (typeof callback == 'function') callback({
-            'pin': pin,
-            'detached': false
-        });
+        err = new verror("Interrupt not attached with the pin. Nothing detached");
+        if (typeof callback == 'function') callback(err);
         return;
     }
     gpioInt[n].epoll.remove(gpioInt[n].valuefd);
     delete gpioInt[n];
-    if (typeof callback == 'function') callback({
-        'pin': pin,
-        'detached': true
-    });
+    if (typeof callback == 'function') callback(null);
 };
 
 
 f.getEeproms = function(callback) {
-    if (typeof callback == 'undefined') {
-        console.error("getEeproms requires callback");
+    if (typeof callback != 'function') {
+        console.error("getEeproms requires callback function");
         return;
     }
     var eeproms = {};
@@ -524,13 +531,13 @@ f.getEeproms = function(callback) {
     if (eeproms == {}) {
         debug('No valid EEPROM contents found');
     }
-    if (callback) callback(eeproms);
+    if (callback) callback(null, eeproms);
 };
 
 
 f.getPlatform = function(callback) {
-    if (typeof callback == 'undefined') {
-        throw new verror("getPlatform requires callback");
+    if (typeof callback != 'function') {
+        throw new verror("getPlatform requires callback function");
     }
     var platform = {
         'platform': pinmap,
