@@ -40,7 +40,7 @@ if (os.type() == 'Linux' && os.arch() == 'arm') {
     hw = require('./lib/hw_universal');
 
     debug('Enabling analog inputs');
-    hw.enableAIN();
+    hw.analog.enable();
 } else {
     hw = require('./lib/hw_simulator');
     debug('Using simulator mode');
@@ -84,7 +84,7 @@ f.getPinMode = function(pin, callback) {
         (typeof pwm[pin.pwm.name] != 'undefined') && // PWM used for this pin is enabled
         (pin.key == pwm[pin.pwm.name].key) // PWM is allocated for this pin
     ) {
-        hw.readPWMFreqAndValue(pin, pwm[pin.pwm.name], onReadPWM);
+        hw.pwm.readFreqAndValue(pin, pwm[pin.pwm.name], onReadPWM);
     } else {
         onReadPWM(null);
     }
@@ -101,7 +101,7 @@ f.getPinMode = function(pin, callback) {
         // Get GPIO settings if applicable
         if ((typeof pin.gpio != 'undefined')) {
             var n = pin.gpio;
-            hw.readGPIODirection(n, onReadGPIODirection);
+            hw.digital.readDirection(n, onReadGPIODirection);
         } else {
             hw.readPinState(pin, onReadPinState);
         }
@@ -144,6 +144,7 @@ f.pinMode = function(givenPin, mode, callback) {
     var pin = bone.getpin(givenPin);
     var n = pin.gpio;
     var direction;
+    var err;
     if(pin.modes.indexOf(mode) === -1){
         throw new verror("Invalid mode supplied for pin: " + givenPin + ". Only following modes are supported: " + pin.modes);
     }
@@ -151,17 +152,15 @@ f.pinMode = function(givenPin, mode, callback) {
     debug('pinMode(' + [pin.key, direction] + ');');
 
     if (mode == g.INPUT_PULLUP) {
-        mode = "gpio_pu";
         direction = g.INPUT;
     } else if (mode == g.INPUT_PULLDOWN) {
-        mode = "gpio_pd";
         direction = g.INPUT;
     } else if (mode == g.INPUT || mode == g.OUTPUT) {
         direction = mode;
         mode = "gpio";
     } else if (mode == g.ANALOG_OUTPUT) {
         if (typeof pin.pwm == 'undefined') {
-            var err = new verror('BeagleBone does not ANALOG_OUTPUT for PWM pin: ' + pin.key);
+            err = new verror('BeagleBone does not allow ANALOG_OUTPUT for pin: ' + pin.key);
             console.error(err.message);
             if (typeof callback == 'function') callback(err, null);
             return;
@@ -178,13 +177,13 @@ f.pinMode = function(givenPin, mode, callback) {
     // Handle case where pin is allocated as a gpio-led
     if (pin.led) {
         if (direction != g.OUTPUT) {
-            var err = new verror('pinMode only supports GPIO output for LED pin: ' + pin.key);
+            err = new verror('pinMode only supports GPIO output for LED pin: ' + pin.key);
             console.error(err.message);
             if (typeof callback == 'function') callback(err, null);
             return;
         }
 
-        hw.setLEDPinToGPIO(pin, resp, onSetLEDPin);
+        hw.digital.setLEDPinToGPIO(pin, resp, onSetLEDPin);
 
         return; // since nothing to do more for LED pins
     }
@@ -218,7 +217,7 @@ f.pinMode = function(givenPin, mode, callback) {
         // Enable GPIO
         if (mode == "gpio" || mode == "gpio_pu" || mode == "gpio_pd") {
             // Export the GPIO controls
-            resp = hw.exportGPIOControls(pin, direction, onExport);
+            resp = hw.digital.exportControls(pin, direction, onExport);
         } else {
             delete gpio[n];
             if (callback) callback(null, givenPin);
@@ -247,9 +246,9 @@ f.digitalWrite = function(pin, value, callback) {
     value = parseInt(Number(value), 2) ? 1 : 0;
 
     if (typeof callback == 'undefined') {
-        hw.writeGPIOValueSync(pin, value);
+        hw.digital.writeSync(pin, value);
     } else {
-        hw.writeGPIOValue(pin, value, callback);
+        hw.digital.write(pin, value, callback);
     }
 };
 
@@ -264,7 +263,7 @@ f.digitalRead = function(pin, callback) {
     if (typeof pin.ain != 'undefined') {
         f.analogRead(pin, analogCallback);
     } else {
-        hw.readGPIOValue(pin, callback);
+        hw.digital.read(pin, callback);
     }
 
     function analogCallback(err, resp) {
@@ -298,7 +297,7 @@ f.analogRead = function(pin, callback) {
     if (typeof pin.ain == 'undefined') {
         f.digitalRead(pin, callback);
     } else {
-        hw.readAIN(pin, callback);
+        hw.analog.read(pin, callback);
     }
 };
 
@@ -316,7 +315,7 @@ f.stopAnalog = function(pin, callback) {
     }
 
     function onPinMode() {
-        hw.stopPWM(pin, pwm[pin.pwm.name], callback);
+        hw.pwm.stop(pin, pwm[pin.pwm.name], callback);
     }
 };
 
@@ -334,7 +333,7 @@ f.startAnalog = function(pin, callback) {
     }
 
     function onPinMode() {
-        hw.startPWM(pin, pwm[pin.pwm.name], callback);
+        hw.pwm.start(pin, pwm[pin.pwm.name], callback);
     }
 };
 
@@ -374,7 +373,7 @@ f.analogWrite = function(pin, value, freq, callback) {
 
     function onPinMode() {
         // Perform update
-        hw.writePWMFreqAndValue(pin, pwm[pin.pwm.name], freq, value, onWritePWM);
+        hw.pwm.writeFreqAndValue(pin, pwm[pin.pwm.name], freq, value, onWritePWM);
     }
 
     function onWritePWM(err) {
@@ -494,7 +493,7 @@ f.attachInterrupt = function(pin, handler, mode, callback) {
     };
 
     try {
-        gpioInt[n] = hw.writeGPIOEdge(pin, mode);
+        gpioInt[n] = hw.digital.writeEdge(pin, mode);
         gpioInt[n].epoll = new epoll.Epoll(intHandler);
         fs.readSync(gpioInt[n].valuefd, gpioInt[n].value, 0, 1, 0);
         gpioInt[n].epoll.add(gpioInt[n].valuefd, epoll.Epoll.EPOLLPRI);
@@ -578,9 +577,7 @@ f.setDate = function(date, callback) {
 };
 
 
-f.startWatchdog = hw.startWatchdog;
-
-f.stopWatchdog = hw.stopWatchdog;
+f.watchdog = hw.watchdog;
 
 // Exported variables
 f.bone = pinmap; // this likely needs to be platform and be detected
