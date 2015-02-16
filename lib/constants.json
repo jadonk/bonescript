@@ -1,5 +1,3 @@
-// Copyright (C) 2013 - Texas Instruments, Jason Kridner
-// Modified by Aditya Patadia, Octal Consulting LLP
 {
 	"OUTPUT": "out",
 	"INPUT": "in",
@@ -7,7 +5,7 @@
 	"INPUT_PULLDOWN": "gpio_pd",
 	"HIGH": 1,
 	"LOW": 0,
-	"LSBFIRST": 1, // used in: shiftOut(dataPin, clockPin, bitOrder, val)
+	"LSBFIRST": 1,
 	"MSBFIRST": 0,
 	"RISING": "rising",
 	"FALLING": "falling",

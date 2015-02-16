@@ -6,6 +6,7 @@ var child_process = require('child_process');
 var debug = require('debug')('bone');
 var os = require('os');
 var epoll = require('epoll');
+var verror = require("verror");
 var pinmap = require('./lib/pinmap');
 var serial = require('./lib/serial');
 var i2c = require('./lib/i2c');
@@ -150,9 +151,6 @@ f.pinMode = function(givenPin, mode, callback) {
     var n = pin.gpio;
     var direction;
     var err;
-    if(pin.modes.indexOf(mode) === -1){
-        throw new verror("Invalid mode supplied for pin: " + givenPin + ". Only following modes are supported: " + pin.modes);
-    }
 
     debug('pinMode(' + [pin.key, direction] + ');');
 
@@ -176,7 +174,7 @@ f.pinMode = function(givenPin, mode, callback) {
         };
         direction = g.OUTPUT;
     } else {
-        throw new verror('Invalid mode value provided to pinMode function.');
+        throw new verror("Invalid mode supplied for pin: " + givenPin + ". Only following modes are supported: " + pin.modes);
     }
 
     // Handle case where pin is allocated as a gpio-led
@@ -188,12 +186,12 @@ f.pinMode = function(givenPin, mode, callback) {
             return;
         }
 
-        hw.digital.setLEDPinToGPIO(pin, resp, onSetLEDPin);
+        hw.digital.setLEDPinToGPIO(pin, onSetLEDPin);
 
         return; // since nothing to do more for LED pins
     }
 
-    function onSetLEDPin(err, resp) {
+    function onSetLEDPin(err) {
         if (err) {
             console.error(err.message);
             if (typeof callback == 'function') callback(err, null);
@@ -250,11 +248,19 @@ f.digitalWrite = function(pin, value, callback) {
     debug('digitalWrite(' + [pin.key, value] + ');');
     value = parseInt(Number(value), 2) ? 1 : 0;
 
-    if (typeof callback == 'undefined') {
-        hw.digital.writeSync(pin, value);
+    hw.digital.write(pin, value, callback);
+};
+
+f.digitalWriteSync = function(pin, value, callback) {
+    if (pin) {
+        pin = bone.getpin(pin);
     } else {
-        hw.digital.write(pin, value, callback);
+        throw new verror("Provide pin as first argument to digitalWrite");
     }
+    debug('digitalWriteSync(' + [pin.key, value] + ');');
+    value = parseInt(Number(value), 2) ? 1 : 0;
+
+    hw.digital.writeSync(pin, value);   
 };
 
 
@@ -271,23 +277,23 @@ f.digitalRead = function(pin, callback) {
         hw.digital.read(pin, callback);
     }
 
-    function analogCallback(err, resp) {
+    function analogCallback(err, value) {
         if (err) {
             console.error(err.message);
             callback(err, null);
         } else {
-            resp = analogValue(resp);
-            callback(null, resp);
+            value = analogValue(value);
+            callback(null, value);
         }
     }
 
-    function analogValue(resp) {
-        if (resp.value > 0.5) {
-            resp.value = g.HIGH;
+    function analogValue(value) {
+        if (value > 0.5) {
+            value = g.HIGH;
         } else {
-            resp.value = g.LOW;
+            value = g.LOW;
         }
-        return resp;
+        return value;
     }
 };
 
