@@ -8,7 +8,7 @@ var os = require('os');
 var epoll = require('epoll');
 var pinmap = require('./lib/pinmap');
 var serial = require('./lib/serial');
-var iic = require('./lib/iic');
+var i2c = require('./lib/i2c');
 var bone = require('./lib/bone');
 var package_json = require('./package.json');
 var g = require('./lib/constants');
@@ -135,6 +135,11 @@ f.getPinMode = function(pin, callback) {
 };
 
 f.pinMode = function(givenPin, mode, callback) {
+    if(!callback){
+        console.warn("As of version 0.4.0, pinMode function is fully async and we recommend passing " + 
+            "a callback function as third argument to know completion of pinMode function");
+    }
+
     if (arguments.length > 3 || (callback && typeof callback != 'function')) {
         console.error("As of version 0.4.0, pinMode function takes only 3 arguments (pin, mode, callback). " +
             "This function is now fully async so we recommend using callback to know completion of this funciton.");
@@ -580,13 +585,12 @@ f.setDate = function(date, callback) {
 f.watchdog = hw.watchdog;
 
 // Exported variables
-f.bone = pinmap;
+f.pinmap = pinmap;
 
 f.serial = serial;
 
-for (var x in iic) {
-    f[x] = iic[x];
-}
+f.i2c = i2c;
+
 for (var x in g) {
     f[x] = g[x];
 }
