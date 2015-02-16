@@ -589,7 +589,17 @@ f.pinmap = pinmap;
 
 f.serial = serial;
 
+f.serialOpen = function(){
+    console.error("serialOpen and all related functions are removed as of v1.0.0. Please use serial.open and refer " +
+        "to README of OctalBoneScript for more information");
+}
+
 f.i2c = i2c;
+
+f.i2cOpen = function(){
+    console.error("i2cOpen all related functions are removed as of v1.0.0. Please use i2c.open and refer " +
+        "to README of OctalBoneScript for more information");
+}
 
 for (var x in g) {
     f[x] = g[x];
