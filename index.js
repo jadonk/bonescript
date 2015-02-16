@@ -580,10 +580,10 @@ f.setDate = function(date, callback) {
 f.watchdog = hw.watchdog;
 
 // Exported variables
-f.bone = pinmap; // this likely needs to be platform and be detected
-for (var x in serial) {
-    f[x] = serial[x];
-}
+f.bone = pinmap;
+
+f.serial = serial;
+
 for (var x in iic) {
     f[x] = iic[x];
 }

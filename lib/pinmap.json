@@ -1021,23 +1021,19 @@
     "uarts": {
         "/dev/ttyO0": {},
         "/dev/ttyO1": {
-            "devicetree": "BB-UART1",
             "rx": "P9_26",
             "tx": "P9_24"
         },
         "/dev/ttyO2": {
-            "devicetree": "BB-UART2",
             "rx": "P9_22",
             "tx": "P9_21"
         },
         "/dev/ttyO3": {},
         "/dev/ttyO4": {
-            "devicetree": "BB-UART4",
             "rx": "P9_11",
             "tx": "P9_13"
         },
         "/dev/ttyO5": {
-            "devicetree": "BB-UART5",
             "rx": "P8_38",
             "tx": "P8_37"
         }
