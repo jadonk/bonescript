@@ -445,7 +445,7 @@ f.shiftOut = function(dataPin, clockPin, bitOrder, val, callback) {
 };
 
 
-f.attachInterrupt = function(pin, handler, mode, callback) {
+f.attachInterrupt = function(pin, mode, handler, callback) {
     pin = bone.getpin(pin);
     debug('attachInterrupt(' + [pin.key, handler, mode] + ');');
     var n = pin.gpio;
@@ -603,7 +603,7 @@ f.serialOpen = function(){
 f.i2c = i2c;
 
 f.i2cOpen = function(){
-    console.error("i2cOpen all related functions are removed as of v1.0.0. Please use i2c.open and refer " +
+    console.error("i2cOpen and all related functions are removed as of v1.0.0. Please use i2c.open and refer " +
         "to README of OctalBoneScript for more information");
 }
 
