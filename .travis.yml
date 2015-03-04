@@ -7,7 +7,6 @@ after_script:
 notifications:
   irc:
     - "chat.freenode.net#beagle-bonescript"
-notifications:
   webhooks:
     urls:
       - https://webhooks.gitter.im/e/800e4efb92aa7f8eda15
