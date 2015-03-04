@@ -1,5 +1,7 @@
 BoneScript
 ==========
+
+[![Join the chat at https://gitter.im/jadonk/bonescript](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/jadonk/bonescript?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/jadonk/bonescript.svg?branch=master)](https://travis-ci.org/jadonk/bonescript)
 [![Coverage Status](https://img.shields.io/coveralls/jadonk/bonescript.svg)](https://coveralls.io/r/jadonk/bonescript)
 
