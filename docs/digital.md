@@ -7,7 +7,7 @@ A False value corresponds to a Logic 0 or a Low voltage(0v).
 OctalBoneScript(OBS) represents these two states as HIGH and LOW.
 
 The Beagle Bone Black's GPIO pins can be configured as INPUTS and OUTPUTS. The default depends on pin and you should call pinMode to ensure the pin has right mode for your needs. 
-One can use pinMode function provided by OBS to change the configuration of the ANY pin.
+One can use pinMode function provided by OBS to change the configuration of ANY pin.
 
 ## pinMode(pin, mode, callback(error|null, givenPin))
 - pin is the identifier of a pin on the P9 or P8 header ex: P8_10
