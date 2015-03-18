@@ -152,7 +152,7 @@ f.pinMode = function(givenPin, mode, callback) {
     var direction;
     var err;
 
-    debug('pinMode(' + [pin.key, direction] + ');');
+    debug('pinMode(' + [pin.key, mode] + ');');
 
     if (mode == g.INPUT_PULLUP) {
         direction = g.INPUT;
@@ -236,6 +236,82 @@ f.pinMode = function(givenPin, mode, callback) {
             gpio[n] = true;
             if (callback) callback(null, givenPin);
         }
+    }
+};
+
+f.pinModeSync = function(pin, mode){
+
+    pin = bone.getpin(pin);
+    var n = pin.gpio;
+    var direction;
+    var err;
+
+    debug('pinModeSync(' + [pin.key, mode] + ');');
+
+    if (mode == g.INPUT_PULLUP) {
+        direction = g.INPUT;
+    } else if (mode == g.INPUT_PULLDOWN) {
+        direction = g.INPUT;
+    } else if (mode == g.INPUT || mode == g.OUTPUT) {
+        direction = mode;
+        mode = "gpio";
+    } else if (mode == g.ANALOG_OUTPUT) {
+        if (typeof pin.pwm == 'undefined') {
+            err = new verror('BeagleBone does not allow ANALOG_OUTPUT for pin: ' + pin.key);
+            console.error(err.message);
+            return;
+        }
+        pwm[pin.pwm.name] = {
+            'key': pin.key,
+            'freq': 0
+        };
+        direction = g.OUTPUT;
+    } else {
+        throw new verror("Invalid mode supplied for pin: " + givenPin + ". Only following modes are supported: " + pin.modes);
+    }
+
+    // Handle case where pin is allocated as a gpio-led
+    if (pin.led) {
+        if (direction != g.OUTPUT) {
+            err = new verror('pinMode only supports GPIO output for LED pin: ' + pin.key);
+            console.error(err.message);
+            if (typeof callback == 'function') callback(err, null);
+            return;
+        }
+
+        var resp = hw.digital.setLEDPinToGPIOSync(pin);
+        if(resp===true){
+            gpio[n] = true;
+            return true;
+        } else {
+            console.error(resp.message);
+        }
+
+        return false; // since nothing to do more for LED pins
+    }
+
+    // May be required: mount -t debugfs none /sys/kernel/debug
+    var resp = hw.setPinModeSync(pin, mode);
+
+    debug('done from setPinModeSync');
+
+    if(resp === true){
+        return pinModeTestGPIO();
+    } else {
+        console.error(resp.message);
+        return false;
+    }
+
+    function pinModeTestGPIO() {
+        // Enable GPIO
+        if (mode == "gpio" || mode == "gpio_pu" || mode == "gpio_pd") {
+            // Export the GPIO controls
+            resp = hw.digital.exportControlsSync(pin, direction);
+            gpio[n] = true;
+        } else {
+            delete gpio[n];
+        }
+        return true;
     }
 };
 
