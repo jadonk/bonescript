@@ -52,3 +52,39 @@ b.analogRead(pin, function(err, value){
   console.log(value); // value is floating point number between 0 and 1.
 });
 ```
+
+## startAnalog(pin, callback[err|null])
+- pin is any PWM pin identifier in P8 or P9
+- callback will have first argument as 'verror' object if there is error starting PWM. Null otherwise
+
+This function is automatically called when you perform ```analogWrite``` but this is provided in case you manually stop analog output.
+
+**Example**
+```javascript
+var b = require('octalbonescript'); //load the library
+
+var pin = 'P9_13'; //the pin to operate on
+b.startAnalog(pin, function(err){
+  if(err){
+    console.error(err.message);
+  }
+});
+```
+
+## stopAnalog(pin, callback[err|null])
+- pin is any PWM pin identifier in P8 or P9
+- callback will have first argument as 'verror' object if there is error starting PWM. Null otherwise
+
+This function stops analog output on given pin. You can call ```startAnalog``` to start it again.
+
+**Example**
+```javascript
+var b = require('octalbonescript'); //load the library
+
+var pin = 'P9_13'; //the pin to operate on
+b.stopAnalog(pin, function(err){
+  if(err){
+    console.error(err.message);
+  }
+});
+```
