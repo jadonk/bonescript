@@ -1,8 +1,12 @@
 pinMode
 =======
 
+The Beagle Bone Black's GPIO pins can be configured as INPUTS and OUTPUTS. The default depends on pin and you should call pinMode to ensure the pin has right mode for your needs. 
+One can use pinMode function provided by OBS to change the configuration of ANY pin.
+
 Assigns a mode to given pin. This function can assign any functionality to a pin and need for additional cape is eliminated. 
-v1.0.0 supports INPUT, OUTPUT, INPUT_PULLUP, INPUT_PULDOWN and ANALOG_OUTPUT modes. More modes like PRU will be introduced in 
+v1.0.0 supports INPUT, OUTPUT, INPUT_PULLUP, INPUT_PULDOWN and ANALOG_OUTPUT modes. 
+More modes like PRU will be introduced in 
 v1.1.0. If you want to use pin as Serial or I2C, please check Serial and I2C section of documentation.
 
 ## pinMode(pin, mode, callback(error|null, givenPin))
