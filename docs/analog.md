@@ -33,3 +33,22 @@ b.pinMode(pin, b.ANALOG_OUTPUT, function(err1) {
   });
 });
 ```
+
+## analogRead(pin, callback[err|null, value])
+- pin is the pin identifier. Only P9_33 to P9_40 can work as analog input pins
+- callback first argument is 'verror' object in case of error, null otherwise. Second argument is the value of analog input given as floting point number including and between 0 and 1. 0V corresponds to 0 and 1.8V corresponds to 1.
+
+**Example**
+```javascript
+// no pinmode is required for analogRead as those pins are dedicated.
+var b = require('octalbonescript'); //load the library
+
+var pin = 'P9_33'; //the pin to operate on
+b.analogRead(pin, function(err, value){
+  if(err){
+    console.error(err.message);
+    return;
+  }
+  console.log(value); // value is floating point number between 0 and 1.
+});
+```
