@@ -38,7 +38,8 @@ Differences from bonescript
 OctalBoneScript is mostly API compatible with actual bonescript. There are a few changes which you should keep in mind though.
 
 * Pins P8_7, P8_8, P8_9 have to be denoted as P8_07, P8_08, P8_09 in your code.
-* ```pinMode``` function now takes only 3 arguments. Please also note that this function is fully __asynchronous__ therefore always use callback to know whether the pinMode execution has occured successfully. Its format is: ```pinmode(pin, direction, callback)```. Additional direction variable ```INPUT_PULLDOWN``` is also added. It asserts mode automatically and sets slew rate as fast by default.
+* ```pinMode``` function now takes only 3 arguments. Please also note that this function is fully __asynchronous__ and non-blocking therefore always use callback to know whether the pinMode execution has occured successfully. Its format is: ```pinmode(pin, direction, callback)```. Additional direction variable ```INPUT_PULLDOWN``` is also added. It asserts mode automatically and sets slew rate as fast by default.
+* v1.0.0 introduces ```pinModeSync``` function which is fully synchronous and blocking function. If your code requires this kind of functionality, you have the option to use it.
 * ```startAnalog(pin, callback)``` and ```stopAnalog(pin, callback)``` function added to start/stop analog output on pin.
 * __All callbacks now follow ```callback(err, resp)``` format as per NodeJs standards. This is a major BC break in v1.0.0. The previos format was ```callback(resp)```__
 * ```serialOpen``` and ```i2cOpen``` should now be used as ```serial.open``` and ```i2c.open```. Please check docs forlder for examples on this.
