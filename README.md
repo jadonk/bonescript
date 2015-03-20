@@ -23,11 +23,6 @@ This is a fork of https://github.com/jadonk/bonescript. Some APIs are changed in
 This fork is created to make bonescript more feature rich, faster, fix bugs and make it work in 
 simulator mode under Mac OSX and Linux.
 
-The concept is to use Arduino-like functions written in JavaScript to
-simplify learning how to do physical computing tasks under embedded Linux
-and to further provide support for rapidly creating GUIs for your embedded
-applications through the use of HTML5/JavaScript web pages.
-
 Additional features not present in original bonescript
 ------------------------------------------------------
 
@@ -36,20 +31,6 @@ Debug mode can be activated as per below.
 
 ```JavaScript
 DEBUG=bone node yourscript.js
-```
-
-### Watchdog timer
-
-OctalBoneScript has functionality to use BeagleBone onboard watchdog timer. A sample code is given below.
-
-```JavaScript
-b = require('octalbonescript');
-
-b.watchdog.start(); 	// This function starts watchdog timer. 
-					// The board will reboot if it becomes
-					// unresponsive for more than 60 seconds.
-
-b.watchdog.stop();	// This function stops the watchdog timer.
 ```
 
 Differences from bonescript
