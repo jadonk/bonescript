@@ -138,7 +138,8 @@ f.getPinMode = function(pin, callback) {
 f.pinMode = function(givenPin, mode, callback) {
     if(!callback){
         console.warn("As of version 0.4.0, pinMode function is fully async and we recommend passing " + 
-            "a callback function as third argument to know completion of pinMode function");
+            "a callback function as third argument to know completion of pinMode function.
+            v1.0.0 introduced 'pinModeSync' function. You can use it synchronously perform pinMode.");
     }
 
     if (arguments.length > 3 || (callback && typeof callback != 'function')) {
