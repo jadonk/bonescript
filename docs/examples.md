@@ -1,3 +1,0 @@
-OctalBoneScript Code Examples
-=============================
-
