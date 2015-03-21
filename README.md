@@ -12,13 +12,15 @@ OctalBoneScript can be installed on beaglebone and beaglebone black. Run followi
 npm install -g octalbonescript
 ````
 
-__Please note that Octalbonescript does not recommend Linux Angstrom. We strongly recommend that you upgrade your BeagleBone to Debian by following link given below:__
+Please note that Octalbonescript does not recommend Linux Angstrom. We strongly recommend that you upgrade your BeagleBone to Debian by following link given below:
 
 [http://beagleboard.org/getting-started#update](http://beagleboard.org/getting-started#update)
 
 Examples
 --------
-Latest code docs, examples and migration guide from original bonescript are available here: https://github.com/theoctal/octalbonescript/wiki
+Latest code docs, examples and **migration guide** from original bonescript are available at following link:
+
+https://github.com/theoctal/octalbonescript/wiki
 
 Fork
 ----
