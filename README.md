@@ -2,7 +2,7 @@ OctalBoneScript
 ===============
 A more stable, continuously tested and better node.js library for scripting BeagleBone
 
-__v1.0.0 introduces major BC breaks. Please refer to [releases](https://github.com/theoctal/octalbonescript/releases) to see the changes made in latest version. Code examples for latest version is available [here](https://github.com/theoctal/octalbonescript/blob/master/docs/).__
+__v1.0.0 introduces major BC breaks. Please refer to [releases](https://github.com/theoctal/octalbonescript/releases) to see the changes made in latest version.
 
 Installation
 ------------
@@ -15,6 +15,10 @@ npm install -g octalbonescript
 __Please note that Octalbonescript does not recommend Linux Angstrom. We strongly recommend that you upgrade your BeagleBone to Debian by following link given below:__
 
 [http://beagleboard.org/getting-started#update](http://beagleboard.org/getting-started#update)
+
+Examples
+--------
+Latest code docs and examples are available here: https://github.com/theoctal/octalbonescript/wiki
 
 Fork
 ----
