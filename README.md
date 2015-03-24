@@ -20,7 +20,7 @@ Examples
 --------
 Latest code docs, examples and **migration guide** from original bonescript are available at following link:
 
-https://github.com/theoctal/octalbonescript/wiki
+[https://github.com/theoctal/octalbonescript/wiki](https://github.com/theoctal/octalbonescript/wiki)
 
 Fork
 ----
