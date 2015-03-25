@@ -136,10 +136,10 @@ f.getPinMode = function(pin, callback) {
 };
 
 f.pinMode = function(givenPin, mode, callback) {
-    if(!callback){
-        console.warn("As of version 0.4.0, pinMode function is fully async and we recommend passing " + 
-            "a callback function as third argument to know completion of pinMode function.
-            v1.0.0 introduced 'pinModeSync' function. You can use it synchronously perform pinMode.");
+    if (!callback) {
+        console.warn("As of version 0.4.0, pinMode function is fully async and we recommend passing " +
+            "a callback function as third argument to know completion of pinMode function." +
+            "v1.0.0 introduced 'pinModeSync' function. You can use it synchronously perform pinMode.");
     }
 
     if (arguments.length > 3 || (callback && typeof callback != 'function')) {
@@ -240,12 +240,13 @@ f.pinMode = function(givenPin, mode, callback) {
     }
 };
 
-f.pinModeSync = function(pin, mode){
+f.pinModeSync = function(pin, mode) {
 
     pin = bone.getpin(pin);
     var n = pin.gpio;
     var direction;
     var err;
+    var resp;
 
     debug('pinModeSync(' + [pin.key, mode] + ');');
 
@@ -280,8 +281,8 @@ f.pinModeSync = function(pin, mode){
             return;
         }
 
-        var resp = hw.digital.setLEDPinToGPIOSync(pin);
-        if(resp===true){
+        resp = hw.digital.setLEDPinToGPIOSync(pin);
+        if (resp === true) {
             gpio[n] = true;
             return true;
         } else {
@@ -292,11 +293,11 @@ f.pinModeSync = function(pin, mode){
     }
 
     // May be required: mount -t debugfs none /sys/kernel/debug
-    var resp = hw.setPinModeSync(pin, mode);
+    resp = hw.setPinModeSync(pin, mode);
 
     debug('done from setPinModeSync');
 
-    if(resp === true){
+    if (resp === true) {
         return pinModeTestGPIO();
     } else {
         console.error(resp.message);
@@ -337,7 +338,7 @@ f.digitalWriteSync = function(pin, value, callback) {
     debug('digitalWriteSync(' + [pin.key, value] + ');');
     value = parseInt(Number(value), 2) ? 1 : 0;
 
-    hw.digital.writeSync(pin, value);   
+    hw.digital.writeSync(pin, value);
 };
 
 
@@ -672,17 +673,17 @@ f.pinmap = pinmap;
 
 f.serial = serial;
 
-f.serialOpen = function(){
+f.serialOpen = function() {
     console.error("serialOpen and all related functions are removed as of v1.0.0. Please use serial.open and refer " +
         "to README of OctalBoneScript for more information");
-}
+};
 
 f.i2c = i2c;
 
-f.i2cOpen = function(){
+f.i2cOpen = function() {
     console.error("i2cOpen and all related functions are removed as of v1.0.0. Please use i2c.open and refer " +
         "to README of OctalBoneScript for more information");
-}
+};
 
 for (var x in g) {
     f[x] = g[x];

@@ -158,7 +158,7 @@
         "eeprom": 41,
         "key": "P8_07",
         "muxRegOffset": "0x090",
-        "modes": [ "gpio", "gpio_pu", "gpio_pd", "timer" ]
+        "modes": ["gpio", "gpio_pu", "gpio_pd", "timer"]
     },
     "P8_08": {
         "name": "TIMER7",
@@ -167,7 +167,7 @@
         "eeprom": 44,
         "key": "P8_08",
         "muxRegOffset": "0x094",
-        "modes": [ "gpio", "gpio_pu", "gpio_pd", "timer" ]
+        "modes": ["gpio", "gpio_pu", "gpio_pd", "timer"]
     },
     "P8_09": {
         "name": "TIMER5",
@@ -176,7 +176,7 @@
         "eeprom": 42,
         "key": "P8_09",
         "muxRegOffset": "0x09c",
-        "modes": [ "gpio", "gpio_pu", "gpio_pd", "timer" ]
+        "modes": ["gpio", "gpio_pu", "gpio_pd", "timer"]
     },
     "P8_10": {
         "name": "TIMER6",
@@ -408,7 +408,7 @@
         "eeprom": 57,
         "key": "P8_27",
         "muxRegOffset": "0x0e0",
-        "modes": [ "gpio", "gpio_pu", "gpio_pd", "pruout", "pruin"]
+        "modes": ["gpio", "gpio_pu", "gpio_pd", "pruout", "pruin"]
     },
     "P8_28": {
         "name": "GPIO2_24",
@@ -444,7 +444,7 @@
         "eeprom": 7,
         "key": "P8_31",
         "muxRegOffset": "0x0d8",
-        "modes": ["gpio", "gpio_pu", "gpio_pd","uart"]
+        "modes": ["gpio", "gpio_pu", "gpio_pd", "uart"]
     },
     "P8_32": {
         "name": "UART5_RTSN",
@@ -479,7 +479,7 @@
         },
         "key": "P8_34",
         "muxRegOffset": "0x0cc",
-        "modes": ["gpio", "gpio_pu", "gpio_pd","pwm"]
+        "modes": ["gpio", "gpio_pu", "gpio_pd", "pwm"]
     },
     "P8_35": {
         "name": "UART4_CTSN",
@@ -505,7 +505,7 @@
         },
         "key": "P8_36",
         "muxRegOffset": "0x0c8",
-        "modes": ["gpio", "gpio_pu", "gpio_pd","pwm"]
+        "modes": ["gpio", "gpio_pu", "gpio_pd", "pwm"]
     },
     "P8_37": {
         "name": "UART5_TXD",
@@ -514,7 +514,7 @@
         "eeprom": 53,
         "key": "P8_37",
         "muxRegOffset": "0x0c0",
-        "modes": ["gpio", "gpio_pu", "gpio_pd","uart","pwm"]
+        "modes": ["gpio", "gpio_pu", "gpio_pd", "uart", "pwm"]
     },
     "P8_38": {
         "name": "UART5_RXD",
@@ -523,7 +523,7 @@
         "eeprom": 54,
         "key": "P8_38",
         "muxRegOffset": "0x0c4",
-        "modes": ["gpio", "gpio_pu", "gpio_pd","uart","pwm"]
+        "modes": ["gpio", "gpio_pu", "gpio_pd", "uart", "pwm"]
     },
     "P8_39": {
         "name": "GPIO2_12",
@@ -568,7 +568,7 @@
         "eeprom": 47,
         "key": "P8_43",
         "muxRegOffset": "0x0a8",
-        "modes": ["gpio", "gpio_pu", "gpio_pd", "pruout", "pruin","pwm"]
+        "modes": ["gpio", "gpio_pu", "gpio_pd", "pruout", "pruin", "pwm"]
     },
     "P8_44": {
         "name": "GPIO2_9",
@@ -577,7 +577,7 @@
         "eeprom": 48,
         "key": "P8_44",
         "muxRegOffset": "0x0ac",
-        "modes": ["gpio", "gpio_pu", "gpio_pd", "pruout", "pruin","pwm"]
+        "modes": ["gpio", "gpio_pu", "gpio_pd", "pruout", "pruin", "pwm"]
     },
     "P8_45": {
         "name": "GPIO2_6",
@@ -594,7 +594,7 @@
         },
         "key": "P8_45",
         "muxRegOffset": "0x0a0",
-        "modes": ["gpio", "gpio_pu", "gpio_pd", "pruout", "pruin","pwm"]
+        "modes": ["gpio", "gpio_pu", "gpio_pd", "pruout", "pruin", "pwm"]
     },
     "P8_46": {
         "name": "GPIO2_7",
@@ -611,7 +611,7 @@
         },
         "key": "P8_46",
         "muxRegOffset": "0x0a4",
-        "modes": ["gpio", "gpio_pu", "gpio_pd", "pruout", "pruin","pwm"]
+        "modes": ["gpio", "gpio_pu", "gpio_pd", "pruout", "pruin", "pwm"]
     },
     "P9_01": {
         "name": "DGND",
@@ -695,7 +695,7 @@
         },
         "key": "P9_14",
         "muxRegOffset": "0x048",
-        "modes": [ "gpio", "gpio_pu", "gpio_pd", "pwm"]
+        "modes": ["gpio", "gpio_pu", "gpio_pd", "pwm"]
     },
     "P9_15": {
         "name": "GPIO1_16",
