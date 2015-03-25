@@ -20,11 +20,11 @@ Examples
 --------
 Latest code docs, examples and **migration guide** from original bonescript are available at following link:
 
-https://github.com/theoctal/octalbonescript/wiki
+[https://github.com/theoctal/octalbonescript/wiki](https://github.com/theoctal/octalbonescript/wiki)
 
 Fork
 ----
-This is a fork of https://github.com/jadonk/bonescript. Some APIs are changed in v1.0.0, and we have changed many things under the hood leading to a much better, more functional and faster version of the original library. 
+This is a fork of [bonescript](https://github.com/jadonk/bonescript). Some APIs are changed in v1.0.0, and we have changed many things under the hood leading to a much better, more functional and faster version of the original library. 
 
 This fork is created to make bonescript more feature rich, faster, fix bugs and make it work in 
 simulator mode under Mac OSX and Linux.
