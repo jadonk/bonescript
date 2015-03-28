@@ -1,6 +1,6 @@
 OctalBoneScript
 ===============
-A more stable, continuously tested and better node.js library for scripting BeagleBone
+A more stable, continuously tested and better node.js library for scripting BeagleBone. This is alternative to [bonescript](https://github.com/jadonk/bonescript) library.
 
 __v1.0.0 introduces major BC breaks. Please refer to [releases](https://github.com/theoctal/octalbonescript/releases) to see the changes made in latest version.__
 
