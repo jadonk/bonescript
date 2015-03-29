@@ -5,6 +5,7 @@ A more stable, continuously tested and better node.js library for scripting Beag
 
 [![npm version][npm-badge]][npm]
 [npm]: https://www.npmjs.org/package/octalbonescript
+[npm-badge]: https://img.shields.io/npm/v/express-handlebars.svg?style=flat-square
 
 __v1.0.0 introduces major BC breaks. Please refer to [releases](https://github.com/theoctal/octalbonescript/releases) to see the changes made in latest version.__
 
