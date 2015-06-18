@@ -64,6 +64,7 @@ exports.setPinMode = function(pin, pinData, template, resp) {
         fs.writeSync(fd, pinData.toString(16), null);
     } catch(ex) {
         resp.err = 'Error writing to ' + muxFile + ': ' + ex;
+        return(resp);
     }
 
     if(template == 'bspm') {
@@ -84,6 +85,7 @@ exports.setPinMode = function(pin, pinData, template, resp) {
         fs.writeFileSync(path+'/polarity', '0');
         fs.writeFileSync(path+'/run', '1');
     }
+    return(resp);
 };
 
 exports.setLEDPinToGPIO = function(pin, resp) {
