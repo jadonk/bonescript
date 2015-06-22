@@ -175,7 +175,10 @@ f.pinMode = function(givenPin, mode, callback) {
         };
         direction = g.OUTPUT;
     } else {
-        throw new verror("Invalid mode supplied for pin: " + givenPin + ". Only following modes are supported: " + pin.modes);
+        err = new verror("Invalid mode supplied for pin: " + givenPin + ". Only following modes are supported: " + pin.modes);
+        console.error(err.message);
+        if (typeof callback == 'function') callback(err, null);
+        return;
     }
 
     // Handle case where pin is allocated as a gpio-led
@@ -553,7 +556,7 @@ f.attachInterrupt = function(pin, mode, handler, callback) {
         return;
     }
 
-    if (mode != g.RISING && mode != g.FALLING && mode != g.BOTH) {
+    if (mode != g.RISING && mode != g.FALLING && mode != g.CHANGE) {
         err = new verror('attachInterrupt: mode must be "rising", "falling" or "both". Invalid mode argument');
         console.error(err.message);
         if (callback) callback(err, null);
