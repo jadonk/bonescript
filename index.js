@@ -543,10 +543,8 @@ f.attachInterrupt = function(pin, mode, handler, callback) {
 
     // Check if pin isn't already configured as GPIO
     if (typeof gpio[n] == 'undefined') {
-        err = new verror('attachInterrupt: pin ' + pin.key + ' not already configured as GPIO');
-        console.error(err.message);
-        if (callback) callback(err, null);
-        return;
+      debug( 'pin ' + pin.key + ' not already configured as GPIO. Configuring..');
+      f.pinModeSync(pin, g.INPUT_PULLUP);
     }
 
     if (typeof handler != 'function') {
