@@ -544,7 +544,7 @@ f.attachInterrupt = function(pin, mode, handler, callback) {
     // Check if pin isn't already configured as GPIO
     if (typeof gpio[n] == 'undefined') {
       debug( 'pin ' + pin.key + ' not already configured as GPIO. Configuring..');
-      f.pinModeSync(pin, g.INPUT_PULLUP);
+      f.pinModeSync(pin, g.INPUT);
     }
 
     if (typeof handler != 'function') {
@@ -606,7 +606,7 @@ f.detachInterrupt = function(pin, callback) {
         if (typeof callback == 'function') callback(err);
         return;
     }
-    gpioInt[n].epoll.remove(gpioInt[n].valuefd);
+    gpioInt[n].epoll.remove(gpioInt[n].valuefd).close();
     delete gpioInt[n];
     if (typeof callback == 'function') callback(null);
 };
