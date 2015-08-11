@@ -413,11 +413,15 @@ exports.readPlatform = function(platform) {
     if(platform.name == 'A335BNLT') platform.name = 'BeagleBone Black';
     platform.version = fs.readFileSync(my.is_capemgr() + '/baseboard/revision',
         'ascii').trim();
-    if(platform.version.match(/^GR/)) {
+    if(platform.version[0] == 0x1A)) {
+        platform.version = '1A';
+        platform.name = 'BeagleBone Green';
+    }
+    else if(platform.version.match(/^GR/)) {
         platform.version = platform.version.substr(2);
         platform.name = 'BeagleBone Green';
     }
-    if(!platform.version.match(/^[\040-\176]*$/)) delete platform.version;
+    else if(!platform.version.match(/^[\040-\176]*$/)) delete platform.version;
     platform.serialNumber = fs.readFileSync(my.is_capemgr() +
         '/baseboard/serial-number', 'ascii').trim();
     if(!platform.serialNumber.match(/^[\040-\176]*$/)) delete platform.serialNumber;
