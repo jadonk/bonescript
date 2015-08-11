@@ -413,7 +413,7 @@ exports.readPlatform = function(platform) {
     if(platform.name == 'A335BNLT') platform.name = 'BeagleBone Black';
     platform.version = fs.readFileSync(my.is_capemgr() + '/baseboard/revision',
         'ascii').trim();
-    if(platform.version[0] == 0x1A)) {
+    if(platform.version[0] == 0x1A) {
         platform.version = '1A';
         platform.name = 'BeagleBone Green';
     }
