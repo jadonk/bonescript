@@ -23,7 +23,7 @@
   },
   "main": "main",
   "engines": {
-    "node": ">= 0.8.16"
+    "node": ">= 0.10.1"
   },
   "dependencies": {
     "socket.io": "1.2.1",
