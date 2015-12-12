@@ -28,8 +28,7 @@
     "debug": "2.2.x",
     "verror": "1.6.x",
     "shelljs": "0.5.x",
-    "serialport": "1.7.x",
-    "epoll": "0.1.x"
+    "serialport": "1.7.x"
   },
   "devDependencies": {
     "chai": "^2.0.0",
@@ -37,6 +36,7 @@
   },
   "scripts": {},
   "optionalDependencies": {
-    "i2c": "0.1.x"
+    "i2c": "0.1.8",
+    "epoll": "0.1.*"
   }
 }

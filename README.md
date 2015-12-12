@@ -7,13 +7,25 @@ __v1.0.0 introduces major BC breaks. Please refer to [releases](https://github.c
 
 Installation
 ------------
-OctalBoneScript can be installed on beaglebone and beaglebone black. Run following command as root.
+Recommended method to install OctalBoneScript is to add following line in your project ```package.json``` file.
 
-````sh
-npm install -g octalbonescript
-````
+```json
 
-Please note that Octalbonescript does not recommend Linux Angstrom. We strongly recommend that you upgrade your BeagleBone to Debian by following link given below:
+"octalbonescript" : "1.0.x"
+
+```
+
+After adding this line, you should run ``` npm install ``` command from that project directory to install OBS. Another method is to directly ```cd``` to project directory and run ```npm install octalbonescript``` command.
+
+If you must install OBS globally, you must run following command as root.
+
+```sh
+
+npm install -g --unsafe-perm octalbonescript
+
+```
+
+Please note that OBS does not recommend Linux Angstrom. We strongly recommend that you upgrade your BeagleBone to Debian by following link given below:
 
 [http://beagleboard.org/getting-started#update](http://beagleboard.org/getting-started#update)
 
@@ -25,9 +37,9 @@ Latest code docs, examples and **migration guide** from original bonescript are 
 
 Fork
 ----
-This is a fork of [bonescript](https://github.com/jadonk/bonescript). Some APIs are changed in v1.0.0, and we have changed many things under the hood leading to a much better, more functional and faster version of the original library. 
+This is a fork of [bonescript](https://github.com/jadonk/bonescript). Some APIs are changed in v1.0.0, and we have changed many things under the hood leading to a much better, more functional and faster version of the original library.
 
-This fork is created to make bonescript more feature rich, faster, fix bugs and make it work in 
+This fork is created to make bonescript more feature rich, faster, fix bugs and make it work in
 simulator mode under Mac OSX and Linux.
 
 We encourage you to report issues rightaway if you face any. We will try our best to be of help.
