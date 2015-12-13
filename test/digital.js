@@ -15,14 +15,14 @@ describe('#digitalRead', function() {
 });
 
 describe('#digitalWrite', function() {
-	before("setting P9_41 and USR0 to digital output pin",function(done){
-    	b.pinMode("P9_41", b.OUTPUT, function(){
+	before("setting P9_42 and USR0 to digital output pin",function(done){
+    	b.pinMode("P9_42", b.OUTPUT, function(){
     		b.pinMode("USR0", b.OUTPUT, done);
     	});
   	});
 
-	it('writes digital pin P9_41 and USR0 ', function(done) {
-		b.digitalWrite("P9_41", b.HIGH, function(err) {
+	it('writes digital pin P9_42 and USR0 ', function(done) {
+		b.digitalWrite("P9_42", b.HIGH, function(err) {
 			b.digitalWrite("USR0", b.HIGH, done);
 		});
 	});

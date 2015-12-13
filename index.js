@@ -25,18 +25,21 @@ var pwm = {};
 var hw = null;
 
 if (os.type() == 'Linux' && os.arch() == 'arm') {
+
     if (!bone.is_cape_universal()) {
-        debug('Loading Universal Cape interface...');
-        bone.create_dt_sync("OBS_UNIV");
-        if (!bone.is_audio_enable()) {
-            debug('Loading AUDIO Cape...');
-            bone.create_dt_sync("OBS_AUDIO");
-        }
-        if (!bone.is_hdmi_enable()) {
-            debug('Loading HDMI Cape...');
-            bone.create_dt_sync("OBS_HDMI");
-        }
+      debug('Loading Universal Cape interface...');
+      bone.load_dt_sync("cape-universaln");
     }
+
+    // if (!bone.is_audio_enable()) {
+    //     debug('Loading AUDIO Cape...');
+    //     bone.load_dt_sync("cape-univ-audio");
+    // }
+    if (!bone.is_hdmi_enable()) {
+      debug('Loading HDMI Cape...');
+      bone.load_dt_sync("cape-univ-hdmi");
+    }
+
     debug('Using Universal Cape interface');
     hw = require('./lib/hw_universal');
 
@@ -46,6 +49,17 @@ if (os.type() == 'Linux' && os.arch() == 'arm') {
     hw = require('./lib/hw_simulator');
     debug('Using simulator mode');
 }
+
+
+
+f.loadCape = function(name) {
+  return bone.load_dt_sync(name);
+};
+
+
+f.unloadCape = function(name) {
+  return bone.unload_dt_sync(name);
+};
 
 
 // returned object has:
@@ -472,7 +486,7 @@ f.analogWrite = function(pin, value, freq, callback) {
         // Save off the freq, value and PWM assignment
         if (err) {
             err = new verror(err, "There was an error writing analog value");
-            callback(err);
+            if(typeof callback == 'function') callback(err);
         } else {
             pwm[pin.pwm.name].freq = freq;
             pwm[pin.pwm.name].value = value;
