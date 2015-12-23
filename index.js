@@ -141,11 +141,11 @@ f.getPinMode = function(pin, callback) {
     function onReadPinState(err, state) {
         if (err) {
             console.error(err.message);
-            calback(err, null);
+            if(typeof callback == 'function') callback(err, null);
             return;
         }
         mode.pinState = state;
-        callback(null, mode);
+        if(typeof callback == 'function') callback(null, mode);
     }
 };
 
@@ -346,7 +346,7 @@ f.digitalWrite = function(pin, value, callback) {
     hw.digital.write(pin, value, callback);
 };
 
-f.digitalWriteSync = function(pin, value, callback) {
+f.digitalWriteSync = function(pin, value) {
     if (pin) {
         pin = bone.getpin(pin);
     } else {

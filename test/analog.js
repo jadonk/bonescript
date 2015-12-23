@@ -7,7 +7,7 @@ describe('#analog', function() {
   	});
 
 	it('reads analog input pin P9_40', function(done) {
-		b.digitalRead("P9_40", function(err, value) {
+		b.analogRead("P9_40", function(err, value) {
 			expect(value).to.be.within(0,1);
 			done(err);
 		});
