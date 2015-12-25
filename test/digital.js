@@ -27,7 +27,7 @@ describe('#digitalWrite', function() {
 		});
 	});
 
-	it('writes digital pin P9_41 sync', function() {
-		b.digitalWriteSync("P9_41", b.HIGH);
+	it('writes digital pin P9_42 sync', function() {
+		b.digitalWriteSync("P9_42", b.LOW);
 	});
 });

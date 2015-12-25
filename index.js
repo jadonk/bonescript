@@ -107,7 +107,7 @@ f.getPinMode = function(pin, callback) {
     function onReadPWM(err, pwm) {
         if (err) {
             console.error(err.message);
-            callback(err, null);
+            if(typeof callback == 'function') callback(err, null);
             return;
         }
         if (pwm) {
@@ -125,7 +125,7 @@ f.getPinMode = function(pin, callback) {
     function onReadGPIODirection(err, direction) {
         if (err) {
             console.error(error.message);
-            callback(err, null);
+            if(typeof callback == 'function') callback(err, null);
             return;
         }
         mode.gpio = direction;
@@ -228,7 +228,7 @@ f.pinMode = function(givenPin, mode, callback) {
             err = new verror(err, 'Unable to configure mux for pin ' + pin);
             console.error(err.message);
             // It might work if the pin is already muxed to desired mode
-            if (callback) callback(err, null);
+            if(typeof callback == 'function') callback(err, null);
         } else {
             pinModeTestGPIO();
         }
@@ -241,7 +241,7 @@ f.pinMode = function(givenPin, mode, callback) {
             resp = hw.digital.exportControls(pin, direction, onExport);
         } else {
             delete gpio[n];
-            if (callback) callback(null, givenPin);
+            if(typeof callback == 'function') callback(null, givenPin);
         }
     }
 
@@ -249,10 +249,10 @@ f.pinMode = function(givenPin, mode, callback) {
         if (err) {
             console.error(err.message);
             delete gpio[n];
-            if (callback) callback(err, null);
+            if(typeof callback == 'function') callback(err, null);
         } else {
             gpio[n] = true;
-            if (callback) callback(null, givenPin);
+            if(typeof callback == 'function') callback(null, givenPin);
         }
     }
 };
@@ -492,7 +492,7 @@ f.analogWrite = function(pin, value, freq, callback) {
             pwm[pin.pwm.name].value = value;
 
             // All done
-            if (callback) callback(null);
+            if(typeof callback == 'function') callback(null);
         }
     }
 };
@@ -511,7 +511,7 @@ f.shiftOut = function(dataPin, clockPin, bitOrder, val, callback) {
         debug('i = ' + i);
         debug('clock = ' + clock);
         if (err || i == 8) {
-            if (callback) callback({
+            if(typeof callback == 'function') callback({
                 'err': err
             });
             return;
@@ -564,14 +564,14 @@ f.attachInterrupt = function(pin, mode, handler, callback) {
     if (typeof handler != 'function') {
         err = new verror('attachInterrupt: handler argument must be supplied and it should be a function');
         console.error(err.message);
-        if (callback) callback(err, null);
+        if(typeof callback == 'function') callback(err, null);
         return;
     }
 
     if (mode != g.RISING && mode != g.FALLING && mode != g.CHANGE) {
         err = new verror('attachInterrupt: mode must be "rising", "falling" or "both". Invalid mode argument');
         console.error(err.message);
-        if (callback) callback(err, null);
+        if(typeof callback == 'function') callback(err, null);
         return;
     }
 
@@ -579,7 +579,7 @@ f.attachInterrupt = function(pin, mode, handler, callback) {
     if (typeof gpioInt[n] != 'undefined') {
         err = new verror('attachInterrupt: pin ' + pin.key + ' already has an interrupt handler assigned');
         console.error(err.message);
-        if (callback) callback(err);
+        if(typeof callback == 'function') callback(err);
         return;
     }
 
@@ -601,11 +601,11 @@ f.attachInterrupt = function(pin, mode, handler, callback) {
         gpioInt[n].epoll = new epoll.Epoll(intHandler);
         fs.readSync(gpioInt[n].valuefd, gpioInt[n].value, 0, 1, 0);
         gpioInt[n].epoll.add(gpioInt[n].valuefd, epoll.Epoll.EPOLLPRI);
-        if (callback) callback(null);
+        if(typeof callback == 'function') callback(null);
     } catch (ex) {
         err = new verror(ex, 'attachInterrupt: GPIO input file not opened');
         console.error(err.message);
-        if (callback) callback(err);
+        if(typeof callback == 'function') callback(err);
     }
 };
 
@@ -636,7 +636,7 @@ f.getEeproms = function(callback) {
     if (eeproms == {}) {
         debug('No valid EEPROM contents found');
     }
-    if (callback) callback(null, eeproms);
+    if(typeof callback == 'function') callback(null, eeproms);
 };
 
 
@@ -660,7 +660,7 @@ f.getPlatform = function(callback) {
     platform.os.freemem = os.freemem();
     platform.os.networkInterfaces = os.networkInterfaces();
     platform = hw.readPlatform(platform);
-    if (callback) callback(null, platform);
+    if(typeof callback == 'function') callback(null, platform);
 };
 
 
@@ -670,9 +670,9 @@ f.setDate = function(date, callback) {
     function dateResponse(err, stdout, stderr) {
         if (err) {
             err = new verror(err);
-            if (callback) callback(err);
+            if(typeof callback == 'function') callback(err);
         } else {
-            if (callback) callback(null, {
+            if(typeof callback == 'function') callback(null, {
                 'stdout': stdout,
                 'stderr': stderr
             });
