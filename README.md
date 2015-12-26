@@ -45,3 +45,19 @@ This fork is created to make bonescript more feature rich, faster, fix bugs and 
 simulator mode under Mac OSX and Linux.
 
 We encourage you to report issues rightaway if you face any. We will try our best to be of help.
+
+Contributors
+------------
+This [fork](https://github.com/ruth0000/octalbonescript_capemgr4_1) of OBS was very helpful in making OBS compatible with 4.1 kernel.
+
+I also thank [psiphi75](https://github.com/psiphi75) who funded OBS transition to 4.1 kernel.
+
+Donate
+------
+I have kept OBS updated and working since May 2014 and I will continue to do so. This ongoing development takes lot of my personal time.
+
+If you use OBS in commercial projects, please consider donating some money as it supports ongoing development.
+
+<a href='https://pledgie.com/campaigns/30863'><img alt='Click here to lend your support to: OctalBoneScript - Javascript library for BeagleBone and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/30863.png?skin_name=chrome' border='0' ></a>
+
+Bitcoin address: **15v6b7AP7TVc8PASGxqddYPeNW1kA7ydFh**
