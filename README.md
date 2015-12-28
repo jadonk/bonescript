@@ -15,6 +15,14 @@ Recommended method to install OctalBoneScript is to add following line in your p
 
 ```
 
+If you are running kernel 3.8 i.e. Debian 7.9 or below, you should use 1.0.x branch.
+
+```json
+
+"octalbonescript" : "1.0.x"
+
+```
+
 After adding this line, you should run ``` npm install ``` command from that project directory to install OBS. Another method is to directly ```cd``` to project directory and run ```npm install octalbonescript``` command.
 
 If you must install OBS globally, you must run following command as root.
@@ -24,8 +32,6 @@ If you must install OBS globally, you must run following command as root.
 npm install -g --unsafe-perm octalbonescript
 
 ```
-
-OBS v1.1.x only supports Kernel 4.1 and above. If you want to use OBS with 3.8 or below kernel, please use 1.0.x version of OBS.
 
 Please note that OBS does not recommend Linux Angstrom. We strongly recommend that you upgrade your BeagleBone to Debian by following link given below:
 
