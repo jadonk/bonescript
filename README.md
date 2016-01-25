@@ -64,6 +64,4 @@ I have kept OBS updated and working since May 2014 and I will continue to do so.
 
 If you use OBS in commercial projects, please consider donating some money as it supports ongoing development.
 
-<a href='https://pledgie.com/campaigns/30863'><img alt='Click here to lend your support to: OctalBoneScript - Javascript library for BeagleBone and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/30863.png?skin_name=chrome' border='0' ></a>
-
 Bitcoin address: **15v6b7AP7TVc8PASGxqddYPeNW1kA7ydFh**
