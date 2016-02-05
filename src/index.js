@@ -5,9 +5,12 @@ var fs = require('fs');
 var child_process = require('child_process');
 var winston = require('winston');
 var os = require('os');
+var hw_mainline = require('./hw_mainline');
+/*
 var hw_oldkernel = require('./hw_oldkernel');
 var hw_capemgr = require('./hw_capemgr');
 var hw_universal = require('./hw_universal');
+*/
 var hw_simulator = require('./hw_simulator');
 var bone = require('./bone');
 var functions = require('./functions');
@@ -26,6 +29,8 @@ var debug = process.env.DEBUG ? true : false;
 // Detect if we are on a Beagle
 var hw;
 if(os.type() == 'Linux' && os.arch() == 'arm') {
+    hw = hw_mainline;
+    /*
     if(my.is_cape_universal()) {
         hw = hw_universal;
         if(debug) winston.debug('Using Universal Cape interface');
@@ -36,6 +41,7 @@ if(os.type() == 'Linux' && os.arch() == 'arm') {
         hw = hw_oldkernel;
         if(debug) winston.debug('Using 3.2 kernel interface');
     }
+    */
 } else {
     hw = hw_simulator;
     if(debug) winston.debug('Using simulator mode');
