@@ -1,3 +1,9 @@
+// Database of pins
+// pinIndex is an array whose elements describe each pin.  The order is
+//    USR LEDs, P8 header pins, then P9 header
+// pins is an object whose keys are the pinIndex keys, e.g. P9_14.
+// uarts and i2c are objects describing the serial ports and i2c buses.
+
 if(typeof exports === 'undefined') exports = {};
 
 var pinIndex = [
