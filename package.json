@@ -2,7 +2,7 @@
   "author": {
     "name": "Jason Kridner",
     "email": "jkridner@beagleboard.org",
-    "url": "http://blog.hangerhead.com"
+    "url": "http://jkridner.wordpress.com"
   },
   "name": "bonescript",
   "description": "Physical computing library for embedded Linux",
@@ -15,7 +15,7 @@
     "gpio",
     "arduino"
   ],
-  "version": "0.2.5",
+  "version": "0.5.0-beta1",
   "homepage": "http://beagleboard.org/bonescript",
   "repository": {
     "type": "git",
@@ -26,17 +26,17 @@
     "node": ">= 0.10.1"
   },
   "dependencies": {
-    "socket.io": "1.2.1",
+    "socket.io": "1.4.4",
     "systemd": "0.2.6",
-    "winston": "0.6.2",
-    "express": "4.10.4",
-    "ffi": "1.2.6"
+    "winston": "2.1.1",
+    "express": "4.13.4",
+    "ffi": "2.0.0"
   },
   "optionalDependencies": {
-    "fibers": "1.0.1",
-    "serialport": "1.2.5",
-    "i2c": "0.1.8",
-    "epoll": "0.0.7"
+    "serialport": "2.0.6",
+    "i2c": "0.2.1",
+    "epoll": "0.1.16",
+    "spi": "0.2.0"
   },
   "devDependencies": {
     "jscoverage": "~0.5.1",
