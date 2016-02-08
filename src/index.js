@@ -7,13 +7,13 @@ var winston = require('winston');
 var os = require('os');
 var hw_mainline = require('./hw_mainline');
 /*
-var hw_oldkernel = require('./hw_oldkernel');
-var hw_capemgr = require('./hw_capemgr');
-var hw_universal = require('./hw_universal');
+var hw_oldkernel = require('./hw_oldkernel');   // Used for Kernels 3.2 using /sys/kernel/debug/omap_mux/
+var hw_capemgr = require('./hw_capemgr');       // Used for Kernels ?.?? using /sys/kernel/debug/pinctrl/44e10800.pinmux/pins
+var hw_universal = require('./hw_universal');   // Used for Kernels ?.?? using /sys/kernel/debug/pinctrl/44e10800.pinmux/pins
 */
-var hw_simulator = require('./hw_simulator');
-var bone = require('./bone');
-var functions = require('./functions');
+var hw_simulator = require('./hw_simulator');   // Not working
+var bone = require('./bone');                   // Database of pins
+var functions = require('./functions');         // may:  From where is this?
 var serial = require('./serial');
 var iic = require('./iic');
 var my = require('./my');
