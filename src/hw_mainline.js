@@ -71,9 +71,9 @@ exports.readPinMux = function(pin, mode, callback) {
 
 exports.setPinMode = function(pin, pinData, template, resp, callback) {
     if(debug) winston.debug('hw.setPinMode(' + [pin.key, pinData, template, JSON.stringify(resp)] + ');');
-    var p = pin.key + "_pinmux";
-    if(pin.universalName) p = pin.universalName + "_pinmux";
-    var pinmux = my.find_sysfsFile(p, my.is_ocp(), p + '.');
+    var p = "ocp:" + pin.key + "_pinmux";
+    if(pin.universalName) p = "ocp:" + pin.universalName + "_pinmux";
+    var pinmux = my.find_sysfsFile(p, my.is_ocp(), p);
     if(!pinmux) { throw p + " was not found under " + my.is_ocp(); }
     if((pinData & 7) == 7) {
         gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
