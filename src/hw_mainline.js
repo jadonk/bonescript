@@ -80,11 +80,13 @@ exports.setPinMode = function(pin, pinData, template, resp, callback) {
         fs.writeFileSync(pinmux+"/state", 'gpio');
     } else if(template == 'bspwm') {
         fs.writeFileSync(pinmux+"/state", 'pwm');
-        pwmPrefix[pin.pwm.name] = '/sys/class/pwm/pwm' + pin.pwm.sysfs;
+        pwmPrefix[pin.pwm.name] = '/sys/class/pwm/pwmchip' + pin.pwm.sysfs;
+        if(debug) winston.debug("pwmPrefix[pin.pwm.name] = " + pwmPrefix[pin.pwm.name]);
+        if(debug) winston.debug("pin.pwm.sysfs = " + pin.pwm.sysfs);
         if(!my.file_existsSync(pwmPrefix[pin.pwm.name])) {
             fs.appendFileSync('/sys/class/pwm/export', pin.pwm.sysfs);
         }
-        fs.appendFileSync(pwmPrefix[pin.pwm.name]+'/run', 1);
+        fs.appendFileSync(pwmPrefix[pin.pwm.name]+'/enable', 1);
     } else {
         resp.err = 'Unknown pin mode template';
     }

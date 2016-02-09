@@ -13,7 +13,7 @@ var hw_universal = require('./hw_universal');   // Used for Kernels ?.?? using /
 */
 var hw_simulator = require('./hw_simulator');   // Not working
 var bone = require('./bone');                   // Database of pins
-var functions = require('./functions');         // may:  From where is this?
+var functions = require('./functions');         // may:  From where is functions?
 var serial = require('./serial');
 var iic = require('./iic');
 var my = require('./my');
