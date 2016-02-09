@@ -1039,7 +1039,9 @@ var pinIndex = [
             "index": 0,
             "muxmode": 6,
             "path": "ehrpwm.1:0",
-            "name": "EHRPWM1A"
+            "name": "EHRPWM1A",
+            "chip": "48302000",
+            "addr": "48302200"
         },
         "key": "P9_14",
         "muxRegOffset": "0x048",

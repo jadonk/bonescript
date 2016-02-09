@@ -80,7 +80,10 @@ exports.setPinMode = function(pin, pinData, template, resp, callback) {
         fs.writeFileSync(pinmux+"/state", 'gpio');
     } else if(template == 'bspwm') {
         fs.writeFileSync(pinmux+"/state", 'pwm');
-        pwmPrefix[pin.pwm.name] = '/sys/class/pwm/pwmchip' + pin.pwm.sysfs;
+        pwmPrefix[pin.pwm.name] = 
+            my.file_find('/sys/devices/platform/ocp/'+pin.pwm.chip
+                + '.epwmss/'+pin.pwm.addr+'.ehrpwm/pwm', 'pwmchip', 1) 
+                + '/pwm' + pin.pwm.index;
         if(debug) winston.debug("pwmPrefix[pin.pwm.name] = " + pwmPrefix[pin.pwm.name]);
         if(debug) winston.debug("pin.pwm.sysfs = " + pin.pwm.sysfs);
         if(!my.file_existsSync(pwmPrefix[pin.pwm.name])) {
