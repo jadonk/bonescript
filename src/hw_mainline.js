@@ -80,14 +80,17 @@ exports.setPinMode = function(pin, pinData, template, resp, callback) {
         fs.writeFileSync(pinmux+"/state", 'gpio');
     } else if(template == 'bspwm') {
         fs.writeFileSync(pinmux+"/state", 'pwm');
-        pwmPrefix[pin.pwm.name] = 
-            my.file_find('/sys/devices/platform/ocp/'+pin.pwm.chip
-                + '.epwmss/'+pin.pwm.addr+'.ehrpwm/pwm', 'pwmchip', 1) 
-                + '/pwm' + pin.pwm.index;
+        // Buld a path like: /sys/devices/platform/ocp/48304000.epwmss/48304200.ehrpwm/pwm/pwmchip5
+        // pin.pwm.chip looks up the first address and pin.pwm.addr looks up the second
+        // file_find figures which pwmchip to use
+        // pin.pwm.index tells with half of the PWM to use (0 or 1)
+        var pwmPath = my.file_find('/sys/devices/platform/ocp/'+pin.pwm.chip
+                + '.epwmss/'+pin.pwm.addr+'.ehrpwm/pwm', 'pwmchip', 1);
+        pwmPrefix[pin.pwm.name] = pwmPath + '/pwm' + pin.pwm.index;
         if(debug) winston.debug("pwmPrefix[pin.pwm.name] = " + pwmPrefix[pin.pwm.name]);
         if(debug) winston.debug("pin.pwm.sysfs = " + pin.pwm.sysfs);
         if(!my.file_existsSync(pwmPrefix[pin.pwm.name])) {
-            fs.appendFileSync('/sys/class/pwm/export', pin.pwm.sysfs);
+            fs.appendFileSync(pwmPath+'/export', pin.pwm.index);
         }
         fs.appendFileSync(pwmPrefix[pin.pwm.name]+'/enable', 1);
     } else {
