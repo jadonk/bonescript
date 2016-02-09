@@ -285,7 +285,9 @@ var pinIndex = [
             "index": 1,
             "muxmode": 4,
             "path": "ehrpwm.2:1",
-            "name": "EHRPWM2B"
+            "name": "EHRPWM2B",
+            "chip": "48304000",
+            "addr": "48304200"
         },
         "key": "P8_13",
         "muxRegOffset": "0x024",
@@ -401,7 +403,9 @@ var pinIndex = [
             "index": 0,
             "muxmode": 4,
             "path": "ehrpwm.2:0",
-            "name": "EHRPWM2A"
+            "name": "EHRPWM2A",
+            "chip": "48304000",
+            "addr": "48304200"
         },
         "key": "P8_19",
         "muxRegOffset": "0x020",
@@ -679,7 +683,9 @@ var pinIndex = [
             "index": 1,
             "muxmode": 2,
             "path": "ehrpwm.1:1",
-            "name": "EHRPWM1B"
+            "name": "EHRPWM1B",
+            "chip": "48302000",
+            "addr": "48302200"
         },
         "key": "P8_34",
         "muxRegOffset": "0x0cc",
@@ -723,7 +729,9 @@ var pinIndex = [
             "index": 0,
             "muxmode": 2,
             "path": "ehrpwm.1:0",
-            "name": "EHRPWM1A"
+            "name": "EHRPWM1A",
+            "chip": "48302000",
+            "addr": "48302200"
         },
         "key": "P8_36",
         "muxRegOffset": "0x0c8",
@@ -893,7 +901,9 @@ var pinIndex = [
             "index": 0,
             "muxmode": 3,
             "path": "ehrpwm.2:0",
-            "name": "EHRPWM2A"
+            "name": "EHRPWM2A",
+            "chip": "48304000",
+            "addr": "48304200"
         },
         "key": "P8_45",
         "muxRegOffset": "0x0a0",
@@ -919,7 +929,9 @@ var pinIndex = [
             "index": 1,
             "muxmode": 3,
             "path": "ehrpwm.2:1",
-            "name": "EHRPWM2B"
+            "name": "EHRPWM2B",
+            "chip": "48304000",
+            "addr": "48304200"
         },
         "key": "P8_46",
         "muxRegOffset": "0x0a4",
@@ -1085,7 +1097,9 @@ var pinIndex = [
             "index": 1,
             "muxmode": 6,
             "path": "ehrpwm.1:1",
-            "name": "EHRPWM1B"
+            "name": "EHRPWM1B",
+            "chip": "48302000",
+            "addr": "48302200"
         },
         "key": "P9_16",
         "muxRegOffset": "0x04c",
@@ -1183,7 +1197,9 @@ var pinIndex = [
             "index": 1,
             "muxmode": 3,
             "path": "ehrpwm.0:1",
-            "name": "EHRPWM0B"
+            "name": "EHRPWM0B",
+            "chip": "48300000",
+            "addr": "48300200"
         },
         "key": "P9_21",
         "muxRegOffset": "0x154",
@@ -1209,7 +1225,9 @@ var pinIndex = [
             "index": 0,
             "muxmode": 3,
             "path": "ehrpwm.0:0",
-            "name": "EHRPWM0A"
+            "name": "EHRPWM0A",
+            "chip": "48300000",
+            "addr": "48300200"
         },
         "key": "P9_22",
         "muxRegOffset": "0x150",
@@ -1351,7 +1369,9 @@ var pinIndex = [
             "index": 1,
             "muxmode": 1,
             "path": "ehrpwm.0:1",
-            "name": "EHRPWM0B"
+            "name": "EHRPWM0B",
+            "chip": "48300000",
+            "addr": "48300200"
         },
         "key": "P9_29",
         "muxRegOffset": "0x194",
@@ -1395,7 +1415,9 @@ var pinIndex = [
             "index": 0,
             "muxmode": 1,
             "path": "ehrpwm.0:0",
-            "name": "EHRPWM0A"
+            "name": "EHRPWM0A",
+            "chip": "48300000",
+            "addr": "48300200"
         },
         "key": "P9_31",
         "muxRegOffset": "0x190",
