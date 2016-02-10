@@ -35,7 +35,7 @@
   "optionalDependencies": {
     "serialport": "2.0.6",
     "i2c": "0.2.1",
-    "epoll": "0.1.16",
+    "epoll": "0.1.17",
     "spi": "0.2.0"
   },
   "devDependencies": {
