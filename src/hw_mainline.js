@@ -8,7 +8,9 @@ var debug = process.env.DEBUG ? true : false;
 
 var gpioFile = {};
 var pwmPrefix = {};
-var ainPrefix = "";
+var ainPrefix = "/sys/bus/iio/devices/iio:device0";
+var SLOTS = "/sys/devices/platform/bone_capemgr/slots";
+var AINdts = "BB-ADC";
 
 exports.logfile = '/var/lib/cloud9/bonescript.log';
 
@@ -172,33 +174,30 @@ exports.readGPIOValue = function(pin, resp, callback) {
 };
 
 exports.enableAIN = function(callback) {
-    var helper = "";
-    if(my.load_dt('cape-bone-iio')) {
-        var ocp = my.is_ocp();
-        if(ocp) {
-            helper = my.find_sysfsFile('helper', ocp, 'helper.');
-            if(helper) {
-                ainPrefix = helper + '/AIN';
-            }
-        }
-    } else {
-        if(debug) winston.debug('enableAIN: load of cape-bone-iio failed');
+    if(!my.file_existsSync(ainPrefix)) {
+        if(debug) winston.debug('enableAIN: loading ' + AINdts);
+        fs.writeFileSync(SLOTS, AINdts);    // Loads AINdts
+    }
+    if(!my.file_existsSync(ainPrefix)) {
+        if(debug) winston.debug('enableAIN: load of ' + AINdts + ' failed');
     }
     if(callback) {
-        callback({'path': helper})
+        callback({'path': ainPrefix});
     }
-    return(helper.length > 1);
+    return(ainPrefix);
 };
 
 exports.readAIN = function(pin, resp, callback) {
-    var ainFile = ainPrefix + pin.ain.toString();
+    var maxValue = 4095;
+    var ainFile = ainPrefix + '/in_voltage' + pin.ain.toString() + '_raw';
+    if(debug) winston.debug("readAIN: ainFile="+ainFile);
     if(callback) {
         var readFile = function(err, data) {
             if(err) {
                 resp.err = 'analogRead error: ' + err;
                 winston.error(resp.err);
             }
-            resp.value = parseInt(data, 10) / 1800;
+            resp.value = parseInt(data, 10) / maxValue;
             callback(resp);
         };
         fs.readFile(ainFile, readFile);
@@ -209,7 +208,7 @@ exports.readAIN = function(pin, resp, callback) {
         resp.err = 'analogRead(' + pin.key + ') returned ' + resp.value;
         winston.error(resp.err);
     }
-    resp.value = resp.value / 1800;
+    resp.value = resp.value / maxValue;
     if(isNaN(resp.value)) {
         resp.err = 'analogRead(' + pin.key + ') scaled to ' + resp.value;
         winston.error(resp.err);
