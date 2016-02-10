@@ -7,13 +7,14 @@ var winston = require('winston');
 var os = require('os');
 var hw_mainline = require('./hw_mainline');
 /*
-var hw_oldkernel = require('./hw_oldkernel');   // Used for Kernels 3.2 using /sys/kernel/debug/omap_mux/
-var hw_capemgr = require('./hw_capemgr');       // Used for Kernels ?.?? using /sys/kernel/debug/pinctrl/44e10800.pinmux/pins
-var hw_universal = require('./hw_universal');   // Used for Kernels ?.?? using /sys/kernel/debug/pinctrl/44e10800.pinmux/pins
+var hw_oldkernel = require('./hw_oldkernel');   // Used for 3.2 kernels using /sys/kernel/debug/omap_mux/
+var hw_capemgr = require('./hw_capemgr');       // Used for 3.8+ kernels using an older out-of-tree version of CapeMgr
+var hw_universal = require('./hw_universal');   // Used for 3.8+ kernels using a single universal overlay with pinmux helpers
+                                                //  located in debugfs at /sys/kernel/debug/pinctrl/44e10800.pinmux/pins
 */
-var hw_simulator = require('./hw_simulator');   // Not working
+var hw_simulator = require('./hw_simulator');   // Incomplete implementation of a set of hardware stubs to run on non BeagleBone targets
 var bone = require('./bone');                   // Database of pins
-var functions = require('./functions');         // may:  From where is functions?
+var functions = require('./functions');         // functions.js defines several math/bit functions that are handy
 var serial = require('./serial');
 var iic = require('./iic');
 var my = require('./my');
