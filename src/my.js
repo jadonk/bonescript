@@ -37,7 +37,13 @@ exports.is_capemgr = function(callback) {
 };
 
 exports.is_ocp = function(callback) {
-    return(exports.find_sysfsFile('ocp', '/sys/devices', 'ocp.', callback));
+    var found = exports.find_sysfsFile('ocp', '/sys/devices', 'ocp.', callback);
+    if(debug) winston.debug("is_ocp, found = " + found);
+    if(typeof found == 'undefined') {
+        found = exports.find_sysfsFile('ocp', '/sys/devices/platform', 'ocp', callback);
+        if(debug) winston.debug("is_ocp, found2 = " + found);
+    }
+    return(found);
 };
 
 exports.is_cape_universal = function(callback) {

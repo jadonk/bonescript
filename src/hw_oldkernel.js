@@ -1,3 +1,5 @@
+// Used for 3.2 kernel using /sys/kernel/debug/omap_mux/
+
 var fs = require('fs');
 var my = require('./my');
 var parse = require('./parse');

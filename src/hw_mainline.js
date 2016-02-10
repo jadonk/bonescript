@@ -8,7 +8,9 @@ var debug = process.env.DEBUG ? true : false;
 
 var gpioFile = {};
 var pwmPrefix = {};
-var ainPrefix = "";
+var ainPrefix = "/sys/bus/iio/devices/iio:device0";
+var SLOTS = "/sys/devices/platform/bone_capemgr/slots";
+var AINdts = "BB-ADC";
 
 exports.logfile = '/var/lib/cloud9/bonescript.log';
 
@@ -71,20 +73,28 @@ exports.readPinMux = function(pin, mode, callback) {
 
 exports.setPinMode = function(pin, pinData, template, resp, callback) {
     if(debug) winston.debug('hw.setPinMode(' + [pin.key, pinData, template, JSON.stringify(resp)] + ');');
-    var p = pin.key + "_pinmux";
-    if(pin.universalName) p = pin.universalName + "_pinmux";
-    var pinmux = my.find_sysfsFile(p, my.is_ocp(), p + '.');
+    var p = "ocp:" + pin.key + "_pinmux";
+    if(pin.universalName) p = "ocp:" + pin.universalName + "_pinmux";
+    var pinmux = my.find_sysfsFile(p, my.is_ocp(), p);
     if(!pinmux) { throw p + " was not found under " + my.is_ocp(); }
     if((pinData & 7) == 7) {
         gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
         fs.writeFileSync(pinmux+"/state", 'gpio');
     } else if(template == 'bspwm') {
         fs.writeFileSync(pinmux+"/state", 'pwm');
-        pwmPrefix[pin.pwm.name] = '/sys/class/pwm/pwm' + pin.pwm.sysfs;
+        // Buld a path like: /sys/devices/platform/ocp/48304000.epwmss/48304200.ehrpwm/pwm/pwmchip5
+        // pin.pwm.chip looks up the first address and pin.pwm.addr looks up the second
+        // file_find figures which pwmchip to use
+        // pin.pwm.index tells with half of the PWM to use (0 or 1)
+        var pwmPath = my.file_find('/sys/devices/platform/ocp/'+pin.pwm.chip
+                + '.epwmss/'+pin.pwm.addr+'.ehrpwm/pwm', 'pwmchip', 1);
+        pwmPrefix[pin.pwm.name] = pwmPath + '/pwm' + pin.pwm.index;
+        if(debug) winston.debug("pwmPrefix[pin.pwm.name] = " + pwmPrefix[pin.pwm.name]);
+        if(debug) winston.debug("pin.pwm.sysfs = " + pin.pwm.sysfs);
         if(!my.file_existsSync(pwmPrefix[pin.pwm.name])) {
-            fs.appendFileSync('/sys/class/pwm/export', pin.pwm.sysfs);
+            fs.appendFileSync(pwmPath+'/export', pin.pwm.index);
         }
-        fs.appendFileSync(pwmPrefix[pin.pwm.name]+'/run', 1);
+        fs.appendFileSync(pwmPrefix[pin.pwm.name]+'/enable', 1);
     } else {
         resp.err = 'Unknown pin mode template';
     }
@@ -164,33 +174,30 @@ exports.readGPIOValue = function(pin, resp, callback) {
 };
 
 exports.enableAIN = function(callback) {
-    var helper = "";
-    if(my.load_dt('cape-bone-iio')) {
-        var ocp = my.is_ocp();
-        if(ocp) {
-            helper = my.find_sysfsFile('helper', ocp, 'helper.');
-            if(helper) {
-                ainPrefix = helper + '/AIN';
-            }
-        }
-    } else {
-        if(debug) winston.debug('enableAIN: load of cape-bone-iio failed');
+    if(!my.file_existsSync(ainPrefix)) {
+        if(debug) winston.debug('enableAIN: loading ' + AINdts);
+        fs.writeFileSync(SLOTS, AINdts);    // Loads AINdts
+    }
+    if(!my.file_existsSync(ainPrefix)) {
+        if(debug) winston.debug('enableAIN: load of ' + AINdts + ' failed');
     }
     if(callback) {
-        callback({'path': helper})
+        callback({'path': ainPrefix});
     }
-    return(helper.length > 1);
+    return(ainPrefix);
 };
 
 exports.readAIN = function(pin, resp, callback) {
-    var ainFile = ainPrefix + pin.ain.toString();
+    var maxValue = 4095;
+    var ainFile = ainPrefix + '/in_voltage' + pin.ain.toString() + '_raw';
+    if(debug) winston.debug("readAIN: ainFile="+ainFile);
     if(callback) {
         var readFile = function(err, data) {
             if(err) {
                 resp.err = 'analogRead error: ' + err;
                 winston.error(resp.err);
             }
-            resp.value = parseInt(data, 10) / 1800;
+            resp.value = parseInt(data, 10) / maxValue;
             callback(resp);
         };
         fs.readFile(ainFile, readFile);
@@ -201,7 +208,7 @@ exports.readAIN = function(pin, resp, callback) {
         resp.err = 'analogRead(' + pin.key + ') returned ' + resp.value;
         winston.error(resp.err);
     }
-    resp.value = resp.value / 1800;
+    resp.value = resp.value / maxValue;
     if(isNaN(resp.value)) {
         resp.err = 'analogRead(' + pin.key + ') scaled to ' + resp.value;
         winston.error(resp.err);
@@ -227,23 +234,25 @@ exports.writePWMFreqAndValue = function(pin, pwm, freq, value, resp, callback) {
         var period = Math.round( 1.0e9 / freq ); // period in ns
         if(pwm.freq != freq) {
             if(debug) winston.debug('Stopping PWM');
-            fs.writeFileSync(path+'/run', "0\n");
-            if(debug) winston.debug('Setting duty to 0');
-            fs.writeFileSync(path+'/duty_ns', "0\n");
+            fs.writeFileSync(path+'/enable', "0\n");
+            if(debug) winston.debug('Setting duty_cycle to 0');
+            fs.writeFileSync(path+'/duty_cycle', "0\n");
             try {
                 if(debug) winston.debug('Updating PWM period: ' + period);
-                fs.writeFileSync(path+'/period_ns', period + "\n");
+                fs.writeFileSync(path+'/period', period + "\n");
             } catch(ex2) {
-                period = fs.readFileSync(path+'/period_ns');
-                winston.info('Unable to update PWM period, period is set to ' + period);
+                period = fs.readFileSync(path+'/period');
+                winston.info('Unable to update PWM period, period is set to ' 
+                    + period
+                    + "\nIs other half of PWM enabled?");
             }
             if(debug) winston.debug('Starting PWM');
-            fs.writeFileSync(path+'/run', "1\n");
+            fs.writeFileSync(path+'/enable', "1\n");
         }
         var duty = Math.round( period * value );
         if(debug) winston.debug('Updating PWM duty: ' + duty);
         //if(duty == 0) winston.error('Updating PWM duty: ' + duty);
-        fs.writeFileSync(path+'/duty_ns', duty + "\n");
+        fs.writeFileSync(path+'/duty_cycle', duty + "\n");
     } catch(ex) {
         resp.err = 'error updating PWM freq and value: ' + path + ', ' + ex;
         winston.error(resp.err);
