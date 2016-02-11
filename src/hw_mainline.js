@@ -1,10 +1,15 @@
 var fs = require('fs');
-var winston = require('winston');
 var my = require('./my');
 var parse = require('./parse');
 var eeprom = require('./eeprom');
 
 var debug = process.env.DEBUG ? true : false;
+if(debug) {
+    var util   = require('util');
+    var winston = require('winston');
+    winston.remove(winston.transports.Console);
+    winston.add(winston.transports.Console, {colorize: true});
+}
 
 var gpioFile = {};
 var pwmPrefix = {};
@@ -228,15 +233,17 @@ exports.writeGPIOEdge = function(pin, mode) {
 };
 
 exports.writePWMFreqAndValue = function(pin, pwm, freq, value, resp, callback) {
-    if(debug) winston.debug('hw.writePWMFreqAndValue(' + [pin.key,pwm,freq,value,resp] + ');');
+    if(debug) winston.debug('hw.writePWMFreqAndValue(' + [pin.key,util.inspect(pwm),freq,value,resp] + ');');
     var path = pwmPrefix[pin.pwm.name];
     try {
         var period = Math.round( 1.0e9 / freq ); // period in ns
+        if(debug) winston.debug('hw.writePWMFreqAndValue: pwm.freq='+pwm.freq
+                        +', freq='+freq+', period='+period);
         if(pwm.freq != freq) {
-            if(debug) winston.debug('Stopping PWM');
-            fs.writeFileSync(path+'/enable', "0\n");
-            if(debug) winston.debug('Setting duty_cycle to 0');
-            fs.writeFileSync(path+'/duty_cycle', "0\n");
+            // if(debug) winston.debug('Stopping PWM');
+            // fs.writeFileSync(path+'/enable', "0\n");
+            // It appears that the first time you set the pwm you have to
+            // set the period before you set the duty_cycle
             try {
                 if(debug) winston.debug('Updating PWM period: ' + period);
                 fs.writeFileSync(path+'/period', period + "\n");
@@ -244,10 +251,10 @@ exports.writePWMFreqAndValue = function(pin, pwm, freq, value, resp, callback) {
                 period = fs.readFileSync(path+'/period');
                 winston.info('Unable to update PWM period, period is set to ' 
                     + period
-                    + "\nIs other half of PWM enabled?");
+                    + "\tIs other half of PWM enabled?");
             }
-            if(debug) winston.debug('Starting PWM');
-            fs.writeFileSync(path+'/enable', "1\n");
+            // if(debug) winston.debug('Starting PWM');
+            // fs.writeFileSync(path+'/enable', "1\n");
         }
         var duty = Math.round( period * value );
         if(debug) winston.debug('Updating PWM duty: ' + duty);
