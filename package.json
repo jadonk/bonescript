@@ -26,7 +26,7 @@
     "node": ">= 0.10.1"
   },
   "dependencies": {
-    "socket.io": "1.4.4",
+    "socket.io": "1.4.5",
     "systemd": "0.2.6",
     "winston": "2.1.1",
     "express": "4.13.4",
