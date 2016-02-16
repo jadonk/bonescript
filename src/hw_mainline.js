@@ -2,11 +2,11 @@ var fs = require('fs');
 var my = require('./my');
 var parse = require('./parse');
 var eeprom = require('./eeprom');
+var util = require('util');
+var winston = require('winston');
 
 var debug = process.env.DEBUG ? true : false;
 if(debug) {
-    var util   = require('util');
-    var winston = require('winston');
     winston.remove(winston.transports.Console);
     winston.add(winston.transports.Console, {colorize: true});
 }
