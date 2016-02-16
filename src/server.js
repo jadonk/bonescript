@@ -41,6 +41,7 @@ function listen(port, directory) {
     winston.info("Opening port " + port + " to serve up " + directory);
     var app = express();
     app.get('/bonescript.js', handler);
+    app.use('/bone101/static', express.static(directory+"/static"));
     app.use(express.static(directory));
     var server = http.createServer(app);
     addSocketListeners(server);
