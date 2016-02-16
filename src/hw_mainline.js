@@ -269,11 +269,11 @@ exports.writePWMFreqAndValue = function(pin, pwm, freq, value, resp, callback) {
 
 exports.readEeproms = function(eeproms) {
     var EepromFiles = {
-        '/sys/bus/i2c/drivers/at24/0-0050/eeprom': { type: 'bone' },
-        '/sys/bus/i2c/drivers/at24/2-0054/eeprom': { type: 'cape' },
-        '/sys/bus/i2c/drivers/at24/2-0055/eeprom': { type: 'cape' },
-        '/sys/bus/i2c/drivers/at24/2-0056/eeprom': { type: 'cape' },
-        '/sys/bus/i2c/drivers/at24/2-0057/eeprom': { type: 'cape' }
+        '/sys/bus/i2c/devices/0-0050/at24-0/nvmem': { type: 'bone' },
+        '/sys/bus/i2c/devices/2-0054/at24-1/nvmem': { type: 'cape' },
+        '/sys/bus/i2c/devices/2-0055/at24-2/nvmem': { type: 'cape' },
+        '/sys/bus/i2c/devices/2-0056/at24-3/nvmem': { type: 'cape' },
+        '/sys/bus/i2c/devices/2-0057/at24-4/nvmem': { type: 'cape' }
     };
     eeproms = eeprom.readEeproms(EepromFiles);
     return(eeproms);
@@ -281,9 +281,9 @@ exports.readEeproms = function(eeproms) {
 
 exports.readPlatform = function(platform) {
     var eeproms = eeprom.readEeproms({
-        '/sys/bus/i2c/drivers/at24/0-0050/eeprom': { type: 'bone' }
+        '/sys/bus/i2c/devices/0-0050/at24-0/nvmem': { type: 'bone' }
     });
-    var x = eeproms['/sys/bus/i2c/drivers/at24/0-0050/eeprom'];
+    var x = eeproms['/sys/bus/i2c/devices/0-0050/at24-0/nvmem'];
     if(x.boardName == 'A335BONE') platform.name = 'BeagleBone';
     if(x.boardName == 'A335BNLT') platform.name = 'BeagleBone Black';
     platform.version = x.version;
