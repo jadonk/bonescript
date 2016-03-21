@@ -6,7 +6,7 @@ var child_process = require('child_process');
 var debug = require('debug')('bone');
 var os = require('os');
 var epoll = require('epoll');
-var verror = require("verror");
+var verror = require('verror');
 var pinmap = require('./lib/pinmap');
 var serial = require('./lib/serial');
 var i2c = require('./lib/i2c');
@@ -24,42 +24,53 @@ var pwm = {};
 // Detect if we are on a Beagle
 var hw = null;
 
-if (os.type() == 'Linux' && os.arch() == 'arm') {
+                                                    // AUTO_LOAD_CAPE can be used to turn off the autoloading of capes.
+if (os.type() === 'Linux' && os.arch() === 'arm' && (typeof process.env.AUTO_LOAD_CAPE === 'undefined' || process.env.AUTO_LOAD_CAPE === '1')) {
 
     if (!bone.is_cape_universal()) {
       debug('Loading Universal Cape interface...');
-      bone.load_dt_sync("cape-universaln");
+      bone.load_dt_sync('cape-universaln');
     }
 
     // if (!bone.is_audio_enable()) {
     //     debug('Loading AUDIO Cape...');
     //     bone.load_dt_sync("cape-univ-audio");
     // }
+
     if (!bone.is_hdmi_enable()) {
       debug('Loading HDMI Cape...');
-      bone.load_dt_sync("cape-univ-hdmi");
+      bone.load_dt_sync('cape-univ-hdmi');
     }
 
-    debug('Using Universal Cape interface');
-    hw = require('./lib/hw_universal');
+    enableAnalogInputs();
 
-    debug('Enabling analog inputs');
-    hw.analog.enable();
 } else {
     hw = require('./lib/hw_simulator');
     debug('Using simulator mode');
 }
 
 
-
 f.loadCape = function(name) {
-  return bone.load_dt_sync(name);
+    var result = bone.load_dt_sync(name);
+    if (name.indexOf('cape-universal') >= 0) {
+        enableAnalogInputs();
+    }
+    return result;
 };
 
 
 f.unloadCape = function(name) {
-  return bone.unload_dt_sync(name);
+    return bone.unload_dt_sync(name);
 };
+
+
+function enableAnalogInputs() {
+    debug('Using Universal Cape interface');
+    hw = require('./lib/hw_universal');
+
+    debug('Enabling analog inputs');
+    hw.analog.enable();
+}
 
 
 // returned object has:
