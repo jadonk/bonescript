@@ -14,7 +14,7 @@
     "bonescript",
     "octalbonescript"
   ],
-  "version": "1.1.1",
+  "version": "1.1.2",
   "homepage": "",
   "repository": {
     "type": "git",
@@ -27,7 +27,7 @@
   "dependencies": {
     "debug": "2.2.x",
     "verror": "1.6.x",
-    "serialport": "1.7.x"
+    "serialport": "2.0.x"
   },
   "devDependencies": {
     "chai": "^2.0.0",
