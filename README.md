@@ -9,17 +9,17 @@ Installation
 ------------
 Recommended method to install OctalBoneScript is to add following line in your project ```package.json``` file.
 
-```json
+```sh
 
-"octalbonescript" : "1.1.x"
+npm install octalbonescript
 
 ```
 
-If you are running kernel 3.8 i.e. Debian 7.9 or below, you should use 1.0.x branch.
+If you are running kernel 3.8 i.e. Debian 7.9 or below, you should use version 1.0.6 or earlier:
 
-```json
+```sh
 
-"octalbonescript" : "1.0.x"
+npm install octalbonescript@1.0.6
 
 ```
 
