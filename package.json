@@ -15,7 +15,7 @@
     "gpio",
     "arduino"
   ],
-  "version": "0.5.0-beta3",
+  "version": "0.5.0-beta4",
   "homepage": "http://beagleboard.org/bonescript",
   "repository": {
     "type": "git",
