@@ -24,6 +24,7 @@ var fibers = my.require('fibers');
 var epoll = my.require('epoll');
 var autorun = require('./autorun');
 var server = require('./server');
+var socketHandlers = require('./socket_handlers');
 
 var debug = process.env.DEBUG ? true : false;
 
@@ -577,6 +578,9 @@ for(var x in autorun) {
 }
 for(var x in server) {
     exports[x] = server[x];
+}
+for(var x in socketHandlers) {
+    exports[x] = socketHandlers[x];
 }
 
 var alreadyRan = false;
