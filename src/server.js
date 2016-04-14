@@ -2,9 +2,7 @@
 //
 //
 var fs = require('fs');
-var child_process = require('child_process');
 var http = require('http');
-var url = require('url');
 var winston = require('winston');
 var express = require('express');
 var events = require('events');
