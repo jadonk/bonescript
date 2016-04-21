@@ -285,10 +285,10 @@ exports.readPlatform = function(platform) {
     });
     var x = eeproms['/sys/bus/i2c/devices/0-0050/at24-0/nvmem'];
     platform.name = fs.readFileSync('/proc/device-tree/name', 'ascii').trim();
-    if(platform.name.indexOf('Green') > 0) {
+    if(platform.name.indexOf('Green') > 0)) {
         platform.name = platform.name.replace('TI AM335x', 'SeeedStudio')
     }
-    if(platform.name.indexOf('Arduino' > 0) {
+    if(platform.name.indexOf('Arduino' > 0)) {
         platform.name = platform.name.replace('TI AM335x', '')
     }
     platform.name = platform.name.replace('TI AM335x BeagleBone', 'BeagleBoard.org BeagleBone');
