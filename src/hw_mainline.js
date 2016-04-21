@@ -284,8 +284,15 @@ exports.readPlatform = function(platform) {
         '/sys/bus/i2c/devices/0-0050/at24-0/nvmem': { type: 'bone' }
     });
     var x = eeproms['/sys/bus/i2c/devices/0-0050/at24-0/nvmem'];
-    if(x.boardName == 'A335BONE') platform.name = 'BeagleBone';
-    if(x.boardName == 'A335BNLT') platform.name = 'BeagleBone Black';
+    platform.name = fs.readFileSync('/proc/device-tree/name', 'ascii').trim();
+    if(platform.name.indexOf('Green') > 0) {
+        platform.name = platform.name.replace('TI AM335x', 'SeeedStudio')
+    }
+    if(platform.name.indexOf('Arduino' > 0) {
+        platform.name = platform.name.replace('TI AM335x', '')
+    }
+    platform.name = platform.name.replace('TI AM335x BeagleBone', 'BeagleBoard.org BeagleBone');
+    platform.name = platform.name.replace('TI AM5728 BeagleBoard-X15', 'BeagleBoard.org BeagleBoard-X15');
     platform.version = x.version;
     if(!platform.version.match(/^[\040-\176]*$/)) delete platform.version;
     platform.serialNumber = x.serialNumber;
