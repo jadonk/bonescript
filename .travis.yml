@@ -5,9 +5,10 @@ node_js:
    - "4"
 addons:
   apt:
+    sources:
+      - ubuntu-toolchain-r-test
     packages:
-    - gcc
-    - g++
+      - g++-4.8
 after_script:
   - npm run-script coveralls
 notifications:
