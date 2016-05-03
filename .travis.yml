@@ -3,6 +3,11 @@ node_js:
    - "0.10"
    - "0.12"
    - "4"
+addons:
+  apt:
+    packages:
+    - gcc
+    - g++
 after_script:
   - npm run-script coveralls
 notifications:
