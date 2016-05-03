@@ -36,7 +36,7 @@
     "serialport": "2.0.6",
     "i2c": "0.2.1",
     "epoll": "0.1.17",
-    "spi": "0.2.0"
+    "pi-spi": "1.0.1"
   },
   "devDependencies": {
     "jscoverage": "~0.5.1",
