@@ -116,6 +116,8 @@ exports.addSocketListeners = function(server, serverEmitter) {
     function serverMessage(message) {
         serverEmitter.emit('message', message);
     }
+    
+    return(io);
 }
 
 // most heavily borrowed from https://github.com/itchyny/browsershell
