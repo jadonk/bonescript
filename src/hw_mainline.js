@@ -92,7 +92,7 @@ exports.setPinMode = function(pin, pinData, template, resp, callback) {
         // file_find figures which pwmchip to use
         // pin.pwm.index tells with half of the PWM to use (0 or 1)
         var pwmPath = my.file_find('/sys/devices/platform/ocp/'+pin.pwm.chip
-                + '.epwmss/'+pin.pwm.addr+'.ehrpwm/pwm', 'pwmchip', 1);
+                + '.epwmss/'+pin.pwm.addr+'.pwm/pwm', 'pwmchip', 1);
         pwmPrefix[pin.pwm.name] = pwmPath + '/pwm' + pin.pwm.index;
         if(debug) winston.debug("pwmPrefix[pin.pwm.name] = " + pwmPrefix[pin.pwm.name]);
         if(debug) winston.debug("pin.pwm.sysfs = " + pin.pwm.sysfs);
