@@ -5,12 +5,16 @@ var fs = require('fs');
 var child_process = require('child_process');
 var winston = require('winston');
 var os = require('os');
-var hw_oldkernel = require('./hw_oldkernel');
-var hw_capemgr = require('./hw_capemgr');
-var hw_universal = require('./hw_universal');
-var hw_simulator = require('./hw_simulator');
-var bone = require('./bone');
-var functions = require('./functions');
+var hw_mainline = require('./hw_mainline');
+/*
+var hw_oldkernel = require('./hw_oldkernel');   // Used for 3.2 kernels using /sys/kernel/debug/omap_mux/
+var hw_capemgr = require('./hw_capemgr');       // Used for 3.8+ kernels using an older out-of-tree version of CapeMgr
+var hw_universal = require('./hw_universal');   // Used for 3.8+ kernels using a single universal overlay with pinmux helpers
+                                                //  located in debugfs at /sys/kernel/debug/pinctrl/44e10800.pinmux/pins
+*/
+var hw_simulator = require('./hw_simulator');   // Incomplete implementation of a set of hardware stubs to run on non BeagleBone targets
+var bone = require('./bone');                   // Database of pins
+var functions = require('./functions');         // functions.js defines several math/bit functions that are handy
 var serial = require('./serial');
 var iic = require('./iic');
 var my = require('./my');
@@ -20,12 +24,15 @@ var fibers = my.require('fibers');
 var epoll = my.require('epoll');
 var autorun = require('./autorun');
 var server = require('./server');
+var socketHandlers = require('./socket_handlers');
 
 var debug = process.env.DEBUG ? true : false;
 
 // Detect if we are on a Beagle
 var hw;
 if(os.type() == 'Linux' && os.arch() == 'arm') {
+    hw = hw_mainline;
+    /*
     if(my.is_cape_universal()) {
         hw = hw_universal;
         if(debug) winston.debug('Using Universal Cape interface');
@@ -36,6 +43,7 @@ if(os.type() == 'Linux' && os.arch() == 'arm') {
         hw = hw_oldkernel;
         if(debug) winston.debug('Using 3.2 kernel interface');
     }
+    */
 } else {
     hw = hw_simulator;
     if(debug) winston.debug('Using simulator mode');
@@ -570,6 +578,9 @@ for(var x in autorun) {
 }
 for(var x in server) {
     exports[x] = server[x];
+}
+for(var x in socketHandlers) {
+    exports[x] = socketHandlers[x];
 }
 
 var alreadyRan = false;

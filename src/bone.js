@@ -1,3 +1,9 @@
+// Database of pins
+// pinIndex is an array whose elements describe each pin.  The order is
+//    USR LEDs, P8 header pins, then P9 header
+// pins is an object whose keys are the pinIndex keys, e.g. P9_14.
+// uarts and i2c are objects describing the serial ports and i2c buses.
+
 if(typeof exports === 'undefined') exports = {};
 
 var pinIndex = [
@@ -279,7 +285,9 @@ var pinIndex = [
             "index": 1,
             "muxmode": 4,
             "path": "ehrpwm.2:1",
-            "name": "EHRPWM2B"
+            "name": "EHRPWM2B",
+            "chip": "48304000",
+            "addr": "48304200"
         },
         "key": "P8_13",
         "muxRegOffset": "0x024",
@@ -395,7 +403,9 @@ var pinIndex = [
             "index": 0,
             "muxmode": 4,
             "path": "ehrpwm.2:0",
-            "name": "EHRPWM2A"
+            "name": "EHRPWM2A",
+            "chip": "48304000",
+            "addr": "48304200"
         },
         "key": "P8_19",
         "muxRegOffset": "0x020",
@@ -673,7 +683,9 @@ var pinIndex = [
             "index": 1,
             "muxmode": 2,
             "path": "ehrpwm.1:1",
-            "name": "EHRPWM1B"
+            "name": "EHRPWM1B",
+            "chip": "48302000",
+            "addr": "48302200"
         },
         "key": "P8_34",
         "muxRegOffset": "0x0cc",
@@ -717,7 +729,9 @@ var pinIndex = [
             "index": 0,
             "muxmode": 2,
             "path": "ehrpwm.1:0",
-            "name": "EHRPWM1A"
+            "name": "EHRPWM1A",
+            "chip": "48302000",
+            "addr": "48302200"
         },
         "key": "P8_36",
         "muxRegOffset": "0x0c8",
@@ -887,7 +901,9 @@ var pinIndex = [
             "index": 0,
             "muxmode": 3,
             "path": "ehrpwm.2:0",
-            "name": "EHRPWM2A"
+            "name": "EHRPWM2A",
+            "chip": "48304000",
+            "addr": "48304200"
         },
         "key": "P8_45",
         "muxRegOffset": "0x0a0",
@@ -913,7 +929,9 @@ var pinIndex = [
             "index": 1,
             "muxmode": 3,
             "path": "ehrpwm.2:1",
-            "name": "EHRPWM2B"
+            "name": "EHRPWM2B",
+            "chip": "48304000",
+            "addr": "48304200"
         },
         "key": "P8_46",
         "muxRegOffset": "0x0a4",
@@ -1033,7 +1051,9 @@ var pinIndex = [
             "index": 0,
             "muxmode": 6,
             "path": "ehrpwm.1:0",
-            "name": "EHRPWM1A"
+            "name": "EHRPWM1A",
+            "chip": "48302000",
+            "addr": "48302200"
         },
         "key": "P9_14",
         "muxRegOffset": "0x048",
@@ -1077,7 +1097,9 @@ var pinIndex = [
             "index": 1,
             "muxmode": 6,
             "path": "ehrpwm.1:1",
-            "name": "EHRPWM1B"
+            "name": "EHRPWM1B",
+            "chip": "48302000",
+            "addr": "48302200"
         },
         "key": "P9_16",
         "muxRegOffset": "0x04c",
@@ -1175,7 +1197,9 @@ var pinIndex = [
             "index": 1,
             "muxmode": 3,
             "path": "ehrpwm.0:1",
-            "name": "EHRPWM0B"
+            "name": "EHRPWM0B",
+            "chip": "48300000",
+            "addr": "48300200"
         },
         "key": "P9_21",
         "muxRegOffset": "0x154",
@@ -1183,7 +1207,7 @@ var pinIndex = [
             "spi0_d0",
             "uart2_txd",
             "i2c2_scl",
-            "NA",
+            "ehrpwm0B",
             "NA",
             "NA",
             "NA",
@@ -1201,7 +1225,9 @@ var pinIndex = [
             "index": 0,
             "muxmode": 3,
             "path": "ehrpwm.0:0",
-            "name": "EHRPWM0A"
+            "name": "EHRPWM0A",
+            "chip": "48300000",
+            "addr": "48300200"
         },
         "key": "P9_22",
         "muxRegOffset": "0x150",
@@ -1209,7 +1235,7 @@ var pinIndex = [
             "spi0_sclk",
             "uart2_rxd",
             "i2c2_sda",
-            "NA",
+            "ehrpwm0A",
             "NA",
             "NA",
             "NA",
@@ -1343,7 +1369,9 @@ var pinIndex = [
             "index": 1,
             "muxmode": 1,
             "path": "ehrpwm.0:1",
-            "name": "EHRPWM0B"
+            "name": "EHRPWM0B",
+            "chip": "48300000",
+            "addr": "48300200"
         },
         "key": "P9_29",
         "muxRegOffset": "0x194",
@@ -1387,7 +1415,9 @@ var pinIndex = [
             "index": 0,
             "muxmode": 1,
             "path": "ehrpwm.0:0",
-            "name": "EHRPWM0A"
+            "name": "EHRPWM0A",
+            "chip": "48300000",
+            "addr": "48300200"
         },
         "key": "P9_31",
         "muxRegOffset": "0x190",

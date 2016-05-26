@@ -1,3 +1,5 @@
+// Used for 3.2 kernel using /sys/kernel/debug/omap_mux/
+
 var fs = require('fs');
 var my = require('./my');
 var parse = require('./parse');
@@ -75,6 +77,7 @@ exports.setPinMode = function(pin, pinData, template, resp) {
     } else if(template == 'bspwm') {
         resp.path = '/sys/class/pwm/' + pin.pwm.path;
         var path = resp.path;
+        pwmPrefix[pin.pwm.name] = path;
 
         // Clear up any unmanaged usage
         fs.writeFileSync(path+'/request', '0');
