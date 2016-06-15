@@ -34,9 +34,9 @@
   },
   "optionalDependencies": {
     "fibers": "1.0.13",
-    "serialport": "1.2.5",
+    "serialport": "3.1.2",
     "i2c-bus": "1.1.0",
-    "epoll": "0.0.7"
+    "epoll": "0.1.19"
   },
   "devDependencies": {
     "jscoverage": "~0.5.1",
