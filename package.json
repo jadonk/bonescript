@@ -15,7 +15,7 @@
     "gpio",
     "arduino"
   ],
-  "version": "0.2.5",
+  "version": "0.2.6",
   "homepage": "http://beagleboard.org/bonescript",
   "repository": {
     "type": "git",
@@ -26,17 +26,17 @@
     "node": ">= 0.10.1"
   },
   "dependencies": {
-    "socket.io": "1.2.1",
+    "socket.io": "3.1.2",
     "systemd": "0.2.6",
     "winston": "0.6.2",
     "express": "4.10.4",
-    "ffi": "1.2.6"
+    "ffi": "2.0.0"
   },
   "optionalDependencies": {
-    "fibers": "1.0.1",
-    "serialport": "1.2.5",
-    "i2c": "0.1.8",
-    "epoll": "0.0.7"
+    "fibers": "1.0.13",
+    "serialport": "3.1.2",
+    "i2c-bus": "1.1.0",
+    "epoll": "0.1.19"
   },
   "devDependencies": {
     "jscoverage": "~0.5.1",
