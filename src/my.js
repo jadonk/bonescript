@@ -16,6 +16,8 @@ var libc = new ffi.Library(null, {
   "system": ["int32", ["string"]]
 });
 var system = libc.system;
+var sysRoot = '/sys/devices';
+if (fs.existsSync(sysRoot+'/platform')) sysRoot +='/platform'
 
 exports.require = function(packageName, onfail) {
     var y = {};
@@ -33,11 +35,11 @@ exports.require = function(packageName, onfail) {
 var fibers = exports.require('fibers');
 
 exports.is_capemgr = function(callback) {
-    return(exports.find_sysfsFile('capemgr', '/sys/devices', 'bone_capemgr.', callback));
+    return(exports.find_sysfsFile('capemgr', sysRoot, 'bone_capemgr', callback));
 };
 
 exports.is_ocp = function(callback) {
-    return(exports.find_sysfsFile('ocp', '/sys/devices', 'ocp.', callback));
+    return(exports.find_sysfsFile('ocp',sysRoot, 'ocp.', callback));
 };
 
 exports.is_cape_universal = function(callback) {
