@@ -4,7 +4,7 @@ var my = require('./my');
 
 var m = {};
 m.name = 'i2c';
-m.module = my.require('i2c');
+m.module = my.require('i2c-bus');
 m.ports = bone.i2c;
 m.events = {
     'data': ['data']
