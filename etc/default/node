@@ -1,1 +1,2 @@
 NODE_PATH=/usr/lib/node_modules
+SERVER_DIR=/usr/share/bone101

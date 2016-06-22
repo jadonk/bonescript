@@ -1,9 +1,9 @@
 [Unit]
 Description=Bonescript server
-ConditionPathExists=|/var/lib/cloud9
+ConditionPathExists=|/usr/share/bone101
 
 [Service]
-WorkingDirectory=/var/lib/cloud9
+WorkingDirectory=/usr/share/bone101
 EnvironmentFile=/etc/default/node
 ExecStart=npm start -g bonescript
 SyslogIdentifier=bonescript
