@@ -17,9 +17,13 @@ myrequire('systemd', function() {
 });
 
 exports.serverStart = function(port, directory, callback) {
-    port = (process.env.LISTEN_PID > 0) ? 'systemd' : ((process.env.PORT) ? process.env.PORT : 80);
-    directory = (process.env.SERVER_DIR) ? process.env.SERVER_DIR : '/var/lib/cloud9';
-    var server = listen(port, directory);
+    if(port === undefined) {
+        port = (process.env.LISTEN_PID > 0) ? 'systemd' : ((process.env.PORT) ? process.env.PORT : 80);
+    }
+    if(directory === undefined) {
+        directory = (process.env.SERVER_DIR) ? process.env.SERVER_DIR : '/var/lib/cloud9';
+    }
+    var server = mylisten(port, directory);
     serverEmitter.on('newListner', addServerListener);
 
     function addServerListener(event, listener) {
@@ -35,10 +39,11 @@ exports.serverStart = function(port, directory, callback) {
     return(serverEmitter);
 };
 
-function listen(port, directory) {
+function mylisten(port, directory) {
     winston.info("Opening port " + port + " to serve up " + directory);
     var app = express();
     app.get('/bonescript.js', socketHandlers.socketJSReqHandler);
+    app.use('/bone101', express.static(directory));
     app.use('/bone101/static', express.static(directory+"/static"));
     app.use(express.static(directory));
     var server = http.createServer(app);
