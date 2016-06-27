@@ -269,11 +269,11 @@ exports.writePWMFreqAndValue = function(pin, pwm, freq, value, resp, callback) {
 
 exports.readEeproms = function(eeproms) {
     var EepromFiles = {
-        '/sys/bus/i2c/devices/0-0050/at24-0/eeprom': { type: 'bone' },
-        '/sys/bus/i2c/devices/2-0054/at24-1/eeprom': { type: 'cape' },
-        '/sys/bus/i2c/devices/2-0055/at24-2/eeprom': { type: 'cape' },
-        '/sys/bus/i2c/devices/2-0056/at24-3/eeprom': { type: 'cape' },
-        '/sys/bus/i2c/devices/2-0057/at24-4/eeprom': { type: 'cape' }
+        '/sys/bus/i2c/devices/0-0050/0-00500/nvmem': { type: 'bone' },
+        '/sys/bus/i2c/devices/2-0054/2-00540/nvmem': { type: 'cape' },
+        '/sys/bus/i2c/devices/2-0055/2-00550/nvmem': { type: 'cape' },
+        '/sys/bus/i2c/devices/2-0056/2-00560/nvmem': { type: 'cape' },
+        '/sys/bus/i2c/devices/2-0057/2-00570/nvmem': { type: 'cape' }
     };
     eeproms = eeprom.readEeproms(EepromFiles);
     return(eeproms);
@@ -281,9 +281,9 @@ exports.readEeproms = function(eeproms) {
 
 exports.readPlatform = function(platform) {
     var eeproms = eeprom.readEeproms({
-        '/sys/bus/i2c/devices/0-0050/at24-0/eeprom': { type: 'bone' }
+        '/sys/bus/i2c/devices/0-0050/0-00500/nvmem': { type: 'bone' }
     });
-    var x = eeproms['/sys/bus/i2c/devices/0-0050/at24-0/eeprom'];
+    var x = eeproms['/sys/bus/i2c/devices/0-0050/0-00500/nvmem'];
     platform.name = fs.readFileSync('/proc/device-tree/model', 'ascii').trim();
     if(platform.name.indexOf('Green') > 0) {
         platform.name = platform.name.replace('TI AM335x', 'SeeedStudio')
