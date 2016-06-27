@@ -284,7 +284,7 @@ exports.readPlatform = function(platform) {
         '/sys/bus/i2c/devices/0-0050/0-00500/nvmem': { type: 'bone' }
     });
     var x = eeproms['/sys/bus/i2c/devices/0-0050/0-00500/nvmem'];
-    platform.name = fs.readFileSync('/proc/device-tree/model', 'ascii').trim();
+    platform.name = fs.readFileSync('/proc/device-tree/model', 'ascii').trim().replace(/\0/g, '');
     if(platform.name.indexOf('Green') > 0) {
         platform.name = platform.name.replace('TI AM335x', 'SeeedStudio')
     }
