@@ -293,10 +293,14 @@ exports.readPlatform = function(platform) {
     }
     platform.name = platform.name.replace('TI AM335x BeagleBone', 'BeagleBoard.org BeagleBone');
     platform.name = platform.name.replace('TI AM5728 BeagleBoard-X15', 'BeagleBoard.org BeagleBoard-X15');
-    platform.version = x.version;
-    if(!platform.version.match(/^[\040-\176]*$/)) delete platform.version;
-    platform.serialNumber = x.serialNumber;
-    if(!platform.serialNumber.match(/^[\040-\176]*$/)) delete platform.serialNumber;
+    if(x && x.version) {
+        platform.version = x.version;
+        if(!platform.version.match(/^[\040-\176]*$/)) delete platform.version;
+    }
+    if(x && x.serialNumber) {
+        platform.serialNumber = x.serialNumber;
+        if(!platform.serialNumber.match(/^[\040-\176]*$/)) delete platform.serialNumber;
+    }
     try {
         platform.dogtag = fs.readFileSync('/etc/dogtag', 'ascii');
     } catch(ex) {
