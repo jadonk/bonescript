@@ -32,6 +32,12 @@ exports.require = function(packageName, onfail) {
 
 var fibers = exports.require('fibers');
 
+exports.is_new_capemgr = function(callback) {
+    var exists = exports.file_existsSync('/sys/devices/platform/bone_capemgr/slots');
+    if(callback) callback(exists);
+    return(exists);
+};
+
 exports.is_capemgr = function(callback) {
     return(exports.find_sysfsFile('capemgr', '/sys/devices', 'bone_capemgr.', callback));
 };
