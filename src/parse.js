@@ -78,7 +78,7 @@ var modeFromPinctrl = function(pins, muxRegOffset, muxBase, mode) {
     // ...
     var pinLines = pins.split('\n');
     var numRegistered = pinLines[0].replace(/registered pins: (\d+)/, "$1");
-    var pattern = new RegExp('pin ([0-9]+) .([0-9a-f]+). ([0-9a-f]+) pinctrl-single');
+    var pattern = new RegExp('pin ([0-9]+) .([0-9a-f\.]+). ([0-9a-f]+) pinctrl-single');
     var muxAddress = muxBase + muxRegOffset;
     for(var i = 0; i < numRegistered; i++) {
         if(debug) winston.debug('pinLine = ' + pinLines[i + 1]);
