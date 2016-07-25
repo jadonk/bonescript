@@ -1549,7 +1549,7 @@ var pinIndex = [
             "index": 0,
             "muxmode": 0,
             "path": "ecap.0",
-            "name": "ECAPPWM0"
+            "name": "ECAPPWM0",
             "chip": "48300000",
             "addr": "48300100"
         },
