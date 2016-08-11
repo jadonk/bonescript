@@ -34,7 +34,7 @@
   },
   "optionalDependencies": {
     "serialport": "2.0.6",
-    "i2c": "0.2.1",
+    "i2c-bus": "1.0.3",
     "epoll": "0.1.17",
     "pi-spi": "1.0.1"
   },
