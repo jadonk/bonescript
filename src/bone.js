@@ -1362,7 +1362,7 @@ var pinIndex = [
         "pwm": {
             "module": "ecap2",
             "sysfs": 7,
-            "index": 2,
+            "index": 0,
             "muxmode": 4,
             "path": "ecap.2",
             "name": "ECAPPWM2",
