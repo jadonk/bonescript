@@ -86,13 +86,17 @@ exports.setPinMode = function(pin, pinData, template, resp, callback) {
         gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
         fs.writeFileSync(pinmux+"/state", 'gpio');
     } else if(template == 'bspwm') {
-        fs.writeFileSync(pinmux+"/state", 'pwm');
+        // at least P9_28 uses pwm2
+        var state = pin.key.indexOf("P9_28") == -1 ? "pwm" : "pwm2";
+        fs.writeFileSync(pinmux+"/state", state);
         // Buld a path like: /sys/devices/platform/ocp/48304000.epwmss/48304200.ehrpwm/pwm/pwmchip5
         // pin.pwm.chip looks up the first address and pin.pwm.addr looks up the second
         // file_find figures which pwmchip to use
         // pin.pwm.index tells with half of the PWM to use (0 or 1)
+        // prefix is .ecap for P9_28 and P9_42 and .pwm or .ehrpwm for the rest
+        var prefix = pin.pwm.module.indexOf("ecap") == -1 ? ".pwm" : ".ecap";
         var pwmPath = my.file_find('/sys/devices/platform/ocp/'+pin.pwm.chip
-                + '.epwmss/'+pin.pwm.addr+'.pwm/pwm', 'pwmchip', 1);
+                + '.epwmss/'+pin.pwm.addr+prefix+'/pwm', 'pwmchip', 1);
         // Some versions of kernel (4.4.15-bone11 for instance) still use
         // .ehrpwm for address
         if (pwmPath == null) {
