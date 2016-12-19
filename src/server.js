@@ -21,7 +21,7 @@ exports.serverStart = function(port, directory, callback) {
         port = (process.env.LISTEN_PID > 0) ? 'systemd' : ((process.env.PORT) ? process.env.PORT : 80);
     }
     if(directory === undefined) {
-        directory = (process.env.SERVER_DIR) ? process.env.SERVER_DIR : '/var/lib/cloud9';
+        directory = (process.env.SERVER_DIR) ? process.env.SERVER_DIR : '/usr/share/bone101';
     }
     var server = mylisten(port, directory);
     serverEmitter.on('newListner', addServerListener);
