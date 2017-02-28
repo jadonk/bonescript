@@ -17,6 +17,7 @@
   ],
   "version": "0.6.1",
   "homepage": "http://beagleboard.org/bonescript",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git://github.com/jadonk/bonescript"
@@ -36,7 +37,8 @@
     "serialport": "3.1.2",
     "i2c": "0.2.3",
     "epoll": "0.1.18",
-    "pi-spi": "1.0.1"
+    "pi-spi": "1.0.1",
+    "roboticscape": "0.0.2"
   },
   "devDependencies": {
     "jscoverage": "~0.5.1",
