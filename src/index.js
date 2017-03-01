@@ -24,22 +24,26 @@ var debug = process.env.DEBUG ? true : false;
 // Detect if we are on a Beagle
 var hw;
 if(os.type() == 'Linux' && os.arch() == 'arm') {
-    if(my.is_new_capemgr()) {
+    var osVer = ("" + os.release()).split('.');
+    console.log(osVer.join(":"));
+    if(my.is_new_capemgr() || osVer[0] > 4 ||
+            (osVer[0] == 4 && osVer[1] >= 4)) {
         // Used for 4.4+ kernels using capemgr and universal helpers
         hw = require('./hw_mainline');
+        if(debug) console.log('Using Mainline interface');
     } else if(my.is_cape_universal()) {
         // Used for 3.8 kernels using a single universal overlay with pinmux helpers
         //  located in debugfs at /sys/kernel/debug/pinctrl/44e10800.pinmux/pins
         hw = require('./hw_universal');
-        if(debug) winston.debug('Using Universal Cape interface');
+        if(debug) console.log('Using Universal Cape interface');
     } else if(my.is_capemgr()) {
         // Used for 3.8 kernels using an older out-of-tree version of CapeMgr
         hw = require('./hw_capemgr');
-        if(debug) winston.debug('Using CapeMgr interface');
+        if(debug) console.log('Using CapeMgr interface');
     } else {
         // Used for 3.2 kernels using /sys/kernel/debug/omap_mux/
         hw = require('./hw_oldkernel');
-        if(debug) winston.debug('Using 3.2 kernel interface');
+        if(debug) console.log('Using 3.2 kernel interface');
     }
 } else {
     // Incomplete implementation of a set of hardware stubs to run on non BeagleBone targets
@@ -50,8 +54,9 @@ if(os.type() == 'Linux' && os.arch() == 'arm') {
 if(debug) {
     winston.add(winston.transports.File, {
         filename: hw.logfile,
-        level: 'warn'
+        level: 'debug'
     });
+    winston.level = 'debug';
 } else {
     winston.setLevels(winston.config.syslog.levels);
 }
