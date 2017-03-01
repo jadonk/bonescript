@@ -56,6 +56,7 @@ exports.rcMotor.args = ['motor', 'value', 'callback'];
 
 exports.rcEncoder = function(encoder, value, callback) {
     var x = {};
+    x.encoder = encoder;
     var i;
     if(typeof value !== 'undefined') {
         i = rc.encoder(encoder, value);
