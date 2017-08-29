@@ -82,9 +82,9 @@ exports.setPinMode = function(pin, pinData, template, resp, callback) {
     if(pin.universalName) p = "ocp:" + pin.universalName + "_pinmux";
     var pinmux = my.find_sysfsFile(p, my.is_ocp(), p);
     // if(!pinmux) { throw p + " was not found under " + my.is_ocp(); }
+    gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
     if(pinmux) {        // This is a hack for the new pins on the Blue that appear not to have a pinmux
         if((pinData & 7) == 7) {
-            gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
             fs.writeFileSync(pinmux+"/state", 'gpio');
         } else if(template == 'bspwm') {
             // at least P9_28 uses pwm2
@@ -114,7 +114,9 @@ exports.setPinMode = function(pin, pinData, template, resp, callback) {
         } else {
             resp.err = 'Unknown pin mode template';
         }
-    }  // if(pinmux)
+    }  else {
+        winston.info("No pinmux for " + pin.key);
+    }
     if(callback) callback(resp);
     return(resp);
 };
