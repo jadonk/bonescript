@@ -79,45 +79,6 @@ var pinIndex = [
             "gpio1_24"
         ]
     },
-    
-    // Added for Blue
-    {
-        "name": "RED_LED",
-        "gpio": 66,
-        "led": "red",
-        "mux": "gpmc_a8",
-        "key": "RED_LED",
-        "muxRegOffset": "0x060",
-        "options": [
-            "gpmc_a8",
-            "gmii2_rxd3",
-            "rgmii2_rd3",
-            "mmc2_dat6",
-            "gpmc_a24",
-            "pr1_mii1_rxd0",
-            "mcasp0_aclkx",
-            "gpio1_24"
-        ]
-    },
-    {
-        "name": "GREEN_LED",
-        "gpio": 67,
-        "led": "green",
-        "mux": "gpmc_a8",
-        "key": "GREEN_LED",
-        "muxRegOffset": "0x060",
-        "options": [
-            "gpmc_a8",
-            "gmii2_rxd3",
-            "rgmii2_rd3",
-            "mmc2_dat6",
-            "gpmc_a24",
-            "pr1_mii1_rxd0",
-            "mcasp0_aclkx",
-            "gpio1_24"
-        ]
-    },
-    
     {
         "name": "DGND",
         "key": "P8_1"
@@ -221,6 +182,27 @@ var pinIndex = [
             "mmc1_sdcd"
         ]
     },
+    // Added for Blue
+    {
+        "name": "RED_LED",
+        "gpio": 66,
+        "led":  "red",
+        "mux": "gpmc_advn_ale",
+        "eeprom": 41,
+        "key": "RED_LED",
+        "universalName": "RED_LED",
+        "muxRegOffset": "0x090",
+        "options": [
+            "gpmc_advn_ale",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "mmc1_sdcd"
+        ]
+    },
     {
         "name": "TIMER7",
         "gpio": 67,
@@ -228,6 +210,28 @@ var pinIndex = [
         "eeprom": 44,
         "key": "P8_8",
         "universalName": "P8_08",
+        "muxRegOffset": "0x094",
+        "options": [
+            "gpmc_oen_ren",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "gpio2_3"
+        ]
+    },
+    
+    // Added for Blue
+    {
+        "name": "GREEN_LED",
+        "gpio": 67,
+        "led": "green",
+        "mux": "gpmc_oen_ren",
+        "eeprom": 44,
+        "key": "GREEN_LED",
+        "universalName": "GREEN_LED",
         "muxRegOffset": "0x094",
         "options": [
             "gpmc_oen_ren",
@@ -1307,6 +1311,7 @@ var pinIndex = [
         "mux": "gpmc_a1",
         "eeprom": 33,
         "key": "P9_23",
+        "key2": "GP0_4",        // Added for Blue
         "muxRegOffset": "0x044",
         "options": [
             "gpmc_a1",
@@ -1410,6 +1415,7 @@ var pinIndex = [
             "addr": "48304100"
         },
         "key": "P9_28",
+        "key2": "GP0_6",        // Added for Blue
         "muxRegOffset": "0x19c",
         "options": [
             "mcasp0_ahclkr",
@@ -1626,6 +1632,9 @@ var pinIndex = [
 var pins = {};
 for(var i in pinIndex) {
     pins[pinIndex[i].key] = pinIndex[i];
+    if(pinIndex[i].key2) {
+        pins[pinIndex[i].key2] = pinIndex[i];
+    }
 }
 
 var uarts = {
