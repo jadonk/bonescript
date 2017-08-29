@@ -79,6 +79,45 @@ var pinIndex = [
             "gpio1_24"
         ]
     },
+    
+    // Added for Blue
+    {
+        "name": "RED_LED",
+        "gpio": 66,
+        "led": "red",
+        "mux": "gpmc_a8",
+        "key": "RED_LED",
+        "muxRegOffset": "0x060",
+        "options": [
+            "gpmc_a8",
+            "gmii2_rxd3",
+            "rgmii2_rd3",
+            "mmc2_dat6",
+            "gpmc_a24",
+            "pr1_mii1_rxd0",
+            "mcasp0_aclkx",
+            "gpio1_24"
+        ]
+    },
+    {
+        "name": "GREEN_LED",
+        "gpio": 67,
+        "led": "green",
+        "mux": "gpmc_a8",
+        "key": "GREEN_LED",
+        "muxRegOffset": "0x060",
+        "options": [
+            "gpmc_a8",
+            "gmii2_rxd3",
+            "rgmii2_rd3",
+            "mmc2_dat6",
+            "gpmc_a24",
+            "pr1_mii1_rxd0",
+            "mcasp0_aclkx",
+            "gpio1_24"
+        ]
+    },
+    
     {
         "name": "DGND",
         "key": "P8_1"

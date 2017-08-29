@@ -118,7 +118,13 @@ exports.setPinMode = function(pin, pinData, template, resp, callback) {
 };
 
 exports.setLEDPinToGPIO = function(pin, resp) {
-    var path = "/sys/class/leds/beaglebone:green:" + pin.led + "/trigger";
+    winston.debug('setLEDPinTGPIO');
+    var path;
+    if((pin.led === 'red') || (pin.led === 'green')) {
+        path = "/sys/class/leds/" + pin.led + "/trigger";
+    } else {
+        path = "/sys/class/leds/beaglebone:green:" + pin.led + "/trigger";
+    }
 
     if(my.file_existsSync(path)) {
         fs.writeFileSync(path, "gpio");
@@ -151,8 +157,14 @@ exports.writeGPIOValue = function(pin, value, callback) {
     if(typeof gpioFile[pin.key] == 'undefined') {
         gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
         if(pin.led) {
-            gpioFile[pin.key] = "/sys/class/leds/beaglebone:";
-            gpioFile[pin.key] += "green:" + pin.led + "/brightness";
+            // Handle Blue LEDs
+            if((pin.led === 'red') || (pin.led === 'green')) {
+                gpioFile[pin.key] = "/sys/class/leds/";
+                gpioFile[pin.key] += pin.led + "/brightness";
+            } else {
+                gpioFile[pin.key] = "/sys/class/leds/beaglebone:";
+                gpioFile[pin.key] += "green:" + pin.led + "/brightness";
+            }
         }
         if(!my.file_existsSync(gpioFile[pin.key])) {
             winston.error("Unable to find gpio: " + gpioFile[pin.key]);
