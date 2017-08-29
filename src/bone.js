@@ -1324,7 +1324,7 @@ var pinIndex = [
             "gpio1_17"
         ]
     },
-    {       // The next two are hacks to get the Blue GP0 pins 3 and 5 to work
+    {       // The next four are hacks to get the Blue GP0 pins 3 and 5 to work
         "name": "GPIO1_25",
         "gpio": 57,
         "mux": "gpmc_a1",
@@ -1360,6 +1360,44 @@ var pinIndex = [
             "pr1_mii1_txd3",
             "ehrpwm0_synco",
             "gpio3_20"
+        ]
+    },
+    {
+        "name": "GPIO3_2",
+        "gpio": 98,
+        "mux": "gpmc_a1",
+        "eeprom": 33,
+        "key": "XXX",
+        "key2": "GP1_3",        // Added for Blue
+        "muxRegOffset": "0x044",
+        "options": [
+            "gpmc_a1",
+            "gmii2_rxdv",
+            "rgmii2_rctl",
+            "mmc2_dat0",
+            "gpmc_a17",
+            "pr1_mii1_txd3",
+            "ehrpwm0_synco",
+            "gpio3_2"
+        ]
+    },
+    {
+        "name": "GPIO3_1",
+        "gpio": 97,
+        "mux": "gpmc_a1",
+        "eeprom": 33,
+        "key": "XXX",
+        "key2": "GP1_4",        // Added for Blue
+        "muxRegOffset": "0x044",
+        "options": [
+            "gpmc_a1",
+            "gmii2_rxdv",
+            "rgmii2_rctl",
+            "mmc2_dat0",
+            "gpmc_a17",
+            "pr1_mii1_txd3",
+            "ehrpwm0_synco",
+            "gpio3_1"
         ]
     },
 
