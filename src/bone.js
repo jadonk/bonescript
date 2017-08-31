@@ -250,6 +250,7 @@ var pinIndex = [
         "mux": "gpmc_ben0_cle",
         "eeprom": 42,
         "key": "P8_9",
+        "key2": "PAUSE",
         "universalName": "P8_09",
         "muxRegOffset": "0x09c",
         "options": [
@@ -269,6 +270,7 @@ var pinIndex = [
         "mux": "gpmc_wen",
         "eeprom": 43,
         "key": "P8_10",
+        "key2": "MODE",
         "muxRegOffset": "0x098",
         "options": [
             "gpmc_wen",
