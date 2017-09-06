@@ -184,13 +184,13 @@ var pinIndex = [
     },
     // Added for Blue
     {
-        "name": "RED_LED",
+        "name": "RED",
         "gpio": 66,
         "led":  "red",
         "mux": "gpmc_advn_ale",
         "eeprom": 41,
-        "key": "RED_LED",
-        "universalName": "RED_LED",
+        "key": "RED",
+        "universalName": "RED",
         "muxRegOffset": "0x090",
         "options": [
             "gpmc_advn_ale",
@@ -225,13 +225,13 @@ var pinIndex = [
     
     // Added for Blue
     {
-        "name": "GREEN_LED",
+        "name": "GREEN",
         "gpio": 67,
         "led": "green",
         "mux": "gpmc_oen_ren",
         "eeprom": 44,
-        "key": "GREEN_LED",
-        "universalName": "GREEN_LED",
+        "key": "GREEN",
+        "universalName": "GREEN",
         "muxRegOffset": "0x094",
         "options": [
             "gpmc_oen_ren",
