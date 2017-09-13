@@ -124,7 +124,11 @@ exports.setPinMode = function(pin, pinData, template, resp, callback) {
 exports.setLEDPinToGPIO = function(pin, resp) {
     winston.debug('setLEDPinTGPIO');
     var path;
-    if((pin.led === 'red') || (pin.led === 'green')) {
+    // console.log("setLEDPinToGPIO " + pin);
+    if((pin.led === 'red') || (pin.led === 'green')
+       || (pin.led === 'bat25') || (pin.led === 'bat50')
+       || (pin.led === 'bat75') || (pin.led === 'bat100')
+       || (pin.led === 'wifi')) {
         path = "/sys/class/leds/" + pin.led + "/trigger";
     } else {
         path = "/sys/class/leds/beaglebone:green:" + pin.led + "/trigger";
@@ -162,7 +166,10 @@ exports.writeGPIOValue = function(pin, value, callback) {
         gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
         if(pin.led) {
             // Handle Blue LEDs
-            if((pin.led === 'red') || (pin.led === 'green')) {
+            if((pin.led === 'red') || (pin.led === 'green')
+                   || (pin.led === 'bat25') || (pin.led === 'bat50')
+                   || (pin.led === 'bat75') || (pin.led === 'bat100')
+                   || (pin.led === 'wifi')) {
                 gpioFile[pin.key] = "/sys/class/leds/";
                 gpioFile[pin.key] += pin.led + "/brightness";
             } else {
