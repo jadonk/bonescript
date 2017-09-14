@@ -182,6 +182,27 @@ var pinIndex = [
             "mmc1_sdcd"
         ]
     },
+    // Added for Blue
+    {
+        "name": "RED",
+        "gpio": 66,
+        "led":  "red",
+        "mux": "gpmc_advn_ale",
+        "eeprom": 41,
+        "key": "RED",
+        "universalName": "RED",
+        "muxRegOffset": "0x090",
+        "options": [
+            "gpmc_advn_ale",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "mmc1_sdcd"
+        ]
+    },
     {
         "name": "TIMER7",
         "gpio": 67,
@@ -201,12 +222,35 @@ var pinIndex = [
             "gpio2_3"
         ]
     },
+    
+    // Added for Blue
+    {
+        "name": "GREEN",
+        "gpio": 67,
+        "led": "green",
+        "mux": "gpmc_oen_ren",
+        "eeprom": 44,
+        "key": "GREEN",
+        "universalName": "GREEN",
+        "muxRegOffset": "0x094",
+        "options": [
+            "gpmc_oen_ren",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "gpio2_3"
+        ]
+    },
     {
         "name": "TIMER5",
         "gpio": 69,
         "mux": "gpmc_ben0_cle",
         "eeprom": 42,
         "key": "P8_9",
+        "key2": "PAUSE",
         "universalName": "P8_09",
         "muxRegOffset": "0x09c",
         "options": [
@@ -226,6 +270,7 @@ var pinIndex = [
         "mux": "gpmc_wen",
         "eeprom": 43,
         "key": "P8_10",
+        "key2": "MODE",
         "muxRegOffset": "0x098",
         "options": [
             "gpmc_wen",
@@ -322,6 +367,26 @@ var pinIndex = [
             "gpio0_26"
         ]
     },
+    // For Blue
+    {
+        "name": "BAT100",
+        "gpio": 26,
+        "led":  "bat100",
+        "mux": "gpmc_ad10",
+        "eeprom": 16,
+        "key": "BAT100",
+        "muxRegOffset": "0x028",
+        "options": [
+            "gpmc_ad10",
+            "lcd_data21",
+            "mmc1_dat2",
+            "mmc2_dat6",
+            "ehrpwm2_tripzone_input",
+            "pr1_mii0_txen",
+            "NA",
+            "gpio0_26"
+        ]
+    },
     {
         "name": "GPIO1_15",
         "gpio": 47,
@@ -364,6 +429,26 @@ var pinIndex = [
         "mux": "gpmc_ad11",
         "eeprom": 17,
         "key": "P8_17",
+        "muxRegOffset": "0x02c",
+        "options": [
+            "gpmc_ad11",
+            "lcd_data20",
+            "mmc1_dat3",
+            "mmc2_dat7",
+            "ehrpwm0_synco",
+            "pr1_mii0_txd3",
+            "NA",
+            "gpio0_27"
+        ]
+    },
+    //  For Blue
+    {
+        "name": "BAT25",
+        "gpio": 27,
+        "led":  "bat25",
+        "mux": "gpmc_ad11",
+        "eeprom": 17,
+        "key": "BAT25",
         "muxRegOffset": "0x02c",
         "options": [
             "gpmc_ad11",
@@ -550,6 +635,46 @@ var pinIndex = [
             "gpio1_29"
         ]
     },
+    //  For Blue
+    {
+        "name": "BAT75",
+        "gpio": 61,
+        "led":  "bat75",
+        "mux": "gpmc_csn0",
+        "eeprom": 37,
+        "key": "BAT75",
+        "muxRegOffset": "0x07c",
+        "options": [
+            "gpmc_csn0",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "gpio1_29"
+        ]
+    },
+    //  For Blue, This is a guess
+    {
+        "name": "WIFI",
+        "gpio": 10000,      // Placeholder
+        "led":  "wifi",
+        "mux": "gpmc_csn0",
+        "eeprom": 37,
+        "key": "WIFI",
+        "muxRegOffset": "0x07c",
+        "options": [
+            "gpmc_csn0",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "gpio1_29"
+        ]
+    },
     {
         "name": "GPIO2_22",
         "gpio": 86,
@@ -646,6 +771,26 @@ var pinIndex = [
         "mux": "lcd_data15",
         "eeprom": 8,
         "key": "P8_32",
+        "muxRegOffset": "0x0dc",
+        "options": [
+            "lcd_data15",
+            "gpmc_a19",
+            "NA",
+            "mcasp0_ahclkx",
+            "mcasp0_axr3",
+            "NA",
+            "NA",
+            "gpio0_11"
+        ]
+    },
+        // Added for Blue
+    {
+        "name": "BAT50",
+        "gpio": 11,
+        "led": "bat50",
+        "mux": "lcd_data15",
+        "eeprom": 8,
+        "key": "BAT50",
         "muxRegOffset": "0x0dc",
         "options": [
             "lcd_data15",
@@ -1268,6 +1413,7 @@ var pinIndex = [
         "mux": "gpmc_a1",
         "eeprom": 33,
         "key": "P9_23",
+        "key2": "GP0_4",        // Added for Blue
         "muxRegOffset": "0x044",
         "options": [
             "gpmc_a1",
@@ -1280,6 +1426,84 @@ var pinIndex = [
             "gpio1_17"
         ]
     },
+    {       // The next four are hacks to get the Blue GP0 pins 3 and 5 
+            // and GP1 pins 3 and 4 to work
+        "name": "GPIO1_25",
+        "gpio": 57,
+        "mux": "gpmc_a1",
+        "eeprom": 33,
+        "key": "GP0_3",
+        "key2": "GP0_3",        // Added for Blue
+        "muxRegOffset": "0x044",
+        "options": [
+            "gpmc_a1",
+            "gmii2_rxdv",
+            "rgmii2_rctl",
+            "mmc2_dat0",
+            "gpmc_a17",
+            "pr1_mii1_txd3",
+            "ehrpwm0_synco",
+            "gpio1_25"
+        ]
+    },
+    {
+        "name": "GPIO3_20",
+        "gpio": 116,
+        "mux": "gpmc_a1",
+        "eeprom": 33,
+        "key": "GP0_5",
+        "key2": "GP0_5",        // Added for Blue
+        "muxRegOffset": "0x044",
+        "options": [
+            "gpmc_a1",
+            "gmii2_rxdv",
+            "rgmii2_rctl",
+            "mmc2_dat0",
+            "gpmc_a17",
+            "pr1_mii1_txd3",
+            "ehrpwm0_synco",
+            "gpio3_20"
+        ]
+    },
+    {
+        "name": "GPIO3_2",
+        "gpio": 98,
+        "mux": "gpmc_a1",
+        "eeprom": 33,
+        "key": "GP1_3",
+        "key2": "GP1_3",        // Added for Blue
+        "muxRegOffset": "0x044",
+        "options": [
+            "gpmc_a1",
+            "gmii2_rxdv",
+            "rgmii2_rctl",
+            "mmc2_dat0",
+            "gpmc_a17",
+            "pr1_mii1_txd3",
+            "ehrpwm0_synco",
+            "gpio3_2"
+        ]
+    },
+    {
+        "name": "GPIO3_1",
+        "gpio": 97,
+        "mux": "gpmc_a1",
+        "eeprom": 33,
+        "key": "GP1_4",
+        "key2": "GP1_4",        // Added for Blue
+        "muxRegOffset": "0x044",
+        "options": [
+            "gpmc_a1",
+            "gmii2_rxdv",
+            "rgmii2_rctl",
+            "mmc2_dat0",
+            "gpmc_a17",
+            "pr1_mii1_txd3",
+            "ehrpwm0_synco",
+            "gpio3_1"
+        ]
+    },
+
     {
         "name": "UART1_TXD",
         "gpio": 15,
@@ -1371,6 +1595,7 @@ var pinIndex = [
             "addr": "48304100"
         },
         "key": "P9_28",
+        "key2": "GP0_6",        // Added for Blue
         "muxRegOffset": "0x19c",
         "options": [
             "mcasp0_ahclkr",
@@ -1587,6 +1812,9 @@ var pinIndex = [
 var pins = {};
 for(var i in pinIndex) {
     pins[pinIndex[i].key] = pinIndex[i];
+    if(pinIndex[i].key2) {
+        pins[pinIndex[i].key2] = pinIndex[i];
+    }
 }
 
 var uarts = {
