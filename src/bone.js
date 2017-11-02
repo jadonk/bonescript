@@ -1974,7 +1974,7 @@ var pinIndex = [
         "gpio": 20,
         "mux": "xdma_event_intr1",
         "eeprom": 13,
-        "key": ["P9_41b", "P1_20"],
+        "key": ["P9_41B", "P1_20"],
         "muxRegOffset": "0x1b4",
         "options": [
             "xdma_event_intr1",
@@ -2030,7 +2030,7 @@ var pinIndex = [
         "gpio": 114,
         "mux": "ecap0_in_pwm0_out",
         "eeprom": null,
-        "key": ["P9_42b", "E1_3", "P1_31", "PRU0_4"],
+        "key": ["P9_42B", "E1_3", "P1_31", "PRU0_4"],
         "muxRegOffset": "0x1a0",
         "options": [
             "mcasp0_aclkr",
@@ -2054,6 +2054,8 @@ for(var i in pinIndex) {
     if(typeof pinIndex[i].key == "object") {
         for(var j in pinIndex[i].key) {
             pins[pinIndex[i].key[j]] = pinIndex[i];
+            // remove other keys
+            pins[pinIndex[i].key[j]].key = pinIndex[i].key[j];
         }
     }
     else {
