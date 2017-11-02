@@ -81,11 +81,8 @@ var pinIndex = [
     },
     {
         "name": "DGND",
-        "key": "P8_1"
-    },
-    {
-        "name": "DGND",
-        "key": "P8_2"
+        "key": ["P8_1", "P8_2", "P9_1", "P9_2", "P9_43", "P9_44", "P9_45", "P9_46",
+            "P1_15", "P1_16", "P1_22", "P2_15", "P2_21"]
     },
     {
         "name": "GPIO1_6",
@@ -168,29 +165,9 @@ var pinIndex = [
         "gpio": 66,
         "mux": "gpmc_advn_ale",
         "eeprom": 41,
-        "key": "P8_7",
+        "key": ["P8_7", "RED"],
+        "led": [null, "red"],
         "universalName": "P8_07",
-        "muxRegOffset": "0x090",
-        "options": [
-            "gpmc_advn_ale",
-            "NA",
-            "NA",
-            "NA",
-            "NA",
-            "NA",
-            "NA",
-            "mmc1_sdcd"
-        ]
-    },
-    // Added for Blue
-    {
-        "name": "RED",
-        "gpio": 66,
-        "led":  "red",
-        "mux": "gpmc_advn_ale",
-        "eeprom": 41,
-        "key": "RED",
-        "universalName": "RED",
         "muxRegOffset": "0x090",
         "options": [
             "gpmc_advn_ale",
@@ -208,30 +185,9 @@ var pinIndex = [
         "gpio": 67,
         "mux": "gpmc_oen_ren",
         "eeprom": 44,
-        "key": "P8_8",
+        "key": ["P8_8", "GREEN"],
+        "led": [null, "green"],
         "universalName": "P8_08",
-        "muxRegOffset": "0x094",
-        "options": [
-            "gpmc_oen_ren",
-            "NA",
-            "NA",
-            "NA",
-            "NA",
-            "NA",
-            "NA",
-            "gpio2_3"
-        ]
-    },
-    
-    // Added for Blue
-    {
-        "name": "GREEN",
-        "gpio": 67,
-        "led": "green",
-        "mux": "gpmc_oen_ren",
-        "eeprom": 44,
-        "key": "GREEN",
-        "universalName": "GREEN",
         "muxRegOffset": "0x094",
         "options": [
             "gpmc_oen_ren",
@@ -249,8 +205,7 @@ var pinIndex = [
         "gpio": 69,
         "mux": "gpmc_ben0_cle",
         "eeprom": 42,
-        "key": "P8_9",
-        "key2": "PAUSE",
+        "key": ["P8_9", "PAUSE"],
         "universalName": "P8_09",
         "muxRegOffset": "0x09c",
         "options": [
@@ -269,8 +224,7 @@ var pinIndex = [
         "gpio": 68,
         "mux": "gpmc_wen",
         "eeprom": 43,
-        "key": "P8_10",
-        "key2": "MODE",
+        "key": ["P8_10", "MODE"],
         "muxRegOffset": "0x098",
         "options": [
             "gpmc_wen",
@@ -288,7 +242,7 @@ var pinIndex = [
         "gpio": 45,
         "mux": "gpmc_ad13",
         "eeprom": 29,
-        "key": "P8_11",
+        "key": ["P8_11", "E3_4", "P2_33"],
         "muxRegOffset": "0x034",
         "options": [
             "gpmc_ad13",
@@ -306,7 +260,7 @@ var pinIndex = [
         "gpio": 44,
         "mux": "gpmc_ad12",
         "eeprom": 28,
-        "key": "P8_12",
+        "key": ["P8_12", "E3_3", "P2_24"],
         "muxRegOffset": "0x030",
         "options": [
             "gpmc_ad12",
@@ -336,7 +290,7 @@ var pinIndex = [
             "chip": "48304000",
             "addr": "48304200"
         },
-        "key": "P8_13",
+        "key": ["P8_13", "P2_3"],
         "muxRegOffset": "0x024",
         "options": [
             "gpmc_ad9",
@@ -354,27 +308,8 @@ var pinIndex = [
         "gpio": 26,
         "mux": "gpmc_ad10",
         "eeprom": 16,
-        "key": "P8_14",
-        "muxRegOffset": "0x028",
-        "options": [
-            "gpmc_ad10",
-            "lcd_data21",
-            "mmc1_dat2",
-            "mmc2_dat6",
-            "ehrpwm2_tripzone_input",
-            "pr1_mii0_txen",
-            "NA",
-            "gpio0_26"
-        ]
-    },
-    // For Blue
-    {
-        "name": "BAT100",
-        "gpio": 26,
-        "led":  "bat100",
-        "mux": "gpmc_ad10",
-        "eeprom": 16,
-        "key": "BAT100",
+        "key": ["P8_14", "BAT100", "P1_34"],
+        "led": [null, "bat100", null],
         "muxRegOffset": "0x028",
         "options": [
             "gpmc_ad10",
@@ -392,7 +327,7 @@ var pinIndex = [
         "gpio": 47,
         "mux": "gpmc_ad15",
         "eeprom": 31,
-        "key": "P8_15",
+        "key": ["P8_15", "E4_4", "P2_18"],
         "muxRegOffset": "0x03c",
         "options": [
             "gpmc_ad15",
@@ -410,7 +345,7 @@ var pinIndex = [
         "gpio": 46,
         "mux": "gpmc_ad14",
         "eeprom": 30,
-        "key": "P8_16",
+        "key": ["P8_16", "E4_3", "P2_22"],
         "muxRegOffset": "0x038",
         "options": [
             "gpmc_ad14",
@@ -428,27 +363,8 @@ var pinIndex = [
         "gpio": 27,
         "mux": "gpmc_ad11",
         "eeprom": 17,
-        "key": "P8_17",
-        "muxRegOffset": "0x02c",
-        "options": [
-            "gpmc_ad11",
-            "lcd_data20",
-            "mmc1_dat3",
-            "mmc2_dat7",
-            "ehrpwm0_synco",
-            "pr1_mii0_txd3",
-            "NA",
-            "gpio0_27"
-        ]
-    },
-    //  For Blue
-    {
-        "name": "BAT25",
-        "gpio": 27,
-        "led":  "bat25",
-        "mux": "gpmc_ad11",
-        "eeprom": 17,
-        "key": "BAT25",
+        "key": ["P8_17", "BAT25", "P2_19"],
+        "led": [null, "bat25", null],
         "muxRegOffset": "0x02c",
         "options": [
             "gpmc_ad11",
@@ -466,7 +382,7 @@ var pinIndex = [
         "gpio": 65,
         "mux": "gpmc_clk",
         "eeprom": 40,
-        "key": "P8_18",
+        "key": ["P8_18", "P2_17"],
         "muxRegOffset": "0x08c",
         "options": [
             "gpmc_clk",
@@ -622,7 +538,8 @@ var pinIndex = [
         "gpio": 61,
         "mux": "gpmc_csn0",
         "eeprom": 37,
-        "key": "P8_26",
+        "key": ["P8_26", "BAT75"],
+        "led": [null, "bat75"],
         "muxRegOffset": "0x07c",
         "options": [
             "gpmc_csn0",
@@ -635,44 +552,23 @@ var pinIndex = [
             "gpio1_29"
         ]
     },
-    //  For Blue
     {
-        "name": "BAT75",
-        "gpio": 61,
-        "led":  "bat75",
-        "mux": "gpmc_csn0",
+        "name": "GPIO0_19",
+        "gpio": 19,
+        "mux": "xdma_event_intr0",
         "eeprom": 37,
-        "key": "BAT75",
-        "muxRegOffset": "0x07c",
+        "key": ["WIFI", "P2_31"],
+        "led": ["wifi", null],
+        "muxRegOffset": "0x1b0",
         "options": [
-            "gpmc_csn0",
+            "xdma_event_intr0",
             "NA",
-            "NA",
-            "NA",
-            "NA",
-            "NA",
-            "NA",
-            "gpio1_29"
-        ]
-    },
-    //  For Blue, This is a guess
-    {
-        "name": "WIFI",
-        "gpio": 10000,      // Placeholder
-        "led":  "wifi",
-        "mux": "gpmc_csn0",
-        "eeprom": 37,
-        "key": "WIFI",
-        "muxRegOffset": "0x07c",
-        "options": [
-            "gpmc_csn0",
-            "NA",
-            "NA",
-            "NA",
-            "NA",
-            "NA",
-            "NA",
-            "gpio1_29"
+            "timer4",
+            "clkout1",
+            "spi1_cs1",
+            "pr1_pru1_pru_r31",
+            "EMU2",
+            "gpio0_19"
         ]
     },
     {
@@ -1811,9 +1707,13 @@ var pinIndex = [
 
 var pins = {};
 for(var i in pinIndex) {
-    pins[pinIndex[i].key] = pinIndex[i];
-    if(pinIndex[i].key2) {
-        pins[pinIndex[i].key2] = pinIndex[i];
+    if(typeof pinIndex[i].key == "object") {
+        for(var j in pinIndex[i].key) {
+            pins[pinIndex[i].key[j]] = pinIndex[i];
+        }
+    }
+    else {
+        pins[pinIndex[i].key] = pinIndex[i];
     }
 }
 
