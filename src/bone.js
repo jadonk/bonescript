@@ -228,13 +228,17 @@ var pinIndex = [
         "options": [
             "gpmc_oen_ren",
             "NA",
-            "NA",
+            "timer7",
             "NA",
             "NA",
             "NA",
             "NA",
             "gpio2_3"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "T7",
+            "BSM": "N1"
+        }
     },
     {
         "name": "TIMER5",
@@ -247,13 +251,17 @@ var pinIndex = [
         "options": [
             "gpmc_ben0_cle",
             "NA",
-            "NA",
+            "timer5",
             "NA",
             "NA",
             "NA",
             "NA",
             "gpio2_5"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "T6",
+            "BSM": "N3"
+        }
     },
     {
         "name": "TIMER6",
@@ -265,13 +273,17 @@ var pinIndex = [
         "options": [
             "gpmc_wen",
             "NA",
-            "NA",
+            "timer6",
             "NA",
             "NA",
             "NA",
             "NA",
             "gpio2_4"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "U6",
+            "BSM": "N2"
+        }
     },
     {
         "name": "GPIO1_13",
@@ -289,7 +301,11 @@ var pinIndex = [
             "pr1_mii0_txd",
             "pr1_pru0_pru_r30_15",
             "gpio1_13"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "R12",
+            "BSM": "R6"
+        }
     },
     {
         "name": "GPIO1_12",
@@ -307,7 +323,11 @@ var pinIndex = [
             "pr1_mii0_txd2",
             "pr1_pru0_pru_r30_14",
             "gpio1_12"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "T12",
+            "BSM": "P6"
+        }
     },
     {
         "name": "EHRPWM2B",
@@ -337,7 +357,11 @@ var pinIndex = [
             "pr1_mii0_col",
             "NA",
             "gpio0_23"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "T10",
+            "BSM": "P5"
+        }
     },
     {
         "name": "GPIO0_26",
@@ -356,7 +380,11 @@ var pinIndex = [
             "pr1_mii0_txen",
             "NA",
             "gpio0_26"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "T11",
+            "BSM": "R5"
+        }
     },
     {
         "name": "GPIO1_15",
@@ -374,7 +402,11 @@ var pinIndex = [
             "pr1_ecap0_ecap_capin_apwm_o",
             "pr1_pru0_pru_r31_15",
             "gpio1_15"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "U13",
+            "BSM": "P7"
+        }
     },
     {
         "name": "GPIO1_14",
@@ -392,7 +424,11 @@ var pinIndex = [
             "pr1_mii0_txd0",
             "pr1_pru0_pru_r31_14",
             "gpio1_14"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "V13",
+            "BSM": "T6"
+        }
     },
     {
         "name": "GPIO0_27",
@@ -411,7 +447,11 @@ var pinIndex = [
             "pr1_mii0_txd3",
             "NA",
             "gpio0_27"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "U12",
+            "BSM": "T5"
+        }
     },
     {
         "name": "GPIO2_1",
@@ -429,7 +469,11 @@ var pinIndex = [
             "NA",
             "mcasp0_fsr",
             "gpio2_1"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "V12",
+            "BSM": "T7"
+        }
     },
     {
         "name": "EHRPWM2A",
@@ -459,7 +503,11 @@ var pinIndex = [
             "pr1_mii_mt0_clk",
             "NA",
             "gpio0_22"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "U10",
+            "BSM": "T4"
+        }
     },
     {
         "name": "GPIO1_31",
@@ -477,7 +525,11 @@ var pinIndex = [
             "pr1_pru1_pru_r30_13",
             "pr1_pru1_pru_r31_13",
             "gpio1_31"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "V9",
+            "BSM": "P1"
+        }
     },
     {
         "name": "GPIO1_30",
@@ -495,7 +547,11 @@ var pinIndex = [
             "pr1_pru1_pru_r30_12",
             "pr1_pru1_pru_r31_12",
             "gpio1_30"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "U9",
+            "BSM": "P2"
+        }
     },
     {
         "name": "GPIO1_5",
@@ -513,7 +569,11 @@ var pinIndex = [
             "NA",
             "NA",
             "gpio1_5"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "V8",
+            "BSM": "T1"
+        }
     },
     {
         "name": "GPIO1_4",
@@ -531,7 +591,11 @@ var pinIndex = [
             "NA",
             "NA",
             "gpio1_4"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "U8",
+            "BSM": "T2"
+        }
     },
     {
         "name": "GPIO1_1",
@@ -549,7 +613,11 @@ var pinIndex = [
             "NA",
             "NA",
             "gpio1_1"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "V7",
+            "BSM": "R2"
+        }
     },
     {
         "name": "GPIO1_0",
@@ -567,7 +635,11 @@ var pinIndex = [
             "NA",
             "NA",
             "gpio1_0"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "U7",
+            "BSM": "R3"
+        }
     },
     {
         "name": "GPIO1_29",
@@ -586,7 +658,11 @@ var pinIndex = [
             "NA",
             "NA",
             "gpio1_29"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "V6",
+            "BSM": "P3"
+        }
     },
     {
         "name": "GPIO0_19",
@@ -605,7 +681,11 @@ var pinIndex = [
             "pr1_pru1_pru_r31",
             "EMU2",
             "gpio0_19"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "A15",
+            "BSM": "A4"
+        }
     },
     {
         "name": "GPIO2_22",
@@ -623,14 +703,18 @@ var pinIndex = [
             "pr1_pru1_pru_r30_8",
             "pr1_pru1_pru_r31_8",
             "gpio2_22"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "U5",
+            "BSM": "F3"
+        }
     },
     {
         "name": "GPIO2_24",
         "gpio": 88,
         "mux": "lcd_pclk",
         "eeprom": 59,
-        "key": ["P8_28", "SERVO_2", "P1_35"],
+        "key": ["P8_28", "SERVO_2", "P1_35", "PRU1_10"],
         "muxRegOffset": "0x0e8",
         "options": [
             "lcd_pclk",
@@ -641,7 +725,11 @@ var pinIndex = [
             "pr1_pru1_pru_r30_10",
             "pr1_pru1_pru_r31_10",
             "gpio2_24"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "V5",
+            "BSM": "F1"
+        }
     },
     {
         "name": "GPIO2_23",
@@ -653,20 +741,24 @@ var pinIndex = [
         "options": [
             "lcd_hsync",
             "gpmc_a9",
-            "NA",
+            "gpmc_a2",
             "pr1_edio_data_in3",
             "pr1_edio_data_out3",
             "pr1_pru1_pru_r30_9",
             "pr1_pru1_pru_r31_9",
             "gpio2_23"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "R5",
+            "BSM": "F2"
+        }
     },
     {
         "name": "GPIO2_25",
         "gpio": 89,
         "mux": "lcd_ac_bias_en",
         "eeprom": 60,
-        "key": ["P8_30", "SERVO_4", "P1_4"],
+        "key": ["P8_30", "SERVO_4", "P1_4", "PRU1_11"],
         "muxRegOffset": "0x0ec",
         "options": [
             "lcd_ac_bias_en",
@@ -677,7 +769,11 @@ var pinIndex = [
             "pr1_pru1_pru_r30_11",
             "pr1_pru1_pru_r31_11",
             "gpio2_25"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "R6",
+            "BSM": "E1"
+        }
     },
     {
         "name": "UART5_CTSN",
@@ -695,7 +791,11 @@ var pinIndex = [
             "NA",
             "NA",
             "gpio0_10"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "V4",
+            "BSM": "L1"
+        }
     },
     {
         "name": "UART5_RTSN",
@@ -714,7 +814,11 @@ var pinIndex = [
             "NA",
             "NA",
             "gpio0_11"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "T5",
+            "BSM": "M3"
+        }
     },
     {
         "name": "UART4_RTSN",
@@ -732,7 +836,11 @@ var pinIndex = [
             "NA",
             "NA",
             "gpio0_9"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "V3",
+            "BSM": "L2"
+        }
     },
     {
         "name": "UART3_RTSN",
@@ -762,7 +870,12 @@ var pinIndex = [
             "NA",
             "NA",
             "gpio2_17"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "V3",
+            "BSM": "K1"
+        }
+
     },
     {
         "name": "UART4_CTSN",
@@ -780,7 +893,12 @@ var pinIndex = [
             "NA",
             "NA",
             "gpio0_8"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "V2",
+            "BSM": "L3"
+        }
+
     },
     {
         "name": "UART3_CTSN",
@@ -810,7 +928,12 @@ var pinIndex = [
             "pr1_mii0_rxd1",
             "uart3_ctsn",
             "gpio2_16"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "U3",
+            "BSM": "K2"
+        }
+
     },
     {
         "name": "UART5_TXD",
@@ -828,7 +951,12 @@ var pinIndex = [
             "NA",
             "uart2_ctsn",
             "gpio2_14"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "U1",
+            "BSM": "J1"
+        }
+
     },
     {
         "name": "UART5_RXD",
@@ -846,7 +974,12 @@ var pinIndex = [
             "NA",
             "uart2_rtsn",
             "gpio2_15"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "U2",
+            "BSM": "K3"
+        }
+
     },
     {
         "name": "GPIO2_12",
@@ -864,7 +997,12 @@ var pinIndex = [
             "pr1_pru1_pru_r30_6",
             "pr1_pru1_pru_r31_6",
             "gpio2_12"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "T3",
+            "BSM": "J3"
+        }
+
     },
     {
         "name": "GPIO2_13",
@@ -882,7 +1020,12 @@ var pinIndex = [
             "pr1_pru_pru1_r30_7",
             "pr1_pru1_pru_r31_7",
             "gpio2_13"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "T4",
+            "BSM": "J2"
+        }
+
     },
     {
         "name": "GPIO2_10",
@@ -900,7 +1043,12 @@ var pinIndex = [
             "pr1_pru1_pru_r30_4",
             "pr1_pru1_pru_r31_4",
             "gpio2_10"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "T1",
+            "BSM": "H2"
+        }
+
     },
     {
         "name": "GPIO2_11",
@@ -918,7 +1066,12 @@ var pinIndex = [
             "pr1_pru1_pru_r30_5",
             "pr1_pru1_pru_r31_5",
             "gpio2_11"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "T2",
+            "BSM": "H1"
+        }
+
     },
     {
         "name": "GPIO2_8",
@@ -936,7 +1089,12 @@ var pinIndex = [
             "pr1_pru1_pru_r30_2",
             "pr1_pru1_pru_r31_2",
             "gpio2_8"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "R3",
+            "BSM": "G1"
+        }
+
     },
     {
         "name": "GPIO2_9",
@@ -954,7 +1112,12 @@ var pinIndex = [
             "pr1_pru1_pru_r30_3",
             "pr1_pru1_pru_r31_3",
             "gpio2_9"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "R4",
+            "BSM": "H3"
+        }
+
     },
     {
         "name": "GPIO2_6",
@@ -984,7 +1147,12 @@ var pinIndex = [
             "pr1_pru1_pru_r30_0",
             "pr1_pru1_pru_r31_0",
             "gpio2_6"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "R1",
+            "BSM": "G3"
+        }
+
     },
     {
         "name": "GPIO2_7",
@@ -1014,7 +1182,12 @@ var pinIndex = [
             "pr1_pru1_pru_r30_1",
             "pr1_pru1_pru_r31_1",
             "gpio2_7"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "R2",
+            "BSM": "G2"
+        }
+
     },
     {
         "name": "VDD_3V3",
@@ -1030,11 +1203,18 @@ var pinIndex = [
     },
     {
         "name": "PWR_BUT",
-        "key": ["P9_9", "P2_12"]
+        "key": ["P9_9", "P2_12"],
+        "ball": {
+            "BSM": "T11"
+        }
     },
     {
         "name": "SYS_RESETn",
-        "key": ["P9_10", "P2_26"]
+        "key": ["P9_10", "P2_26"],
+        "ball": {
+            "ZCZ": "A10",
+            "BSM": "R11"
+        }
     },
     {
         "name": "UART4_RXD",
@@ -1052,7 +1232,11 @@ var pinIndex = [
             "pr1_mii1_col",
             "uart4_rxd",
             "gpio0_30"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "T17",
+            "BSM": "P15"
+        }
     },
     {
         "name": "GPIO1_28",
@@ -1070,7 +1254,12 @@ var pinIndex = [
             "NA",
             "mcasp0_aclkr",
             "gpio1_28"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "U18",
+            "BSM": "N14"
+        }
+
     },
     {
         "name": "UART4_TXD",
@@ -1088,7 +1277,12 @@ var pinIndex = [
             "NA",
             "NA",
             "gpio0_31"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "U17",
+            "BSM": "R16"
+        }
+
     },
     {
         "name": "EHRPWM1A",
@@ -1118,7 +1312,12 @@ var pinIndex = [
             "pr1_mii1_txd2",
             "ehrpwm1A",
             "gpio1_18"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "U14",
+            "BSM": "P12"
+        }
+
     },
     {
         "name": "GPIO1_16",
@@ -1136,7 +1335,12 @@ var pinIndex = [
             "pr1_mii_mt1_clk",
             "ehrpwm1_tripzone_input",
             "gpio1_16"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "R13",
+            "BSM": "T12"
+        }
+
     },
     {
         "name": "GPIO2_0",
@@ -1187,7 +1391,11 @@ var pinIndex = [
             "pr1_mii1_txd1",
             "ehrpwm1B",
             "gpio1_19"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "T14",
+            "BSM": "T13"
+        }
     },
     {
         "name": "I2C1_SCL",
@@ -1426,7 +1634,12 @@ var pinIndex = [
             "NA",
             "NA",
             "gpio3_1"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "H17",
+            "BSM": "F14"
+        }
+
     },
     {
         "name": "UART1_TXD",
@@ -1477,7 +1690,7 @@ var pinIndex = [
         "gpio": 14,
         "mux": "uart1_rxd",
         "eeprom": 11,
-        "key": "P9_26",
+        "key": ["P9_26", "UT1_3", "P2.11"],
         "muxRegOffset": "0x180",
         "options": [
             "uart1_rxd",
@@ -1486,27 +1699,35 @@ var pinIndex = [
             "i2c1_sda",
             "NA",
             "pr1_uart0_rxd_mux1",
-            "NA",
+            "pr1_pru1_pru_r31_16",
             "gpio0_14"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "D16",
+            "BSM": "A11"
+        }
     },
     {
         "name": "GPIO3_19",
         "gpio": 115,
         "mux": "mcasp0_fsr",
         "eeprom": 64,
-        "key": "P9_27",
+        "key": ["P9_27", "P2_34", "PRU0_5"],
         "muxRegOffset": "0x1a4",
         "options": [
             "mcasp0_fsr",
             "NA",
             "mcasp0_axr3",
             "mcasp1_fsx",
-            "NA",
+            "EMU2",
             "pr1_pru0_pru_r30_5",
-            "NA",
+            "pr1_pru0_pru_r31_5",
             "gpio3_19"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "C13",
+            "BSM": "B3"
+        }
     },
     {
         "name": "SPI1_CS0",
@@ -1526,8 +1747,7 @@ var pinIndex = [
             "chip": "48304000",
             "addr": "48304100"
         },
-        "key": "P9_28",
-        "key2": "GP0_6",        // Added for Blue
+        "key": ["P9_28", "GP0_6", "P2_30", "PRU0_3"],
         "muxRegOffset": "0x19c",
         "options": [
             "mcasp0_ahclkr",
@@ -1535,10 +1755,14 @@ var pinIndex = [
             "mcasp0_axr2",
             "spi1_cs0",
             "eCAP2_in_PWM2_out",
-            "NA",
-            "NA",
+            "pr1_pru0_pru_r30_3",
+            "pr1_pru0_pru_r31_3",
             "gpio3_17"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "C12",
+            "BSM": "B1"
+        }
     },
     {
         "name": "SPI1_D0",
@@ -1557,7 +1781,7 @@ var pinIndex = [
             "chip": "48300000",
             "addr": "48300200"
         },
-        "key": "P9_29",
+        "key": ["P9_29", "S1_1_4", "S1_2_4", "P1_33", "PRU0_1"],
         "muxRegOffset": "0x194",
         "options": [
             "mcasp0_fsx",
@@ -1565,17 +1789,21 @@ var pinIndex = [
             "NA",
             "spi1_d0",
             "mmc1_sdcd",
-            "NA",
-            "NA",
+            "pr1_pru0_pru_r30_1",
+            "pr1_pru0_pru_r31_1",
             "gpio3_15"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "B13",
+            "BSM": "A2"
+        }
     },
     {
         "name": "SPI1_D1",
         "gpio": 112,
         "mux": "mcasp0_axr0",
         "eeprom": 62,
-        "key": "P9_30",
+        "key": ["P9_30", "S1_1_3", "S1_2_3", "P2_32", "PRU0_2"],
         "muxRegOffset": "0x198",
         "options": [
             "mcasp0_axr0",
@@ -1583,10 +1811,14 @@ var pinIndex = [
             "NA",
             "spi1_d1",
             "mmc2_sdcd",
-            "NA",
-            "NA",
+            "pr1_pru0_pru_r30_2",
+            "pr1_pru0_pru_r31_2",
             "gpio3_16"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "D12",
+            "BSM": "B2"
+        }
     },
     {
         "name": "SPI1_SCLK",
@@ -1605,7 +1837,7 @@ var pinIndex = [
             "chip": "48300000",
             "addr": "48300200"
         },
-        "key": "P9_31",
+        "key": ["P9_31", "S1_1_5", "S1_2_5", "P1_36" ],
         "muxRegOffset": "0x190",
         "options": [
             "mcasp0_aclkx",
@@ -1613,67 +1845,107 @@ var pinIndex = [
             "NA",
             "spi1_sclk",
             "mmc0_sdcd",
-            "NA",
-            "NA",
+            "pr1_pru0_pru_r30_0",
+            "pr1_pru0_pru_r31_0",
             "gpio3_14"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "A13",
+            "BSM": "A1"
+        }
     },
     {
         "name": "VDD_ADC",
-        "key": "P9_32"
+        "key": ["P9_32", "ADC_2", "P1_17"],
+        "ball": {
+            "ZCZ": "A9",
+            "BSM": "B9"
+        }
     },
     {
         "name": "AIN4",
         "ain": 4,
         "eeprom": 71,
         "scale": 4096,
-        "key": "P9_33"
+        "key": ["P9_33", "P1_27"],
+        "ball": {
+            "ZCZ": "C8",
+            "BSM": "C7"
+        }
     },
     {
         "name": "GNDA_ADC",
-        "key": "P9_34"
+        "key": ["P9_34", "P1_18"],
+        "ball": {
+            "ZCZ": "B9",
+            "BSM": "B7"
+        }
     },
     {
         "name": "AIN6",
         "ain": 6,
         "eeprom": 73,
         "scale": 4096,
-        "key": "P9_35"
+        "key": ["P9_35", "P1_2"],
+        "ball": {
+            "ZCZ": "A8",
+            "BSM": "C9"
+        }
     },
     {
         "name": "AIN5",
         "ain": 5,
         "eeprom": 72,
         "scale": 4096,
-        "key": "P9_36"
+        "key": ["P9_36", "P2_35"],
+        "ball": {
+            "ZCZ": "B8",
+            "BSM": "C8"
+        }
     },
     {
         "name": "AIN2",
         "ain": 2,
         "eeprom": 69,
         "scale": 4096,
-        "key": "P9_37"
+        "key": ["P9_37", "ADC_5", "P1_23"],
+        "ball": {
+            "ZCZ": "B7",
+            "BSM": "B6"
+        }
     },
     {
         "name": "AIN3",
         "ain": 3,
         "eeprom": 70,
         "scale": 4096,
-        "key": "P9_38"
+        "key": ["P9_38", "ADC_6", "P1_25"],
+        "ball": {
+            "ZCZ": "A7",
+            "BSM": "C6"
+        }
     },
     {
         "name": "AIN0",
         "ain": 0,
         "eeprom": 67,
         "scale": 4096,
-        "key": "P9_39"
+        "key": ["P9_39", "ADC_3", "P1_19"],
+        "ball": {
+            "ZCZ": "B6",
+            "BSM": "A8"
+        }
     },
     {
         "name": "AIN1",
         "ain": 1,
         "eeprom": 68,
         "scale": 4096,
-        "key": "P9_40"
+        "key": ["P9_40", "ADC_4", "P1_21"],
+        "ball": {
+            "ZCZ": "C7",
+            "BSM": "B8"
+        }
     },
     {
         "name": "CLKOUT2",
@@ -1736,7 +2008,7 @@ var pinIndex = [
             "chip": "48300000",
             "addr": "48300100"
         },
-        "key": "P9_42",
+        "key": ["P9_42", "S1_2_6", "P2_29"],
         "muxRegOffset": "0x164",
         "options": [
             "eCAP0_in_PWM0_out",
@@ -1747,8 +2019,34 @@ var pinIndex = [
             "mmc0_sdwp",
             "xdma_event_intr2",
             "gpio0_7"
-        ]
-    }
+        ],
+        "ball": {
+            "ZCZ": "C18",
+            "BSM": "C5"
+        }
+    },
+    {
+        "name": "GPIO0_7",
+        "gpio": 114,
+        "mux": "ecap0_in_pwm0_out",
+        "eeprom": null,
+        "key": ["P9_42b", "E1_3", "P1_31", "PRU0_4"],
+        "muxRegOffset": "0x1a0",
+        "options": [
+            "mcasp0_aclkr",
+            "eQEP0A_in",
+            "mcasp0_axr2",
+            "mcasp1_aclkx",
+            "mmc0_sdwp",
+            "pr1_pru0_pru_r30_4",
+            "pr1_pru0_pru_r31_4",
+            "gpio3_18"
+        ],
+        "ball": {
+            "ZCZ": "B12",
+            "BSM": "A3"
+        }
+    },
 ];
 
 var pins = {};
@@ -1760,6 +2058,9 @@ for(var i in pinIndex) {
     }
     else {
         pins[pinIndex[i].key] = pinIndex[i];
+    }
+    if(typeof pinIndex[i].gpio == 'number') {
+        pins[pinIndex[i].gpio] = pinIndex[i];
     }
 }
 
