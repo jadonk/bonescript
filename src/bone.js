@@ -23,7 +23,11 @@ var pinIndex = [
             "pr1_mii1_rxd3",
             "eqep1b_in",
             "gpio1_21"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "V15",
+            "BSM": "P13"
+        }
     },
     {
         "name": "USR1",
@@ -41,7 +45,11 @@ var pinIndex = [
             "pr1_mii1_rxd2",
             "eqep1_index",
             "gpio1_22"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "U15",
+            "BSM": "T14"
+        }
     },
     {
         "name": "USR2",
@@ -59,7 +67,11 @@ var pinIndex = [
             "pr1_mii1_rxd1",
             "eqep1_strobe",
             "gpio1_23"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "T15",
+            "BSM": "R14"
+        }
     },
     {
         "name": "USR3",
@@ -77,7 +89,11 @@ var pinIndex = [
             "pr1_mii1_rxd0",
             "mcasp0_aclkx",
             "gpio1_24"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "V16",
+            "BSM": "P14"
+        }
     },
     {
         "name": "DGND",
@@ -101,7 +117,11 @@ var pinIndex = [
             "NA",
             "NA",
             "gpio1_6"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "R9",
+            "BSM": "P4"
+        }
     },
     {
         "name": "GPIO1_7",
@@ -120,7 +140,11 @@ var pinIndex = [
             "NA",
             "NA",
             "gpio1_7"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "T9",
+            "BSM": "R4"
+        }
     },
     {
         "name": "GPIO1_2",
@@ -139,7 +163,11 @@ var pinIndex = [
             "NA",
             "NA",
             "gpio1_2"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "R8",
+            "BSM": "R1"
+        }
     },
     {
         "name": "GPIO1_3",
@@ -158,7 +186,11 @@ var pinIndex = [
             "NA",
             "NA",
             "gpio1_3"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "T8",
+            "BSM": "T3"
+        }
     },
     {
         "name": "TIMER4",
@@ -172,13 +204,17 @@ var pinIndex = [
         "options": [
             "gpmc_advn_ale",
             "NA",
+            "timer4",
             "NA",
             "NA",
             "NA",
             "NA",
-            "NA",
-            "mmc1_sdcd"
-        ]
+            "gpio2_2"
+        ],
+        "ball": {
+            "ZCZ": "R7",
+            "BSM": "M1"
+        }
     },
     {
         "name": "TIMER7",
