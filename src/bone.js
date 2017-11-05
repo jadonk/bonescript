@@ -1202,25 +1202,29 @@ var pinIndex = [
         "gpio": 13,
         "mux": "uart1_rtsn",
         "eeprom": 9,
-        "key": "P9_19",
+        "key": ["P9_19", "P1_28"],
         "muxRegOffset": "0x17c",
         "options": [
             "uart1_rtsn",
-            "NA",
+            "timer5",
             "d_can0_rx",
             "i2c2_scl",
             "spi1_cs1",
-            "NA",
-            "NA",
+            "pr1_uart0_rts_n",
+            "pr1_edc_latch1_in",
             "gpio0_13"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "D17",
+            "BSM": "A10"
+        }
     },
     {
         "name": "I2C2_SDA",
         "gpio": 12,
         "mux": "uart1_ctsn",
         "eeprom": 10,
-        "key": "P9_20",
+        "key": ["P9_20", "P1_26"],
         "muxRegOffset": "0x178",
         "options": [
             "uart1_ctsn",
@@ -1228,10 +1232,14 @@ var pinIndex = [
             "d_can0_tx",
             "i2c2_sda",
             "spi1_cs0",
-            "NA",
-            "NA",
+            "pr1_uart0_cts_n",
+            "pr1_edc_latch0_in",
             "gpio0_12"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "D18",
+            "BSM": "B10"
+        }
     },
     {
         "name": "UART2_TXD",
@@ -1250,18 +1258,22 @@ var pinIndex = [
             "chip": "48300000",
             "addr": "48300200"
         },
-        "key": "P9_21",
+        "key": ["P9_21", "GPS_4", "P1_10"],
         "muxRegOffset": "0x154",
         "options": [
             "spi0_d0",
             "uart2_txd",
             "i2c2_scl",
             "ehrpwm0B",
-            "NA",
-            "NA",
-            "NA",
+            "pr1_uart_rts_n",
+            "pr1_edio_latch_in",
+            "EMU3",
             "gpio0_3"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "B17",
+            "BSM": "B13"
+        }
     },
     {
         "name": "UART2_RXD",
@@ -1280,26 +1292,29 @@ var pinIndex = [
             "chip": "48300000",
             "addr": "48300200"
         },
-        "key": "P9_22",
+        "key": ["P9_22", "GPS_3", "P1_8"],
         "muxRegOffset": "0x150",
         "options": [
             "spi0_sclk",
             "uart2_rxd",
             "i2c2_sda",
             "ehrpwm0A",
-            "NA",
-            "NA",
-            "NA",
+            "pr1_uart_cts_n",
+            "pr1_edio_sof",
+            "EMU2",
             "gpio0_2"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "A17",
+            "BSM": "A13"
+        }
     },
     {
         "name": "GPIO1_17",
         "gpio": 49,
         "mux": "gpmc_a1",
         "eeprom": 33,
-        "key": "P9_23",
-        "key2": "GP0_4",        // Added for Blue
+        "key": ["P9_23", "GP0_4"],
         "muxRegOffset": "0x044",
         "options": [
             "gpmc_a1",
@@ -1310,86 +1325,73 @@ var pinIndex = [
             "pr1_mii1_txd3",
             "ehrpwm0_synco",
             "gpio1_17"
-        ]
-    },
-    {       // The next four are hacks to get the Blue GP0 pins 3 and 5 
-            // and GP1 pins 3 and 4 to work
-        "name": "GPIO1_25",
-        "gpio": 57,
-        "mux": "gpmc_a1",
-        "eeprom": 33,
-        "key": "GP0_3",
-        "key2": "GP0_3",        // Added for Blue
-        "muxRegOffset": "0x044",
-        "options": [
-            "gpmc_a1",
-            "gmii2_rxdv",
-            "rgmii2_rctl",
-            "mmc2_dat0",
-            "gpmc_a17",
-            "pr1_mii1_txd3",
-            "ehrpwm0_synco",
-            "gpio1_25"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "V14",
+            "BSM": "R12"
+        }
     },
     {
-        "name": "GPIO3_20",
-        "gpio": 116,
-        "mux": "gpmc_a1",
-        "eeprom": 33,
-        "key": "GP0_5",
-        "key2": "GP0_5",        // Added for Blue
-        "muxRegOffset": "0x044",
+        "name": "GPIO1_25",
+        "gpio": 57,
+        "mux": "gpmc_wpn",
+        "eeprom": null,
+        "key": ["GP0_3", "P2_6"],
+        "muxRegOffset": "0x064",
         "options": [
-            "gpmc_a1",
-            "gmii2_rxdv",
-            "rgmii2_rctl",
-            "mmc2_dat0",
-            "gpmc_a17",
-            "pr1_mii1_txd3",
-            "ehrpwm0_synco",
-            "gpio3_20"
-        ]
+            "gpmc_wpn",
+            "gmii2_rxer",
+            "gpmc_csn5",
+            "rmii2_rxer",
+            "mmc2_sdcd",
+            "pr1_mii1_txen",
+            "uart4_txd",
+            "gpio1_25"
+        ],
+        "ball": {
+            "ZCZ": "U16",
+            "BSM": "T15"
+        }
     },
     {
         "name": "GPIO3_2",
         "gpio": 98,
-        "mux": "gpmc_a1",
-        "eeprom": 33,
+        "mux": "",
+        "eeprom": null,
         "key": "GP1_3",
-        "key2": "GP1_3",        // Added for Blue
-        "muxRegOffset": "0x044",
+        "muxRegOffset": "0x110",
         "options": [
-            "gpmc_a1",
-            "gmii2_rxdv",
-            "rgmii2_rctl",
-            "mmc2_dat0",
-            "gpmc_a17",
-            "pr1_mii1_txd3",
-            "ehrpwm0_synco",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
             "gpio3_2"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "J15"
+        }
     },
     {
         "name": "GPIO3_1",
         "gpio": 97,
-        "mux": "gpmc_a1",
-        "eeprom": 33,
+        "mux": "",
+        "eeprom": null,
         "key": "GP1_4",
-        "key2": "GP1_4",        // Added for Blue
-        "muxRegOffset": "0x044",
+        "muxRegOffset": "0x10c",
         "options": [
-            "gpmc_a1",
-            "gmii2_rxdv",
-            "rgmii2_rctl",
-            "mmc2_dat0",
-            "gpmc_a17",
-            "pr1_mii1_txd3",
-            "ehrpwm0_synco",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
             "gpio3_1"
         ]
     },
-
     {
         "name": "UART1_TXD",
         "gpio": 15,
@@ -1631,10 +1633,32 @@ var pinIndex = [
     },
     {
         "name": "CLKOUT2",
+        "gpio": 116,
+        "mux": "mcasp0_axr1",
+        "eeprom": null,
+        "key": ["P9_41", "GP0_5", "P2_28", "PRU0_6"],
+        "muxRegOffset": "0x1a8",
+        "options": [
+            "mcasp0_axr1",
+            "eQEP0_index",
+            "mcasp1_axr0",
+            "EMU3",
+            "NA",
+            "NA",
+            "NA",
+            "gpio3_20"
+        ],
+        "ball": {
+            "ZCZ": "D13",
+            "BSM": "C3"
+        }
+    },
+    {
+        "name": "CLKOUT2",
         "gpio": 20,
         "mux": "xdma_event_intr1",
         "eeprom": 13,
-        "key": "P9_41",
+        "key": ["P9_41b", "P1_20"],
         "muxRegOffset": "0x1b4",
         "options": [
             "xdma_event_intr1",
@@ -1645,7 +1669,11 @@ var pinIndex = [
             "NA",
             "NA",
             "gpio0_20"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "D14",
+            "BSM": "B4"
+        }
     },
     {
         "name": "GPIO0_7",
@@ -1676,22 +1704,6 @@ var pinIndex = [
             "xdma_event_intr2",
             "gpio0_7"
         ]
-    },
-    {
-        "name": "DGND",
-        "key": "P9_43"
-    },
-    {
-        "name": "DGND",
-        "key": "P9_44"
-    },
-    {
-        "name": "DGND",
-        "key": "P9_45"
-    },
-    {
-        "name": "DGND",
-        "key": "P9_46"
     }
 ];
 
