@@ -1397,7 +1397,7 @@ var pinIndex = [
         "gpio": 15,
         "mux": "uart1_txd",
         "eeprom": 12,
-        "key": "P9_24",
+        "key": ["P9_24", "UT1_4", "P2_9"],
         "muxRegOffset": "0x184",
         "options": [
             "uart1_txd",
@@ -1408,14 +1408,18 @@ var pinIndex = [
             "pr1_uart0_txd_mux1",
             "NA",
             "gpio0_15"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "D15",
+            "BSM": "B11"
+        }
     },
     {
         "name": "GPIO3_21",
         "gpio": 117,
         "mux": "mcasp0_ahclkx",
         "eeprom": 66,
-        "key": "P9_25",
+        "key": ["P9_25", "P1_29", "PRU0_7"],
         "muxRegOffset": "0x1ac",
         "options": [
             "mcasp0_ahclkx",
@@ -1426,7 +1430,11 @@ var pinIndex = [
             "NA",
             "NA",
             "gpio3_21"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "A14",
+            "BSM": "C4"
+        }
     },
     {
         "name": "UART1_RXD",
