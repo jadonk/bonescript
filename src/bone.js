@@ -576,7 +576,7 @@ var pinIndex = [
         "gpio": 86,
         "mux": "lcd_vsync",
         "eeprom": 57,
-        "key": "P8_27",
+        "key": ["P8_27", "SERVO_1", "P2_35"],
         "muxRegOffset": "0x0e0",
         "options": [
             "lcd_vsync",
@@ -594,7 +594,7 @@ var pinIndex = [
         "gpio": 88,
         "mux": "lcd_pclk",
         "eeprom": 59,
-        "key": "P8_28",
+        "key": ["P8_28", "SERVO_2", "P1_35"],
         "muxRegOffset": "0x0e8",
         "options": [
             "lcd_pclk",
@@ -612,7 +612,7 @@ var pinIndex = [
         "gpio": 87,
         "mux": "lcd_hsync",
         "eeprom": 58,
-        "key": "P8_29",
+        "key": ["P8_29", "SERVO_3", "P1_2"],
         "muxRegOffset": "0x0e4",
         "options": [
             "lcd_hsync",
@@ -630,7 +630,7 @@ var pinIndex = [
         "gpio": 89,
         "mux": "lcd_ac_bias_en",
         "eeprom": 60,
-        "key": "P8_30",
+        "key": ["P8_30", "SERVO_4", "P1_4"],
         "muxRegOffset": "0x0ec",
         "options": [
             "lcd_ac_bias_en",
@@ -666,27 +666,8 @@ var pinIndex = [
         "gpio": 11,
         "mux": "lcd_data15",
         "eeprom": 8,
-        "key": "P8_32",
-        "muxRegOffset": "0x0dc",
-        "options": [
-            "lcd_data15",
-            "gpmc_a19",
-            "NA",
-            "mcasp0_ahclkx",
-            "mcasp0_axr3",
-            "NA",
-            "NA",
-            "gpio0_11"
-        ]
-    },
-        // Added for Blue
-    {
-        "name": "BAT50",
-        "gpio": 11,
-        "led": "bat50",
-        "mux": "lcd_data15",
-        "eeprom": 8,
-        "key": "BAT50",
+        "key": ["P8_32", "BAT50"],
+        "led": [null, "bat50"],
         "muxRegOffset": "0x0dc",
         "options": [
             "lcd_data15",
@@ -704,7 +685,7 @@ var pinIndex = [
         "gpio": 9,
         "mux": "lcd_data13",
         "eeprom": 6,
-        "key": "P8_33",
+        "key": ["P8_33", "E2_4"],
         "muxRegOffset": "0x0d4",
         "options": [
             "lcd_data13",
@@ -752,7 +733,7 @@ var pinIndex = [
         "gpio": 8,
         "mux": "lcd_data12",
         "eeprom": 5,
-        "key": "P8_35",
+        "key": ["P8_35", "E2_3"],
         "muxRegOffset": "0x0d0",
         "options": [
             "lcd_data12",
@@ -782,7 +763,7 @@ var pinIndex = [
             "chip": "48302000",
             "addr": "48302200"
         },
-        "key": "P8_36",
+        "key": ["P8_36", "SERVO_PWR_EN"],
         "muxRegOffset": "0x0c8",
         "options": [
             "lcd_data10",
@@ -800,7 +781,7 @@ var pinIndex = [
         "gpio": 78,
         "mux": "lcd_data8",
         "eeprom": 53,
-        "key": "P8_37",
+        "key": ["P8_37", "UT5_4"],
         "muxRegOffset": "0x0c0",
         "options": [
             "lcd_data8",
@@ -818,7 +799,7 @@ var pinIndex = [
         "gpio": 79,
         "mux": "lcd_data9",
         "eeprom": 54,
-        "key": "P8_38",
+        "key": ["P8_38", "UT5_3"],
         "muxRegOffset": "0x0c4",
         "options": [
             "lcd_data9",
@@ -836,7 +817,7 @@ var pinIndex = [
         "gpio": 76,
         "mux": "lcd_data6",
         "eeprom": 51,
-        "key": "P8_39",
+        "key": ["P8_39", "SERVO_5"],
         "muxRegOffset": "0x0b8",
         "options": [
             "lcd_data6",
@@ -854,7 +835,7 @@ var pinIndex = [
         "gpio": 77,
         "mux": "lcd_data7",
         "eeprom": 52,
-        "key": "P8_40",
+        "key": ["P8_40", "SERVO_6"],
         "muxRegOffset": "0x0bc",
         "options": [
             "lcd_data7",
@@ -872,7 +853,7 @@ var pinIndex = [
         "gpio": 74,
         "mux": "lcd_data4",
         "eeprom": 49,
-        "key": "P8_41",
+        "key": ["P8_41", "SERVO_7"],
         "muxRegOffset": "0x0b0",
         "options": [
             "lcd_data4",
@@ -890,7 +871,7 @@ var pinIndex = [
         "gpio": 75,
         "mux": "lcd_data5",
         "eeprom": 50,
-        "key": "P8_42",
+        "key": ["P8_42", "SERVO_8"],
         "muxRegOffset": "0x0b4",
         "options": [
             "lcd_data5",
@@ -1000,60 +981,40 @@ var pinIndex = [
         ]
     },
     {
-        "name": "DGND",
-        "key": "P9_1"
-    },
-    {
-        "name": "DGND",
-        "key": "P9_2"
-    },
-    {
         "name": "VDD_3V3",
-        "key": "P9_3"
-    },
-    {
-        "name": "VDD_3V3",
-        "key": "P9_4"
+        "key": ["P9_3", "P9_4", "P1_14", "P2_23"] 
     },
     {
         "name": "VDD_5V",
-        "key": "P9_5"
-    },
-    {
-        "name": "VDD_5V",
-        "key": "P9_6"
+        "key": ["P9_5", "P9_6", "P1_1"]
     },
     {
         "name": "SYS_5V",
-        "key": "P9_7"
-    },
-    {
-        "name": "SYS_5V",
-        "key": "P9_8"
+        "key": ["P9_7", "P9_8", "P1_24", "P2_13"]
     },
     {
         "name": "PWR_BUT",
-        "key": "P9_9"
+        "key": ["P9_9", "P2_12"]
     },
     {
         "name": "SYS_RESETn",
-        "key": "P9_10"
+        "key": ["P9_10", "P2_26"]
     },
     {
         "name": "UART4_RXD",
         "gpio": 30,
         "mux": "gpmc_wait0",
         "eeprom": 18,
-        "key": "P9_11",
+        "key": ["P9_11", "DSM_3", "P2_5"],
         "muxRegOffset": "0x070",
         "options": [
             "gpmc_wait0",
             "mii2_crs",
-            "NA",
+            "gpmc_csn4",
             "rmii2_crs_dv",
             "mmc1_sdcd",
-            "NA",
-            "NA",
+            "pr1_mii1_col",
+            "uart4_rxd",
             "gpio0_30"
         ]
     },
@@ -1062,7 +1023,7 @@ var pinIndex = [
         "gpio": 60,
         "mux": "gpmc_ben1",
         "eeprom": 36,
-        "key": "P9_12",
+        "key": ["P9_12", "P2_8"],
         "muxRegOffset": "0x078",
         "options": [
             "gpmc_ben1",
@@ -1080,7 +1041,7 @@ var pinIndex = [
         "gpio": 31,
         "mux": "gpmc_wpn",
         "eeprom": 19,
-        "key": "P9_13",
+        "key": ["P9_13", "P2_7"],
         "muxRegOffset": "0x074",
         "options": [
             "gpmc_wpn",
@@ -1110,7 +1071,7 @@ var pinIndex = [
             "chip": "48302000",
             "addr": "48302200"
         },
-        "key": "P9_14",
+        "key": ["P9_14", "P2_1"],
         "muxRegOffset": "0x048",
         "options": [
             "gpmc_a2",
@@ -1140,6 +1101,27 @@ var pinIndex = [
             "ehrpwm1_tripzone_input",
             "gpio1_16"
         ]
+    },
+    {
+        "name": "GPIO2_0",
+        "gpio": 64,
+        "mux": "gpmc_csn3",
+        "eeprom": null,
+        "key": ["P9_15b", "P2_20"],
+        "muxRegOffset": "0x088",
+        "options": [
+            "gpmc_csn3",
+            "gpmc_a3",
+            "rmii2_crs_dv",
+            "mmc2_cmd",
+            "pr1_mii0_crs",
+            "pr1_mdio_data",
+            "gpio2_0"
+        ],
+        "ball": {
+            "ZCZ": "T13",
+            "BSM": "R7"
+        }
     },
     {
         "name": "EHRPWM1B",
@@ -1176,36 +1158,44 @@ var pinIndex = [
         "gpio": 5,
         "mux": "spi0_cs0",
         "eeprom": 3,
-        "key": "P9_17",
+        "key": ["P9_17", "I2C_3", "P1_6"],
         "muxRegOffset": "0x15c",
         "options": [
             "spi0_cs0",
             "mmc2_sdwp",
             "i2c1_scl",
-            "NA",
-            "NA",
-            "NA",
-            "NA",
+            "ehrpwm0_synci",
+            "pr1_uart0_txd",
+            "pr1_edio_data_in1",
+            "pr1_edio_data_out1",
             "gpio0_5"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "A16",
+            "BSM": "A14"
+        }
     },
     {
         "name": "I2C1_SDA",
         "gpio": 4,
         "mux": "spi0_d1",
         "eeprom": 2,
-        "key": "P9_18",
+        "key": ["P9_18", "I2C_4", "P1_12"],
         "muxRegOffset": "0x158",
         "options": [
             "spi0_d1",
             "mmc1_sdwp",
             "i2c1_sda",
-            "NA",
-            "NA",
-            "NA",
-            "NA",
+            "ehrpwm0_tripzone_input",
+            "pr1_uart0_rxd",
+            "pr1_edio_data_in0",
+            "pr1_edio_data_out0",
             "gpio0_4"
-        ]
+        ],
+        "ball": {
+            "ZCZ": "B16",
+            "BSM": "B14"
+        }
     },
     {
         "name": "I2C2_SCL",
