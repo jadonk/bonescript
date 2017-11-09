@@ -347,9 +347,13 @@ exports.myeval = function(x) {
 
 exports.getpin = function(pin) {
     if(typeof pin == 'object') return(pin);
-    else if(typeof pin == 'string') return(bone.pins[pin]);
-    else if(typeof pin == 'number') return(bone.pinIndex[pin]);
-    else throw("Invalid pin: " + pin);
+    else {
+        var pinObject = bone.getPinObject(pin);
+        if(typeof pinObject != 'object') {
+            throw("Invalid pin: " + pin);
+        }
+        return(bone.getPinObject(pin));
+    }
 };
 
 exports.wrapCall = function(m, func, funcArgs, cbArgs) {

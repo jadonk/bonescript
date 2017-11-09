@@ -2052,17 +2052,19 @@ var pinIndex = [
 var pins = {};
 for(var i in pinIndex) {
     if(typeof pinIndex[i].key == "object") {
-        for(var j in pinIndex[i].key) {
-            pins[pinIndex[i].key[j]] = pinIndex[i];
-            // remove other keys
-            pins[pinIndex[i].key[j]].key = pinIndex[i].key[j];
+        for(var j=0; j < pinIndex[i].key.length; j++) {
+            var myKey = pinIndex[i].key[j];
+            //console.log("key[" + j + "].[" + myKey + "]: " + i);
+            pins[myKey] = i;
         }
-    }
-    else {
-        pins[pinIndex[i].key] = pinIndex[i];
+    } else {
+        pins[pinIndex[i].key] = i;
     }
     if(typeof pinIndex[i].gpio == 'number') {
-        pins[pinIndex[i].gpio] = pinIndex[i];
+        pins["GPIO_" + pinIndex[i].gpio] = i;
+    }
+    if(typeof pinIndex[i].eeprom == 'number') {
+        pins["EEPROM_" + pinIndex[i].eeprom] = i;
     }
 }
 
@@ -2115,7 +2117,41 @@ var i2c = {
     }
 };
 
-exports.pins = pins;
-exports.pinIndex = pinIndex;
+exports.getPinObject = function(key) {
+    if(typeof key == "string") {
+        // Ignore case
+        key = key.toUpperCase();
+        // Replace alternate separators and leading zeros
+        key = key.replace(/[\.\-_ ]0*/g, "_");
+    }
+    if(typeof key == "number") {
+        key = "GPIO_" + key;
+    }
+    //console.log(key);
+    //console.log(pins[key]);
+    if(typeof pinIndex[pins[key]] == "object") {
+        var pinObject = Object.assign({}, pinIndex[pins[key]]);
+        // Remove other keys
+        pins[key].key = key;
+    } else {
+        return(null);
+    }
+    return(pinObject);
+};
+
+exports.getPinKeys = function(filter) {
+    var keys = [];
+    for(var key in pins) {
+        if(typeof filter != 'undefined') {
+            if(key.search(filter) >= 0) {
+                keys.push(key);
+            }
+        } else {
+            keys.push(key);
+        }
+    }
+    return(keys);
+};
+
 exports.uarts = uarts;
 exports.i2c = i2c;

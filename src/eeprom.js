@@ -23,7 +23,7 @@ var fs = require('fs');
 var buffer = require('buffer');
 var util = require('util');
 var winston = require('winston');
-var bone = require('./bone').pins;
+var bone = require('./bone');
 
 var debug = process.env.DEBUG ? true : false;
 
@@ -186,9 +186,11 @@ var parseCapeEeprom = function(x) {
     data.currentSYS_5V = x.readUint16BE(240);
     data.DCSupplied = x.readUint16BE(242);
     data.mux = {};
-    for(var pin in bone) {
-        if(typeof bone[pin].eeprom != 'undefined') {
-            var pinOffset = bone[pin].eeprom * 2 + 88;
+    var pins = bone.getPinKeys("EEPROM");
+    for(var i=0; i < pins.length; i++) {
+        var pin = bone.getPinObject(pins[i]);
+        if(typeof pin.eeprom != 'undefined') {
+            var pinOffset = pin.eeprom * 2 + 88;
             var pinData = x.readUint16BE(pinOffset);
             var pinObject = {};
             var used = (pinData & 0x8000) >> 15;

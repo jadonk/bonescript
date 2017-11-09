@@ -411,6 +411,7 @@ exports.readPlatform = function(platform) {
         'ascii').trim();
     if(platform.name == 'A335BONE') platform.name = 'BeagleBone';
     if(platform.name == 'A335BNLT') platform.name = 'BeagleBone Black';
+    if(platform.name == 'A335PBGL') platform.name = 'PocketBeagle';
     platform.version = fs.readFileSync(my.is_capemgr() + '/baseboard/revision',
         'ascii').trim();
     if(platform.version[0] == 0x1A) {
@@ -420,6 +421,10 @@ exports.readPlatform = function(platform) {
     else if(platform.version.match(/^GR/)) {
         platform.version = platform.version.substr(2);
         platform.name = 'BeagleBone Green';
+    }
+    else if(platform.version.match(/^BL/)) {
+        platform.version = platform.version.substr(2);
+        platform.name = 'BeagleBone Blue';
     }
     else if(!platform.version.match(/^[\040-\176]*$/)) delete platform.version;
     platform.serialNumber = fs.readFileSync(my.is_capemgr() +
