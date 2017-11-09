@@ -2131,8 +2131,7 @@ exports.getPinObject = function(key) {
     //console.log(pins[key]);
     if(typeof pinIndex[pins[key]] == "object") {
         var pinObject = Object.assign({}, pinIndex[pins[key]]);
-        // Remove other keys
-        pins[key].key = key;
+        pinObject.key = key; // remove other keys
     } else {
         return(null);
     }
