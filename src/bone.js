@@ -2159,20 +2159,20 @@ var pinIndex = [
     },
     {
         "name": "GPIO1_20",
-        "gpio": 52,
+        "gpio": 54,
         "mux": "gpmc_a4",
         "eeprom": null,
-        "key": ["P2_10"],
+        "key": "P2_10",
         "muxRegOffset": "0x050",
         "options": [
-            "uart0_rxd",
-            "spi1_cs1",
-            "dcan0_4x",
-            "i2c2_scl",
-            "eCAP1_in_PWM1_out",
-            "pr1_pru1_pru_r30_15",
+            "gpmc_a4",
+            "gmii2_txd1",
+            "rgmii2_td1",
+            "rmii2_txd1",
+            "gpmc_a20",
+            "pr1_mii1_txd0",
             "pr1_pru1_pru_r31_15",
-            "gpio1_11"
+            "gpio1_20"
         ],
         "ball": {
             "ZCZ": "R14",
@@ -2283,6 +2283,23 @@ exports.getPinKeys = function(filter) {
     }
     return(keys);
 };
+
+// from https://stackoverflow.com/questions/15478954/sort-array-elements-string-with-numbers-natural-sort
+exports.naturalCompare = function(a, b) {
+    var ax = [], bx = [];
+
+    a.replace(/(\d+)|(\D+)/g, function(_, $1, $2) { ax.push([$1 || Infinity, $2 || ""]) });
+    b.replace(/(\d+)|(\D+)/g, function(_, $1, $2) { bx.push([$1 || Infinity, $2 || ""]) });
+
+    while(ax.length && bx.length) {
+        var an = ax.shift();
+        var bn = bx.shift();
+        var nn = (an[0] - bn[0]) || an[1].localeCompare(bn[1]);
+        if(nn) return nn;
+    }
+
+    return ax.length - bx.length;
+}
 
 exports.uarts = uarts;
 exports.i2c = i2c;
