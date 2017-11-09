@@ -34,6 +34,36 @@ expectedResults.push({
     "keys": boneKeys
 });
 
+var ainKeys = [];
+for(var i=0; i<=7; i++) {
+    ainKeys.push("A" + i);
+}
+expectedResults.push({
+    "name": "AnalogInPins",
+    "search": /^A[0-7]/,
+    "keys": ainKeys
+});
+
+var gpioKeys = [];
+for(var i=0; i<=117; i++) {
+    gpioKeys.push("GPIO_" + i);
+}
+expectedResults.push({
+    "name": "GPIOPins",
+    "search": /^GPIO_/,
+    "keys": gpioKeys
+});
+
+var eepromKeys = [];
+for(var i=0; i<74; i++) {
+    eepromKeys.push("EEPROM_" + i);
+}
+expectedResults.push({
+    "name": "EEPROM",
+    "search": /^EEPROM_/,
+    "keys": eepromKeys
+});
+
 var results = {};
 
 for(var i=0; i < expectedResults.length; i++) {

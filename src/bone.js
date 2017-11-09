@@ -1948,6 +1948,17 @@ var pinIndex = [
         }
     },
     {
+        "name": "AIN7",
+        "ain": 7,
+        "eeprom": null,
+        "scale": 4096,
+        "key": "P2_36",
+        "ball": {
+            "ZCZ": "C9",
+            "BSM": "D7"
+        }
+    },
+    {
         "name": "CLKOUT2",
         "gpio": 116,
         "mux": "mcasp0_axr1",
