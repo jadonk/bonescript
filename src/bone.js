@@ -1347,7 +1347,7 @@ var pinIndex = [
         "gpio": 64,
         "mux": "gpmc_csn3",
         "eeprom": null,
-        "key": ["P9_15b", "P2_20"],
+        "key": ["P9_15B", "P2_20"],
         "muxRegOffset": "0x088",
         "options": [
             "gpmc_csn3",
@@ -1690,7 +1690,7 @@ var pinIndex = [
         "gpio": 14,
         "mux": "uart1_rxd",
         "eeprom": 11,
-        "key": ["P9_26", "UT1_3", "P2.11"],
+        "key": ["P9_26", "UT1_3", "P2_11"],
         "muxRegOffset": "0x180",
         "options": [
             "uart1_rxd",
@@ -2045,6 +2045,138 @@ var pinIndex = [
         "ball": {
             "ZCZ": "B12",
             "BSM": "A3"
+        }
+    },
+    {
+        "name": "USB1_DRVVBUS",
+        "key": "P1_3",
+        "ball": {
+            "ZCZ": "F15",
+            "BSM": "M14"
+        },
+        "muxRegOffset": "0x134"
+    },
+    {
+        "name": "USB1_VBUS",
+        "key": "P1_5",
+        "ball": {
+            "ZCZ": "T18",
+            "BSM": "M15"
+        },
+        "muxRegOffset": "0x130"
+    },
+    {
+        "name": "VIN_USB",
+        "key": "P1_7",
+        "ball": {
+            "BSM": ["P9", "R9", "T9"]
+        },
+    },
+    {
+        "name": "USB1_DN",
+        "key": "P1_9",
+        "ball": {
+            "ZCZ": "R18",
+            "BSM": "L16"
+        },
+        "muxRegOffset": "0x120"
+    },
+    {
+        "name": "USB1_DP",
+        "key": "P1_11",
+        "ball": {
+            "ZCZ": "R17",
+            "BSM": "L15"
+        },
+        "muxRegOffset": "0x124"
+    },
+    {
+        "name": "USB1_ID",
+        "key": "P1_13",
+        "ball": {
+            "ZCZ": "P17",
+            "BSM": "L14"
+        },
+        "muxRegOffset": "0x12c"
+    },
+    {
+        "name": "VIN_BAT",
+        "key": "P2_14",
+        "ball": {
+            "BSM": ["P8", "R8", "T8"]
+        },
+    },
+    {
+        "name": "BAT_TEMP",
+        "key": "P2_16",
+        "ball": {
+            "BSM": "N6"
+        },
+    },
+    {
+        "name": "UART0_RXD",
+        "gpio": 42,
+        "mux": "uart0_rxd",
+        "eeprom": null,
+        "key": ["UT0_3", "P1_32"],
+        "muxRegOffset": "0x170",
+        "options": [
+            "uart0_rxd",
+            "spi1_cs0",
+            "dcan0_tx",
+            "i2c2_sda",
+            "eCAP2_in_PWM2_out",
+            "pr1_pru1_pru_r30_14",
+            "pr1_pru1_pru_r31_14",
+            "gpio1_10"
+        ],
+        "ball": {
+            "ZCZ": "E15",
+            "BSM": "A12"
+        }
+    },
+    {
+        "name": "UART0_TXD",
+        "gpio": 43,
+        "mux": "uart0_txd",
+        "eeprom": null,
+        "key": ["UT0_4", "P1_30"],
+        "muxRegOffset": "0x174",
+        "options": [
+            "uart0_rxd",
+            "spi1_cs1",
+            "dcan0_4x",
+            "i2c2_scl",
+            "eCAP1_in_PWM1_out",
+            "pr1_pru1_pru_r30_15",
+            "pr1_pru1_pru_r31_15",
+            "gpio1_11"
+        ],
+        "ball": {
+            "ZCZ": "E16",
+            "BSM": "B12"
+        }
+    },
+    {
+        "name": "GPIO1_20",
+        "gpio": 52,
+        "mux": "gpmc_a4",
+        "eeprom": null,
+        "key": ["P2_10"],
+        "muxRegOffset": "0x050",
+        "options": [
+            "uart0_rxd",
+            "spi1_cs1",
+            "dcan0_4x",
+            "i2c2_scl",
+            "eCAP1_in_PWM1_out",
+            "pr1_pru1_pru_r30_15",
+            "pr1_pru1_pru_r31_15",
+            "gpio1_11"
+        ],
+        "ball": {
+            "ZCZ": "R14",
+            "BSM": "R13"
         }
     },
 ];
