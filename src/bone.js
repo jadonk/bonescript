@@ -2171,7 +2171,7 @@ var pinIndex = [
             "rmii2_txd1",
             "gpmc_a20",
             "pr1_mii1_txd0",
-            "pr1_pru1_pru_r31_15",
+            "eQEP1A_in",
             "gpio1_20"
         ],
         "ball": {
@@ -2197,6 +2197,9 @@ for(var i in pinIndex) {
     }
     if(typeof pinIndex[i].eeprom == 'number') {
         pins["EEPROM_" + pinIndex[i].eeprom] = i;
+    }
+    if(typeof pinIndex[i].ain == 'number') {
+        pins["A" + pinIndex[i].ain] = i;
     }
 }
 
