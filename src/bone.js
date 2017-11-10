@@ -2190,6 +2190,50 @@ var pinIndex = [
             "BSM": "R13"
         }
     },
+    {
+        "name": "GPIO1_27",
+        "gpio": 59,
+        "mux": "gpmc_a11",
+        "eeprom": null,
+        "key": "P2_2",
+        "muxRegOffset": "0x06c",
+        "options": [
+            "gpmc_a11",
+            "gmii2_rxd0",
+            "rgmii2_rd0",
+            "rmii2_rxd0",
+            "gpmc_a27",
+            "pr1_mii1_rxer",
+            "mcasp0_axr1",
+            "gpio1_27"
+        ],
+        "ball": {
+            "ZCZ": "V17",
+            "BSM": "T16"
+        }
+    },
+    {
+        "name": "GPIO1_26",
+        "gpio": 58,
+        "mux": "gpmc_a10",
+        "eeprom": null,
+        "key": "P2_4",
+        "muxRegOffset": "0x068",
+        "options": [
+            "gpmc_a10",
+            "gmii2_rxd1",
+            "rgmii2_rd1",
+            "rmii2_rxd1",
+            "gpmc_a26",
+            "pr1_mii1_rxdv",
+            "mcasp0_axr0",
+            "gpio1_26"
+        ],
+        "ball": {
+            "ZCZ": "T16",
+            "BSM": "R15"
+        }
+    },
 ];
 
 var pins = {};
