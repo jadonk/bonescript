@@ -2234,6 +2234,50 @@ var pinIndex = [
             "BSM": "R15"
         }
     },
+    {
+        "name": "GPIO1_9",
+        "gpio": 41,
+        "mux": "uart0_rtsn",
+        "eeprom": null,
+        "key": "P2_25",
+        "muxRegOffset": "0x16c",
+        "options": [
+            "uart0_rtsn",
+            "uart4_txd",
+            "dcan1_rx",
+            "i2c1_scl",
+            "spi1_d1",
+            "spi1_cs0",
+            "pr1_edc_sync1_out",
+            "gpio1_9"
+        ],
+        "ball": {
+            "ZCZ": "E17",
+            "BSM": "C13"
+        }
+    },
+    {
+        "name": "GPIO1_8",
+        "gpio": 40,
+        "mux": "uart0_ctsn",
+        "eeprom": null,
+        "key": "P2_27",
+        "muxRegOffset": "0x168",
+        "options": [
+            "uart0_ctsn",
+            "uart4_txd",
+            "dcan1_tx",
+            "i2c1_sda",
+            "spi1_d0",
+            "timer7",
+            "pr1_edc_sync0_out",
+            "gpio1_8"
+        ],
+        "ball": {
+            "ZCZ": "E18",
+            "BSM": "C12"
+        }
+    },
 ];
 
 var pins = {};
