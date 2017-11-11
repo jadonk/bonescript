@@ -98,7 +98,9 @@ var pinIndex = [
     {
         "name": "DGND",
         "key": ["P8_1", "P8_2", "P9_1", "P9_2", "P9_43", "P9_44", "P9_45", "P9_46",
-            "P1_15", "P1_16", "P1_22", "P2_15", "P2_21"]
+            "P1_15", "P1_16", "P1_22", "P2_15", "P2_21",
+            "E1_1", "E2_1", "E3_1", "E4_1", "S_1_1_1", "S1_2_1", "UT0_1", "UT1_1", "UT5_1",
+            "DSM2_2", "I2C_1", "GPS_2", "GPS_6"]
     },
     {
         "name": "GPIO1_6",
@@ -197,8 +199,8 @@ var pinIndex = [
         "gpio": 66,
         "mux": "gpmc_advn_ale",
         "eeprom": 41,
-        "key": ["P8_7", "RED"],
-        "led": [null, "red"],
+        "key": ["P8_7", "RED", "GP1_5],
+        "led": [null, "red", "red"],
         "universalName": "P8_07",
         "muxRegOffset": "0x090",
         "options": [
@@ -221,8 +223,8 @@ var pinIndex = [
         "gpio": 67,
         "mux": "gpmc_oen_ren",
         "eeprom": 44,
-        "key": ["P8_8", "GREEN"],
-        "led": [null, "green"],
+        "key": ["P8_8", "GREEN", "GP1_6"],
+        "led": [null, "green", "green"],
         "universalName": "P8_08",
         "muxRegOffset": "0x094",
         "options": [
@@ -1191,7 +1193,9 @@ var pinIndex = [
     },
     {
         "name": "VDD_3V3",
-        "key": ["P9_3", "P9_4", "P1_14", "P2_23"] 
+        "key": ["P9_3", "P9_4", "P1_14", "P2_23",
+            "E1_2", "E2_2", "E3_2", "E4_2", "GP0_2", "GP1_2", "S1_1_2", "S1_2_2",
+            "UT0_2", "UT1_2", "UT5_2", "DSM2_1"] 
     },
     {
         "name": "VDD_5V",
@@ -1199,7 +1203,7 @@ var pinIndex = [
     },
     {
         "name": "SYS_5V",
-        "key": ["P9_7", "P9_8", "P1_24", "P2_13"]
+        "key": ["P9_7", "P9_8", "P1_24", "P2_13", "GPS_5"]
     },
     {
         "name": "PWR_BUT",
@@ -1221,7 +1225,7 @@ var pinIndex = [
         "gpio": 30,
         "mux": "gpmc_wait0",
         "eeprom": 18,
-        "key": ["P9_11", "DSM_3", "P2_5"],
+        "key": ["P9_11", "DSM2_3", "P2_5"],
         "muxRegOffset": "0x070",
         "options": [
             "gpmc_wait0",
@@ -1876,7 +1880,7 @@ var pinIndex = [
     },
     {
         "name": "GNDA_ADC",
-        "key": ["P9_34", "P1_18"],
+        "key": ["P9_34", "ADC_1", "P1_18"],
         "ball": {
             "ZCZ": "B9",
             "BSM": "B7"
