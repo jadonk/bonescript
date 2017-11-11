@@ -2299,6 +2299,69 @@ var pinIndex = [
             "BSM": "C14"
         }
     },
+    {
+        "name": "ETH_MDIO",
+        "gpio": 0,
+        "mux": "mdio_data",
+        "eeprom": null,
+        "muxRegOffset": "0x148",
+        "options": [
+            "mdio_data",
+            "timer6",
+            "uart5_rxd",
+            "uart3_ctsn",
+            "mmc0_sdcd",
+            "mmc1_cmd",
+            "mmc2_cmd",
+            "gpio0_0"
+        ],
+        "ball": {
+            "ZCZ": "M17",
+            "BSM": "E13"
+        }
+    },
+    {
+        "name": "ETH_CLK",
+        "gpio": 1,
+        "mux": "mdio_clk",
+        "eeprom": null,
+        "muxRegOffset": "0x14c",
+        "options": [
+            "mdio_clk",
+            "timer5",
+            "uart5_txd",
+            "uart3_rtsn",
+            "mmc0_wp",
+            "mmc1_clk",
+            "mmc2_clk",
+            "gpio0_1"
+        ],
+        "ball": {
+            "ZCZ": "M18",
+            "BSM": "D13"
+        }
+    },
+    {
+        "name": "ETH_CLK",
+        "gpio": 1,
+        "mux": "mdio_clk",
+        "eeprom": null,
+        "muxRegOffset": "0x14c",
+        "options": [
+            "mdio_clk",
+            "timer5",
+            "uart5_txd",
+            "uart3_rtsn",
+            "mmc0_wp",
+            "mmc1_clk",
+            "mmc2_clk",
+            "gpio0_1"
+        ],
+        "ball": {
+            "ZCZ": "M18",
+            "BSM": "D13"
+        }
+    },
 ];
 
 var pins = {};
