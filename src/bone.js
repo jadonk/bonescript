@@ -199,7 +199,7 @@ var pinIndex = [
         "gpio": 66,
         "mux": "gpmc_advn_ale",
         "eeprom": 41,
-        "key": ["P8_7", "RED", "GP1_5],
+        "key": ["P8_7", "RED", "GP1_5"],
         "led": [null, "red", "red"],
         "universalName": "P8_07",
         "muxRegOffset": "0x090",
