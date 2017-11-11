@@ -69,6 +69,37 @@ expectedResults.push({
     "keys": eepromKeys
 });
 
+var blueKeys = [];
+for(var i=3; i<=6; i++) {
+    blueKeys.push("GP0_" + i);
+    blueKeys.push("GP1_" + i);
+    blueKeys.push("S1_1_" + i);
+    blueKeys.push("S1_2_" + i);
+    blueKeys.push("ADC_" + i);
+}
+for(var i=3; i<=4; i++) {
+    for(var j=0; j<=3; j++) {
+        blueKeys.push("E" + j + "_" + i);
+    }
+    blueKeys.push("I2C_" + i);
+    blueKeys.push("UT0_" + i);
+    blueKeys.push("UT1_" + i);
+    blueKeys.push("UT5_" + i);
+}
+blueKeys.push("RED");
+blueKeys.push("GREEN");
+blueKeys.push("BAT25");
+blueKeys.push("BAT50");
+blueKeys.push("BAT75");
+blueKeys.push("BAT100");
+blueKeys.push("PAUSE");
+blueKeys.push("MODE");
+expectedResults.push({
+    "name": "BeagleBoneBlue",
+    "search": /^((E[1234]|GP[01]|S1_[12]|I2C|UT[015]|ADC)_|RED|GREEN|BAT|PAUSE|MODE)/,
+    "keys": blueKeys
+});
+
 var results = {};
 
 for(var i=0; i < expectedResults.length; i++) {
