@@ -77,6 +77,9 @@ for(var i=1; i<=6; i++) {
     blueKeys.push("S1_2_" + i);
     blueKeys.push("ADC_" + i);
 }
+for(var i=2; i<=6; i++) {
+    blueKeys.push("GPS_" + i);
+}
 for(var i=1; i<=4; i++) {
     for(var j=1; j<=4; j++) {
         blueKeys.push("E" + j + "_" + i);
@@ -85,6 +88,9 @@ for(var i=1; i<=4; i++) {
     blueKeys.push("UT0_" + i);
     blueKeys.push("UT1_" + i);
     blueKeys.push("UT5_" + i);
+}
+for(var i=1; i<=3; i++) {
+    blueKeys.push("DSM2_" + i);
 }
 blueKeys.push("RED");
 blueKeys.push("GREEN");
@@ -96,7 +102,7 @@ blueKeys.push("PAUSE");
 blueKeys.push("MODE");
 expectedResults.push({
     "name": "BeagleBoneBlue",
-    "search": /^((E[1234]|GP[01]|S1_[12]|I2C|UT[015]|ADC)_|RED|GREEN|BAT|PAUSE|MODE)/,
+    "search": /^((E[1234]|GP[01]|S1_[12]|I2C|UT[015]|ADC|DSM2)_|RED|GREEN|BAT|PAUSE|MODE)/,
     "keys": blueKeys
 });
 
