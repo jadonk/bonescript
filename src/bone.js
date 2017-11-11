@@ -2404,6 +2404,48 @@ var pinIndex = [
             "BSM": "J15"
         }
     },
+    {
+        "name": "MII_TX1",
+        "gpio": 21,
+        "mux": "gmii1_txd1",
+        "eeprom": null,
+        "muxRegOffset": "0x124",
+        "options": [
+            "gmii1_txd1",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "gpio0_21"
+        ],
+        "ball": {
+            "ZCZ": "K16",
+            "BSM": "H14"
+        }
+    },
+    {
+        "name": "MII_TX1",
+        "gpio": 21,
+        "mux": "gmii1_txd1",
+        "eeprom": null,
+        "muxRegOffset": "0x124",
+        "options": [
+            "gmii1_txd1",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "gpio0_21"
+        ],
+        "ball": {
+            "ZCZ": "K16",
+            "BSM": "H14"
+        }
+    },
 ];
 
 var pins = {};
