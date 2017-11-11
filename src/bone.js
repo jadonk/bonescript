@@ -2061,6 +2061,7 @@ var pinIndex = [
     },
     {
         "name": "USB1_DRVVBUS",
+        "gpio": 109,
         "key": "P1_3",
         "muxRegOffset": "0x134",
         "mux": "USB1_DRVVBUS",
@@ -2184,7 +2185,7 @@ var pinIndex = [
     },
     {
         "name": "GPIO1_20",
-        "gpio": 54,
+        "gpio": 52,
         "mux": "gpmc_a4",
         "eeprom": null,
         "key": "P2_10",
