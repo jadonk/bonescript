@@ -2062,6 +2062,19 @@ var pinIndex = [
     {
         "name": "USB1_DRVVBUS",
         "key": "P1_3",
+        "muxRegOffset": "0x134",
+        "mux": "USB1_DRVVBUS",
+        "eeprom": null,
+        "options": [
+            "USB1_DRVVBUS",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "gpio3_13"
+        ],
         "ball": {
             "ZCZ": "F15",
             "BSM": "M14"
