@@ -2300,7 +2300,7 @@ var pinIndex = [
         }
     },
     {
-        "name": "ETH_MDIO",
+        "name": "MDIO_DATA",
         "gpio": 0,
         "mux": "mdio_data",
         "eeprom": null,
@@ -2321,7 +2321,7 @@ var pinIndex = [
         }
     },
     {
-        "name": "ETH_CLK",
+        "name": "MDIO_CLK",
         "gpio": 1,
         "mux": "mdio_clk",
         "eeprom": null,
@@ -2342,24 +2342,66 @@ var pinIndex = [
         }
     },
     {
-        "name": "ETH_CLK",
-        "gpio": 1,
-        "mux": "mdio_clk",
+        "name": "MII_TX3",
+        "gpio": 16,
+        "mux": "gmii1_txd3",
         "eeprom": null,
-        "muxRegOffset": "0x14c",
+        "muxRegOffset": "0x11c",
         "options": [
-            "mdio_clk",
-            "timer5",
-            "uart5_txd",
-            "uart3_rtsn",
-            "mmc0_wp",
-            "mmc1_clk",
-            "mmc2_clk",
-            "gpio0_1"
+            "gmii1_txd3",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "gpio0_16"
         ],
         "ball": {
-            "ZCZ": "M18",
-            "BSM": "D13"
+            "ZCZ": "J18",
+            "BSM": "G15"
+        }
+    },
+    {
+        "name": "MII_TX2",
+        "gpio": 17,
+        "mux": "gmii1_txd2",
+        "eeprom": null,
+        "muxRegOffset": "0x120",
+        "options": [
+            "gmii1_txd2",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "gpio0_17"
+        ],
+        "ball": {
+            "ZCZ": "K15",
+            "BSM": "G16"
+        }
+    },
+    {
+        "name": "USB0_DRVVBUS",
+        "gpio": 18,
+        "mux": "USB0_DRVVBUS",
+        "eeprom": null,
+        "muxRegOffset": "0x11c",
+        "options": [
+            "USB0_DRVVBUS",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "gpio0_18"
+        ],
+        "ball": {
+            "ZCZ": "F16",
+            "BSM": "J15"
         }
     },
 ];
