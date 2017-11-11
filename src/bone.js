@@ -2594,6 +2594,174 @@ var pinIndex = [
             "BSM": "E14"
         }
     },
+    {
+        "name": "MMC0_DAT3",
+        "gpio": 90,
+        "mux": "mmc0_dat3",
+        "eeprom": null,
+        "muxRegOffset": "0x0f0",
+        "options": [
+            "mmc0_dat3",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "gpio2_26"
+        ],
+        "ball": {
+            "ZCZ": "F17",
+            "BSM": "C15"
+        }
+    },
+    {
+        "name": "MMC0_DAT2",
+        "gpio": 91,
+        "mux": "mmc0_dat2",
+        "eeprom": null,
+        "muxRegOffset": "0x0f4",
+        "options": [
+            "mmc0_dat2",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "gpio2_27"
+        ],
+        "ball": {
+            "ZCZ": "F18",
+            "BSM": "C16"
+        }
+    },
+    {
+        "name": "MMC0_DAT1",
+        "gpio": 92,
+        "mux": "mmc0_dat1",
+        "eeprom": null,
+        "muxRegOffset": "0x0f8",
+        "options": [
+            "mmc0_dat1",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "gpio2_28"
+        ],
+        "ball": {
+            "ZCZ": "G15",
+            "BSM": "A15"
+        }
+    },
+    {
+        "name": "MMC0_DAT0",
+        "gpio": 93,
+        "mux": "mmc0_dat0",
+        "eeprom": null,
+        "muxRegOffset": "0x0fc",
+        "options": [
+            "mmc0_dat0",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "gpio2_29"
+        ],
+        "ball": {
+            "ZCZ": "G16",
+            "BSM": "A16"
+        }
+    },
+    {
+        "name": "MMC0_CLK",
+        "gpio": 94,
+        "mux": "mmc0_clk",
+        "eeprom": null,
+        "muxRegOffset": "0x100",
+        "options": [
+            "mmc0_clk",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "gpio2_30"
+        ],
+        "ball": {
+            "ZCZ": "G17",
+            "BSM": "B15"
+        }
+    },
+    {
+        "name": "MMC0_CMD",
+        "gpio": 95,
+        "mux": "mmc0_cmd",
+        "eeprom": null,
+        "muxRegOffset": "0x104",
+        "options": [
+            "mmc0_cmd",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "gpio2_31"
+        ],
+        "ball": {
+            "ZCZ": "G18",
+            "BSM": "B16"
+        }
+    },
+    {
+        "name": "MII_COL",
+        "gpio": 96,
+        "mux": "gmii1_col",
+        "eeprom": null,
+        "muxRegOffset": "0x108",
+        "options": [
+            "gmii1_col",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "gpio3_0"
+        ],
+        "ball": {
+            "ZCZ": "H16",
+            "BSM": "F15"
+        }
+    },
+    {
+        "name": "MII_TXEN",
+        "gpio": 99,
+        "mux": "gmii1_txen",
+        "eeprom": null,
+        "muxRegOffset": "0x114",
+        "options": [
+            "gmii1_txen",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "gpio3_3"
+        ],
+        "ball": {
+            "ZCZ": "J16",
+            "BSM": "G14"
+        }
+    },
 ];
 
 var pins = {};
