@@ -1717,7 +1717,7 @@ var pinIndex = [
         "gpio": 115,
         "mux": "mcasp0_fsr",
         "eeprom": 64,
-        "key": ["P9_27", "P2_34", "PRU0_5"],
+        "key": ["P9_27", "P2_34", "PRU0_5", "E1_4"],
         "muxRegOffset": "0x1a4",
         "options": [
             "mcasp0_fsr",
