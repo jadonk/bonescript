@@ -2278,17 +2278,38 @@ var pinIndex = [
             "BSM": "C12"
         }
     },
+    {
+        "name": "MMC0_SDCD",
+        "gpio": 6,
+        "mux": "spi0_cs1",
+        "eeprom": null,
+        "muxRegOffset": "0x160",
+        "options": [
+            "spi0_cs1",
+            "uart3_rxd",
+            "eCAP1_in_PWM1_out",
+            "mmc0_pow",
+            "xdma_event_intr2",
+            "mmc0_sdcd",
+            "EMU4",
+            "gpio0_6"
+        ],
+        "ball": {
+            "ZCZ": "C15",
+            "BSM": "C14"
+        }
+    },
 ];
 
 var pins = {};
 for(var i in pinIndex) {
-    if(typeof pinIndex[i].key == "object") {
+    if(typeof pinIndex[i].key == 'object') {
         for(var j=0; j < pinIndex[i].key.length; j++) {
             var myKey = pinIndex[i].key[j];
             //console.log("key[" + j + "].[" + myKey + "]: " + i);
             pins[myKey] = i;
         }
-    } else {
+    } else if(typeof pinIndex[i] != 'undefined') {
         pins[pinIndex[i].key] = i;
     }
     if(typeof pinIndex[i].gpio == 'number') {
@@ -2299,6 +2320,10 @@ for(var i in pinIndex) {
     }
     if(typeof pinIndex[i].ain == 'number') {
         pins["A" + pinIndex[i].ain] = i;
+    }
+    if(typeof pinIndex[i].muxRegOffset == 'string') {
+        var offset = pinIndex[i].muxRegOffset.toUpperCase();
+        pins["MUX_" + offset] = i;
     }
 }
 
