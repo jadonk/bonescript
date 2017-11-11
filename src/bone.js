@@ -1615,7 +1615,8 @@ var pinIndex = [
             "gpio3_2"
         ],
         "ball": {
-            "ZCZ": "J15"
+            "ZCZ": "J15",
+            "BSM": "E15"
         }
     },
     {
@@ -2760,6 +2761,174 @@ var pinIndex = [
         "ball": {
             "ZCZ": "J16",
             "BSM": "G14"
+        }
+    },
+    {
+        "name": "MII_RXDV",
+        "gpio": 100,
+        "mux": "gmii1_rxdv",
+        "eeprom": null,
+        "muxRegOffset": "0x118",
+        "options": [
+            "gmii1_rxdv",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "gpio3_4"
+        ],
+        "ball": {
+            "ZCZ": "J17",
+            "BSM": "F16"
+        }
+    },
+    {
+        "name": "I2C0_SDA",
+        "gpio": 101,
+        "mux": "I2C0_SDA",
+        "eeprom": null,
+        "muxRegOffset": "0x188",
+        "options": [
+            "I2C0_SDA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "gpio3_5"
+        ],
+        "ball": {
+            "ZCZ": "C17",
+            "BSM": "C11"
+        }
+    },
+    {
+        "name": "I2C0_SCL",
+        "gpio": 102,
+        "mux": "I2C0_SCL",
+        "eeprom": null,
+        "muxRegOffset": "0x18c",
+        "options": [
+            "I2C0_SCL",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "gpio3_6"
+        ],
+        "ball": {
+            "ZCZ": "C16",
+            "BSM": "C10"
+        }
+    },
+    {
+        "name": "EMU0",
+        "gpio": 103,
+        "mux": "EMU0",
+        "eeprom": null,
+        "muxRegOffset": "0x1e4",
+        "options": [
+            "EMU0",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "gpio3_7"
+        ],
+        "ball": {
+            "ZCZ": "C14",
+            "BSM": "E2"
+        }
+    },
+    {
+        "name": "EMU1",
+        "gpio": 104,
+        "mux": "EMU1",
+        "eeprom": null,
+        "muxRegOffset": "0x1e8",
+        "options": [
+            "EMU1",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "gpio3_8"
+        ],
+        "ball": {
+            "ZCZ": "B14",
+            "BSM": "E3"
+        }
+    },
+    {
+        "name": "MII_TXCLK",
+        "gpio": 105,
+        "mux": "gmii1_txclk",
+        "eeprom": null,
+        "muxRegOffset": "0x12c",
+        "options": [
+            "gmii1_txclk",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "gpio3_9"
+        ],
+        "ball": {
+            "ZCZ": "K18",
+            "BSM": "H16"
+        }
+    },
+    {
+        "name": "MII_RXCLK",
+        "gpio": 106,
+        "mux": "gmii1_rxclk",
+        "eeprom": null,
+        "muxRegOffset": "0x130",
+        "options": [
+            "gmii1_rxclk",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "gpio3_10"
+        ],
+        "ball": {
+            "ZCZ": "L18",
+            "BSM": "E16"
+        }
+    },
+    {
+        "name": "MII_RXCLK",
+        "gpio": 106,
+        "mux": "gmii1_rxclk",
+        "eeprom": null,
+        "muxRegOffset": "0x130",
+        "options": [
+            "gmii1_rxclk",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "NA",
+            "gpio3_10"
+        ],
+        "ball": {
+            "ZCZ": "L18",
+            "BSM": "E16"
         }
     },
 ];
