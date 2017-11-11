@@ -54,8 +54,10 @@ expectedResults.push({
     "keys": gpioKeys
 });
 // removes must be done high-to-low to keep indexes valid
-gpioKeys.splice(25,1); // remove GPIO_25
-gpioKeys.splice(24,1); // remove GPIO_24
+gpioKeys.splice(108,1); // remove GPIO3_12
+gpioKeys.splice(107,1); // remove GPIO3_11
+gpioKeys.splice(25,1); // remove GPIO0_25
+gpioKeys.splice(24,1); // remove GPIO0_24
 
 var eepromKeys = [];
 for(var i=0; i<74; i++) {
