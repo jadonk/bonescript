@@ -70,15 +70,15 @@ expectedResults.push({
 });
 
 var blueKeys = [];
-for(var i=3; i<=6; i++) {
+for(var i=1; i<=6; i++) {
     blueKeys.push("GP0_" + i);
     blueKeys.push("GP1_" + i);
     blueKeys.push("S1_1_" + i);
     blueKeys.push("S1_2_" + i);
     blueKeys.push("ADC_" + i);
 }
-for(var i=3; i<=4; i++) {
-    for(var j=0; j<=3; j++) {
+for(var i=1; i<=4; i++) {
+    for(var j=1; j<=4; j++) {
         blueKeys.push("E" + j + "_" + i);
     }
     blueKeys.push("I2C_" + i);
