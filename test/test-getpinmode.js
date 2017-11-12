@@ -67,6 +67,7 @@ var expectedResults = [
     {"pin":"P9_13","name":"UART4_TXD"},
     {"pin":"P9_14","name":"EHRPWM1A"},
     {"pin":"P9_15","name":"GPIO1_16"},
+    {"pin":"P9_15B","name":"GPIO1_16"},
     {"pin":"P9_16","name":"EHRPWM1B"},
     {"pin":"P9_17","name":"I2C1_SCL"},
     {"pin":"P9_18","name":"I2C1_SDA"},
