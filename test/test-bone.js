@@ -102,7 +102,7 @@ blueKeys.push("PAUSE");
 blueKeys.push("MODE");
 expectedResults.push({
     "name": "BeagleBoneBlue",
-    "search": /^((E[1234]|GP[01]|S1_[12]|I2C|UT[015]|ADC|DSM2)_|RED|GREEN|BAT|PAUSE|MODE)/,
+    "search": /^((E[1234]|GP[01]|GPS|S1_[12]|I2C|UT[015]|ADC|DSM2)_|RED|GREEN|BAT|PAUSE|MODE)/,
     "keys": blueKeys
 });
 
