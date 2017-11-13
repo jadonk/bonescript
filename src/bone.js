@@ -1347,7 +1347,7 @@ var pinIndex = [
 
     },
     {
-        "name": "GPIO2_0",
+        "name": "GPIO1_16",
         "gpio": 64,
         "mux": "gpmc_csn3",
         "eeprom": null,
