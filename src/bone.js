@@ -1604,12 +1604,12 @@ var pinIndex = [
     {
         "name": "GPIO3_2",
         "gpio": 98,
-        "mux": "",
+        "mux": "gmii1_rxer",
         "eeprom": null,
         "key": "GP1_3",
         "muxRegOffset": "0x110",
         "options": [
-            "NA",
+            "gmii1_rxer",
             "NA",
             "NA",
             "NA",
@@ -1626,12 +1626,12 @@ var pinIndex = [
     {
         "name": "GPIO3_1",
         "gpio": 97,
-        "mux": "",
+        "mux": "gmii1_crs",
         "eeprom": null,
         "key": "GP1_4",
         "muxRegOffset": "0x10c",
         "options": [
-            "NA",
+            "gmii1_crs",
             "NA",
             "NA",
             "NA",
