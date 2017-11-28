@@ -94,6 +94,7 @@ for(var i=1; i<=3; i++) {
 }
 blueKeys.push("RED");
 blueKeys.push("GREEN");
+blueKeys.push("WIFI");
 blueKeys.push("BAT25");
 blueKeys.push("BAT50");
 blueKeys.push("BAT75");
