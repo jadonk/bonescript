@@ -150,8 +150,7 @@ f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
     }
     
     if(!pin.mux) {
-        if(debug) winston.debug('Invalid pin object for pinMode: ' + pin);
-        throw('Invalid pin object for pinMode: ' + pin);
+        winston.info('pinMode: Missing mux name for pin object: ' + JSON.stringify(pin));
     }
 
     // Handle case where pin is allocated as a gpio-led
