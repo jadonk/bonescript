@@ -79,9 +79,11 @@ exports.readPinMux = function(pin, mode, callback) {
 exports.setPinMode = function(pin, pinData, template, resp, callback) {
     if(debug) winston.debug('hw.setPinMode(' + [pin.key, pinData, template, JSON.stringify(resp)] + ');');
     var p = "ocp:" + pin.key + "_pinmux";
-    if(pin.universalName) p = "ocp:" + pin.universalName + "_pinmux";
-    var pinmux = my.find_sysfsFile(p, my.is_ocp(), p);
-    // if(!pinmux) { throw p + " was not found under " + my.is_ocp(); }
+    if(!pin.universalName) {
+        pin.universalName = [ p ];
+        if(pin.ball && pin.ball.ZCZ) pin.universalName.push("ocp:" + pin.ball.ZCZ + "_pinmux");
+    }
+    var pinmux = my.find_sysfsFile(p, my.is_ocp(), pin.universalName);
     gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
     if(pinmux) {        // This is a hack for the new pins on the Blue that appear not to have a pinmux
         if((pinData & 7) == 7) {

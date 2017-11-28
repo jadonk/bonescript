@@ -61,6 +61,7 @@ exports.is_cape_universal = function(callback) {
 };
 
 exports.find_sysfsFile = function(name, path, prefix, callback) {
+    if(debug) winston.debug('find_sysfsFile(' + name + ',' + path + ',' + prefix + ')');
     if(typeof sysfsFiles[name] == 'undefined') {
         if(callback) {
             sysfsFiles[name] = exports.file_find(path, prefix, 1, onFindCapeMgr);
@@ -117,10 +118,20 @@ exports.file_find = function(path, prefix, attempts, callback) {
             return;
         }
         for(var j in files) {
-            if(files[j].indexOf(prefix) === 0) {
-                resp.path = path + '/' + files[j];
-                if(callback) callback(resp);
-                return;
+            if(Array.isArray(prefix)) {
+                for(var k=0; k<prefix.length; k++) {
+                    if(files[j].indexOf(prefix[k]) === 0) {
+                        resp.path = path + '/' + files[j];
+                        if(callback) callback(resp);
+                        return;
+                    }
+                }
+            } else {
+                if(files[j].indexOf(prefix) === 0) {
+                    resp.path = path + '/' + files[j];
+                    if(callback) callback(resp);
+                    return;
+                }
             }
         }
         if(callback) {
