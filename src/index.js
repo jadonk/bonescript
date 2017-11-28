@@ -25,7 +25,7 @@ var debug = process.env.DEBUG ? true : false;
 var hw;
 if(os.type() == 'Linux' && os.arch() == 'arm') {
     var osVer = ("" + os.release()).split('.');
-    console.log(osVer.join(":"));
+    if(debug) console.log(osVer.join(":"));
     if(my.is_new_capemgr() || osVer[0] > 4 ||
             (osVer[0] == 4 && osVer[1] >= 4)) {
         // Used for 4.4+ kernels using capemgr and universal helpers
