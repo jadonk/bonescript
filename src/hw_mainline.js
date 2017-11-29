@@ -117,24 +117,23 @@ exports.setPinMode = function(pin, pinData, template, resp, callback) {
             resp.err = 'Unknown pin mode template';
         }
     }  else {
-        winston.info("No pinmux for " + pin.key);
+        resp.err = 'No pinmux for ' + pin.key;
+        winston.error(resp.err);
     }
     if(callback) callback(resp);
     return(resp);
 };
 
 exports.setLEDPinToGPIO = function(pin, resp) {
-    winston.debug('setLEDPinTGPIO');
+    if(debug) winston.debug('setLEDPinTGPIO: ' + pin.key);
     var path;
-    // console.log("setLEDPinToGPIO " + pin);
-    if((pin.led === 'red') || (pin.led === 'green')
-       || (pin.led === 'bat25') || (pin.led === 'bat50')
-       || (pin.led === 'bat75') || (pin.led === 'bat100')
-       || (pin.led === 'wifi')) {
-        path = "/sys/class/leds/" + pin.led + "/trigger";
-    } else {
-        path = "/sys/class/leds/beaglebone:green:" + pin.led + "/trigger";
+    if(Array.isArray(pin.led)) {
+        resp.err = "Unable to handle LED definition as array " + pin.led;
+        winston.error(resp.err);
+        resp.value = false;
+        return(resp);
     }
+    path = "/sys/class/leds/" + pin.led + "/trigger";
 
     if(my.file_existsSync(path)) {
         fs.writeFileSync(path, "gpio");
@@ -167,17 +166,7 @@ exports.writeGPIOValue = function(pin, value, callback) {
     if(typeof gpioFile[pin.key] == 'undefined') {
         gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
         if(pin.led) {
-            // Handle Blue LEDs
-            if((pin.led === 'red') || (pin.led === 'green')
-                   || (pin.led === 'bat25') || (pin.led === 'bat50')
-                   || (pin.led === 'bat75') || (pin.led === 'bat100')
-                   || (pin.led === 'wifi')) {
-                gpioFile[pin.key] = "/sys/class/leds/";
-                gpioFile[pin.key] += pin.led + "/brightness";
-            } else {
-                gpioFile[pin.key] = "/sys/class/leds/beaglebone:";
-                gpioFile[pin.key] += "green:" + pin.led + "/brightness";
-            }
+            gpioFile[pin.key] = "/sys/class/leds/" + pin.led + "/brightness";
         }
         if(!my.file_existsSync(gpioFile[pin.key])) {
             winston.error("Unable to find gpio: " + gpioFile[pin.key]);

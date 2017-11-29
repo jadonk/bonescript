@@ -154,6 +154,7 @@ f.pinMode = function(pin, direction, mux, pullup, slew, callback) {
     }
 
     // Handle case where pin is allocated as a gpio-led
+    if(debug) winston.debug('pinMode: pin.led = ' + pin.led);
     if(pin.led) {
         if((direction != g.OUTPUT) || (mux != 7)) {
             resp.err = 'pinMode only supports GPIO output for LEDs: ' + pin.key;

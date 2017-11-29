@@ -10,7 +10,7 @@ var pinIndex = [
     {
         "name": "USR0",
         "gpio": 53,
-        "led": "usr0",
+        "led": "beaglebone:green:usr0",
         "mux": "gpmc_a5",
         "key": "USR0",
         "muxRegOffset": "0x054",
@@ -32,7 +32,7 @@ var pinIndex = [
     {
         "name": "USR1",
         "gpio": 54,
-        "led": "usr1",
+        "led": "beaglebone:green:usr1",
         "mux": "gpmc_a6",
         "key": "USR1",
         "muxRegOffset": "0x058",
@@ -54,7 +54,7 @@ var pinIndex = [
     {
         "name": "USR2",
         "gpio": 55,
-        "led": "usr2",
+        "led": "beaglebone:green:usr2",
         "mux": "gpmc_a7",
         "key": "USR2",
         "muxRegOffset": "0x05c",
@@ -76,7 +76,7 @@ var pinIndex = [
     {
         "name": "USR3",
         "gpio": 56,
-        "led": "usr3",
+        "led": "beaglebone:green:usr3",
         "mux": "gpmc_a8",
         "key": "USR3",
         "muxRegOffset": "0x060",
@@ -2953,7 +2953,7 @@ var pinIndex = [
 
 var pins = {};
 for(var i in pinIndex) {
-    if(typeof pinIndex[i].key == 'object') {
+    if(Array.isArray(pinIndex[i].key)) {
         for(var j=0; j < pinIndex[i].key.length; j++) {
             var myKey = pinIndex[i].key[j];
             //console.log("key[" + j + "].[" + myKey + "]: " + i);
@@ -3040,10 +3040,29 @@ exports.getPinObject = function(key) {
     //console.log(pins[key]);
     if(typeof pinIndex[pins[key]] == "object") {
         var pinObject = Object.assign({}, pinIndex[pins[key]]);
-        pinObject.key = key; // remove other keys
+
+        // Only keep the matching index led
+        if(pinObject.led) {
+            //console.log("pinObject[" + key + "]: " + JSON.stringify(pinObject));
+            if(Array.isArray(pinObject.led)) {
+                //console.log("pinObject.key: " + pinObject.key);
+                var i = pinObject.key.indexOf(key);
+                if(i >= 0) {
+                    var led = pinObject.led[i];
+                    pinObject.led = led;
+                    //console.log("pinObject.led[" + i + "]: " + led);
+                } else {
+                    pinObject.led = null;
+                }
+            }
+        }
+
+        // Remove other keys
+        pinObject.key = key;
     } else {
         return(null);
     }
+
     return(pinObject);
 };
 
