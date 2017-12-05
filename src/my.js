@@ -7,15 +7,9 @@ var winston = require('winston');
 var child_process = require('child_process');
 var bone = require('./bone');
 var g = require('./constants');
-var ffi = require("ffi");
 
 var debug = process.env.DEBUG ? true : false;
 var sysfsFiles = {};
-
-var libc = new ffi.Library(null, {
-  "system": ["int32", ["string"]]
-});
-var system = libc.system;
 
 exports.require = function(packageName, onfail) {
     var y = {};
@@ -320,7 +314,7 @@ exports.create_dt = function(pin, data, template, load, force_create, resp, call
         }
         var command = 'dtc -O dtb -o ' + dtboFilename + ' -b 0 -@ ' + dtsFilename;
         try {
-            system(command);
+            child_process.execSync(command);
         } catch(ex) {
             resp.err = ex;
         }

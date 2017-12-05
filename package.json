@@ -24,20 +24,19 @@
   },
   "main": "main",
   "engines": {
-    "node": ">= 0.12.1"
+    "node": ">= 4.0.0"
   },
   "dependencies": {
     "socket.io": "1.4.5",
     "systemd": "0.2.6",
     "winston": "2.1.1",
     "express": "4.13.4",
-    "ffi": "2.0.0"
   },
   "optionalDependencies": {
     "serialport": "3.1.2",
     "i2c": "0.2.3",
     "epoll": "0.1.18",
-    "pi-spi": "1.0.1",
+    "pi-spi": "1.0.2",
     "roboticscape": "0.0.2"
   },
   "devDependencies": {
