@@ -2084,8 +2084,7 @@ var pinIndex = [
         "ball": {
             "ZCZ": "F15",
             "BSM": "M14"
-        },
-        "muxRegOffset": "0x134"
+        }
     },
     {
         "name": "USB1_VBUS",
