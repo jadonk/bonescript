@@ -1306,6 +1306,7 @@ var pinIndex = [
             "addr": "48302200"
         },
         "key": ["P9_14", "P2_1"],
+        "universalName": ["ocp:P9_14_pinmux", "ocp:P2_01_pinmux", "ocp:PWM_pinmux"],
         "muxRegOffset": "0x048",
         "options": [
             "gpmc_a2",
@@ -1748,7 +1749,7 @@ var pinIndex = [
             "muxmode": 4,
             "path": "ecap.2",
             "name": "ECAPPWM2",
-
+            "universalMode": "pwm2",
             "chip": "48304000",
             "addr": "48304100"
         },

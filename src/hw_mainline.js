@@ -85,41 +85,46 @@ exports.setPinMode = function(pin, pinData, template, resp, callback) {
     }
     var pinmux = my.find_sysfsFile(p, my.is_ocp(), pin.universalName);
     gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
-    if(pinmux) {        // This is a hack for the new pins on the Blue that appear not to have a pinmux
+    if(pinmux) {
         if((pinData & 7) == 7) {
             fs.writeFileSync(pinmux+"/state", 'gpio');
         } else if(template == 'bspwm') {
-            // at least P9_28 uses pwm2
-            var state = pin.key.indexOf("P9_28") == -1 ? "pwm" : "pwm2";
+            var state = "pwm";
+            if(pin.pwm.universalMode) state = pin.pwm.universalMode;
             fs.writeFileSync(pinmux+"/state", state);
-            // Buld a path like: /sys/devices/platform/ocp/48304000.epwmss/48304200.ehrpwm/pwm/pwmchip5
-            // pin.pwm.chip looks up the first address and pin.pwm.addr looks up the second
-            // file_find figures which pwmchip to use
-            // pin.pwm.index tells with half of the PWM to use (0 or 1)
-            // prefix is .ecap for P9_28 and P9_42 and .pwm or .ehrpwm for the rest
-            var prefix = pin.pwm.module.indexOf("ecap") == -1 ? ".pwm" : ".ecap";
-            var pwmPath = my.file_find('/sys/devices/platform/ocp/'+pin.pwm.chip
-                    + '.epwmss/'+pin.pwm.addr+prefix+'/pwm', 'pwmchip', 1);
-            // Some versions of kernel (4.4.15-bone11 for instance) still use
-            // .ehrpwm for address
-            if (pwmPath == null) {
-            	pwmPath = my.file_find('/sys/devices/platform/ocp/'+pin.pwm.chip
-            		+ '.epwmss/'+pin.pwm.addr+'.ehrpwm/pwm', 'pwmchip', 1)
-            }
-            pwmPrefix[pin.pwm.name] = pwmPath + '/pwm' + pin.pwm.index;
-            if(debug) winston.debug("pwmPrefix[pin.pwm.name] = " + pwmPrefix[pin.pwm.name]);
-            if(debug) winston.debug("pin.pwm.sysfs = " + pin.pwm.sysfs);
-            if(!my.file_existsSync(pwmPrefix[pin.pwm.name])) {
-                fs.appendFileSync(pwmPath+'/export', pin.pwm.index);
-            }
-            fs.appendFileSync(pwmPrefix[pin.pwm.name]+'/enable', 1);
         } else {
             resp.err = 'Unknown pin mode template';
+            winston.error(resp.err);
         }
     }  else {
         resp.err = 'No pinmux for ' + pin.key;
         winston.error(resp.err);
     }
+
+    if(template == 'bspwm') {
+        // Buld a path like: /sys/devices/platform/ocp/48304000.epwmss/48304200.ehrpwm/pwm/pwmchip5/pwm5-:0
+        // pin.pwm.chip looks up the first address and pin.pwm.addr looks up the second
+        // file_find figures which pwmchip to use
+        // pin.pwm.index tells with half of the PWM to use (0 or 1)
+        var chipPath = my.file_find('/sys/devices/platform/ocp', pin.pwm.chip, 1);
+        if(debug) winston.debug("chipPath = " + chipPath);
+        var addrPath = my.file_find(chipPath, pin.pwm.addr, 1);
+        if(debug) winston.debug("addrPath = " + addrPath);
+        var pwmchipPath = my.file_find(addrPath+'/pwm', 'pwmchip', 1);
+        if(debug) winston.debug("pwmchipPath = " + pwmchipPath);
+        var pwmPath = my.file_find(pwmchipPath, "pwm.*"+pin.pwm.index+"$", 1);
+        if(debug) winston.debug("pwmPath = " + pwmPath);
+        if(pwmchipPath && !pwmPath) {
+            fs.appendFileSync(pwmchipPath+'/export', pin.pwm.index);
+            pwmPath = my.file_find(pwmchipPath, "pwm.*"+pin.pwm.index+"$", 1);
+            if(debug) winston.debug("pwmPath = " + pwmPath);
+        }
+        if(pwmPath) {
+            pwmPrefix[pin.pwm.name] = pwmPath;
+        }
+        fs.appendFileSync(pwmPrefix[pin.pwm.name]+'/enable', 1);
+    }
+
     if(callback) callback(resp);
     return(resp);
 };

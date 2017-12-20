@@ -114,14 +114,14 @@ exports.file_find = function(path, prefix, attempts, callback) {
         for(var j in files) {
             if(Array.isArray(prefix)) {
                 for(var k=0; k<prefix.length; k++) {
-                    if(files[j].indexOf(prefix[k]) === 0) {
+                    if(files[j].search(prefix[k]) == 0) {
                         resp.path = path + '/' + files[j];
                         if(callback) callback(resp);
                         return;
                     }
                 }
             } else {
-                if(files[j].indexOf(prefix) === 0) {
+                if(files[j].search(prefix) === 0) {
                     resp.path = path + '/' + files[j];
                     if(callback) callback(resp);
                     return;
