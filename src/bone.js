@@ -108,7 +108,7 @@ var pinIndex = [
         "mux": "gpmc_ad6",
         "eeprom": 26,
         "key": "P8_3",
-        "universalName": "P8_03",
+        "universalName": [ "ocp:P8_03_pinmux" ],
         "muxRegOffset": "0x018",
         "options": [
             "gpmc_ad6",
@@ -131,7 +131,7 @@ var pinIndex = [
         "mux": "gpmc_ad7",
         "eeprom": 27,
         "key": "P8_4",
-        "universalName": "P8_04",
+        "universalName": [ "ocp:P8_04_pinmux" ],
         "muxRegOffset": "0x01c",
         "options": [
             "gpmc_ad7",
@@ -154,7 +154,7 @@ var pinIndex = [
         "mux": "gpmc_ad2",
         "eeprom": 22,
         "key": "P8_5",
-        "universalName": "P8_05",
+        "universalName": [ "ocp:P8_05_pinmux" ],
         "muxRegOffset": "0x008",
         "options": [
             "gpmc_ad2",
@@ -177,7 +177,7 @@ var pinIndex = [
         "mux": "gpmc_ad3",
         "eeprom": 23,
         "key": "P8_6",
-        "universalName": "P8_06",
+        "universalName": [ "ocp:P8_06_pinmux" ],
         "muxRegOffset": "0x00c",
         "options": [
             "gpmc_ad3",
@@ -201,7 +201,7 @@ var pinIndex = [
         "eeprom": 41,
         "key": ["P8_7", "RED", "GP1_5"],
         "led": [null, "red", "red"],
-        "universalName": "P8_07",
+        "universalName": [ "ocp:P8_07_pinmux" ],
         "muxRegOffset": "0x090",
         "options": [
             "gpmc_advn_ale",
@@ -225,7 +225,7 @@ var pinIndex = [
         "eeprom": 44,
         "key": ["P8_8", "GREEN", "GP1_6"],
         "led": [null, "green", "green"],
-        "universalName": "P8_08",
+        "universalName": [ "ocp:P8_08_pinmux" ],
         "muxRegOffset": "0x094",
         "options": [
             "gpmc_oen_ren",
@@ -248,7 +248,7 @@ var pinIndex = [
         "mux": "gpmc_ben0_cle",
         "eeprom": 42,
         "key": ["P8_9", "PAUSE"],
-        "universalName": "P8_09",
+        "universalName": [ "ocp:P8_09_pinmux" ],
         "muxRegOffset": "0x09c",
         "options": [
             "gpmc_ben0_cle",
