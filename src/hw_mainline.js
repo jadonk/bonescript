@@ -86,15 +86,23 @@ exports.setPinMode = function(pin, pinData, template, resp, callback) {
     var pinmux = my.find_sysfsFile(p, my.is_ocp(), pin.universalName);
     gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
     if(pinmux) {
+        var state = undefined;
         if((pinData & 7) == 7) {
-            fs.writeFileSync(pinmux+"/state", 'gpio');
-        } else if(template == 'bspwm') {
-            var state = "pwm";
+            state = 'gpio';
+            switch(pinData & 0x18) {
+                case 0x00: state = 'gpio_pd'; break;
+                case 0x10: state = 'gpio_pu'; break;
+                default: break;
+            }
+        } else if(template == 'bspwm' || template == 'pwm') {
+            state = "pwm";
             if(pin.pwm.universalMode) state = pin.pwm.universalMode;
-            fs.writeFileSync(pinmux+"/state", state);
         } else {
             resp.err = 'Unknown pin mode template';
             winston.error(resp.err);
+        }
+        if(!resp.err) {
+            fs.writeFileSync(pinmux+"/state", state);
         }
     }  else {
         resp.err = 'No pinmux for ' + pin.key;
