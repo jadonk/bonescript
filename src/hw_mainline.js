@@ -130,7 +130,7 @@ exports.setPinMode = function(pin, pinData, template, resp, callback) {
         if(pwmPath) {
             pwmPrefix[pin.pwm.name] = pwmPath;
         }
-        fs.appendFileSync(pwmPrefix[pin.pwm.name]+'/enable', 1);
+        //fs.appendFileSync(pwmPrefix[pin.pwm.name]+'/enable', 1);
     }
 
     if(callback) callback(resp);
@@ -277,8 +277,12 @@ exports.writePWMFreqAndValue = function(pin, pwm, freq, value, resp, callback) {
         if(debug) winston.debug('hw.writePWMFreqAndValue: pwm.freq='+pwm.freq
                         +', freq='+freq+', period='+period);
         if(pwm.freq != freq) {
-            // if(debug) winston.debug('Stopping PWM');
-            // fs.writeFileSync(path+'/enable', "0\n");
+            try {
+                if(debug) winston.debug('Stopping PWM');
+                fs.writeFileSync(path+'/enable', "0\n");
+            } catch(ex2) {
+                if(debug) winston.debug('Error stopping PWM: ' + ex2);
+            }
             // It appears that the first time you set the pwm you have to
             // set the period before you set the duty_cycle
             try {
@@ -290,8 +294,12 @@ exports.writePWMFreqAndValue = function(pin, pwm, freq, value, resp, callback) {
                     + period
                     + "\tIs other half of PWM enabled?");
             }
-            // if(debug) winston.debug('Starting PWM');
-            // fs.writeFileSync(path+'/enable', "1\n");
+            try {
+                if(debug) winston.debug('Starting PWM');
+                fs.writeFileSync(path+'/enable', "1\n");
+            } catch(ex2) {
+                if(debug) winston.debug('Error starting PWM: ' + ex2);
+            }
         }
         var duty = Math.round( period * value );
         if(debug) winston.debug('Updating PWM duty: ' + duty);
