@@ -106,7 +106,7 @@ exports.setPinMode = function(pin, pinData, template, resp, callback) {
         }
     }  else {
         resp.err = 'No pinmux for ' + pin.key;
-        winston.error(resp.err);
+        if(debug) winston.debug(resp.err);
     }
 
     if(template == 'bspwm') {
