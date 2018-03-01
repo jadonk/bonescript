@@ -29,7 +29,7 @@ BoneScript comes installed on your BeagleBone. To update
 to the latest revision or install it on another distribution, use 'npm':
 
 ````sh
-TERM=none npm install -g bonescript
+TERM=none sudo npm install -g --prefix /usr/local --unsafe-perm bonescript
 ````
 
 Angstrom prerequisites:
