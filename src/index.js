@@ -322,7 +322,7 @@ f.shiftOut = function(dataPin, clockPin, bitOrder, val, callback) {
         next();
     } else {
         for(i = 0; i < 8; i++) {
-            if(bitOrder == b.LSBFIRST) {
+            if(bitOrder == g.LSBFIRST) {
                 bit = val & (1 << i);
             } else {
                 bit = val & (1 << (7 - i));
