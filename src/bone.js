@@ -349,6 +349,7 @@ var pinIndex = [
             "addr": "48304200"
         },
         "key": ["P8_13", "P2_3"],
+        "universalName": ["ocp:P8_13_pinmux", "ocp:P2_03_pinmux"],
         "muxRegOffset": "0x024",
         "options": [
             "gpmc_ad9",
