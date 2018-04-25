@@ -357,7 +357,7 @@ exports.getpin = function(pin) {
         if(typeof pinObject != 'object') {
             throw("Invalid pin: " + pin);
         }
-        return(bone.getPinObject(pin));
+        return(pinObject);
     }
 };
 
