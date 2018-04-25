@@ -429,7 +429,7 @@ f.analogWrite = function(pin, value, freq, callback) {
 
     // Make sure the pin has a PWM associated
     if(typeof pin.pwm == 'undefined') {
-          if(typeof pin.gpio != 'undefined' ) {
+        if(typeof pin.gpio != 'undefined' ) {
             if(value>=0.5) {
                 resp=f.digitalWrite(pin,g.HIGH,callback);
                 if(callback) callback(resp);
