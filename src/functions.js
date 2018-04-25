@@ -50,69 +50,69 @@
 
 
 // Returns the lower 8 bits of  value
-exports.lowByte = function(value) {
-    return ( value & 0x0ff);
+exports.lowByte = function (value) {
+    return (value & 0x0ff);
 };
 
 // Returns the value shifted right by 8 bits
-exports.highByte = function(value) {
-    return ( exports.lowByte(value >>8));
+exports.highByte = function (value) {
+    return (exports.lowByte(value >> 8));
 };
 
 // Returns the value of the bit number specified (return:0 or 1) 
-exports.bitRead = function(value, bitnum) {
-    return ((value>>bitnum)&0x01);
+exports.bitRead = function (value, bitnum) {
+    return ((value >> bitnum) & 0x01);
 };
 
 // Returns value with bit changed to specified data 
-exports.bitWrite = function(value, bitnum, bitdata) {
-    value = value & ~(0x01<<bitnum);
+exports.bitWrite = function (value, bitnum, bitdata) {
+    value = value & ~(0x01 << bitnum);
     bitdata = (bitdata & 0x01) << bitnum;
     return (value | bitdata);
 };
 
 // Returns value with specified bit set
-exports.bitSet = function(value, bitnum) {
-    return(value | (0x01 << bitnum));
+exports.bitSet = function (value, bitnum) {
+    return (value | (0x01 << bitnum));
 };
 
 // Returns value with specified bit clear
-exports.bitClear = function(value, bitnum) {
-    return(value & (~(0x01 << bitnum)));
+exports.bitClear = function (value, bitnum) {
+    return (value & (~(0x01 << bitnum)));
 };
 
 //Returns a value with one specified bit number set
-exports.bit = function(bitnum) {
-    return(0x01<<bitnum);
+exports.bit = function (bitnum) {
+    return (0x01 << bitnum);
 };
 
 // Returns the sine of an angle (in radians). 
-exports.sin = function(radians) {
+exports.sin = function (radians) {
     return (Math.sin(radians));
 };
 
 // Returns the cos of an angle (in radians). 
-exports.cos = function(radians) {
+exports.cos = function (radians) {
     return (Math.cos(radians));
 };
 
 // Returns the tan of an angle (in radians). 
-exports.tan = function(radians) {
+exports.tan = function (radians) {
     return (Math.tan(radians));
 };
 
 // Returns the the minimum of x or y
-exports.min = function(x,y) {
-    return (Math.min(x,y));
+exports.min = function (x, y) {
+    return (Math.min(x, y));
 };
 
 // Returns the the maximum of x or y
-exports.max = function(x,y) {
-    return (Math.max(x,y));
+exports.max = function (x, y) {
+    return (Math.max(x, y));
 };
 
 // Returns the the absolute value of x
-exports.abs = function(x) {
+exports.abs = function (x) {
     return (Math.abs(x));
 };
 
@@ -120,30 +120,30 @@ exports.abs = function(x) {
 // Returns: x if x is between a and b
 //          a if x is less than a
 //          b if x is greater than b 
-exports.constrain = function(x,a,b) {
-    if (x>b) x=b;
-    else if (x<a) x=a;
+exports.constrain = function (x, a, b) {
+    if (x > b) x = b;
+    else if (x < a) x = a;
     return (x);
 };
 
 // Returns a value re-mapped from one range to another
-exports.map = function(value, fromLow, fromHigh, toLow, toHigh) {
-    return( toLow + (((value-fromLow)*(toHigh-toLow))/(fromHigh-fromLow)));
+exports.map = function (value, fromLow, fromHigh, toLow, toHigh) {
+    return (toLow + (((value - fromLow) * (toHigh - toLow)) / (fromHigh - fromLow)));
 };
 
 // Returns x raised to y power
-exports.pow = function(x,y) {
-    return (Math.pow(x,y));
+exports.pow = function (x, y) {
+    return (Math.pow(x, y));
 };
 
 // Returns the aquare root of x
-exports.sqrt = function(x) {
+exports.sqrt = function (x) {
     return (Math.sqrt(x));
 };
 
 // Returns nothing
 var randomSeedValue;
-exports.randomSeed = function(x) {
+exports.randomSeed = function (x) {
     // empty - javascript has no random seed function
     randomSeedValue = x;
 };
@@ -151,12 +151,10 @@ exports.randomSeed = function(x) {
 // Returns a pseudo-random number
 // Valid calls: random(max)
 //              random(min, max) 
-exports.random = function(min, max) {
-    if (isNaN(max))
-    {
+exports.random = function (min, max) {
+    if (isNaN(max)) {
         max = min;
         min = 0;
     }
-    return ((Math.random()*(max-min))+min);
+    return ((Math.random() * (max - min)) + min);
 };
-

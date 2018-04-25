@@ -10,7 +10,7 @@ expectedResults.push({
 });
 
 var pbKeys = [];
-for(var i=1; i<=36; i++) {
+for (var i = 1; i <= 36; i++) {
     pbKeys.push("P1_" + i);
     pbKeys.push("P2_" + i);
 }
@@ -21,7 +21,7 @@ expectedResults.push({
 });
 
 var boneKeys = [];
-for(var i=1; i<=46; i++) {
+for (var i = 1; i <= 46; i++) {
     boneKeys.push("P8_" + i);
     boneKeys.push("P9_" + i);
 }
@@ -35,7 +35,7 @@ expectedResults.push({
 });
 
 var ainKeys = [];
-for(var i=0; i<=7; i++) {
+for (var i = 0; i <= 7; i++) {
     ainKeys.push("A" + i);
 }
 expectedResults.push({
@@ -45,7 +45,7 @@ expectedResults.push({
 });
 
 var gpioKeys = [];
-for(var i=0; i<=117; i++) {
+for (var i = 0; i <= 117; i++) {
     gpioKeys.push("GPIO_" + i);
 }
 expectedResults.push({
@@ -54,13 +54,13 @@ expectedResults.push({
     "keys": gpioKeys
 });
 // removes must be done high-to-low to keep indexes valid
-gpioKeys.splice(108,1); // remove GPIO3_12
-gpioKeys.splice(107,1); // remove GPIO3_11
-gpioKeys.splice(25,1); // remove GPIO0_25
-gpioKeys.splice(24,1); // remove GPIO0_24
+gpioKeys.splice(108, 1); // remove GPIO3_12
+gpioKeys.splice(107, 1); // remove GPIO3_11
+gpioKeys.splice(25, 1); // remove GPIO0_25
+gpioKeys.splice(24, 1); // remove GPIO0_24
 
 var eepromKeys = [];
-for(var i=0; i<74; i++) {
+for (var i = 0; i < 74; i++) {
     eepromKeys.push("EEPROM_" + i);
 }
 expectedResults.push({
@@ -70,18 +70,18 @@ expectedResults.push({
 });
 
 var blueKeys = [];
-for(var i=1; i<=6; i++) {
+for (var i = 1; i <= 6; i++) {
     blueKeys.push("GP0_" + i);
     blueKeys.push("GP1_" + i);
     blueKeys.push("S1_1_" + i);
     blueKeys.push("S1_2_" + i);
     blueKeys.push("ADC_" + i);
 }
-for(var i=2; i<=6; i++) {
+for (var i = 2; i <= 6; i++) {
     blueKeys.push("GPS_" + i);
 }
-for(var i=1; i<=4; i++) {
-    for(var j=1; j<=4; j++) {
+for (var i = 1; i <= 4; i++) {
+    for (var j = 1; j <= 4; j++) {
         blueKeys.push("E" + j + "_" + i);
     }
     blueKeys.push("I2C_" + i);
@@ -89,7 +89,7 @@ for(var i=1; i<=4; i++) {
     blueKeys.push("UT1_" + i);
     blueKeys.push("UT5_" + i);
 }
-for(var i=1; i<=3; i++) {
+for (var i = 1; i <= 3; i++) {
     blueKeys.push("DSM2_" + i);
 }
 blueKeys.push("RED");
@@ -109,7 +109,7 @@ expectedResults.push({
 
 var results = {};
 
-for(var i=0; i < expectedResults.length; i++) {
+for (var i = 0; i < expectedResults.length; i++) {
     var er = expectedResults[i];
     exports['testBoneGetPinKeys' + er.name] = makeTest(i);
 }
@@ -117,9 +117,9 @@ for(var i=0; i < expectedResults.length; i++) {
 function makeTest(i) {
     var search = expectedResults[i].search;
     var expected = expectedResults[i].keys.sort(bone.naturalCompare);
-    return(function(test) {
+    return (function (test) {
         test.expect(2);
-        test.doesNotThrow(function() {
+        test.doesNotThrow(function () {
             results = bone.getPinKeys(search).sort(bone.naturalCompare);
         });
         test.ok(compareResults(results, expected));
@@ -130,8 +130,8 @@ function makeTest(i) {
 function compareResults(results, expected) {
     console.log("results = " + JSON.stringify(results));
     console.log("expectedResults = " + JSON.stringify(expected));
-    for(i in expected) {
-        if(results[i] != expected[i]) return(false);
+    for (i in expected) {
+        if (results[i] != expected[i]) return (false);
     }
-    return(true);
+    return (true);
 }

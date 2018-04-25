@@ -12,15 +12,15 @@ var serverEmitter = new events.EventEmitter();
 
 var debug = process.env.DEBUG ? true : false;
 
-myrequire('systemd', function() {
-    if(debug) winston.debug("Startup as socket-activated service under systemd not enabled");
+myrequire('systemd', function () {
+    if (debug) winston.debug("Startup as socket-activated service under systemd not enabled");
 });
 
-exports.serverStart = function(port, directory, callback) {
-    if(port === undefined) {
+exports.serverStart = function (port, directory, callback) {
+    if (port === undefined) {
         port = (process.env.LISTEN_PID > 0) ? 'systemd' : ((process.env.PORT) ? process.env.PORT : 80);
     }
-    if(directory === undefined) {
+    if (directory === undefined) {
         directory = (process.env.SERVER_DIR) ? process.env.SERVER_DIR : '/usr/share/bone101';
     }
     var server = mylisten(port, directory);
@@ -28,15 +28,15 @@ exports.serverStart = function(port, directory, callback) {
 
     function addServerListener(event, listener) {
         console.log('got here'); //TODO: not getting here
-        if(debug) winston.debug('Got request to add listener to ' + event);
+        if (debug) winston.debug('Got request to add listener to ' + event);
         var serverEvent = event.replace(/^server\$/, '');
-        if(serverEvent) {
-           if(debug) winston.debug('Adding listener to server$' + serverEvent);
-           server.on(serverEvent, listener);
+        if (serverEvent) {
+            if (debug) winston.debug('Adding listener to server$' + serverEvent);
+            server.on(serverEvent, listener);
         }
     }
 
-    return(serverEmitter);
+    return (serverEmitter);
 };
 
 function mylisten(port, directory) {
@@ -44,12 +44,12 @@ function mylisten(port, directory) {
     var app = express();
     app.get('/bonescript.js', socketHandlers.socketJSReqHandler);
     app.use('/bone101', express.static(directory));
-    app.use('/bone101/static', express.static(directory+"/static"));
+    app.use('/bone101/static', express.static(directory + "/static"));
     app.use(express.static(directory));
     var server = http.createServer(app);
     socketHandlers.addSocketListeners(server, serverEmitter);
     server.listen(port);
-    return(server);
+    return (server);
 }
 
 function myrequire(packageName, onfail) {
@@ -57,10 +57,10 @@ function myrequire(packageName, onfail) {
     try {
         y = require(packageName);
         y.exists = true;
-    } catch(ex) {
+    } catch (ex) {
         y.exists = false;
-        if(debug) winston.debug("Optional package '" + packageName + "' not loaded");
-        if(onfail) onfail();
+        if (debug) winston.debug("Optional package '" + packageName + "' not loaded");
+        if (onfail) onfail();
     }
-    return(y);
+    return (y);
 }

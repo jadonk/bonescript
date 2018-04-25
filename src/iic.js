@@ -10,13 +10,13 @@ m.events = {
     'data': ['data']
 };
 m.openPorts = {};
-m.doOpen = function(args) {
+m.doOpen = function (args) {
     var path = args.port[0];
-    if(m.ports[args.port[0]].path) path = m.ports[args.port[0]].path;
-    if(typeof args.options !== typeof {}) args.options = {};
+    if (m.ports[args.port[0]].path) path = m.ports[args.port[0]].path;
+    if (typeof args.options !== typeof {}) args.options = {};
     args.options.device = path;
     var openPort = new m.module(args.port[1], args.options);
-    return(openPort);
+    return (openPort);
 };
 
 exports.i2cOpen = my.wrapOpen(m, ['options']);

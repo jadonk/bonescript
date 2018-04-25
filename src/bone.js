@@ -4,10 +4,9 @@
 // pins is an object whose keys are the pinIndex keys, e.g. P9_14.
 // uarts and i2c are objects describing the serial ports and i2c buses.
 
-if(typeof exports === 'undefined') exports = {};
+if (typeof exports === 'undefined') exports = {};
 
-var pinIndex = [
-    {
+var pinIndex = [{
         "name": "USR0",
         "gpio": 53,
         "led": "beaglebone:green:usr0",
@@ -100,7 +99,8 @@ var pinIndex = [
         "key": ["P8_1", "P8_2", "P9_1", "P9_2", "P9_43", "P9_44", "P9_45", "P9_46",
             "P1_15", "P1_16", "P1_22", "P2_15", "P2_21",
             "E1_1", "E2_1", "E3_1", "E4_1", "S1_1_1", "S1_2_1", "UT0_1", "UT1_1", "UT5_1",
-            "DSM2_2", "I2C_1", "GPS_2", "GPS_6", "GP0_1", "GP1_1"]
+            "DSM2_2", "I2C_1", "GPS_2", "GPS_6", "GP0_1", "GP1_1"
+        ]
     },
     {
         "name": "GPIO1_6",
@@ -108,7 +108,7 @@ var pinIndex = [
         "mux": "gpmc_ad6",
         "eeprom": 26,
         "key": "P8_3",
-        "universalName": [ "ocp:P8_03_pinmux" ],
+        "universalName": ["ocp:P8_03_pinmux"],
         "muxRegOffset": "0x018",
         "options": [
             "gpmc_ad6",
@@ -131,7 +131,7 @@ var pinIndex = [
         "mux": "gpmc_ad7",
         "eeprom": 27,
         "key": "P8_4",
-        "universalName": [ "ocp:P8_04_pinmux" ],
+        "universalName": ["ocp:P8_04_pinmux"],
         "muxRegOffset": "0x01c",
         "options": [
             "gpmc_ad7",
@@ -154,7 +154,7 @@ var pinIndex = [
         "mux": "gpmc_ad2",
         "eeprom": 22,
         "key": "P8_5",
-        "universalName": [ "ocp:P8_05_pinmux" ],
+        "universalName": ["ocp:P8_05_pinmux"],
         "muxRegOffset": "0x008",
         "options": [
             "gpmc_ad2",
@@ -177,7 +177,7 @@ var pinIndex = [
         "mux": "gpmc_ad3",
         "eeprom": 23,
         "key": "P8_6",
-        "universalName": [ "ocp:P8_06_pinmux" ],
+        "universalName": ["ocp:P8_06_pinmux"],
         "muxRegOffset": "0x00c",
         "options": [
             "gpmc_ad3",
@@ -201,7 +201,7 @@ var pinIndex = [
         "eeprom": 41,
         "key": ["P8_7", "RED", "GP1_5"],
         "led": [null, "red", "red"],
-        "universalName": [ "ocp:P8_07_pinmux" ],
+        "universalName": ["ocp:P8_07_pinmux"],
         "muxRegOffset": "0x090",
         "options": [
             "gpmc_advn_ale",
@@ -225,7 +225,7 @@ var pinIndex = [
         "eeprom": 44,
         "key": ["P8_8", "GREEN", "GP1_6"],
         "led": [null, "green", "green"],
-        "universalName": [ "ocp:P8_08_pinmux" ],
+        "universalName": ["ocp:P8_08_pinmux"],
         "muxRegOffset": "0x094",
         "options": [
             "gpmc_oen_ren",
@@ -248,7 +248,7 @@ var pinIndex = [
         "mux": "gpmc_ben0_cle",
         "eeprom": 42,
         "key": ["P8_9", "PAUSE"],
-        "universalName": [ "ocp:P8_09_pinmux" ],
+        "universalName": ["ocp:P8_09_pinmux"],
         "muxRegOffset": "0x09c",
         "options": [
             "gpmc_ben0_cle",
@@ -1196,7 +1196,8 @@ var pinIndex = [
         "name": "VDD_3V3",
         "key": ["P9_3", "P9_4", "P1_14", "P2_23",
             "E1_2", "E2_2", "E3_2", "E4_2", "GP0_2", "GP1_2", "S1_1_2", "S1_2_2",
-            "UT0_2", "UT1_2", "UT5_2", "DSM2_1", "I2C_2"] 
+            "UT0_2", "UT1_2", "UT5_2", "DSM2_1", "I2C_2"
+        ]
     },
     {
         "name": "VDD_5V",
@@ -1844,7 +1845,7 @@ var pinIndex = [
             "chip": "48300000",
             "addr": "48300200"
         },
-        "key": ["P9_31", "S1_1_5", "S1_2_5", "P1_36" ],
+        "key": ["P9_31", "S1_1_5", "S1_2_5", "P1_36"],
         "muxRegOffset": "0x190",
         "options": [
             "mcasp0_aclkx",
@@ -2953,34 +2954,33 @@ var pinIndex = [
 ];
 
 var pins = {};
-for(var i in pinIndex) {
-    if(Array.isArray(pinIndex[i].key)) {
-        for(var j=0; j < pinIndex[i].key.length; j++) {
+for (var i in pinIndex) {
+    if (Array.isArray(pinIndex[i].key)) {
+        for (var j = 0; j < pinIndex[i].key.length; j++) {
             var myKey = pinIndex[i].key[j];
             //console.log("key[" + j + "].[" + myKey + "]: " + i);
             pins[myKey] = i;
         }
-    } else if(typeof pinIndex[i] != 'undefined') {
+    } else if (typeof pinIndex[i] != 'undefined') {
         pins[pinIndex[i].key] = i;
     }
-    if(typeof pinIndex[i].gpio == 'number') {
+    if (typeof pinIndex[i].gpio == 'number') {
         pins["GPIO_" + pinIndex[i].gpio] = i;
     }
-    if(typeof pinIndex[i].eeprom == 'number') {
+    if (typeof pinIndex[i].eeprom == 'number') {
         pins["EEPROM_" + pinIndex[i].eeprom] = i;
     }
-    if(typeof pinIndex[i].ain == 'number') {
+    if (typeof pinIndex[i].ain == 'number') {
         pins["A" + pinIndex[i].ain] = i;
     }
-    if(typeof pinIndex[i].muxRegOffset == 'string') {
+    if (typeof pinIndex[i].muxRegOffset == 'string') {
         var offset = pinIndex[i].muxRegOffset.toUpperCase();
         pins["MUX_" + offset] = i;
     }
 }
 
 var uarts = {
-    "/dev/ttyO0": {
-    },
+    "/dev/ttyO0": {},
     "/dev/ttyO1": {
         "devicetree": "BB-UART1",
         "rx": "P9_26",
@@ -2991,8 +2991,7 @@ var uarts = {
         "rx": "P9_22",
         "tx": "P9_21"
     },
-    "/dev/ttyO3": {
-    },
+    "/dev/ttyO3": {},
     "/dev/ttyO4": {
         "devicetree": "BB-UART4",
         "rx": "P9_11",
@@ -3006,8 +3005,7 @@ var uarts = {
 };
 
 var i2c = {
-    "/dev/i2c-0": {
-    },
+    "/dev/i2c-0": {},
     "/dev/i2c-1": {
         "devicetree": "BB-I2C1",
         "path": "/dev/i2c-2",
@@ -3027,28 +3025,28 @@ var i2c = {
     }
 };
 
-exports.getPinObject = function(key) {
-    if(typeof key == "string") {
+exports.getPinObject = function (key) {
+    if (typeof key == "string") {
         // Ignore case
         key = key.toUpperCase();
         // Replace alternate separators and leading zeros
         key = key.replace(/[\.\-_ ]0*/g, "_");
     }
-    if(typeof key == "number") {
+    if (typeof key == "number") {
         key = "GPIO_" + key;
     }
     //console.log(key);
     //console.log(pins[key]);
-    if(typeof pinIndex[pins[key]] == "object") {
+    if (typeof pinIndex[pins[key]] == "object") {
         var pinObject = Object.assign({}, pinIndex[pins[key]]);
 
         // Only keep the matching index led
-        if(pinObject.led) {
+        if (pinObject.led) {
             //console.log("pinObject[" + key + "]: " + JSON.stringify(pinObject));
-            if(Array.isArray(pinObject.led)) {
+            if (Array.isArray(pinObject.led)) {
                 //console.log("pinObject.key: " + pinObject.key);
                 var i = pinObject.key.indexOf(key);
-                if(i >= 0) {
+                if (i >= 0) {
                     var led = pinObject.led[i];
                     pinObject.led = led;
                     //console.log("pinObject.led[" + i + "]: " + led);
@@ -3061,38 +3059,43 @@ exports.getPinObject = function(key) {
         // Remove other keys
         pinObject.key = key;
     } else {
-        return(null);
+        return (null);
     }
 
-    return(pinObject);
+    return (pinObject);
 };
 
-exports.getPinKeys = function(filter) {
+exports.getPinKeys = function (filter) {
     var keys = [];
-    for(var key in pins) {
-        if(typeof filter != 'undefined') {
-            if(key.search(filter) >= 0) {
+    for (var key in pins) {
+        if (typeof filter != 'undefined') {
+            if (key.search(filter) >= 0) {
                 keys.push(key);
             }
         } else {
             keys.push(key);
         }
     }
-    return(keys);
+    return (keys);
 };
 
 // from https://stackoverflow.com/questions/15478954/sort-array-elements-string-with-numbers-natural-sort
-exports.naturalCompare = function(a, b) {
-    var ax = [], bx = [];
+exports.naturalCompare = function (a, b) {
+    var ax = [],
+        bx = [];
 
-    a.replace(/(\d+)|(\D+)/g, function(_, $1, $2) { ax.push([$1 || Infinity, $2 || ""]) });
-    b.replace(/(\d+)|(\D+)/g, function(_, $1, $2) { bx.push([$1 || Infinity, $2 || ""]) });
+    a.replace(/(\d+)|(\D+)/g, function (_, $1, $2) {
+        ax.push([$1 || Infinity, $2 || ""])
+    });
+    b.replace(/(\d+)|(\D+)/g, function (_, $1, $2) {
+        bx.push([$1 || Infinity, $2 || ""])
+    });
 
-    while(ax.length && bx.length) {
+    while (ax.length && bx.length) {
         var an = ax.shift();
         var bn = bx.shift();
         var nn = (an[0] - bn[0]) || an[1].localeCompare(bn[1]);
-        if(nn) return nn;
+        if (nn) return nn;
     }
 
     return ax.length - bx.length;
