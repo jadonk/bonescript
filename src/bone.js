@@ -1019,8 +1019,8 @@ var pinIndex = [{
             "gpmc_a7",
             "pr1_edio_data_in7",
             "eqep2_strobe",
+            "pr1_edio_data_out_7",
             "pr1_pru1_pru_r30_7",
-            "pr1_pru_pru1_r30_7",
             "pr1_pru1_pru_r31_7",
             "gpio2_13"
         ],
