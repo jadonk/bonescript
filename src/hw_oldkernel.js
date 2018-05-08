@@ -12,192 +12,194 @@ var debug = true;
 var gpioFile = {};
 var pwmPrefix = {};
 
-exports.logfile = '/var/lib/cloud9/bonescript.log';
+module.exports = {
+    logfile: '/var/lib/cloud9/bonescript.log',
 
-exports.readPWMFreqAndValue = function (pin, pwm) {
-    var mode = {};
-    try {
-        var duty_percent = fs.readFileSync(pwmPrefix[pin.pwm.name] + '/duty_percent');
-        mode.freq = fs.readFileSync(pwmPrefix[pin.pwm.name] + '/period_freq');
-        mode.value = duty_percent / 100.0;
-    } catch (ex) {
-        mode.err = 'cannot set PWM frequency and value: ' + ex;
-    }
-    return (mode);
-};
-
-exports.readGPIODirection = hw_capemgr.readGPIODirection;
-
-exports.readPinMux = function (pin, mode, callback) {
-    var muxFile = '/sys/kernel/debug/omap_mux/' + pin.mux;
-    var readOmapMux = function (err, data) {
-        if (err) {
-            mode.err = 'readOmapMux error: ' + err;
-            if (debug) winston.debug(mode.err);
-            callback(mode);
-        }
-        mode = parse.modeFromOmapMux(data, mode);
-        callback(mode);
-    };
-    var tryOmapMux = function (exists) {
-        if (exists) {
-            fs.readFile(muxFile, 'utf8', readOmapMux);
-        }
-    };
-    if (callback) {
-        my.file_exists(muxFile, tryOmapMux);
-    } else {
+    readPWMFreqAndValue: function (pin, pwm) {
+        var mode = {};
         try {
-            var data = fs.readFileSync(muxFile, 'utf8');
-            mode = parse.modeFromOmapMux(data, mode);
+            var duty_percent = fs.readFileSync(pwmPrefix[pin.pwm.name] + '/duty_percent');
+            mode.freq = fs.readFileSync(pwmPrefix[pin.pwm.name] + '/period_freq');
+            mode.value = duty_percent / 100.0;
         } catch (ex) {
-            if (debug) winston.debug('getPinMode(' + pin.key + '): ' + ex);
+            mode.err = 'cannot set PWM frequency and value: ' + ex;
         }
-    }
-    return (mode);
-};
+        return (mode);
+    },
 
-exports.setPinMode = function (pin, pinData, template, resp) {
-    var muxFile = '/sys/kernel/debug/omap_mux/' + pin.mux;
-    var n = pin.gpio;
+    readGPIODirection: hw_capemgr.readGPIODirection,
 
-    try {
-        var fd = fs.openSync(muxFile, 'w');
-        fs.writeSync(fd, pinData.toString(16), null);
-    } catch (ex) {
-        resp.err = 'Error writing to ' + muxFile + ': ' + ex;
-        return (resp);
-    }
-
-    if (template == 'bspm') {
-        gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
-        if (pin.led) {
-            gpioFile[pin.key] = '/sys/class/leds/beaglebone::' + pin.led + '/brightness';
-        }
-    } else if (template == 'bspwm') {
-        resp.path = '/sys/class/pwm/' + pin.pwm.path;
-        var path = resp.path;
-        pwmPrefix[pin.pwm.name] = path;
-
-        // Clear up any unmanaged usage
-        fs.writeFileSync(path + '/request', '0');
-
-        // Allocate and configure the PWM
-        fs.writeFileSync(path + '/request', '1');
-        fs.writeFileSync(path + '/period_freq', '0');
-        fs.writeFileSync(path + '/polarity', '0');
-        fs.writeFileSync(path + '/run', '1');
-    }
-    return (resp);
-};
-
-exports.setLEDPinToGPIO = function (pin, resp) {
-    var path = "/sys/class/leds/beaglebone::" + pin.led + "/trigger";
-
-    if (my.file_existsSync(path)) {
-        fs.writeFileSync(path, "gpio");
-    } else {
-        resp.err = "Unable to find LED: " + pin.led;
-        winston.error(resp.err);
-        resp.value = false;
-    }
-
-    return (resp);
-};
-
-exports.exportGPIOControls = hw_capemgr.exportGPIOControls;
-
-exports.writeGPIOValue = function (pin, value, callback) {
-    if (typeof gpioFile[pin.key] == 'undefined') {
-        gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
-        if (pin.led) {
-            gpioFile[pin.key] = "/sys/class/leds/beaglebone:";
-            gpioFile[pin.key] += ":" + pin.led + "/brightness";
-        }
-        if (!my.file_existsSync(gpioFile[pin.key])) {
-            winston.error("Unable to find gpio: " + gpioFile[pin.key]);
-        }
-    }
-    if (debug) winston.debug("gpioFile = " + gpioFile[pin.key]);
-    if (callback) {
-        fs.writeFile(gpioFile[pin.key], '' + value, null, callback);
-    } else {
-        try {
-            fs.writeFileSync(gpioFile[pin.key], '' + value, null);
-        } catch (ex) {
-            winston.error("Unable to write to " + gpioFile[pin.key]);
-        }
-    }
-};
-
-exports.readGPIOValue = hw_capemgr.readGPIOValue;
-
-exports.enableAIN = function () {
-    return (true);
-};
-
-exports.readAIN = function (pin, resp, callback) {
-    var ainFile = '/sys/bus/platform/devices/tsc/ain' + (pin.ain + 1).toString();
-    if (callback) {
-        var readFile = function (err, data) {
+    readPinMux: function (pin, mode, callback) {
+        var muxFile = '/sys/kernel/debug/omap_mux/' + pin.mux;
+        var readOmapMux = function (err, data) {
             if (err) {
-                resp.err = 'analogRead error: ' + err;
-                winston.error(resp.err);
+                mode.err = 'readOmapMux error: ' + err;
+                if (debug) winston.debug(mode.err);
+                callback(mode);
             }
-            resp.value = parseInt(data, 10) / 4096;
-            callback(resp);
+            mode = parse.modeFromOmapMux(data, mode);
+            callback(mode);
         };
-        fs.readFile(ainFile, readFile);
-        return (resp);
-    }
-    resp.value = parseInt(fs.readFileSync(ainFile), 10);
-    if (isNaN(resp.value)) {
-        resp.err = 'analogRead(' + pin.key + ') returned ' + resp.value;
-        winston.error(resp.err);
-    }
-    resp.value = resp.value / 4096;
-    if (isNaN(resp.value)) {
-        resp.err = 'analogRead(' + pin.key + ') scaled to ' + resp.value;
-    }
-    return (resp);
-};
-
-exports.writeGPIOEdge = hw_capemgr.writeGPIOEdge;
-
-exports.writePWMFreqAndValue = function (pin, pwm, freq, value, resp) {
-    var path = pwmPrefix[pin.pwm.name];
-    if (pwm.freq != freq) {
-        fs.writeFileSync(path + '/run', '0');
-        fs.writeFileSync(path + '/duty_percent', '0');
-        fs.writeFileSync(path + '/period_freq', Math.round(freq));
-        fs.writeFileSync(path + '/run', '1');
-    }
-    fs.writeFileSync(path + '/duty_percent', Math.round(value * 100));
-    return (resp);
-};
-
-exports.readEeproms = function (eeproms) {
-    var EepromFiles = {
-        '/sys/bus/i2c/drivers/at24/1-0050/eeprom': {
-            type: 'bone'
-        },
-        '/sys/bus/i2c/drivers/at24/3-0054/eeprom': {
-            type: 'cape'
-        },
-        '/sys/bus/i2c/drivers/at24/3-0055/eeprom': {
-            type: 'cape'
-        },
-        '/sys/bus/i2c/drivers/at24/3-0056/eeprom': {
-            type: 'cape'
-        },
-        '/sys/bus/i2c/drivers/at24/3-0057/eeprom': {
-            type: 'cape'
+        var tryOmapMux = function (exists) {
+            if (exists) {
+                fs.readFile(muxFile, 'utf8', readOmapMux);
+            }
+        };
+        if (callback) {
+            my.file_exists(muxFile, tryOmapMux);
+        } else {
+            try {
+                var data = fs.readFileSync(muxFile, 'utf8');
+                mode = parse.modeFromOmapMux(data, mode);
+            } catch (ex) {
+                if (debug) winston.debug('getPinMode(' + pin.key + '): ' + ex);
+            }
         }
-    };
-    eeproms = eeprom.readEeproms(EepromFiles);
-    return (eeproms);
-};
+        return (mode);
+    },
 
-exports.readPlatform = function (platform) {
-    return (platform);
-};
+    setPinMode: function (pin, pinData, template, resp) {
+        var muxFile = '/sys/kernel/debug/omap_mux/' + pin.mux;
+        var n = pin.gpio;
+
+        try {
+            var fd = fs.openSync(muxFile, 'w');
+            fs.writeSync(fd, pinData.toString(16), null);
+        } catch (ex) {
+            resp.err = 'Error writing to ' + muxFile + ': ' + ex;
+            return (resp);
+        }
+
+        if (template == 'bspm') {
+            gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
+            if (pin.led) {
+                gpioFile[pin.key] = '/sys/class/leds/beaglebone::' + pin.led + '/brightness';
+            }
+        } else if (template == 'bspwm') {
+            resp.path = '/sys/class/pwm/' + pin.pwm.path;
+            var path = resp.path;
+            pwmPrefix[pin.pwm.name] = path;
+
+            // Clear up any unmanaged usage
+            fs.writeFileSync(path + '/request', '0');
+
+            // Allocate and configure the PWM
+            fs.writeFileSync(path + '/request', '1');
+            fs.writeFileSync(path + '/period_freq', '0');
+            fs.writeFileSync(path + '/polarity', '0');
+            fs.writeFileSync(path + '/run', '1');
+        }
+        return (resp);
+    },
+
+    setLEDPinToGPIO: function (pin, resp) {
+        var path = "/sys/class/leds/beaglebone::" + pin.led + "/trigger";
+
+        if (my.file_existsSync(path)) {
+            fs.writeFileSync(path, "gpio");
+        } else {
+            resp.err = "Unable to find LED: " + pin.led;
+            winston.error(resp.err);
+            resp.value = false;
+        }
+
+        return (resp);
+    },
+
+    exportGPIOControls: hw_capemgr.exportGPIOControls,
+
+    writeGPIOValue: function (pin, value, callback) {
+        if (typeof gpioFile[pin.key] == 'undefined') {
+            gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
+            if (pin.led) {
+                gpioFile[pin.key] = "/sys/class/leds/beaglebone:";
+                gpioFile[pin.key] += ":" + pin.led + "/brightness";
+            }
+            if (!my.file_existsSync(gpioFile[pin.key])) {
+                winston.error("Unable to find gpio: " + gpioFile[pin.key]);
+            }
+        }
+        if (debug) winston.debug("gpioFile = " + gpioFile[pin.key]);
+        if (callback) {
+            fs.writeFile(gpioFile[pin.key], '' + value, null, callback);
+        } else {
+            try {
+                fs.writeFileSync(gpioFile[pin.key], '' + value, null);
+            } catch (ex) {
+                winston.error("Unable to write to " + gpioFile[pin.key]);
+            }
+        }
+    },
+
+    readGPIOValue: hw_capemgr.readGPIOValue,
+
+    enableAIN: function () {
+        return (true);
+    },
+
+    readAIN: function (pin, resp, callback) {
+        var ainFile = '/sys/bus/platform/devices/tsc/ain' + (pin.ain + 1).toString();
+        if (callback) {
+            var readFile = function (err, data) {
+                if (err) {
+                    resp.err = 'analogRead error: ' + err;
+                    winston.error(resp.err);
+                }
+                resp.value = parseInt(data, 10) / 4096;
+                callback(resp);
+            };
+            fs.readFile(ainFile, readFile);
+            return (resp);
+        }
+        resp.value = parseInt(fs.readFileSync(ainFile), 10);
+        if (isNaN(resp.value)) {
+            resp.err = 'analogRead(' + pin.key + ') returned ' + resp.value;
+            winston.error(resp.err);
+        }
+        resp.value = resp.value / 4096;
+        if (isNaN(resp.value)) {
+            resp.err = 'analogRead(' + pin.key + ') scaled to ' + resp.value;
+        }
+        return (resp);
+    },
+
+    writeGPIOEdge: hw_capemgr.writeGPIOEdge,
+
+    writePWMFreqAndValue: function (pin, pwm, freq, value, resp) {
+        var path = pwmPrefix[pin.pwm.name];
+        if (pwm.freq != freq) {
+            fs.writeFileSync(path + '/run', '0');
+            fs.writeFileSync(path + '/duty_percent', '0');
+            fs.writeFileSync(path + '/period_freq', Math.round(freq));
+            fs.writeFileSync(path + '/run', '1');
+        }
+        fs.writeFileSync(path + '/duty_percent', Math.round(value * 100));
+        return (resp);
+    },
+
+    readEeproms: function (eeproms) {
+        var EepromFiles = {
+            '/sys/bus/i2c/drivers/at24/1-0050/eeprom': {
+                type: 'bone'
+            },
+            '/sys/bus/i2c/drivers/at24/3-0054/eeprom': {
+                type: 'cape'
+            },
+            '/sys/bus/i2c/drivers/at24/3-0055/eeprom': {
+                type: 'cape'
+            },
+            '/sys/bus/i2c/drivers/at24/3-0056/eeprom': {
+                type: 'cape'
+            },
+            '/sys/bus/i2c/drivers/at24/3-0057/eeprom': {
+                type: 'cape'
+            }
+        };
+        eeproms = eeprom.readEeproms(EepromFiles);
+        return (eeproms);
+    },
+
+    readPlatform: function (platform) {
+        return (platform);
+    }
+}

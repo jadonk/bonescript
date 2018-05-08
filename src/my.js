@@ -11,7 +11,7 @@ var g = require('./constants');
 var debug = process.env.DEBUG ? true : false;
 var sysfsFiles = {};
 
-exports.require = function (packageName, onfail) {
+myRequire = function (packageName, onfail) {
     var y = {};
     try {
         y = require(packageName);
@@ -24,43 +24,43 @@ exports.require = function (packageName, onfail) {
     return (y);
 };
 
-var fibers = exports.require('fibers');
+var fibers = myRequire('fibers');
 
-exports.is_new_capemgr = function (callback) {
-    var exists = exports.file_existsSync('/sys/devices/platform/bone_capemgr/slots');
+is_new_capemgr = function (callback) {
+    var exists = file_existsSync('/sys/devices/platform/bone_capemgr/slots');
     if (callback) callback(exists);
     return (exists);
 };
 
-exports.is_capemgr = function (callback) {
-    return (exports.find_sysfsFile('capemgr', '/sys/devices', 'bone_capemgr.', callback));
+is_capemgr = function (callback) {
+    return (find_sysfsFile('capemgr', '/sys/devices', 'bone_capemgr.', callback));
 };
 
-exports.is_ocp = function (callback) {
-    var found = exports.find_sysfsFile('ocp', '/sys/devices', 'ocp.', callback);
+is_ocp = function (callback) {
+    var found = find_sysfsFile('ocp', '/sys/devices', 'ocp.', callback);
     if (debug) winston.debug("is_ocp, found = " + found);
     if (typeof found == 'undefined') {
-        found = exports.find_sysfsFile('ocp', '/sys/devices/platform', 'ocp', callback);
+        found = find_sysfsFile('ocp', '/sys/devices/platform', 'ocp', callback);
         if (debug) winston.debug("is_ocp, found2 = " + found);
     }
     return (found);
 };
 
-exports.is_cape_universal = function (callback) {
-    var ocp = exports.is_ocp();
+is_cape_universal = function (callback) {
+    var ocp = is_ocp();
     if (debug) winston.debug('is_ocp() = ' + ocp);
-    var cape_universal = exports.find_sysfsFile('cape-universal', ocp, 'cape-universal.', callback);
+    var cape_universal = find_sysfsFile('cape-universal', ocp, 'cape-universal.', callback);
     if (debug) winston.debug('is_cape_universal() = ' + cape_universal);
     return (cape_universal);
 };
 
-exports.find_sysfsFile = function (name, path, prefix, callback) {
+find_sysfsFile = function (name, path, prefix, callback) {
     if (debug) winston.debug('find_sysfsFile(' + name + ',' + path + ',' + prefix + ')');
     if (typeof sysfsFiles[name] == 'undefined') {
         if (callback) {
-            sysfsFiles[name] = exports.file_find(path, prefix, 1, onFindCapeMgr);
+            sysfsFiles[name] = file_find(path, prefix, 1, onFindCapeMgr);
         } else {
-            sysfsFiles[name] = exports.file_find(path, prefix, 1);
+            sysfsFiles[name] = file_find(path, prefix, 1);
         }
     } else {
         if (callback) callback({
@@ -77,15 +77,15 @@ exports.find_sysfsFile = function (name, path, prefix, callback) {
     return (sysfsFiles[name]);
 };
 
-exports.file_exists = fs.exists;
-exports.file_existsSync = fs.existsSync;
-if (typeof exports.file_exists == 'undefined') {
+file_exists = fs.exists;
+file_existsSync = fs.existsSync;
+if (typeof file_exists == 'undefined') {
     var path = require('path');
-    exports.file_exists = path.exists;
-    exports.file_existsSync = path.existsSync;
+    file_exists = path.exists;
+    file_existsSync = path.existsSync;
 }
 
-exports.file_find = function (path, prefix, attempts, callback) {
+file_find = function (path, prefix, attempts, callback) {
     var resp = {};
     resp.attempts = 0;
     if (typeof attempts == 'undefined') attempts = 1;
@@ -145,7 +145,7 @@ exports.file_find = function (path, prefix, attempts, callback) {
 
 // Note, this just makes sure there was an attempt to load the
 // devicetree fragment, not if it was successful
-exports.load_dt = function (name, pin, resp, callback) {
+load_dt = function (name, pin, resp, callback) {
     if (debug) winston.debug('load_dt(' + [name, pin ? pin.key : null, JSON.stringify(resp)] + ')');
     resp = resp || {};
     var slotsFile;
@@ -155,7 +155,7 @@ exports.load_dt = function (name, pin, resp, callback) {
     if (pin) {
         var slotRegex = new RegExp('\\d+(?=\\s*:.*,bs.*' + pin.key + ')', 'gm');
     }
-    var capemgr = exports.is_capemgr();
+    var capemgr = is_capemgr();
     onFindCapeMgr({
         path: capemgr
     });
@@ -262,7 +262,7 @@ exports.load_dt = function (name, pin, resp, callback) {
     return (typeof resp.err == 'undefined');
 };
 
-exports.create_dt = function (pin, data, template, load, force_create, resp, callback) {
+create_dt = function (pin, data, template, load, force_create, resp, callback) {
     if (debug) winston.debug('create_dt(' + [pin.key, data, template, load, force_create, JSON.stringify(resp)] + ')');
     resp = resp || {};
     template = template || 'bspm';
@@ -274,7 +274,7 @@ exports.create_dt = function (pin, data, template, load, force_create, resp, cal
     if (force_create) {
         createDTS();
     } else {
-        var exists = exports.file_existsSync(dtboFilename);
+        var exists = file_existsSync(dtboFilename);
         onDTBOExistsTest(exists);
     }
 
@@ -337,14 +337,14 @@ exports.create_dt = function (pin, data, template, load, force_create, resp, cal
 
     function onDTBOExists() {
         if (debug) winston.debug('onDTBOExists()');
-        if (load) exports.load_dt(fragment, pin, resp);
+        if (load) load_dt(fragment, pin, resp);
     }
 
     if (callback) callback(resp);
     return (typeof resp.err == 'undefined');
 };
 
-exports.myeval = function (x) {
+myeval = function (x) {
     winston.debug('myeval("' + x + '");');
     var y;
     try {
@@ -358,7 +358,7 @@ exports.myeval = function (x) {
     return (y);
 };
 
-exports.getpin = function (pin) {
+getpin = function (pin) {
     if (typeof pin == 'object') return (pin);
     else {
         var pinObject = bone.getPinObject(pin);
@@ -369,7 +369,7 @@ exports.getpin = function (pin) {
     }
 };
 
-exports.wrapCall = function (m, func, funcArgs, cbArgs) {
+wrapCall = function (m, func, funcArgs, cbArgs) {
     if (!m.module.exists) {
         if (debug) winston.debug(m.name + ' support module not loaded.');
         return (function () {});
@@ -417,7 +417,7 @@ exports.wrapCall = function (m, func, funcArgs, cbArgs) {
     return (newFunction);
 };
 
-exports.wrapOpen = function (m, openArgs) {
+wrapOpen = function (m, openArgs) {
     if (!m.module.exists) {
         if (debug) winston.debug(m.name + ' support module not loaded.');
         return (function () {});
@@ -434,13 +434,13 @@ exports.wrapOpen = function (m, openArgs) {
         winston.debug(m.name + ' opened with ' + JSON.stringify(arguments));
         if (m.ports[port] && m.ports[port].devicetree) {
             var fragment = m.ports[port].devicetree;
-            if (!exports.is_capemgr()) {
+            if (!is_capemgr()) {
                 if (callback) callback({
                     err: 'Kernel does not include CapeMgr module'
                 });
                 return (false);
             }
-            if (!exports.load_dt(fragment)) {
+            if (!load_dt(fragment)) {
                 if (callback) callback({
                     'err': 'Devicetree overlay fragment ' +
                         fragment + ' not loaded'
@@ -479,7 +479,7 @@ exports.wrapOpen = function (m, openArgs) {
     return (newFunction);
 };
 
-exports.pin_data = function (slew, direction, pullup, mux) {
+pin_data = function (slew, direction, pullup, mux) {
     var pinData = 0;
     if (slew == 'slow') pinData |= 0x40;
     if (direction != g.OUTPUT) pinData |= 0x20;
@@ -500,7 +500,7 @@ exports.pin_data = function (slew, direction, pullup, mux) {
 // Inspired by
 //   https://github.com/luciotato/waitfor/blob/master/waitfor.js
 //   https://github.com/0ctave/node-sync/blob/master/lib/sync.js
-exports.wait_for = function (fn, myargs, result_name, no_error) {
+wait_for = function (fn, myargs, result_name, no_error) {
     var fiber = fibers.current;
     var yielded = false;
     var args = [];
@@ -553,3 +553,24 @@ exports.wait_for = function (fn, myargs, result_name, no_error) {
 
     return (result);
 };
+
+module.exports = {
+    require: myRequire,
+    fibers: fibers,
+    is_new_capemgr: is_new_capemgr,
+    is_capemgr: is_capemgr,
+    is_ocp: is_ocp,
+    is_cape_universal: is_cape_universal,
+    find_sysfsFile: find_sysfsFile,
+    file_exists: file_exists,
+    file_existsSync: file_existsSync,
+    file_find: file_find,
+    load_dt: load_dt,
+    create_dt: create_dt,
+    myeval: myeval,
+    getpin: getpin,
+    wrapCall: wrapCall,
+    wrapOpen: wrapOpen,
+    pin_data: pin_data,
+    wait_for: wait_for
+}

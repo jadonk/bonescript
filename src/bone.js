@@ -4,7 +4,6 @@
 // pins is an object whose keys are the pinIndex keys, e.g. P9_14.
 // uarts and i2c are objects describing the serial ports and i2c buses.
 
-if (typeof exports === 'undefined') exports = {};
 
 var pinIndex = [{
         "name": "USR0",
@@ -3025,81 +3024,83 @@ var i2c = {
     }
 };
 
-exports.getPinObject = function (key) {
-    if (typeof key == "string") {
-        // Ignore case
-        key = key.toUpperCase();
-        // Replace alternate separators and leading zeros
-        key = key.replace(/[\.\-_ ]0*/g, "_");
-    }
-    if (typeof key == "number") {
-        key = "GPIO_" + key;
-    }
-    //console.log(key);
-    //console.log(pins[key]);
-    if (typeof pinIndex[pins[key]] == "object") {
-        var pinObject = Object.assign({}, pinIndex[pins[key]]);
+module.exports = {
+    getPinObject: function (key) {
+        if (typeof key == "string") {
+            // Ignore case
+            key = key.toUpperCase();
+            // Replace alternate separators and leading zeros
+            key = key.replace(/[\.\-_ ]0*/g, "_");
+        }
+        if (typeof key == "number") {
+            key = "GPIO_" + key;
+        }
+        //console.log(key);
+        //console.log(pins[key]);
+        if (typeof pinIndex[pins[key]] == "object") {
+            var pinObject = Object.assign({}, pinIndex[pins[key]]);
 
-        // Only keep the matching index led
-        if (pinObject.led) {
-            //console.log("pinObject[" + key + "]: " + JSON.stringify(pinObject));
-            if (Array.isArray(pinObject.led)) {
-                //console.log("pinObject.key: " + pinObject.key);
-                var i = pinObject.key.indexOf(key);
-                if (i >= 0) {
-                    var led = pinObject.led[i];
-                    pinObject.led = led;
-                    //console.log("pinObject.led[" + i + "]: " + led);
-                } else {
-                    pinObject.led = null;
+            // Only keep the matching index led
+            if (pinObject.led) {
+                //console.log("pinObject[" + key + "]: " + JSON.stringify(pinObject));
+                if (Array.isArray(pinObject.led)) {
+                    //console.log("pinObject.key: " + pinObject.key);
+                    var i = pinObject.key.indexOf(key);
+                    if (i >= 0) {
+                        var led = pinObject.led[i];
+                        pinObject.led = led;
+                        //console.log("pinObject.led[" + i + "]: " + led);
+                    } else {
+                        pinObject.led = null;
+                    }
                 }
             }
+
+            // Remove other keys
+            pinObject.key = key;
+        } else {
+            return (null);
         }
 
-        // Remove other keys
-        pinObject.key = key;
-    } else {
-        return (null);
-    }
+        return (pinObject);
+    },
 
-    return (pinObject);
-};
-
-exports.getPinKeys = function (filter) {
-    var keys = [];
-    for (var key in pins) {
-        if (typeof filter != 'undefined') {
-            if (key.search(filter) >= 0) {
+    getPinKeys: function (filter) {
+        var keys = [];
+        for (var key in pins) {
+            if (typeof filter != 'undefined') {
+                if (key.search(filter) >= 0) {
+                    keys.push(key);
+                }
+            } else {
                 keys.push(key);
             }
-        } else {
-            keys.push(key);
         }
-    }
-    return (keys);
-};
+        return (keys);
+    },
 
-// from https://stackoverflow.com/questions/15478954/sort-array-elements-string-with-numbers-natural-sort
-exports.naturalCompare = function (a, b) {
-    var ax = [],
-        bx = [];
+    // from https://stackoverflow.com/questions/15478954/sort-array-elements-string-with-numbers-natural-sort
+    naturalCompare: function (a, b) {
+        var ax = [],
+            bx = [];
 
-    a.replace(/(\d+)|(\D+)/g, function (_, $1, $2) {
-        ax.push([$1 || Infinity, $2 || ""])
-    });
-    b.replace(/(\d+)|(\D+)/g, function (_, $1, $2) {
-        bx.push([$1 || Infinity, $2 || ""])
-    });
+        a.replace(/(\d+)|(\D+)/g, function (_, $1, $2) {
+            ax.push([$1 || Infinity, $2 || ""])
+        });
+        b.replace(/(\d+)|(\D+)/g, function (_, $1, $2) {
+            bx.push([$1 || Infinity, $2 || ""])
+        });
 
-    while (ax.length && bx.length) {
-        var an = ax.shift();
-        var bn = bx.shift();
-        var nn = (an[0] - bn[0]) || an[1].localeCompare(bn[1]);
-        if (nn) return nn;
-    }
+        while (ax.length && bx.length) {
+            var an = ax.shift();
+            var bn = bx.shift();
+            var nn = (an[0] - bn[0]) || an[1].localeCompare(bn[1]);
+            if (nn) return nn;
+        }
 
-    return ax.length - bx.length;
+        return ax.length - bx.length;
+    },
+
+    uarts: uarts,
+    i2c: i2c
 }
-
-exports.uarts = uarts;
-exports.i2c = i2c;

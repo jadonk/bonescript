@@ -1,4 +1,5 @@
 // Copyright (C) 2017 - Texas Instruments, Jason Kridner
+// exports not changed to module.exports
 var my = require('./my');
 var rc = my.require('roboticscape');
 

@@ -103,6 +103,8 @@ var modeFromPinctrl = function (pins, muxRegOffset, muxBase, mode) {
     return (mode);
 };
 
-exports.modeFromStatus = modeFromStatus;
-exports.modeFromOmapMux = modeFromOmapMux;
-exports.modeFromPinctrl = modeFromPinctrl;
+module.exports = {
+    modeFromStatus: modeFromStatus,
+    modeFromOmapMux: modeFromOmapMux,
+    modeFromPinctrl: modeFromPinctrl
+}
