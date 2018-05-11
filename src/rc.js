@@ -5,7 +5,7 @@ var rc = my.require('roboticscape');
 
 if (!rc.exists) return;
 
-exports.rcInitialize = function (callback) {
+rcInitialize = function (callback) {
     var i = rc.initialize();
     var x = {};
     if (i) {
@@ -14,9 +14,9 @@ exports.rcInitialize = function (callback) {
     if (callback) callback(x);
     return (i);
 };
-exports.rcInitialize.args = ['callback'];
+rcInitialize.args = ['callback'];
 
-exports.rcState = function (state, callback) {
+rcState = function (state, callback) {
     var x = {};
     if (state) {
         rc.state(state);
@@ -27,17 +27,17 @@ exports.rcState = function (state, callback) {
     if (callback) callback(x);
     return (state);
 };
-exports.rcState.args = ['state', 'callback'];
+rcState.args = ['state', 'callback'];
 
-exports.rcLED = function (led, value, callback) {
+rcLED = function (led, value, callback) {
     if (typeof value !== 'undefined') {
         rc.led(led, value);
     }
     if (callback) callback();
 };
-exports.rcLED.args = ['led', 'value', 'callback'];
+rcLED.args = ['led', 'value', 'callback'];
 
-exports.rcOn = function (event, callback) {
+rcOn = function (event, callback) {
     function myCallback() {
         callback({
             'event': event
@@ -45,9 +45,9 @@ exports.rcOn = function (event, callback) {
     }
     rc.on(event, myCallback);
 };
-exports.rcOn.args = ['event', 'callback'];
+rcOn.args = ['event', 'callback'];
 
-exports.rcMotor = function (motor, value, callback) {
+rcMotor = function (motor, value, callback) {
     if (typeof motor !== 'undefined') {
         rc.motor(motor, value);
     } else {
@@ -55,9 +55,9 @@ exports.rcMotor = function (motor, value, callback) {
     }
     if (callback) callback();
 };
-exports.rcMotor.args = ['motor', 'value', 'callback'];
+rcMotor.args = ['motor', 'value', 'callback'];
 
-exports.rcEncoder = function (encoder, value, callback) {
+rcEncoder = function (encoder, value, callback) {
     var x = {};
     x.encoder = encoder;
     var i;
@@ -69,4 +69,13 @@ exports.rcEncoder = function (encoder, value, callback) {
     }
     if (callback) callback(x);
 };
-exports.rcEncoder.args = ['encoder', 'value', 'callback'];
+rcEncoder.args = ['encoder', 'value', 'callback'];
+
+module.exports = {
+    rcInitialize: rcInitialize,
+    rcState: rcState,
+    rcLED: rcLED,
+    rcOn: rcOn,
+    rcMotor: rcMotor,
+    rcEncoder: rcEncoder
+}

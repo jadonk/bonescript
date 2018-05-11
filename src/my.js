@@ -556,7 +556,6 @@ wait_for = function (fn, myargs, result_name, no_error) {
 
 module.exports = {
     require: myRequire,
-    fibers: fibers,
     is_new_capemgr: is_new_capemgr,
     is_capemgr: is_capemgr,
     is_ocp: is_ocp,
