@@ -16,28 +16,30 @@ myrequire('systemd', function () {
     if (debug) winston.debug("Startup as socket-activated service under systemd not enabled");
 });
 
-exports.serverStart = function (port, directory, callback) {
-    if (port === undefined) {
-        port = (process.env.LISTEN_PID > 0) ? 'systemd' : ((process.env.PORT) ? process.env.PORT : 80);
-    }
-    if (directory === undefined) {
-        directory = (process.env.SERVER_DIR) ? process.env.SERVER_DIR : '/usr/share/bone101';
-    }
-    var server = mylisten(port, directory);
-    serverEmitter.on('newListner', addServerListener);
-
-    function addServerListener(event, listener) {
-        console.log('got here'); //TODO: not getting here
-        if (debug) winston.debug('Got request to add listener to ' + event);
-        var serverEvent = event.replace(/^server\$/, '');
-        if (serverEvent) {
-            if (debug) winston.debug('Adding listener to server$' + serverEvent);
-            server.on(serverEvent, listener);
+module.exports = {
+    serverStart: function (port, directory, callback) {
+        if (port === undefined) {
+            port = (process.env.LISTEN_PID > 0) ? 'systemd' : ((process.env.PORT) ? process.env.PORT : 80);
         }
-    }
+        if (directory === undefined) {
+            directory = (process.env.SERVER_DIR) ? process.env.SERVER_DIR : '/usr/share/bone101';
+        }
+        var server = mylisten(port, directory);
+        serverEmitter.on('newListner', addServerListener);
 
-    return (serverEmitter);
-};
+        function addServerListener(event, listener) {
+            console.log('got here'); //TODO: not getting here
+            if (debug) winston.debug('Got request to add listener to ' + event);
+            var serverEvent = event.replace(/^server\$/, '');
+            if (serverEvent) {
+                if (debug) winston.debug('Adding listener to server$' + serverEvent);
+                server.on(serverEvent, listener);
+            }
+        }
+
+        return (serverEmitter);
+    }
+}
 
 function mylisten(port, directory) {
     winston.info("Opening port " + port + " to serve up " + directory);

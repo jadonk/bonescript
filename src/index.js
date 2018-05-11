@@ -611,30 +611,27 @@ f.delay = function (ms) {
 };
 
 // Exported variables
-exports.bone = bone; // this likely needs to be platform and be detected
-for (var x in f) {
-    exports[x] = f[x];
-}
+f.bone = bone; // this likely needs to be platform and be detected
 for (var x in functions) {
-    exports[x] = functions[x];
+    f[x] = functions[x];
 }
 for (var x in serial) {
-    exports[x] = serial[x];
+    f[x] = serial[x];
 }
 for (var x in iic) {
-    exports[x] = iic[x];
+    f[x] = iic[x];
 }
 for (var x in g) {
-    exports[x] = g[x];
+    f[x] = g[x];
 }
 for (var x in autorun) {
-    exports[x] = autorun[x];
+    f[x] = autorun[x];
 }
 for (var x in server) {
-    exports[x] = server[x];
+    f[x] = server[x];
 }
 for (var x in socketHandlers) {
-    exports[x] = socketHandlers[x];
+    f[x] = socketHandlers[x];
 }
 /*for(var x in rc) {
     exports[x] = rc[x];
@@ -667,9 +664,10 @@ process.nextTick(run);
 // Global variable assignments
 // This section is broken out because it will eventually be deprecated
 function setGlobals() {
-    for (var x in exports) {
-        global[x] = exports[x];
+    for (var x in f) {
+        global[x] = f[x];
     }
     global.run = run;
 }
-exports.setGlobals = setGlobals;
+f.setGlobals = setGlobals;
+module.exports = f;

@@ -19,10 +19,12 @@ m.doOpen = function (args) {
     return (openPort);
 };
 
-exports.i2cOpen = my.wrapOpen(m, ['options']);
-exports.i2cScan = my.wrapCall(m, 'scan', [], ['err', 'data']);
-exports.i2cWriteByte = my.wrapCall(m, 'writeByte', ['byte'], ['err']);
-exports.i2cWriteBytes = my.wrapCall(m, 'writeBytes', ['command', 'bytes'], ['err']);
-exports.i2cReadByte = my.wrapCall(m, 'readByte', [], ['err', 'res']);
-exports.i2cReadBytes = my.wrapCall(m, 'readBytes', ['command', 'length'], ['err', 'res']);
-exports.i2cStream = my.wrapCall(m, 'stream', ['command', 'length', 'delay'], []);
+module.exports = {
+    i2cOpen: my.wrapOpen(m, ['options']),
+    i2cScan: my.wrapCall(m, 'scan', [], ['err', 'data']),
+    i2cWriteByte: my.wrapCall(m, 'writeByte', ['byte'], ['err']),
+    i2cWriteBytes: my.wrapCall(m, 'writeBytes', ['command', 'bytes'], ['err']),
+    i2cReadByte: my.wrapCall(m, 'readByte', [], ['err', 'res']),
+    i2cReadBytes: my.wrapCall(m, 'readBytes', ['command', 'length'], ['err', 'res']),
+    i2cStream: my.wrapCall(m, 'stream', ['command', 'length', 'delay'], []),
+}

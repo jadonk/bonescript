@@ -18,7 +18,9 @@ m.doOpen = function (args) {
     return (openPort);
 };
 
-exports.serialOpen = my.wrapOpen(m, ['options']);
-exports.serialWrite = my.wrapCall(m, 'write', ['data'], ['err', 'results']);
+module.exports = {
+    serialOpen: my.wrapOpen(m, ['options']),
+    serialWrite: my.wrapCall(m, 'write', ['data'], ['err', 'results']),
 
-exports.serialParsers = m.module.exists ? m.module.parsers : {};
+    serialParsers: m.module.exists ? m.module.parsers : {}
+}
