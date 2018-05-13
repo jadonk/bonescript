@@ -3,8 +3,8 @@ var winston = require('winston');
 
 var gpioFile = {};
 
-exports.logfile = 'bonescript.log';
-exports.readPWMFreqAndValue = function (pin, pwm) {
+var logfile = 'bonescript.log';
+var readPWMFreqAndValue = function (pin, pwm) {
     winston.info('readPWMFreqAndValue(' + [pin.key, pwm.key] + ')');
     var mode = {};
     mode.freq = pwm.freq;
@@ -12,7 +12,7 @@ exports.readPWMFreqAndValue = function (pin, pwm) {
     return (mode);
 };
 
-exports.readGPIODirection = function (n, gpio) {
+var readGPIODirection = function (n, gpio) {
     winston.info('readGPIODirection(' + [n] + ')');
     var mode = {};
     if (typeof gpio[n] != 'undefined') {
@@ -26,7 +26,7 @@ exports.readGPIODirection = function (n, gpio) {
     return (mode);
 };
 
-exports.readPinMux = function (pin, mode, callback) {
+var readPinMux = function (pin, mode, callback) {
     winston.info('readPinMux(' + [pin.key] + ')');
     if (callback) {
         callback(mode);
@@ -34,30 +34,30 @@ exports.readPinMux = function (pin, mode, callback) {
     return (mode);
 };
 
-exports.setPinMode = function (pin, pinData, template, resp) {
+var setPinMode = function (pin, pinData, template, resp) {
     winston.info('setPinMode(' + [pin.key, pinData, template] + ')');
     gpioFile[pin.key] = true;
     return (resp);
 };
 
-exports.setLEDPinToGPIO = function (pin, resp) {
+var setLEDPinToGPIO = function (pin, resp) {
     winston.info('setLEDPinToGPIO(' + [pin.key] + ')');
     return (resp);
 };
 
-exports.exportGPIOControls = function (pin, direction, resp) {
+var exportGPIOControls = function (pin, direction, resp) {
     winston.info('expertGPIOControls(' + [pin.key, direction] + ')');
     return (resp);
 };
 
-exports.writeGPIOValue = function (pin, value, callback) {
+var writeGPIOValue = function (pin, value, callback) {
     winston.info('writeGPIOValue(' + [pin.key, value] + ')');
     if (callback) {
         callback();
     }
 };
 
-exports.readGPIOValue = function (pin, resp, callback) {
+var readGPIOValue = function (pin, resp, callback) {
     winston.info('readGPIOValue(' + [pin.key] + ')');
     if (callback) {
         callback(0);
@@ -67,12 +67,12 @@ exports.readGPIOValue = function (pin, resp, callback) {
     return (resp);
 };
 
-exports.enableAIN = function () {
+var enableAIN = function () {
     winston.info('enableAIN()');
     return (true);
 };
 
-exports.readAIN = function (pin, resp, callback) {
+var readAIN = function (pin, resp, callback) {
     winston.info('readAIN(' + [pin.key] + ')');
     resp.value = 0;
     if (callback) {
@@ -81,18 +81,18 @@ exports.readAIN = function (pin, resp, callback) {
     return (resp);
 };
 
-exports.writeGPIOEdge = function (pin, mode) {
+var writeGPIOEdge = function (pin, mode) {
     winston.info('writeGPIOEdge(' + [pin.key, mode] + ')');
     var resp = {};
     return (resp);
 };
 
-exports.writePWMFreqAndValue = function (pin, pwm, freq, value, resp) {
+var writePWMFreqAndValue = function (pin, pwm, freq, value, resp) {
     winston.info('writePWMFreqAndValue(' + [pin.key, pwm.name, freq, value] + ')');
     return (resp);
 };
 
-exports.readEeproms = function (eeproms) {
+var readEeproms = function (eeproms) {
     winston.info('readEeproms()');
     var boardName = 'A335BNLT';
     var version = '';
@@ -104,8 +104,27 @@ exports.readEeproms = function (eeproms) {
     return (eeproms);
 };
 
-exports.readPlatform = function (platform) {
+var readPlatform = function (platform) {
     winston.info('readPlatform()');
     platform.name = 'BeagleBone Simulator';
     return (platform);
 };
+
+module.exports = {
+    logfile: logfile,
+    readPWMFreqAndValue: readPWMFreqAndValue,
+    readGPIODirection: readGPIODirection,
+    readPinMux: readPinMux,
+    setPinMode: setPinMode,
+    setLEDPinToGPIO: setLEDPinToGPIO,
+    exportGPIOControls: exportGPIOControls,
+    writeGPIOValue: writeGPIOValue,
+    readGPIOValue: readGPIOValue,
+    enableAIN: enableAIN,
+    readAIN: readAIN,
+    writeGPIOEdge: writeGPIOEdge,
+    writePWMFreqAndValue: writePWMFreqAndValue,
+    readEeproms: readEeproms,
+    readPlatform: readPlatform,
+
+}

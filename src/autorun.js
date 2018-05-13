@@ -5,7 +5,7 @@ var fs = require('fs');
 var child_process = require('child_process');
 var winston = require('winston');
 
-exports.autorun = function (dir) {
+var autorun = function (dir) {
     var ar = dir || '/var/lib/cloud9/autorun';
 
     var apps = {};
@@ -130,4 +130,8 @@ exports.autorun = function (dir) {
             apps[file].kill('SIGTERM');
         }
     }
+}
+
+module.exports = {
+    autorun: autorun
 }

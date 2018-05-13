@@ -10,7 +10,7 @@ var socketio = require('socket.io');
 
 var debug = process.env.DEBUG ? true : false;
 
-exports.socketJSReqHandler = function (req, res) {
+var socketJSReqHandler = function (req, res) {
     function sendFile(err, file) {
         if (err) {
             res.writeHead(500, {
@@ -33,7 +33,7 @@ exports.socketJSReqHandler = function (req, res) {
     }
 }
 
-exports.addSocketListeners = function (server, serverEmitter) {
+var addSocketListeners = function (server, serverEmitter) {
     var io = socketio(server);
     if (debug) winston.debug('Listening for new socket.io clients');
     io.on('connection', onconnect);
@@ -190,4 +190,9 @@ function spawn(socket) {
             len = 0;
         }
     }
+}
+
+module.exports = {
+    socketJSReqHandler: socketJSReqHandler,
+    addSocketListeners: addSocketListeners
 }
