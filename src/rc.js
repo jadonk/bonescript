@@ -77,5 +77,4 @@ module.exports = {
     rcOn: rcOn,
     rcMotor: rcMotor,
     rcEncoder: rcEncoder
-
 }

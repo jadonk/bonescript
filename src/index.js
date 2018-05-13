@@ -664,11 +664,10 @@ process.nextTick(run);
 
 // Global variable assignments
 // This section is broken out because it will eventually be deprecated
-function setGlobals() {
+f.setGlobals = function () {
     for (var x in f) {
         global[x] = f[x];
     }
     global.run = run;
-}
-f.setGlobals = setGlobals;
+};
 module.exports = f;
