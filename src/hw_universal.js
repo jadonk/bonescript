@@ -10,9 +10,9 @@ var gpioFile = {};
 var pwmPrefix = {};
 var ainPrefix = "";
 
-exports.logfile = '/var/lib/cloud9/bonescript.log';
+var logfile = '/var/lib/cloud9/bonescript.log';
 
-exports.readPWMFreqAndValue = function (pin, pwm) {
+var readPWMFreqAndValue = function (pin, pwm) {
     var mode = {};
     try {
         var period = fs.readFileSync(pwmPrefix[pin.pwm.name] + '/period_ns');
@@ -23,7 +23,7 @@ exports.readPWMFreqAndValue = function (pin, pwm) {
     return (mode);
 };
 
-exports.readGPIODirection = function (n, gpio) {
+var readGPIODirection = function (n, gpio) {
     var mode = {};
     var directionFile = "/sys/class/gpio/gpio" + n + "/direction";
     if (my.file_existsSync(directionFile)) {
@@ -35,7 +35,7 @@ exports.readGPIODirection = function (n, gpio) {
     return (mode);
 };
 
-exports.readPinMux = function (pin, mode, callback) {
+var readPinMux = function (pin, mode, callback) {
     var pinctrlFile = '/sys/kernel/debug/pinctrl/44e10800.pinmux/pins';
     var muxRegOffset = parseInt(pin.muxRegOffset, 16);
     var readPinctrl = function (err, data) {
@@ -68,7 +68,7 @@ exports.readPinMux = function (pin, mode, callback) {
     return (mode);
 };
 
-exports.setPinMode = function (pin, pinData, template, resp, callback) {
+var setPinMode = function (pin, pinData, template, resp, callback) {
     if (debug) winston.debug('hw.setPinMode(' + [pin.key, pinData, template, JSON.stringify(resp)] + ');');
     var p = pin.key + "_pinmux";
     if (pin.universalName) p = pin.universalName + "_pinmux";
@@ -93,7 +93,7 @@ exports.setPinMode = function (pin, pinData, template, resp, callback) {
     return (resp);
 };
 
-exports.setLEDPinToGPIO = function (pin, resp) {
+var setLEDPinToGPIO = function (pin, resp) {
     var path = "/sys/class/leds/beaglebone:green:" + pin.led + "/trigger";
 
     if (my.file_existsSync(path)) {
@@ -107,7 +107,7 @@ exports.setLEDPinToGPIO = function (pin, resp) {
     return (resp);
 };
 
-exports.exportGPIOControls = function (pin, direction, resp, callback) {
+var exportGPIOControls = function (pin, direction, resp, callback) {
     if (debug) winston.debug('hw.exportGPIOControls(' + [pin.key, direction, resp] + ');');
     var n = pin.gpio;
     var exists = my.file_existsSync(gpioFile[pin.key]);
@@ -123,7 +123,7 @@ exports.exportGPIOControls = function (pin, direction, resp, callback) {
     return (resp);
 };
 
-exports.writeGPIOValue = function (pin, value, callback) {
+var writeGPIOValue = function (pin, value, callback) {
     if (typeof gpioFile[pin.key] == 'undefined') {
         gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
         if (pin.led) {
@@ -146,7 +146,7 @@ exports.writeGPIOValue = function (pin, value, callback) {
     }
 };
 
-exports.readGPIOValue = function (pin, resp, callback) {
+var readGPIOValue = function (pin, resp, callback) {
     var gpioFile = '/sys/class/gpio/gpio' + pin.gpio + '/value';
     if (callback) {
         var readFile = function (err, data) {
@@ -164,7 +164,7 @@ exports.readGPIOValue = function (pin, resp, callback) {
     return (resp);
 };
 
-exports.enableAIN = function (callback) {
+var enableAIN = function (callback) {
     var helper = "";
     if (my.load_dt('cape-bone-iio')) {
         var ocp = my.is_ocp();
@@ -185,7 +185,7 @@ exports.enableAIN = function (callback) {
     return (helper.length > 1);
 };
 
-exports.readAIN = function (pin, resp, callback) {
+var readAIN = function (pin, resp, callback) {
     var ainFile = ainPrefix + pin.ain.toString();
     if (callback) {
         var readFile = function (err, data) {
@@ -212,7 +212,7 @@ exports.readAIN = function (pin, resp, callback) {
     return (resp);
 };
 
-exports.writeGPIOEdge = function (pin, mode) {
+var writeGPIOEdge = function (pin, mode) {
     fs.writeFileSync('/sys/class/gpio/gpio' + pin.gpio + '/edge', mode);
 
     var resp = {};
@@ -223,7 +223,7 @@ exports.writeGPIOEdge = function (pin, mode) {
     return (resp);
 };
 
-exports.writePWMFreqAndValue = function (pin, pwm, freq, value, resp, callback) {
+var writePWMFreqAndValue = function (pin, pwm, freq, value, resp, callback) {
     if (debug) winston.debug('hw.writePWMFreqAndValue(' + [pin.key, pwm, freq, value, resp] + ');');
     var path = pwmPrefix[pin.pwm.name];
     try {
@@ -254,7 +254,7 @@ exports.writePWMFreqAndValue = function (pin, pwm, freq, value, resp, callback) 
     return (resp);
 };
 
-exports.readEeproms = function (eeproms) {
+var readEeproms = function (eeproms) {
     var EepromFiles = {
         '/sys/bus/i2c/drivers/at24/0-0050/eeprom': {
             type: 'bone'
@@ -276,7 +276,7 @@ exports.readEeproms = function (eeproms) {
     return (eeproms);
 };
 
-exports.readPlatform = function (platform) {
+var readPlatform = function (platform) {
     var eeproms = eeprom.readEeproms({
         '/sys/bus/i2c/drivers/at24/0-0050/eeprom': {
             type: 'bone'
@@ -294,3 +294,22 @@ exports.readPlatform = function (platform) {
     } catch (ex) {}
     return (platform);
 };
+
+module.exports = {
+    logfile: logfile,
+    readPWMFreqAndValue: readPWMFreqAndValue,
+    readGPIODirection: readGPIODirection,
+    readPinMux: readPinMux,
+    setPinMode: setPinMode,
+    setLEDPinToGPIO: setLEDPinToGPIO,
+    exportGPIOControls: exportGPIOControls,
+    writeGPIOValue: writeGPIOValue,
+    readGPIOValue: readGPIOValue,
+    enableAIN: enableAIN,
+    readAIN: readAIN,
+    writeGPIOEdge: writeGPIOEdge,
+    writePWMFreqAndValue: writePWMFreqAndValue,
+    readEeproms: readEeproms,
+    readPlatform: readPlatform,
+
+}

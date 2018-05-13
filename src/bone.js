@@ -4,7 +4,7 @@
 // pins is an object whose keys are the pinIndex keys, e.g. P9_14.
 // uarts and i2c are objects describing the serial ports and i2c buses.
 
-if (typeof exports === 'undefined') exports = {};
+
 
 var pinIndex = [{
         "name": "USR0",
@@ -3025,7 +3025,7 @@ var i2c = {
     }
 };
 
-exports.getPinObject = function (key) {
+var getPinObject = function (key) {
     if (typeof key == "string") {
         // Ignore case
         key = key.toUpperCase();
@@ -3065,7 +3065,7 @@ exports.getPinObject = function (key) {
     return (pinObject);
 };
 
-exports.getPinKeys = function (filter) {
+var getPinKeys = function (filter) {
     var keys = [];
     for (var key in pins) {
         if (typeof filter != 'undefined') {
@@ -3080,7 +3080,7 @@ exports.getPinKeys = function (filter) {
 };
 
 // from https://stackoverflow.com/questions/15478954/sort-array-elements-string-with-numbers-natural-sort
-exports.naturalCompare = function (a, b) {
+var naturalCompare = function (a, b) {
     var ax = [],
         bx = [];
 
@@ -3101,5 +3101,12 @@ exports.naturalCompare = function (a, b) {
     return ax.length - bx.length;
 }
 
-exports.uarts = uarts;
-exports.i2c = i2c;
+
+
+module.exports = {
+    getPinObject: getPinObject,
+    getPinKeys: getPinKeys,
+    naturalCompare: naturalCompare,
+    uarts: uarts,
+    i2c: i2c
+}

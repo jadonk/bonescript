@@ -16,7 +16,7 @@ myrequire('systemd', function () {
     if (debug) winston.debug("Startup as socket-activated service under systemd not enabled");
 });
 
-exports.serverStart = function (port, directory, callback) {
+var serverStart = function (port, directory, callback) {
     if (port === undefined) {
         port = (process.env.LISTEN_PID > 0) ? 'systemd' : ((process.env.PORT) ? process.env.PORT : 80);
     }
@@ -63,4 +63,8 @@ function myrequire(packageName, onfail) {
         if (onfail) onfail();
     }
     return (y);
+}
+
+module.exports = {
+    serverStart: serverStart
 }

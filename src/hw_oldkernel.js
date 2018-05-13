@@ -12,9 +12,9 @@ var debug = true;
 var gpioFile = {};
 var pwmPrefix = {};
 
-exports.logfile = '/var/lib/cloud9/bonescript.log';
+var logfile = '/var/lib/cloud9/bonescript.log';
 
-exports.readPWMFreqAndValue = function (pin, pwm) {
+var readPWMFreqAndValue = function (pin, pwm) {
     var mode = {};
     try {
         var duty_percent = fs.readFileSync(pwmPrefix[pin.pwm.name] + '/duty_percent');
@@ -26,9 +26,9 @@ exports.readPWMFreqAndValue = function (pin, pwm) {
     return (mode);
 };
 
-exports.readGPIODirection = hw_capemgr.readGPIODirection;
+var readGPIODirection = hw_capemgr.readGPIODirection;
 
-exports.readPinMux = function (pin, mode, callback) {
+var readPinMux = function (pin, mode, callback) {
     var muxFile = '/sys/kernel/debug/omap_mux/' + pin.mux;
     var readOmapMux = function (err, data) {
         if (err) {
@@ -57,7 +57,7 @@ exports.readPinMux = function (pin, mode, callback) {
     return (mode);
 };
 
-exports.setPinMode = function (pin, pinData, template, resp) {
+var setPinMode = function (pin, pinData, template, resp) {
     var muxFile = '/sys/kernel/debug/omap_mux/' + pin.mux;
     var n = pin.gpio;
 
@@ -91,7 +91,7 @@ exports.setPinMode = function (pin, pinData, template, resp) {
     return (resp);
 };
 
-exports.setLEDPinToGPIO = function (pin, resp) {
+var setLEDPinToGPIO = function (pin, resp) {
     var path = "/sys/class/leds/beaglebone::" + pin.led + "/trigger";
 
     if (my.file_existsSync(path)) {
@@ -105,9 +105,9 @@ exports.setLEDPinToGPIO = function (pin, resp) {
     return (resp);
 };
 
-exports.exportGPIOControls = hw_capemgr.exportGPIOControls;
+var exportGPIOControls = hw_capemgr.exportGPIOControls;
 
-exports.writeGPIOValue = function (pin, value, callback) {
+var writeGPIOValue = function (pin, value, callback) {
     if (typeof gpioFile[pin.key] == 'undefined') {
         gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
         if (pin.led) {
@@ -130,13 +130,13 @@ exports.writeGPIOValue = function (pin, value, callback) {
     }
 };
 
-exports.readGPIOValue = hw_capemgr.readGPIOValue;
+var readGPIOValue = hw_capemgr.readGPIOValue;
 
-exports.enableAIN = function () {
+var enableAIN = function () {
     return (true);
 };
 
-exports.readAIN = function (pin, resp, callback) {
+var readAIN = function (pin, resp, callback) {
     var ainFile = '/sys/bus/platform/devices/tsc/ain' + (pin.ain + 1).toString();
     if (callback) {
         var readFile = function (err, data) {
@@ -162,9 +162,9 @@ exports.readAIN = function (pin, resp, callback) {
     return (resp);
 };
 
-exports.writeGPIOEdge = hw_capemgr.writeGPIOEdge;
+var writeGPIOEdge = hw_capemgr.writeGPIOEdge;
 
-exports.writePWMFreqAndValue = function (pin, pwm, freq, value, resp) {
+var writePWMFreqAndValue = function (pin, pwm, freq, value, resp) {
     var path = pwmPrefix[pin.pwm.name];
     if (pwm.freq != freq) {
         fs.writeFileSync(path + '/run', '0');
@@ -176,7 +176,7 @@ exports.writePWMFreqAndValue = function (pin, pwm, freq, value, resp) {
     return (resp);
 };
 
-exports.readEeproms = function (eeproms) {
+var readEeproms = function (eeproms) {
     var EepromFiles = {
         '/sys/bus/i2c/drivers/at24/1-0050/eeprom': {
             type: 'bone'
@@ -198,6 +198,25 @@ exports.readEeproms = function (eeproms) {
     return (eeproms);
 };
 
-exports.readPlatform = function (platform) {
+var readPlatform = function (platform) {
     return (platform);
 };
+
+module.exports = {
+    logfile: logfile,
+    readPWMFreqAndValue: readPWMFreqAndValue,
+    readGPIODirection: readGPIODirection,
+    readPinMux: readPinMux,
+    setPinMode: setPinMode,
+    setLEDPinToGPIO: setLEDPinToGPIO,
+    exportGPIOControls: exportGPIOControls,
+    writeGPIOValue: writeGPIOValue,
+    readGPIOValue: readGPIOValue,
+    enableAIN: enableAIN,
+    readAIN: readAIN,
+    writeGPIOEdge: writeGPIOEdge,
+    writePWMFreqAndValue: writePWMFreqAndValue,
+    readEeproms: readEeproms,
+    readPlatform: readPlatform,
+
+}
