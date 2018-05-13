@@ -37,10 +37,10 @@
     "i2c": "0.2.3",
     "epoll": "0.1.18",
     "pi-spi": "1.0.2",
-    "roboticscape": "0.0.2"
+    "roboticscape": "0.0.6"
   },
   "devDependencies": {
-    "coveralls": "~2.10.0",
+    "coveralls": "~3.0.1",
     "js-beautify": "^1.7.5",
     "jscoverage": "~0.5.1",
     "nodeunit": "~0.9.0"
