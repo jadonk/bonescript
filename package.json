@@ -42,7 +42,7 @@
   "devDependencies": {
     "coveralls": "~3.0.1",
     "js-beautify": "^1.7.5",
-    "jscoverage": "~0.5.1",
+    "jscoverage": "~0.6.0",
     "nodeunit": "~0.9.0"
   },
   "scripts": {

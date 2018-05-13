@@ -2,7 +2,7 @@
 var my = require('./my');
 var rc = my.require('roboticscape');
 
-if (!rc.exists) return;
+if (rc.exists) {
 
 var rcInitialize = function (callback) {
     var i = rc.initialize();
@@ -77,4 +77,5 @@ module.exports = {
     rcOn: rcOn,
     rcMotor: rcMotor,
     rcEncoder: rcEncoder
+};
 }
