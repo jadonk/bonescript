@@ -217,6 +217,5 @@ module.exports = {
     writeGPIOEdge: writeGPIOEdge,
     writePWMFreqAndValue: writePWMFreqAndValue,
     readEeproms: readEeproms,
-    readPlatform: readPlatform,
-
+    readPlatform: readPlatform
 }
