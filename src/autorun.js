@@ -5,10 +5,12 @@ var fs = require('fs');
 var child_process = require('child_process');
 var winston = require('winston');
 var events = require('events');
+var chokidar = require('chokidar');
+
+var debug = process.env.DEBUG ? true : false;
 
 var autorun = function (dir) {
     var ar = dir || '/var/lib/cloud9/autorun';
-
     var apps = {};
     var watchers = [];
     var emitter = new events.EventEmitter();
@@ -32,6 +34,7 @@ var autorun = function (dir) {
         arTestNext();
 
         function arTestNext() {
+            if (debug) winston.debug("arTestNext: files[" + i + "] = " + files[i]);
             if (i == files.length) {
                 arWatch();
                 return;
@@ -114,20 +117,24 @@ var autorun = function (dir) {
     }
 
     function arWatch() {
-        var w = fs.watch(ar, arWatcher);
+        if (debug) winston.debug("arWatch: " + ar);
+        var w = chokidar.watch(ar, { persistent: true });
+        w.on('add', arAdd);
+        w.on('change', arChange);
+        w.on('unlink', appStop);
+        if (debug) winston.debug("Watching: " + JSON.stringify(w.getWatched()));
         watchers.push(w);
     }
 
-    function arWatcher(event, filename) {
-        if (event == 'change') {
-            winston.info('change: ' + filename);
-            appStop(filename);
-            appStart(filename);
-        } else if (event == 'rename') {
-            winston.info('rename: ' + filename);
-            appStop(filename);
-            appStart(filename);
-        }
+    function arAdd (filename) {
+        winston.info('start: ' + filename);
+        appStart(filename);
+    }
+
+    function arChange (filename) {
+        winston.info('change: ' + filename);
+        appStop(filename);
+        appStart(filename);
     }
 
     function appStop(file) {
@@ -150,8 +157,8 @@ var autorun = function (dir) {
             }
         }
     });
-}
+};
 
 module.exports = {
     autorun: autorun
-}
+};

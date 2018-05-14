@@ -1,5 +1,8 @@
 var autorun = require('bonescript').autorun;
 var fs = require('fs');
+var testDir = '/tmp/autorun-test';
+var file0 = testDir + '/autorun-test0.js';
+var file1 = testDir + '/autorun-test1.js';
 
 exports.testAutorun = function (test) {
     var ar = autorun('/tmp/autorun-test');
@@ -9,26 +12,40 @@ exports.testAutorun = function (test) {
     setTimeout(onTimeout, 3000);
 
     emitter.on('start', function (file) {
-        test.ok(true);
-        fs.unlink('/tmp/autorun-test/autorun-test.js', onUnlink);
+        console.log('Started ' + file);
+        if (file == file1) {
+            test.ok(true);
+            fs.unlink(file1, onUnlink);
+        }
     });
 
     emitter.on('closed', function (file) {
-        ar.stop();
-        test.ok(true);
+        if (file == file1) {
+            ar.stop();
+            test.ok(true);
+        }
     });
 
-    if (!fs.existsSync('/tmp/autorun-test')) {
-        fs.mkdirSync('/tmp/autorun-test');
+    if (!fs.existsSync(testDir)) {
+        fs.mkdirSync(testDir);
     }
-    fs.writeFileSync('/tmp/autorun-test/autorun-test.js', 'console.log("got here.");');
-    console.log('Wrote /tmp/autorun-test/autorun-test.js');
 
-    function onUnlink() {
-        console.log('autorun-test.js deleted');
+    try {
+        fs.unlinkSync(file0);
+    } catch (ex) {
+        console.log('Unable to delete ' + file0);
     }
+    fs.writeFileSync(file0, 'console.log("got here in ' + file0 + '");');
+    console.log('Wrote ' + file0);
+    fs.writeFileSync(file1, 'console.log("got here in ' + file1 + '");');
+    console.log('Wrote ' + file1);
 
     function onTimeout() {
+        console.log('Done');
         test.done();
+    }
+
+    function onUnlink() {
+        console.log(file1 + ' deleted');
     }
 };
