@@ -6,6 +6,7 @@ exports.testAutorun = function (test) {
     var apps = ar.getApps();
     var emitter = ar.getEmitter();
     test.expect(2);
+    setTimeout(onTimeout, 1000);
 
     emitter.on('start', function (file) {
         test.ok(true);
@@ -15,7 +16,6 @@ exports.testAutorun = function (test) {
     emitter.on('closed', function (file) {
         ar.stop();
         test.ok(true);
-        test.done();
     });
 
     if (!fs.existsSync('./autorun-test')) {
@@ -25,5 +25,9 @@ exports.testAutorun = function (test) {
 
     function onUnlink() {
         console.log('autorun-test.js deleted');
+    }
+
+    function onTimeout() {
+        test.done();
     }
 };
