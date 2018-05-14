@@ -4,11 +4,14 @@
 var fs = require('fs');
 var child_process = require('child_process');
 var winston = require('winston');
+var events = require('events');
 
 var autorun = function (dir) {
     var ar = dir || '/var/lib/cloud9/autorun';
 
     var apps = {};
+    var watchers = [];
+    var emitter = new events.EventEmitter();
 
     winston.info('Starting bonescript autorun service');
 
@@ -99,17 +102,20 @@ var autorun = function (dir) {
                     apps[file].stdout.on('data', onStdout);
                     apps[file].stderr.on('data', onStderr);
                 }
+                emitter.emit('start', file);
             }
         }
 
         function appClosed(code, signal) {
             delete apps[file];
+            emitter.emit('closed', file);
             setTimeout(appTest, 1000);
         }
     }
 
     function arWatch() {
-        fs.watch(ar, arWatcher);
+        var w = fs.watch(ar, arWatcher);
+        watchers.push(w);
     }
 
     function arWatcher(event, filename) {
@@ -130,6 +136,20 @@ var autorun = function (dir) {
             apps[file].kill('SIGTERM');
         }
     }
+
+    return ({
+        getApps: function () {
+            return (apps);
+        },
+        getEmitter: function () {
+            return (emitter);
+        },
+        stop: function () {
+            for (var w in watchers) {
+                watchers[w].close();
+            }
+        }
+    });
 }
 
 module.exports = {

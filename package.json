@@ -48,6 +48,7 @@
   "scripts": {
     "start": "node server.js",
     "test": "NODE_PATH=.. nodeunit test",
+    "beautify": "NODE_PATH=.. js-beautify --config lint-config.json -r -f *.js src/*.js test/*.js",
     "coveralls": "NODE_PATH=.. jscoverage src && NODE_PATH=.. BONESCRIPT_COV=1 nodeunit --reporter=lcov test | coveralls"
   }
 }
