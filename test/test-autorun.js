@@ -6,7 +6,7 @@ exports.testAutorun = function (test) {
     var apps = ar.getApps();
     var emitter = ar.getEmitter();
     test.expect(2);
-    setTimeout(onTimeout, 1000);
+    setTimeout(onTimeout, 3000);
 
     emitter.on('start', function (file) {
         test.ok(true);
@@ -22,6 +22,7 @@ exports.testAutorun = function (test) {
         fs.mkdirSync('/tmp/autorun-test');
     }
     fs.writeFileSync('/tmp/autorun-test/autorun-test.js', 'console.log("got here.");');
+    console.log('Wrote /tmp/autorun-test/autorun-test.js');
 
     function onUnlink() {
         console.log('autorun-test.js deleted');
