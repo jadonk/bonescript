@@ -118,7 +118,9 @@ var autorun = function (dir) {
 
     function arWatch() {
         if (debug) winston.debug("arWatch: " + ar);
-        var w = chokidar.watch(ar, { persistent: true });
+        var w = chokidar.watch(ar, {
+            persistent: true
+        });
         w.on('add', arAdd);
         w.on('change', arChange);
         w.on('unlink', appStop);
@@ -126,12 +128,12 @@ var autorun = function (dir) {
         watchers.push(w);
     }
 
-    function arAdd (filename) {
+    function arAdd(filename) {
         winston.info('start: ' + filename);
         appStart(filename);
     }
 
-    function arChange (filename) {
+    function arChange(filename) {
         winston.info('change: ' + filename);
         appStop(filename);
         appStart(filename);
