@@ -8,12 +8,12 @@ var events = require('events');
 var chokidar = require('chokidar');
 
 var debug = process.env.DEBUG ? true : false;
+var apps = {};
+var watchers = [];
+var emitter = new events.EventEmitter();
 
 var autorun = function (dir) {
     var ar = dir || '/var/lib/cloud9/autorun';
-    var apps = {};
-    var watchers = [];
-    var emitter = new events.EventEmitter();
 
     winston.info('Starting bonescript autorun service');
 
@@ -34,23 +34,26 @@ var autorun = function (dir) {
         arTestNext();
 
         function arTestNext() {
-            if (debug) winston.debug("arTestNext: files[" + i + "] = " + files[i]);
             if (i == files.length) {
                 arWatch();
                 return;
             }
-            appStart(files[i]);
+            if (debug) winston.debug("arTestNext: files[" + i + "] = " + ar + '/' + files[i]);
+            appStart(ar + '/' + files[i]);
             i++;
             arTestNext();
         }
     }
 
     function appStart(file) {
-        if (apps[file]) return;
+        if (apps[file]) {
+            if (debug) winston.debug("already started: " + file);
+            return;
+        }
         appTest();
 
         function appTest() {
-            fs.exists(ar + '/' + file, appExists);
+            fs.exists(file, appExists);
         }
 
         function appExists(exists) {
@@ -70,19 +73,19 @@ var autorun = function (dir) {
 
                 if (file.match(/\.js$/)) {
                     winston.info('start: ' + file);
-                    apps[file] = child_process.spawn(process.argv[0], [ar + '/' + file]);
+                    apps[file] = child_process.spawn(process.argv[0], [file]);
                     apps[file].on('close', appClosed);
                     apps[file].stdout.on('data', onStdout);
                     apps[file].stderr.on('data', onStderr);
                 } else if (file.match(/\.py$/)) {
                     winston.info('start: ' + file);
-                    apps[file] = child_process.spawn('/usr/bin/python', [ar + '/' + file]);
+                    apps[file] = child_process.spawn('/usr/bin/python', [file]);
                     apps[file].on('close', appClosed);
                     apps[file].stdout.on('data', onStdout);
                     apps[file].stderr.on('data', onStderr);
                 } else if (file.match(/\.sh$/)) {
                     winston.info('start: ' + file);
-                    apps[file] = child_process.spawn('/bin/bash', [ar + '/' + file]);
+                    apps[file] = child_process.spawn('/bin/bash', [file]);
                     apps[file].on('close', appClosed);
                     apps[file].stdout.on('data', onStdout);
                     apps[file].stderr.on('data', onStderr);
@@ -110,9 +113,10 @@ var autorun = function (dir) {
         }
 
         function appClosed(code, signal) {
+            winston.info("closed: " + file);
             delete apps[file];
             emitter.emit('closed', file);
-            setTimeout(appTest, 1000);
+            //setTimeout(appTest, 1000);
         }
     }
 
@@ -124,12 +128,11 @@ var autorun = function (dir) {
         w.on('add', arAdd);
         w.on('change', arChange);
         w.on('unlink', appStop);
-        if (debug) winston.debug("Watching: " + JSON.stringify(w.getWatched()));
         watchers.push(w);
     }
 
     function arAdd(filename) {
-        winston.info('start: ' + filename);
+        winston.info('add: ' + filename);
         appStart(filename);
     }
 
@@ -140,9 +143,17 @@ var autorun = function (dir) {
     }
 
     function appStop(file) {
+        if (debug) {
+            for (var x in apps) {
+                winston.debug('running: ' + x);
+            }
+        }
         if (typeof apps[file] != 'undefined') {
+            emitter.emit('stop', file);
             winston.info('stop: ' + file + ' (pid: ' + apps[file].pid + ')');
             apps[file].kill('SIGTERM');
+        } else {
+            winston.info('already stopped: ' + file);
         }
     }
 
@@ -154,6 +165,9 @@ var autorun = function (dir) {
             return (emitter);
         },
         stop: function () {
+            for (var app in apps) {
+                appStop(app);
+            }
             for (var w in watchers) {
                 watchers[w].close();
             }
