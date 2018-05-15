@@ -1,15 +1,15 @@
 var autorun = require('bonescript').autorun;
 var fs = require('fs');
 var testDir = '/tmp/autorun-test';
-var file0 = testDir + '/autorun-test0.js';
-var file1 = testDir + '/autorun-test1.js';
+var file0 = 'autorun-test0.js';
+var file1 = 'autorun-test1.js';
 
 exports.testAutorun = function (test) {
     var ar = autorun('/tmp/autorun-test');
     var apps = ar.getApps();
     var emitter = ar.getEmitter();
-    //test.expect(2);
-    setTimeout(onTimeout, 3000);
+    test.expect(2);
+    setTimeout(onTimeout, 500);
 
     emitter.on('start', function (file) {
         console.log('Started ' + file);
