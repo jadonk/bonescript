@@ -29,6 +29,10 @@ exports.testAutorun = function (test) {
     var apps = ar.getApps();
     var emitter = ar.getEmitter();
 
+    test.expect(0);
+    setTimeout(onTimeout, 3000);
+
+
     emitter.on('start', function (file) {
         console.log('Started ' + file);
         if (file == file1) {
