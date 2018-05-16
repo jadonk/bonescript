@@ -4,6 +4,7 @@ var parse = require('./parse');
 var eeprom = require('./eeprom');
 var util = require('util');
 var winston = require('winston');
+var shell = require('shelljs');
 
 var debug = process.env.DEBUG ? true : false;
 if (debug) {
@@ -47,6 +48,15 @@ var readGPIODirection = function (n, gpio) {
 var readPinMux = function (pin, mode, callback) {
     var pinctrlFile = '/sys/kernel/debug/pinctrl/44e10800.pinmux/pins';
     var muxRegOffset = parseInt(pin.muxRegOffset, 16);
+    //handle the case when debugfs not mounted
+    if (!my.file_existsSync(pinctrlFile)) {
+        //exit code is 1 if /sys/kernel/debug not mounted
+        const umount = shell.exec('mountpoint -q /sys/kernel/debug/').code;
+        if (umount)
+            shell.exec('mount -t debugfs none /sys/kernel/debug/', {
+                silent: true
+            });
+    }
     var readPinctrl = function (err, data) {
         if (err) {
             mode.err = 'readPinctrl error: ' + err;
