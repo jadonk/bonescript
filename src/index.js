@@ -17,6 +17,7 @@ var epoll = my.require('epoll');
 var autorun = require('./autorun');
 var server = require('./server');
 var socketHandlers = require('./socket_handlers');
+var ffi = require('./ffiimp');
 //var rc = require('./rc');
 
 var debug = process.env.DEBUG ? true : false;
@@ -632,6 +633,9 @@ for (var x in server) {
 }
 for (var x in socketHandlers) {
     f[x] = socketHandlers[x];
+}
+for (var x in ffi) {
+    f[x] = ffi[x];
 }
 /*for(var x in rc) {
     exports[x] = rc[x];
