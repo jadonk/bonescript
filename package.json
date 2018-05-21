@@ -39,7 +39,8 @@
     "i2c": "0.2.3",
     "epoll": "0.1.18",
     "pi-spi": "1.0.2",
-    "roboticscape": "0.0.6"
+    "roboticscape": "0.0.6",
+    "ffi": "2.2.0"
   },
   "devDependencies": {
     "coveralls": "~3.0.1",
