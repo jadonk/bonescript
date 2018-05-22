@@ -404,7 +404,7 @@ f.attachInterrupt = function (pin, handler, mode, callback) {
         }
         fs.readSync(gpioInt[n].valuefd, gpioInt[n].value, 0, 1, 0);
         m.pin = pin;
-        m.value = parseInt(Number(gpioInt[n].value), 2);
+        m.value = parseInt(gpioInt[n].value.toString(), 2);
         if (typeof handler == 'function') m.output = handler(m);
         else m.output = {
             handler: handler
