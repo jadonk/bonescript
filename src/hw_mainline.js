@@ -292,9 +292,28 @@ var writePWMFreqAndValue = function (pin, pwm, freq, value, resp, callback) {
     var path = pwmPrefix[pin.pwm.name];
     try {
         var period = Math.round(1.0e9 / freq); // period in ns
+        var duty = Math.round(period * value);
+        var currentPeriod = fs.readFileSync(path + '/period'); //read Current Period for smooth PWM
+        var currentDuty = fs.readFileSync(path + '/duty_cycle'); //read Current Duty for smooth PWM
+        var pwmEnabled = Number(fs.readFileSync(path + '/enable')); //check whether PWM is enabled
+        var disablePWM = !(duty * freq); //when duty||frequency ==0 , disablePWM to avoid spikes
+
         if (debug) winston.debug('hw.writePWMFreqAndValue: pwm.freq=' + pwm.freq +
             ', freq=' + freq + ', period=' + period);
-        if (pwm.freq != freq) {
+        //smooth PWM Implementation
+        if (!disablePWM && pwmEnabled) {
+            if (period > currentDuty) {
+                if (debug) winston.debug('Updating PWM period: ' + period);
+                fs.writeFileSync(path + '/period', period);
+                if (debug) winston.debug('Updating PWM duty: ' + duty);
+                fs.writeFileSync(path + '/duty_cycle', duty);
+            } else if (duty < currentPeriod) {
+                if (debug) winston.debug('Updating PWM duty: ' + duty);
+                fs.writeFileSync(path + '/duty_cycle', duty);
+                if (debug) winston.debug('Updating PWM period: ' + period);
+                fs.writeFileSync(path + '/period', period);
+            }
+        } else {
             try {
                 if (debug) winston.debug('Stopping PWM');
                 fs.writeFileSync(path + '/enable', "0\n");
@@ -303,26 +322,27 @@ var writePWMFreqAndValue = function (pin, pwm, freq, value, resp, callback) {
             }
             // It appears that the first time you set the pwm you have to
             // set the period before you set the duty_cycle
-            try {
-                if (debug) winston.debug('Updating PWM period: ' + period);
-                fs.writeFileSync(path + '/period', period + "\n");
-            } catch (ex2) {
-                period = fs.readFileSync(path + '/period');
-                winston.info('Unable to update PWM period, period is set to ' +
-                    period +
-                    "\tIs other half of PWM enabled?");
+            if (!disablePWM) { //if duty||frequency == 0 do not re-enable PWM (to avoid spikes)
+                try {
+                    if (debug) winston.debug('Updating PWM period: ' + period);
+                    fs.writeFileSync(path + '/period', period + "\n");
+                } catch (ex2) {
+                    winston.info('Unable to update PWM period, period is set to ' +
+                        currentPeriod +
+                        "\tIs other half of PWM enabled?");
+                }
+                try {
+                    if (debug) winston.debug('Starting PWM');
+                    fs.writeFileSync(path + '/enable', "1\n");
+                } catch (ex2) {
+                    if (debug) winston.debug('Error starting PWM: ' + ex2);
+                }
             }
-            try {
-                if (debug) winston.debug('Starting PWM');
-                fs.writeFileSync(path + '/enable', "1\n");
-            } catch (ex2) {
-                if (debug) winston.debug('Error starting PWM: ' + ex2);
-            }
+            if (debug) winston.debug('Updating PWM duty: ' + duty);
+            //if(duty == 0) winston.error('Updating PWM duty: ' + duty);
+            if (!disablePWM)
+                fs.writeFileSync(path + '/duty_cycle', duty + "\n");
         }
-        var duty = Math.round(period * value);
-        if (debug) winston.debug('Updating PWM duty: ' + duty);
-        //if(duty == 0) winston.error('Updating PWM duty: ' + duty);
-        fs.writeFileSync(path + '/duty_cycle', duty + "\n");
     } catch (ex) {
         resp.err = 'error updating PWM freq and value: ' + path + ', ' + ex;
         winston.error(resp.err);
