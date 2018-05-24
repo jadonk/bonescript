@@ -4,7 +4,6 @@ var testDir = '/tmp/ffi-test';
 var Cfile = testDir + '/ffi-test';
 var txtFile = testDir + '/txt-test.txt'
 var args = {
-    'main': ['int', ['void']],
     'dummy': ['int', ['void']]
 };
 var text = "HELLO";
@@ -15,14 +14,7 @@ int dummy()
    printf("Hello, World!");
    return 0;
 }
-
-int main()
-{
-   printf("Should never run.");
-   return 1;
-}
 `
-
 module.exports.testFFI = function (test) {
 
     test.expect(5);
