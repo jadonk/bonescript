@@ -1,20 +1,21 @@
 var b = require('bonescript');
 var fs = require('fs');
 var testDir = '/tmp/ffi-test';
-var Cfile = testDir + 'ffi-test';
-var txtFile = testDir + 'txt-test.txt'
+var Cfile = testDir + '/ffi-test';
+var txtFile = testDir + '/txt-test.txt'
 var args = {
     'main': ['int', ['void']]
 };
 var text = "HELLO";
 var cCode = `
 #include <stdio.h>
-int main()
+int dummy()
 {
    printf("Hello, World!");
    return 0;
 }
 `
+
 module.exports.testFFI = function (test) {
 
     test.expect(5);
@@ -34,8 +35,10 @@ module.exports.testFFI = function (test) {
     }
     //test mraaGPIO()
     var mraaGPIO = b.mraaGPIO('P9_12');
-    if (mraaGPIO === '0x3a')
+    if (mraaGPIO === '0x3a') {
+        console.log("MRAA Library Load Successful");
         test.ok(true);
+    }
     //test writeCModule
     b.writeCModule(Cfile, cCode);
     if (fs.existsSync(Cfile + '.c')) {
@@ -48,11 +51,10 @@ module.exports.testFFI = function (test) {
         console.log("Load C Module Unsuccesful(ffi not loaded)");
         test.ok(true);
     } else {
-        if (Cmodule.main(0) == 0) {
-            //returns 0
-            console.log("Load C Module Succesful");
-            test.ok(true);
-        }
+        var moduleRetVal = Cmodule.dummy(0);
+        //returns 0
+        console.log("Load C Module Succesful, returned: " + moduleRetVal);
+        test.ok(moduleRetVal == 0);
     }
     test.done();
 }

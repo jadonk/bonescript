@@ -5,6 +5,8 @@ var winston = require('winston');
 var my = require('./my');
 var ffi = my.require('ffi');
 
+var debug = process.env.DEBUG ? true : false;
+
 var mraaGPIO = function (pin) {
     var pinObject = bone.getPinObject(pin);
     var pinNo;
@@ -45,19 +47,20 @@ var loadCModule = function (path, args, mraa) {
     if (path.indexOf('.c') != -1)
         path = path.replace('.c', '');
     mraa = mraa || false; // link mraa 
-    if (!my.file_existsSync(path + '.so')) {
-        var outPath = path + '.so';
-        var inPath = path + '.c';
-        if (mraa)
-            shell.exec('gcc -shared -fpic ' + inPath + ' -o ' + outPath + ' -lmraa');
-        else
-            shell.exec('gcc -shared -fpic ' + inPath + ' -o ' + outPath);
-    }
+    var outPath = path + '.so';
+    var inPath = path + '.c';
+    var shellCmd = 'gcc -shared -fpic ' + inPath + ' -o ' + outPath;
+    if (mraa) shellCmd += ' -lmraa';
+    if (debug) winston.debug('loadCModule: shellCmd = ' + shellCmd);
+
+    // Consider not running if .so newer than .c
+    shell.exec(shellCmd);
+
     if (ffi.exists)
-        return ffi.Library(path, args);
+        return ffi.Library(outPath, args);
     else {
-        winston.debug("Could not load module FFI");
-        return "ffi not loaded"
+        winston.info("loadCModule: Could not load module FFI");
+        return "ffi not loaded";
     }
 };
 
