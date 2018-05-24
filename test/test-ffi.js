@@ -14,6 +14,12 @@ int dummy()
    printf("Hello, World!");
    return 0;
 }
+
+int main()
+{
+   printf("Should never run.");
+   return 1;
+}
 `
 
 module.exports.testFFI = function (test) {

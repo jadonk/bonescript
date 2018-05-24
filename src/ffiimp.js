@@ -47,9 +47,8 @@ var loadCModule = function (path, args, mraa) {
     if (path.indexOf('.c') != -1)
         path = path.replace('.c', '');
     mraa = mraa || false; // link mraa 
-    var outPath = path + '.so';
     var inPath = path + '.c';
-    var shellCmd = 'gcc -shared -fpic ' + inPath + ' -o ' + outPath;
+    var shellCmd = 'gcc -shared -fpic ' + inPath + ' -o ' + path + '.so';
     if (mraa) shellCmd += ' -lmraa';
     if (debug) winston.debug('loadCModule: shellCmd = ' + shellCmd);
 
@@ -57,7 +56,7 @@ var loadCModule = function (path, args, mraa) {
     shell.exec(shellCmd);
 
     if (ffi.exists)
-        return ffi.Library(outPath, args);
+        return ffi.Library(path, args);
     else {
         winston.info("loadCModule: Could not load module FFI");
         return "ffi not loaded";
