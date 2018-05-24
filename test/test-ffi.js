@@ -4,7 +4,8 @@ var testDir = '/tmp/ffi-test';
 var Cfile = testDir + '/ffi-test';
 var txtFile = testDir + '/txt-test.txt'
 var args = {
-    'main': ['int', ['void']]
+    'main': ['int', ['void']],
+    'dummy': ['int', ['void']]
 };
 var text = "HELLO";
 var cCode = `
