@@ -1,4 +1,5 @@
 var fs = require('fs');
+var async = require('async');
 var my = require('./my');
 var parse = require('./parse');
 var eeprom = require('./eeprom');
@@ -314,34 +315,59 @@ var writePWMFreqAndValue = function (pin, pwm, freq, value, resp, callback) {
                 fs.writeFileSync(path + '/period', period);
             }
         } else {
-            try {
-                if (debug) winston.debug('Stopping PWM');
-                fs.writeFileSync(path + '/enable', "0\n");
-            } catch (ex2) {
-                if (debug) winston.debug('Error stopping PWM: ' + ex2);
-            }
-            // It appears that the first time you set the pwm you have to
-            // set the period before you set the duty_cycle
-            if (!disablePWM) { //if duty||frequency == 0 do not re-enable PWM (to avoid spikes)
+            var tryAgain = true;
+            var tries = 0;
+
+            async.until(function () { //try accessing 'path/enable' until no EACCES error is thrown (max 10 times)
+                return !tryAgain; //to account for udev delay
+            }, stopPWM, updatePeriodAndDuty); //async.until(test,iteratee,callback)
+
+            function stopPWM(callback) {
                 try {
-                    if (debug) winston.debug('Updating PWM period: ' + period);
-                    fs.writeFileSync(path + '/period', period + "\n");
+                    if (debug) winston.debug('Stopping PWM');
+                    fs.writeFileSync(path + '/enable', "0\n");
+                    callback(null); //if no error
+                    tryAgain = false; //do not try again
                 } catch (ex2) {
-                    winston.info('Unable to update PWM period, period is set to ' +
-                        currentPeriod +
-                        "\tIs other half of PWM enabled?");
-                }
-                try {
-                    if (debug) winston.debug('Starting PWM');
-                    fs.writeFileSync(path + '/enable', "1\n");
-                } catch (ex2) {
-                    if (debug) winston.debug('Error starting PWM: ' + ex2);
+                    if (debug) winston.debug('Error stopping PWM: ' + ex2);
+                    if (ex2.code == 'EACCES') {
+                        tries++;
+                        if (tries < 10)
+                            tryAgain = true; //if EACCES error thrown try again for a maximum of 10 times
+                        else
+                            tryAgain = false;
+                        callback(null); //async.until requires an err first format callback &
+                    } else { //if there is an error iteration stops, so neglect the error if EACCES thrown	
+                        tryAgain = false;
+                        callback(ex2);
+                    }
                 }
             }
-            if (debug) winston.debug('Updating PWM duty: ' + duty);
-            //if(duty == 0) winston.error('Updating PWM duty: ' + duty);
-            if (!disablePWM)
-                fs.writeFileSync(path + '/duty_cycle', duty + "\n");
+
+            function updatePeriodAndDuty() {
+                // It appears that the first time you set the pwm you have to
+                // set the period before you set the duty_cycle
+                if (!disablePWM) { //if duty||frequency == 0 do not re-enable PWM (to avoid spikes)
+                    try {
+                        if (debug) winston.debug('Updating PWM period: ' + period);
+                        fs.writeFileSync(path + '/period', period + "\n");
+                    } catch (ex2) {
+                        winston.info('Unable to update PWM period, period is set to ' +
+                            currentPeriod +
+                            "\tIs other half of PWM enabled?");
+                    }
+                    try {
+                        if (debug) winston.debug('Starting PWM');
+                        fs.writeFileSync(path + '/enable', "1\n");
+                    } catch (ex2) {
+                        if (debug) winston.debug('Error starting PWM: ' + ex2);
+                    }
+                }
+                if (debug) winston.debug('Updating PWM duty: ' + duty);
+                //if(duty == 0) winston.error('Updating PWM duty: ' + duty);
+                if (!disablePWM)
+                    fs.writeFileSync(path + '/duty_cycle', duty + "\n");
+            }
         }
     } catch (ex) {
         resp.err = 'error updating PWM freq and value: ' + path + ', ' + ex;
