@@ -15,7 +15,7 @@
     "gpio",
     "arduino"
   ],
-  "version": "0.6.4-beta2",
+  "version": "0.6.4-beta3",
   "homepage": "http://beagleboard.org/bonescript",
   "license": "MIT",
   "repository": {
@@ -24,7 +24,7 @@
   },
   "main": "main",
   "engines": {
-    "node": ">= 4.0.0"
+    "node": ">= 6.0.0"
   },
   "dependencies": {
     "chokidar": "2.0.3",
@@ -35,7 +35,7 @@
     "shelljs": "0.8.2"
   },
   "optionalDependencies": {
-    "serialport": "3.1.2",
+    "serialport": "6.0.5",
     "i2c": "0.2.3",
     "epoll": "0.1.18",
     "pi-spi": "1.0.2",
