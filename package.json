@@ -15,7 +15,7 @@
     "gpio",
     "arduino"
   ],
-  "version": "0.6.4-beta1",
+  "version": "0.6.4-beta2",
   "homepage": "http://beagleboard.org/bonescript",
   "license": "MIT",
   "repository": {
@@ -30,7 +30,7 @@
     "chokidar": "2.0.3",
     "express": "4.13.4",
     "socket.io": "1.4.5",
-    "systemd": "0.2.6",
+    "systemd": "0.3.1",
     "winston": "2.1.1",
     "shelljs": "0.8.2"
   },
