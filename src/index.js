@@ -148,10 +148,15 @@ f.pinMode = function (pin, direction, mux, pullup, slew, callback) {
         ) {
             var err = 'pinMode only supports ANALOG_OUTPUT for PWM pins: ' + pin.key;
             winston.info(err);
-            if (callback) callback({
-                value: false,
-                err: err
-            });
+            if (callback) {
+                if (callback.length == 1)
+                    callback({
+                        value: false,
+                        err: err
+                    });
+                else
+                    callback(err, false);
+            }
             return (false);
         }
         direction = g.OUTPUT;
@@ -182,7 +187,12 @@ f.pinMode = function (pin, direction, mux, pullup, slew, callback) {
         if (typeof resp.err == 'undefined') {
             gpio[n] = true;
         }
-        if (callback) callback(resp);
+        if (callback) {
+            if (callback.length == 1)
+                callback(resp);
+            else
+                callback(resp.err, resp.value);
+        }
         return (resp.value);
     }
 
@@ -200,7 +210,12 @@ f.pinMode = function (pin, direction, mux, pullup, slew, callback) {
             resp.value = false;
             winston.info(resp.err);
             delete gpio[n];
-            if (callback) callback(resp);
+            if (callback) {
+                if (callback.length == 1)
+                    callback(resp);
+                else
+                    callback(resp.err, resp.value);
+            }
             return (resp.value);
         }
     }
@@ -220,7 +235,12 @@ f.pinMode = function (pin, direction, mux, pullup, slew, callback) {
         delete gpio[n];
     }
 
-    if (callback) callback(resp);
+    if (callback) {
+        if (callback.length == 1)
+            callback(resp);
+        else
+            callback(resp.err, resp.value);
+    }
     return (resp.value);
 };
 f.pinMode.args = ['pin', 'direction', 'mux', 'pullup', 'slew', 'callback'];
@@ -272,8 +292,10 @@ f.digitalRead = function (pin, callback) {
     }
 
     function analogCallback(x) {
-        x = analogValue(x);
-        callback(x);
+        if (callback.length == 1)
+            callback(analogValue(x));
+        else
+            callback(x.err, analogValue(x).value);
     }
 
     function analogValue(x) {
@@ -283,6 +305,7 @@ f.digitalRead = function (pin, callback) {
         } else {
             x.value = g.LOW;
         }
+        return x;
     }
 
     return (resp.value);
@@ -380,7 +403,15 @@ f.attachInterrupt = function (pin, handler, mode, callback) {
     if (!epoll.exists) {
         resp.err = 'attachInterrupt: requires Epoll module';
         if (debug) winston.debug(resp.err);
-        if (callback) callback(resp);
+        if (callback) {
+            if (callback.length == 1)
+                callback(resp);
+            else if (callback.length == 2) {
+                var err = resp.err;
+                delete resp.err;
+                callback(err, resp);
+            }
+        }
         return (resp.attached);
     }
 
@@ -390,7 +421,15 @@ f.attachInterrupt = function (pin, handler, mode, callback) {
         if (debug) winston.debug(resp.err);
         resp.attached = false;
         resp.configured = false;
-        if (callback) callback(resp);
+        if (callback) {
+            if (callback.length == 1)
+                callback(resp);
+            else {
+                var err = resp.err;
+                delete resp.err;
+                callback(err, resp);
+            }
+        }
         return (resp);
     }
 
@@ -400,7 +439,15 @@ f.attachInterrupt = function (pin, handler, mode, callback) {
         if (debug) winston.debug(resp.err);
         resp.attached = false;
         resp.configured = true;
-        if (callback) callback(resp);
+        if (callback) {
+            if (callback.length == 1)
+                callback(resp);
+            else {
+                var err = resp.err;
+                delete resp.err;
+                callback(err, resp);
+            }
+        }
         return (resp.attached);
     }
 
@@ -418,7 +465,15 @@ f.attachInterrupt = function (pin, handler, mode, callback) {
         else m.output = {
             handler: handler
         };
-        if (m.output && (typeof callback == 'function')) callback(m);
+        if (m.output && (typeof callback == 'function')) {
+            if (callback.length == 1)
+                callback(m);
+            else {
+                var err = m.err;
+                delete m.err;
+                callback(err, m);
+            }
+        }
     };
 
     try {
@@ -431,7 +486,15 @@ f.attachInterrupt = function (pin, handler, mode, callback) {
         resp.err = 'attachInterrupt: GPIO input file not opened: ' + ex;
         if (debug) winston.debug(resp.err);
     }
-    if (callback) callback(resp);
+    if (callback) {
+        if (callback.length == 1)
+            callback(resp);
+        else {
+            var err = resp.err;
+            delete resp.err;
+            callback(err, resp);
+        }
+    }
     return (resp.attached);
 };
 f.attachInterrupt.args = ['pin', 'handler', 'mode', 'callback'];
@@ -441,18 +504,34 @@ f.detachInterrupt = function (pin, callback) {
     if (debug) winston.debug('detachInterrupt(' + [pin.key] + ');');
     var n = pin.gpio;
     if (typeof gpio[n] == 'undefined' || typeof gpioInt[n] == 'undefined') {
-        if (callback) callback({
-            'pin': pin,
-            'detached': false
-        });
+        if (callback) {
+            if (callback.length == 1)
+                callback({
+                    'pin': pin,
+                    'detached': false
+                });
+            else
+                callback(true, {
+                    'pin': pin,
+                    'detached': false
+                });
+        }
         return (false);
     }
     gpioInt[n].epoll.remove(gpioInt[n].valuefd);
     delete gpioInt[n];
-    if (callback) callback({
-        'pin': pin,
-        'detached': true
-    });
+    if (callback) {
+        if (callback.length == 1)
+            callback({
+                'pin': pin,
+                'detached': true
+            });
+        else
+            callback(null, {
+                'pin': pin,
+                'detached': true
+            });
+    }
     return (true);
 };
 f.detachInterrupt.args = ['pin', 'callback'];
@@ -524,7 +603,12 @@ f.getEeproms = function (callback) {
     if (eeproms == {}) {
         if (debug) winston.debug('No valid EEPROM contents found');
     }
-    if (callback) callback(eeproms);
+    if (callback) {
+        if (callback.length == 1)
+            callback(eeproms);
+        else
+            callback(eeproms == {} ? 'No valid EEPROM contents found' : null, eeproms);
+    }
     return (eeproms);
 };
 f.getEeproms.args = ['callback'];
@@ -537,7 +621,10 @@ f.readTextFile = function (filename, callback) {
                 'data': data
             });
         };
-        fs.readFile(filename, 'ascii', cb);
+        if (callback.length == 1)
+            fs.readFile(filename, 'ascii', cb);
+        else
+            fs.readFile(filename, 'ascii', callback);
     } else {
         return fs.readFileSync(filename, 'ascii');
     }
@@ -580,16 +667,26 @@ f.getPlatform = function (callback) {
     platform.os.freemem = os.freemem();
     platform.os.networkInterfaces = os.networkInterfaces();
     platform = hw.readPlatform(platform);
-    if (callback) callback(platform);
+    if (callback) {
+        if (callback.length == 1)
+            callback(platform);
+        else
+            callback(null, platform);
+    }
     return (platform);
 };
 f.getPlatform.args = ['callback'];
 
 f.echo = function (data, callback) {
     winston.info(data);
-    if (callback) callback({
-        'data': data
-    });
+    if (callback) {
+        if (callback.length == 1)
+            callback({
+                'data': data
+            });
+        else
+            callback(null, data);
+    }
     return (data);
 };
 f.echo.args = ['data', 'callback'];
@@ -599,11 +696,19 @@ f.setDate = function (date, callback) {
 
     function dateResponse(error, stdout, stderr) {
         if (typeof callback != 'function') return;
-        else callback({
-            'error': error,
-            'stdout': stdout,
-            'stderr': stderr
-        });
+        else {
+            if (callback.length == 1)
+                callback({
+                    'error': error,
+                    'stdout': stdout,
+                    'stderr': stderr
+                });
+            else
+                callback({
+                    'error': error,
+                    'stderr': stderr
+                }, stdout);
+        }
     }
 };
 f.setDate.args = ['date', 'callback'];

@@ -62,17 +62,26 @@ var readPinMux = function (pin, mode, callback) {
         if (err) {
             mode.err = 'readPinctrl error: ' + err;
             if (debug) winston.debug(mode.err);
-            callback(mode);
+            if (callback.length == 1)
+                callback(mode);
+            else
+                callback(err, data);
         }
         mode = parse.modeFromPinctrl(data, muxRegOffset, 0x44e10800, mode);
-        callback(mode);
+        if (callback.length == 1)
+            callback(mode);
+        else
+            callback(null, mode);
     };
     var tryPinctrl = function (exists) {
         if (exists) {
             fs.readFile(pinctrlFile, 'utf8', readPinctrl);
         } else {
             if (debug) winston.debug('getPinMode(' + pin.key + '): no valid mux data');
-            callback(mode);
+            if (callback.length == 1)
+                callback(mode);
+            else
+                callback('getPinMode(' + pin.key + '): no valid mux data', mode);
         }
     };
     if (callback) {
@@ -223,7 +232,10 @@ var readGPIOValue = function (pin, resp, callback) {
                 winston.error(resp.err);
             }
             resp.value = parseInt(data, 2);
-            callback(resp);
+            if (callback.length == 1)
+                callback(resp);
+            else
+                callback(resp.err, resp.value);
         };
         fs.readFile(gpioFile, readFile);
         return (true);
@@ -259,7 +271,10 @@ var readAIN = function (pin, resp, callback) {
                 winston.error(resp.err);
             }
             resp.value = parseInt(data, 10) / maxValue;
-            callback(resp);
+            if (callback.length == 1)
+                callback(resp);
+            else
+                callback(resp.err, resp.value);
         };
         fs.readFile(ainFile, readFile);
         return (resp);
@@ -337,7 +352,7 @@ var writePWMFreqAndValue = function (pin, pwm, freq, value, resp, callback) {
                         else
                             tryAgain = false;
                         callback(null); //async.until requires an err first format callback &
-                    } else { //if there is an error iteration stops, so neglect the error if EACCES thrown	
+                    } else { //if there is an error iteration stops, so neglect the error if EACCES thrown
                         tryAgain = false;
                         callback(ex2);
                     }
