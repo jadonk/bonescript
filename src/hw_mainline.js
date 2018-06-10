@@ -65,7 +65,7 @@ var readPinMux = function (pin, mode, callback) {
             if (callback.length == 1)
                 callback(mode);
             else
-                callback(err, data);
+                callback(mode.err, data);
         }
         mode = parse.modeFromPinctrl(data, muxRegOffset, 0x44e10800, mode);
         if (callback.length == 1)
