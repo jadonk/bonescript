@@ -62,15 +62,17 @@ var readPinMux = function (pin, mode, callback) {
         if (err) {
             mode.err = 'readPinctrl error: ' + err;
             if (debug) winston.debug(mode.err);
-            if (callback.length == 1)
+            if (callback.length == 1) {
+                winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
                 callback(mode);
-            else
+            } else
                 callback(mode.err, data);
         }
         mode = parse.modeFromPinctrl(data, muxRegOffset, 0x44e10800, mode);
-        if (callback.length == 1)
+        if (callback.length == 1) {
+            winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
             callback(mode);
-        else
+        } else
             callback(null, mode);
     };
     var tryPinctrl = function (exists) {
@@ -78,9 +80,10 @@ var readPinMux = function (pin, mode, callback) {
             fs.readFile(pinctrlFile, 'utf8', readPinctrl);
         } else {
             if (debug) winston.debug('getPinMode(' + pin.key + '): no valid mux data');
-            if (callback.length == 1)
+            if (callback.length == 1) {
+                winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
                 callback(mode);
-            else
+            } else
                 callback('getPinMode(' + pin.key + '): no valid mux data', mode);
         }
     };
@@ -232,9 +235,10 @@ var readGPIOValue = function (pin, resp, callback) {
                 winston.error(resp.err);
             }
             resp.value = parseInt(data, 2);
-            if (callback.length == 1)
+            if (callback.length == 1) {
+                winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
                 callback(resp);
-            else
+            } else
                 callback(resp.err, resp.value);
         };
         fs.readFile(gpioFile, readFile);
@@ -271,9 +275,10 @@ var readAIN = function (pin, resp, callback) {
                 winston.error(resp.err);
             }
             resp.value = parseInt(data, 10) / maxValue;
-            if (callback.length == 1)
+            if (callback.length == 1) {
+                winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
                 callback(resp);
-            else
+            } else
                 callback(resp.err, resp.value);
         };
         fs.readFile(ainFile, readFile);

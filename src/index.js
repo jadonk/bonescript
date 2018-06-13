@@ -149,12 +149,13 @@ f.pinMode = function (pin, direction, mux, pullup, slew, callback) {
             var err = 'pinMode only supports ANALOG_OUTPUT for PWM pins: ' + pin.key;
             winston.info(err);
             if (callback) {
-                if (callback.length == 1)
+                if (callback.length == 1) {
+                    winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
                     callback({
                         value: false,
                         err: err
                     });
-                else
+                } else
                     callback(err, false);
             }
             return (false);
@@ -188,9 +189,10 @@ f.pinMode = function (pin, direction, mux, pullup, slew, callback) {
             gpio[n] = true;
         }
         if (callback) {
-            if (callback.length == 1)
+            if (callback.length == 1) {
+                winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
                 callback(resp);
-            else
+            } else
                 callback(resp.err, resp.value);
         }
         return (resp.value);
@@ -211,9 +213,10 @@ f.pinMode = function (pin, direction, mux, pullup, slew, callback) {
             winston.info(resp.err);
             delete gpio[n];
             if (callback) {
-                if (callback.length == 1)
+                if (callback.length == 1) {
+                    winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
                     callback(resp);
-                else
+                } else
                     callback(resp.err, resp.value);
             }
             return (resp.value);
@@ -236,9 +239,10 @@ f.pinMode = function (pin, direction, mux, pullup, slew, callback) {
     }
 
     if (callback) {
-        if (callback.length == 1)
+        if (callback.length == 1) {
+            winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
             callback(resp);
-        else
+        } else
             callback(resp.err, resp.value);
     }
     return (resp.value);
@@ -292,9 +296,10 @@ f.digitalRead = function (pin, callback) {
     }
 
     function analogCallback(x) {
-        if (callback.length == 1)
+        if (callback.length == 1) {
+            winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
             callback(analogValue(x));
-        else
+        } else
             callback(x.err, analogValue(x).value);
     }
 
@@ -404,9 +409,10 @@ f.attachInterrupt = function (pin, handler, mode, callback) {
         resp.err = 'attachInterrupt: requires Epoll module';
         if (debug) winston.debug(resp.err);
         if (callback) {
-            if (callback.length == 1)
+            if (callback.length == 1) {
+                winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
                 callback(resp);
-            else if (callback.length == 2) {
+            } else {
                 var err = resp.err;
                 delete resp.err;
                 callback(err, resp);
@@ -422,9 +428,10 @@ f.attachInterrupt = function (pin, handler, mode, callback) {
         resp.attached = false;
         resp.configured = false;
         if (callback) {
-            if (callback.length == 1)
+            if (callback.length == 1) {
+                winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
                 callback(resp);
-            else {
+            } else {
                 var err = resp.err;
                 delete resp.err;
                 callback(err, resp);
@@ -440,9 +447,10 @@ f.attachInterrupt = function (pin, handler, mode, callback) {
         resp.attached = false;
         resp.configured = true;
         if (callback) {
-            if (callback.length == 1)
+            if (callback.length == 1) {
+                winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
                 callback(resp);
-            else {
+            } else {
                 var err = resp.err;
                 delete resp.err;
                 callback(err, resp);
@@ -466,9 +474,10 @@ f.attachInterrupt = function (pin, handler, mode, callback) {
             handler: handler
         };
         if (m.output && (typeof callback == 'function')) {
-            if (callback.length == 1)
+            if (callback.length == 1) {
+                winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
                 callback(m);
-            else {
+            } else {
                 var err = m.err;
                 delete m.err;
                 callback(err, m);
@@ -487,9 +496,10 @@ f.attachInterrupt = function (pin, handler, mode, callback) {
         if (debug) winston.debug(resp.err);
     }
     if (callback) {
-        if (callback.length == 1)
+        if (callback.length == 1) {
+            winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
             callback(resp);
-        else {
+        } else {
             var err = resp.err;
             delete resp.err;
             callback(err, resp);
@@ -505,12 +515,13 @@ f.detachInterrupt = function (pin, callback) {
     var n = pin.gpio;
     if (typeof gpio[n] == 'undefined' || typeof gpioInt[n] == 'undefined') {
         if (callback) {
-            if (callback.length == 1)
+            if (callback.length == 1) {
+                winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
                 callback({
                     'pin': pin,
                     'detached': false
                 });
-            else
+            } else
                 callback(true, {
                     'pin': pin,
                     'detached': false
@@ -521,12 +532,13 @@ f.detachInterrupt = function (pin, callback) {
     gpioInt[n].epoll.remove(gpioInt[n].valuefd);
     delete gpioInt[n];
     if (callback) {
-        if (callback.length == 1)
+        if (callback.length == 1) {
+            winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
             callback({
                 'pin': pin,
                 'detached': true
             });
-        else
+        } else
             callback(null, {
                 'pin': pin,
                 'detached': true
@@ -604,9 +616,10 @@ f.getEeproms = function (callback) {
         if (debug) winston.debug('No valid EEPROM contents found');
     }
     if (callback) {
-        if (callback.length == 1)
+        if (callback.length == 1) {
+            winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
             callback(eeproms);
-        else
+        } else
             callback(eeproms == {} ? 'No valid EEPROM contents found' : null, eeproms);
     }
     return (eeproms);
@@ -621,9 +634,10 @@ f.readTextFile = function (filename, callback) {
                 'data': data
             });
         };
-        if (callback.length == 1)
+        if (callback.length == 1) {
+            winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
             fs.readFile(filename, 'ascii', cb);
-        else
+        } else
             fs.readFile(filename, 'ascii', callback);
     } else {
         return fs.readFileSync(filename, 'ascii');
@@ -668,9 +682,10 @@ f.getPlatform = function (callback) {
     platform.os.networkInterfaces = os.networkInterfaces();
     platform = hw.readPlatform(platform);
     if (callback) {
-        if (callback.length == 1)
+        if (callback.length == 1) {
+            winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
             callback(platform);
-        else
+        } else
             callback(null, platform);
     }
     return (platform);
@@ -680,11 +695,12 @@ f.getPlatform.args = ['callback'];
 f.echo = function (data, callback) {
     winston.info(data);
     if (callback) {
-        if (callback.length == 1)
+        if (callback.length == 1) {
+            winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
             callback({
                 'data': data
             });
-        else
+        } else
             callback(null, data);
     }
     return (data);
@@ -697,13 +713,14 @@ f.setDate = function (date, callback) {
     function dateResponse(error, stdout, stderr) {
         if (typeof callback != 'function') return;
         else {
-            if (callback.length == 1)
+            if (callback.length == 1) {
+                winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
                 callback({
                     'error': error,
                     'stdout': stdout,
                     'stderr': stderr
                 });
-            else
+            } else
                 callback({
                     'error': error,
                     'stderr': stderr
