@@ -4,7 +4,7 @@ var serverEmitter = null;
 
 exports.testRPC = function (test) {
     server.serverStart(8000, process.cwd(), mycb);
-    test.expect(8);
+    test.expect(9);
 
     function getPlatformTest() {
         console.log('here');
@@ -70,7 +70,20 @@ exports.testRPC = function (test) {
             console.log('x.value = ' + x.value);
             console.log('x.err = ' + x.err);
             test.ok(true);
+            analogWriteTest()
+        }
+    }
+
+    function analogWriteTest() {
+        var b = bonescript.require('bonescript');
+        b.analogWrite('P9_14', 0.7, 2000, printJSON);
+
+        function printJSON(x) {
+            console.log("***analogWriteTest***");
+            console.log(JSON.stringify(x));
+            test.ok(true);
             analogReadTest();
+
         }
     }
 
@@ -92,6 +105,7 @@ exports.testRPC = function (test) {
         b.attachInterrupt('P8_19', true, b.CHANGE, interruptCallback);
 
         function interruptCallback(x) {
+            console.log("***attachInterruptTest***");
             console.log(JSON.stringify(x));
             test.ok(true);
             readTextFileTest();
@@ -103,14 +117,13 @@ exports.testRPC = function (test) {
         b.readTextFile('/etc/fstab', printStatus);
 
         function printStatus(x) {
+            console.log("***readTextFileTest***");
             console.log('x.data = ' + x.data);
             console.log('x.err = ' + x.err);
             test.ok(true);
             test.done();
         }
     }
-
-
 
     function mycb(emitter) {
         serverEmitter = emitter;
