@@ -36,6 +36,10 @@ var serverStart = function (port, directory, callback) {
         }
     }
 
+    if (callback) {
+        callback(serverEmitter);
+    }
+
     return (serverEmitter);
 };
 

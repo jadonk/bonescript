@@ -46,7 +46,8 @@
     "coveralls": "~3.0.1",
     "js-beautify": "^1.7.5",
     "jscoverage": "~0.6.0",
-    "nodeunit": "^0.11.2"
+    "nodeunit": "^0.11.2",
+    "socket.io-client": "1.4.5"
   },
   "scripts": {
     "start": "node server.js",
