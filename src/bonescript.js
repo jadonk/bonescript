@@ -14,6 +14,15 @@ _bonescript.on.reconnecting = function () {};
 _bonescript.on.initialized = function () {};
 
 (function () {
+    if (typeof document == 'undefined') {
+        var io = require('socket.io-client');
+        module.exports.startClient = function (host, port, callback) {
+            _bonescript.on.initialized = callback;
+            var socket = _onSocketIOLoaded(host, port, io);
+        }
+        return;
+    }
+    require = myrequire;
     var head = document.getElementsByTagName('head')[0];
     var script = document.createElement('script');
     script.type = 'text/javascript';
@@ -23,11 +32,12 @@ _bonescript.on.initialized = function () {};
     scriptObj.onload = _onSocketIOLoaded;
 }());
 
-function _onSocketIOLoaded() {
+function _onSocketIOLoaded(host, port, socketio) {
     //console.log("socket.io loaded");
-    var socket = io.connect('___INSERT_HOST___', {
-        port: 80
-    });
+    if (typeof host == 'undefined') host = '___INSERT_HOST___';
+    if (typeof port == 'undefined') port = 80;
+    if (typeof socketio == 'undefined' && typeof io != 'undefined') socketio = io;
+    var socket = socketio.connect('http://' + host + ':' + port);
     socket.on('require', getRequireData);
     socket.on('bonescript', _seqcall);
     socket.on('connect', _bonescript.on.connect);
@@ -85,6 +95,8 @@ function _onSocketIOLoaded() {
         _bonescript.modules[m.module].socket = socket;
         _bonescript.on.initialized();
     }
+
+    return (socket);
 }
 
 function _seqcall(data) {
@@ -97,8 +109,14 @@ function _seqcall(data) {
 // Require must be synchronous to be able to return data structures and
 // functions and therefore cannot call socket.io. All exported modules must
 // be exported ahead of time.
-function require(module) {
+function myrequire(module) {
+    if (typeof _bonescript == 'undefined')
+        throw 'No BoneScript modules are not currently available';
     if (typeof _bonescript.modules[module] == 'undefined')
         throw 'Module "' + module + '" is not currently available';
     return (_bonescript.modules[module]);
+}
+
+if (typeof module != 'undefined') {
+    module.exports.require = myrequire;
 }
