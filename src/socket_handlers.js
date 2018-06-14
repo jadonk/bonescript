@@ -69,13 +69,28 @@ var addSocketListeners = function (server, serverEmitter) {
                 if (debug) winston.debug('Sending message "bonescript": ' + JSON.stringify(resp));
                 socket.emit('bonescript', resp);
             };
+            var myCallback_nodestyle = function (err, resp) {
+                if (debug) winston.debug(name + ' replied to ' + JSON.stringify(m) + ' with ' + JSON.stringify(resp));
+                if (typeof m.seq == 'undefined') return;
+                // TODO: consider setting 'oneshot'
+                if (debug) winston.debug('Sending message "bonescript": ' + JSON.stringify(resp));
+                socket.emit('bonescript', {
+                    err: err,
+                    resp: resp,
+                    seq: m.seq
+                });
+            };
             try {
                 var callargs = [];
                 for (var arg in b[name].args) {
                     var argname = b[name].args[arg];
                     if (argname == 'callback') {
-                        if (typeof m.seq == 'number') callargs.push(myCallback);
-                        else callargs.push(null);
+                        if (typeof m.seq == 'number') {
+                            if (m.length == 1)
+                                callargs.push(myCallback);
+                            else
+                                callargs.push(myCallback_nodestyle);
+                        } else callargs.push(null);
                     } else if (typeof m[argname] != 'undefined') {
                         callargs.push(m[argname]);
                     } else {

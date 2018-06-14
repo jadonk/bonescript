@@ -89,6 +89,7 @@ function _onSocketIOLoaded(host, port, socketio) {
                     ' if(callback) {\n' +
                     '  _bonescript._callbacks[_bonescript._seqnum] = callback;\n' +
                     '  calldata.seq = _bonescript._seqnum;\n' +
+                    '  calldata.length = callback.length;\n' +
                     '  _bonescript._seqnum++;\n' +
                     ' }\n' +
                     ' socket.emit("' + m.module + '$' + m.data[x].name + '", calldata);\n' +
@@ -108,7 +109,10 @@ function _onSocketIOLoaded(host, port, socketio) {
 function _seqcall(data) {
     if ((typeof data.seq != 'number') || (typeof _bonescript._callbacks[data.seq] != 'function'))
         throw "Invalid callback message received: " + JSON.stringify(data);
-    _bonescript._callbacks[data.seq](data);
+    if (_bonescript._callbacks[data.seq].length == 1)
+        _bonescript._callbacks[data.seq](data);
+    else
+        _bonescript._callbacks[data.seq](data.err, data.resp);
     if (data.oneshot) delete _bonescript._callbacks[data.seq];
 }
 
