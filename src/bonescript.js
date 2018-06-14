@@ -37,7 +37,13 @@ function _onSocketIOLoaded(host, port, socketio) {
     if (typeof host == 'undefined') host = '___INSERT_HOST___';
     if (typeof port == 'undefined') port = 80;
     if (typeof socketio == 'undefined' && typeof io != 'undefined') socketio = io;
-    var socket = socketio.connect('http://' + host + ':' + port);
+    var socket;
+    if (typeof host == 'string')
+        socket = socketio('http://' + host + ':' + port);
+    else
+        socket = socketio('___INSERT_HOST___', {
+            port: 80
+        });
     socket.on('require', getRequireData);
     socket.on('bonescript', _seqcall);
     socket.on('connect', _bonescript.on.connect);
@@ -109,7 +115,7 @@ function _seqcall(data) {
 // Require must be synchronous to be able to return data structures and
 // functions and therefore cannot call socket.io. All exported modules must
 // be exported ahead of time.
-function myrequire(module) {
+var myrequire = function (module) {
     if (typeof _bonescript == 'undefined')
         throw 'No BoneScript modules are not currently available';
     if (typeof _bonescript.modules[module] == 'undefined')
