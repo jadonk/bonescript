@@ -4,23 +4,34 @@ var serverEmitter = null;
 
 exports.testRPC = function (test) {
     server.serverStart(8000, process.cwd(), mycb);
-    test.expect(9);
+    test.expect(13);
 
-    function getPlatformTest() {
-        console.log('here');
+    function getPlatformTest_previous() {
         var b = bonescript.require('bonescript');
-        //console.log("" + b);
         b.getPlatform(function (platform) {
             console.log("***getPlatformTest***");
             console.log(platform);
             console.log('Name: ' + platform.name);
             console.log('Version: ' + platform.bonescript);
-            test.ok(true);
-            pinModeTest();
+            getPlatformTest_nodestyle(platform);
         });
     }
 
-    function pinModeTest() {
+    function getPlatformTest_nodestyle(platform_) {
+        console.log('here');
+        var b = bonescript.require('bonescript');
+        b.getPlatform(function (err, platform) {
+            console.log("***getPlatformTest***");
+            console.log(platform);
+            console.log('Name: ' + platform.name);
+            console.log('Version: ' + platform.bonescript);
+            test.equals(platform.name, platform_.name);
+            test.equals(platform.bonescript, platform_.bonescript);
+            pinModeTest_previous();
+        });
+    }
+
+    function pinModeTest_previous() {
         var b = bonescript.require('bonescript');
         b.pinMode("P8_13", b.OUTPUT, 7, 'pullup', 'fast', printStatus);
 
@@ -28,7 +39,20 @@ exports.testRPC = function (test) {
             console.log("***pinModeTest***");
             console.log('value = ' + x.value);
             console.log('err = ' + x.err);
-            test.ok(true);
+            pinModeTest_nodestyle(x);
+        }
+    }
+
+    function pinModeTest_nodestyle(x) {
+        var b = bonescript.require('bonescript');
+        b.pinMode("P8_13", b.OUTPUT, 7, 'pullup', 'fast', printStatus);
+
+        function printStatus(err, value) {
+            console.log("***pinModeTest***");
+            console.log('value = ' + value);
+            console.log('err = ' + err);
+            test.equals(x.err, err);
+            test.equals(x.value, value);
             getPinModeTest();
         }
     }
@@ -96,23 +120,35 @@ exports.testRPC = function (test) {
             console.log('x.value = ' + x.value);
             console.log('x.err = ' + x.err);
             test.ok(true);
-            attachInterruptTest()
+            attachInterruptTest_previous()
         }
     }
 
-    function attachInterruptTest() {
+    function attachInterruptTest_previous() {
         var b = bonescript.require('bonescript');
         b.attachInterrupt('P8_19', true, b.CHANGE, interruptCallback);
 
         function interruptCallback(x) {
             console.log("***attachInterruptTest***");
             console.log(JSON.stringify(x));
-            test.ok(true);
-            readTextFileTest();
+            attachInterruptTest_nodestyle(x)
         }
     }
 
-    function readTextFileTest() {
+    function attachInterruptTest_nodestyle(x) {
+        var b = bonescript.require('bonescript');
+        b.attachInterrupt('P8_19', true, b.CHANGE, interruptCallback);
+
+        function interruptCallback(err, resp) {
+            console.log("***attachInterruptTest***");
+            console.log(JSON.stringify(resp));
+            test.equals(x.err, err);
+            test.equals(x.pin.name, resp.pin.name);
+            readTextFileTest_previous();
+        }
+    }
+
+    function readTextFileTest_previous() {
         var b = bonescript.require('bonescript');
         b.readTextFile('/etc/fstab', printStatus);
 
@@ -120,13 +156,26 @@ exports.testRPC = function (test) {
             console.log("***readTextFileTest***");
             console.log('x.data = ' + x.data);
             console.log('x.err = ' + x.err);
-            test.ok(true);
+            readTextFileTest_nodestyle(x);
+        }
+    }
+
+    function readTextFileTest_nodestyle(x) {
+        var b = bonescript.require('bonescript');
+        b.readTextFile('/etc/fstab', printStatus);
+
+        function printStatus(err, data) {
+            console.log("***readTextFileTest***");
+            console.log('x.data = ' + data);
+            console.log('x.err = ' + err);
+            test.equals(x.data, data);
+            test.equals(x.err, err);
             test.done();
         }
     }
 
     function mycb(emitter) {
         serverEmitter = emitter;
-        bonescript.startClient('127.0.0.1', 8000, getPlatformTest);
+        bonescript.startClient('127.0.0.1', 8000, getPlatformTest_previous);
     }
 }
