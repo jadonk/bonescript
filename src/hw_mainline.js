@@ -84,7 +84,7 @@ var readPinMux = function (pin, mode, callback) {
                 winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
                 callback(mode);
             } else
-                callback('getPinMode(' + pin.key + '): no valid mux data', mode);
+                callback('readPinMux error: no valid mux data', mode);
         }
     };
     if (callback) {
