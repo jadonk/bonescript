@@ -2,9 +2,18 @@ var server = require('../src/server');
 var bonescript = require('../src/bonescript');
 var serverEmitter = null;
 
-exports.testRPC = function (test) {
+exports.setUp = function (callback) {
     server.serverStart(8000, process.cwd(), mycb);
+
+    function mycb(emitter) {
+        callback();
+    }
+};
+
+exports.testRPC_callbacks = function (test) {
     test.expect(16);
+
+    bonescript.startClient('127.0.0.1', 8000, getPlatformTest_previous);
 
     function getPlatformTest_previous() {
         var b = bonescript.require('bonescript');
@@ -215,10 +224,5 @@ exports.testRPC = function (test) {
             test.equals(x.err, err);
             test.done();
         }
-    }
-
-    function mycb(emitter) {
-        serverEmitter = emitter;
-        bonescript.startClient('127.0.0.1', 8000, getPlatformTest_previous);
     }
 }
