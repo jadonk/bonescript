@@ -37,7 +37,13 @@ function _onSocketIOLoaded(host, port, socketio) {
     if (typeof host == 'undefined') host = '___INSERT_HOST___';
     if (typeof port == 'undefined') port = 80;
     if (typeof socketio == 'undefined' && typeof io != 'undefined') socketio = io;
-    var socket = socketio.connect('http://' + host + ':' + port);
+    var socket;
+    if (typeof host == 'string')
+        socket = socketio('http://' + host + ':' + port);
+    else
+        socket = socketio('___INSERT_HOST___', {
+            port: port
+        });
     socket.on('require', getRequireData);
     socket.on('bonescript', _seqcall);
     socket.on('connect', _bonescript.on.connect);
@@ -83,6 +89,7 @@ function _onSocketIOLoaded(host, port, socketio) {
                     ' if(callback) {\n' +
                     '  _bonescript._callbacks[_bonescript._seqnum] = callback;\n' +
                     '  calldata.seq = _bonescript._seqnum;\n' +
+                    '  calldata.length = callback.length;\n' +
                     '  _bonescript._seqnum++;\n' +
                     ' }\n' +
                     ' socket.emit("' + m.module + '$' + m.data[x].name + '", calldata);\n' +
@@ -102,14 +109,17 @@ function _onSocketIOLoaded(host, port, socketio) {
 function _seqcall(data) {
     if ((typeof data.seq != 'number') || (typeof _bonescript._callbacks[data.seq] != 'function'))
         throw "Invalid callback message received: " + JSON.stringify(data);
-    _bonescript._callbacks[data.seq](data);
+    if (_bonescript._callbacks[data.seq].length == 1)
+        _bonescript._callbacks[data.seq](data);
+    else
+        _bonescript._callbacks[data.seq](data.err, data.resp);
     if (data.oneshot) delete _bonescript._callbacks[data.seq];
 }
 
 // Require must be synchronous to be able to return data structures and
 // functions and therefore cannot call socket.io. All exported modules must
 // be exported ahead of time.
-function myrequire(module) {
+var myrequire = function (module) {
     if (typeof _bonescript == 'undefined')
         throw 'No BoneScript modules are not currently available';
     if (typeof _bonescript.modules[module] == 'undefined')

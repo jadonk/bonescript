@@ -29,7 +29,10 @@ var readGPIODirection = function (n, gpio) {
 var readPinMux = function (pin, mode, callback) {
     winston.info('readPinMux(' + [pin.key] + ')');
     if (callback) {
-        callback(mode);
+        if (callback.length == 1)
+            callback(mode);
+        else
+            callback(null, mode);
     }
     return (mode);
 };
@@ -60,7 +63,11 @@ var writeGPIOValue = function (pin, value, callback) {
 var readGPIOValue = function (pin, resp, callback) {
     winston.info('readGPIOValue(' + [pin.key] + ')');
     if (callback) {
-        callback(0);
+        resp.value = 0;
+        if (callback.length == 1)
+            callback(resp);
+        else
+            callback(null, resp.value);
         return (true);
     }
     resp.value = 0;
@@ -76,7 +83,10 @@ var readAIN = function (pin, resp, callback) {
     winston.info('readAIN(' + [pin.key] + ')');
     resp.value = 0;
     if (callback) {
-        callback(resp);
+        if (callback.length == 1)
+            callback(resp);
+        else
+            callback(null, resp.value);
     }
     return (resp);
 };
