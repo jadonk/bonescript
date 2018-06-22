@@ -42,7 +42,7 @@ function _onSocketIOLoaded(host, port, socketio) {
         socket = socketio('http://' + host + ':' + port);
     else
         socket = socketio('___INSERT_HOST___', {
-            port: 80
+            port: port
         });
     socket.on('require', getRequireData);
     socket.on('bonescript', _seqcall);

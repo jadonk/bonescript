@@ -13,12 +13,12 @@ exports.setUp = function (callback) {
 exports.testRPC_callbacks = function (test) {
     test.expect(16);
 
-    bonescript.startClient('127.0.0.1', 8000, getPlatformTest_previous);
+    bonescript.startClient('127.0.0.1', 8000, getPlatformTest_oldstyle);
 
-    function getPlatformTest_previous() {
+    function getPlatformTest_oldstyle() {
         var b = bonescript.require('bonescript');
         b.getPlatform(function (platform) {
-            console.log("***getPlatformTest_previous***");
+            console.log("***getPlatformTest_oldstyle***");
             console.log(platform);
             console.log('Name: ' + platform.name);
             console.log('Version: ' + platform.bonescript);
@@ -36,16 +36,16 @@ exports.testRPC_callbacks = function (test) {
             console.log('Version: ' + platform.bonescript);
             test.equals(platform.name, platform_.name);
             test.equals(platform.bonescript, platform_.bonescript);
-            pinModeTest_previous();
+            pinModeTest_oldstyle();
         });
     }
 
-    function pinModeTest_previous() {
+    function pinModeTest_oldstyle() {
         var b = bonescript.require('bonescript');
         b.pinMode("P8_13", b.OUTPUT, 7, 'pullup', 'fast', printStatus);
 
         function printStatus(x) {
-            console.log("***pinModeTest_previous***");
+            console.log("***pinModeTest_oldstyle***");
             console.log('value = ' + x.value);
             console.log('err = ' + x.err);
             pinModeTest_nodestyle(x);
@@ -62,16 +62,16 @@ exports.testRPC_callbacks = function (test) {
             console.log('err = ' + err);
             test.equals(x.err, err);
             test.equals(x.value, value);
-            getPinModeTest_previous();
+            getPinModeTest_oldstyle();
         }
     }
 
-    function getPinModeTest_previous() {
+    function getPinModeTest_oldstyle() {
         var b = bonescript.require('bonescript');
         b.getPinMode("P8_13", printPinMux);
 
         function printPinMux(x) {
-            console.log("***getPinModeTest_previous***");
+            console.log("***getPinModeTest_oldstyle***");
             console.log('mux = ' + x.mux);
             console.log('pullup = ' + x.pullup);
             console.log('slew = ' + x.slew);
@@ -108,16 +108,16 @@ exports.testRPC_callbacks = function (test) {
             console.log("***digitalWriteTest***");
             console.log('err = ' + x.err);
             test.ok(true);
-            digitalReadTest_previous();
+            digitalReadTest_oldstyle();
         }
     }
 
-    function digitalReadTest_previous() {
+    function digitalReadTest_oldstyle() {
         var b = bonescript.require('bonescript');
         b.digitalRead('P8_19', printStatus);
 
         function printStatus(x) {
-            console.log("***digitalReadTest_previous***");
+            console.log("***digitalReadTest_oldstyle***");
             console.log('x.value = ' + x.value);
             console.log('x.err = ' + x.err);
             digitalReadTest_nodestyle(x)
@@ -146,17 +146,17 @@ exports.testRPC_callbacks = function (test) {
             console.log("***analogWriteTest***");
             console.log(JSON.stringify(x));
             test.ok(true);
-            analogReadTest_previous();
+            analogReadTest_oldstyle();
 
         }
     }
 
-    function analogReadTest_previous() {
+    function analogReadTest_oldstyle() {
         var b = bonescript.require('bonescript');
         b.analogRead('P9_36', printStatus);
 
         function printStatus(x) {
-            console.log("***analogReadTest_previous***");
+            console.log("***analogReadTest_oldstyle***");
             console.log('x.value = ' + x.value);
             console.log('x.err = ' + x.err);
             analogReadTest_nodestyle(x);
@@ -172,16 +172,16 @@ exports.testRPC_callbacks = function (test) {
             console.log('x.value = ' + value);
             console.log('x.err = ' + err);
             test.equals(x.value, value);
-            attachInterruptTest_previous()
+            attachInterruptTest_oldstyle()
         }
     }
 
-    function attachInterruptTest_previous() {
+    function attachInterruptTest_oldstyle() {
         var b = bonescript.require('bonescript');
         b.attachInterrupt('P8_19', true, b.CHANGE, interruptCallback);
 
         function interruptCallback(x) {
-            console.log("***attachInterruptTest_previous***");
+            console.log("***attachInterruptTest_oldstyle***");
             console.log(JSON.stringify(x));
             attachInterruptTest_nodestyle(x)
         }
@@ -196,16 +196,16 @@ exports.testRPC_callbacks = function (test) {
             console.log(JSON.stringify(resp));
             test.equals(x.err, err);
             test.equals(x.pin.name, resp.pin.name);
-            readTextFileTest_previous();
+            readTextFileTest_oldstyle();
         }
     }
 
-    function readTextFileTest_previous() {
+    function readTextFileTest_oldstyle() {
         var b = bonescript.require('bonescript');
         b.readTextFile('/etc/fstab', printStatus);
 
         function printStatus(x) {
-            console.log("***readTextFileTest_previous***");
+            console.log("***readTextFileTest_oldstyle***");
             console.log('x.data = ' + x.data);
             console.log('x.err = ' + x.err);
             readTextFileTest_nodestyle(x);
