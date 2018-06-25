@@ -7,8 +7,12 @@ var url = require('url');
 var child_process = require('child_process');
 var winston = require('winston');
 var socketio = require('socket.io');
-
+var storedSessions;
 var debug = process.env.DEBUG ? true : false;
+
+var updateSession = function (sessionStore) {
+    storedSessions = sessionStore;
+}
 
 var socketJSReqHandler = function (req, res) {
     function sendFile(err, file) {
@@ -33,8 +37,26 @@ var socketJSReqHandler = function (req, res) {
     }
 }
 
-var addSocketListeners = function (server, serverEmitter) {
+var addSocketListeners = function (server, serverEmitter, session) {
     var io = socketio(server);
+    io.use(function (socket, next) { //use the session middleware
+        session(socket.request, socket.request.res, next);
+    });
+    io.use(function (socket, next) { //middleware to listen to all sockets and reject unauthorized
+        if (typeof socket.request.sessionID == 'undefined')
+            next(new Error('no cookie data sent!!'));
+        else if (storedSessions) {
+            storedSessions.get(socket.request.sessionID, function (err, session) {
+                if (!session)
+                    next(new Error('session not found!!'));
+                else if (session.isLoggedIn || !session.secure)
+                    next();
+                else
+                    next(new Error('user not logged in!!check username or password'));
+            });
+        } else
+            next(new Error('no authentication data sent!!'));
+    });
     if (debug) winston.debug('Listening for new socket.io clients');
     io.on('connection', onconnect);
 
@@ -139,7 +161,6 @@ var addSocketListeners = function (server, serverEmitter) {
 
     return (io);
 }
-
 // most heavily borrowed from https://github.com/itchyny/browsershell
 function spawn(socket) {
     var stream = '';
@@ -209,5 +230,6 @@ function spawn(socket) {
 
 module.exports = {
     socketJSReqHandler: socketJSReqHandler,
-    addSocketListeners: addSocketListeners
+    addSocketListeners: addSocketListeners,
+    updateSession: updateSession
 }

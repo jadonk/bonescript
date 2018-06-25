@@ -7,7 +7,9 @@ _bonescript.on.connect = function () {};
 _bonescript.on.connecting = function () {};
 _bonescript.on.disconnect = function () {};
 _bonescript.on.connect_failed = function () {};
-_bonescript.on.error = function () {};
+_bonescript.on.error = function (err) {
+    throw (new Error(err))
+};
 _bonescript.on.reconnect = function () {};
 _bonescript.on.reconnect_failed = function () {};
 _bonescript.on.reconnecting = function () {};
@@ -16,9 +18,19 @@ _bonescript.on.initialized = function () {};
 (function () {
     if (typeof document == 'undefined') {
         var io = require('socket.io-client');
-        module.exports.startClient = function (host, port, callback) {
-            _bonescript.on.initialized = callback;
-            var socket = _onSocketIOLoaded(host, port, io);
+        var request = require('request');
+        var jar = request.jar();
+        module.exports.startClient = function (host, callback) {
+            //get the cookie string to be send with the socket connection
+            var authUrl = 'http://' + host.user + ':' + host.pass + '@' + host.address + ':' + host.port + '/login';
+            request.get({
+                url: authUrl,
+                jar: jar
+            }, function () {
+                const cookies = jar.getCookieString(authUrl);
+                _bonescript.on.initialized = callback;
+                var socket = _onSocketIOLoaded(host.address, host.port, io, cookies);
+            });
         }
         return;
     }
@@ -32,14 +44,18 @@ _bonescript.on.initialized = function () {};
     scriptObj.onload = _onSocketIOLoaded;
 }());
 
-function _onSocketIOLoaded(host, port, socketio) {
+function _onSocketIOLoaded(host, port, socketio, cookies) {
     //console.log("socket.io loaded");
     if (typeof host == 'undefined') host = '___INSERT_HOST___';
     if (typeof port == 'undefined') port = 80;
     if (typeof socketio == 'undefined' && typeof io != 'undefined') socketio = io;
     var socket;
     if (typeof host == 'string')
-        socket = socketio('http://' + host + ':' + port);
+        socket = socketio('http://' + host + ':' + port, {
+            extraHeaders: {
+                'Cookie': cookies
+            }
+        });
     else
         socket = socketio('___INSERT_HOST___', {
             port: port
