@@ -23,6 +23,7 @@
     "url": "git://github.com/jadonk/bonescript"
   },
   "main": "main",
+  "types": "./src/index.d.ts",
   "engines": {
     "node": ">= 6.0.0"
   },
@@ -32,10 +33,12 @@
     "socket.io": "1.4.5",
     "systemd": "0.3.1",
     "winston": "2.1.1",
+    "@types/verror": "latest",
     "shelljs": "0.8.2"
   },
   "optionalDependencies": {
     "serialport": "6.0.5",
+    "@types/serialport": "latest",
     "i2c": "0.2.3",
     "epoll": "0.1.18",
     "pi-spi": "1.0.2",
