@@ -22,16 +22,20 @@ _bonescript.on.initialized = function () {};
         var jar = request.jar();
         module.exports.startClient = function (host, callback) {
             //get the cookie string to be send with the socket connection
-            var authUrl = 'http://' + host.user + ':' + host.pass + '@' + host.address + ':' + host.port + '/login';
+            var authUrl = 'http://' + host.address + ':' + host.port;
             request.get({
                 url: authUrl,
                 jar: jar
             }, function () {
                 const cookies = jar.getCookieString(authUrl);
                 _bonescript.on.initialized = callback;
-                var socket = _onSocketIOLoaded(host.address, host.port, io, cookies);
+                var socket = _onSocketIOLoaded(host.address, host.port, io, {
+                    cookies: cookies,
+                    credentials: 'Basic ' + new Buffer(host.username + ':' + host.password).toString('base64')
+                });
             });
         }
+
         return;
     }
     require = myrequire;
@@ -44,7 +48,7 @@ _bonescript.on.initialized = function () {};
     scriptObj.onload = _onSocketIOLoaded;
 }());
 
-function _onSocketIOLoaded(host, port, socketio, cookies) {
+function _onSocketIOLoaded(host, port, socketio, headers) {
     //console.log("socket.io loaded");
     if (typeof host == 'undefined') host = '___INSERT_HOST___';
     if (typeof port == 'undefined') port = 80;
@@ -53,7 +57,8 @@ function _onSocketIOLoaded(host, port, socketio, cookies) {
     if (typeof host == 'string')
         socket = socketio('http://' + host + ':' + port, {
             extraHeaders: {
-                'Cookie': cookies
+                'Cookie': headers.cookies,
+                'Authorization': headers.credentials
             }
         });
     else

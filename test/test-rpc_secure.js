@@ -33,14 +33,15 @@ exports.testRPC_secure2 = function (test) {
     bonescript.startClient({
         address: '127.0.0.1',
         port: 8000,
-        user: 'testuser',
-        pass: 'testpass' // will not throw any error
+        username: 'testuser',
+        password: 'testpass' // will not throw any error
     }, function () {
         var b = bonescript.require('bonescript');
         b.getPlatform(function (platform) {
             console.log('Name: ' + platform.name);
             console.log('Version: ' + platform.bonescript);
             test.ok(platform != 'undefined');
+            myserver.close();
             test.done();
         });
     });

@@ -7,20 +7,6 @@ var winston = require('winston');
 var express = require('express');
 var events = require('events');
 var socketHandlers = require('./socket_handlers');
-var expressSession = require('express-session');
-var auth = require('basic-auth');
-var sessionStore = new expressSession.MemoryStore();
-
-var session = expressSession({
-    name: "connect.sid",
-    secret: "secretkey",
-    cookie: {
-        httpOnly: true
-    },
-    saveUninitialized: true,
-    resave: true,
-    store: sessionStore
-});
 
 var serverEmitter = new events.EventEmitter();
 
@@ -64,26 +50,11 @@ function mylisten(port, directory, credentials) {
     winston.info("Opening port " + port + " to serve up " + directory);
     var app = express();
     app.get('/bonescript.js', socketHandlers.socketJSReqHandler);
-    app.use(session); //use the session middleware
-    app.get('/login', function (req, res) {
-        var user = auth(req);
-        if (!user) {
-            res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
-            return res.sendStatus(401);
-        }
-        if (credentials) { //store the session details
-            req.session.isLoggedIn = (user.name == credentials.username && user.pass == credentials.password);
-            req.session.secure = true;
-        } else
-            req.session.secure = false; //if credentials not supplied during creation of server save the sesssion without the secure flag
-        socketHandlers.updateSession(sessionStore); //update the socket handlers session-store
-        res.redirect('/');
-    });
     app.use('/bone101', express.static(directory));
     app.use('/bone101/static', express.static(directory + "/static"));
     app.use(express.static(directory));
     var server = http.createServer(app);
-    socketHandlers.addSocketListeners(server, serverEmitter, session);
+    socketHandlers.addSocketListeners(server, serverEmitter, credentials);
     server.listen(port);
     return (server);
 }
