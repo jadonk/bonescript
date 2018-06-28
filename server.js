@@ -12,8 +12,8 @@ fs.readFile(configFile, {
     } else {
         data = JSON.parse(data); //start server with saved config
         server = b.serverStart(data.port, data.directory, {
-            username: data.username,
-            password: data.password
+            data: data.passphrase,
+            hash: data.hash
         });
     }
     onServerStart();

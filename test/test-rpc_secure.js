@@ -4,8 +4,8 @@ var myserver = null;
 
 exports.setUp = function (callback) {
     server.serverStart(8000, process.cwd(), { // create a secure server by supplying credentials
-        username: 'testuser',
-        password: 'testpass'
+        data: 'testpass',
+        hash: false
     }, mycb);
 
     function mycb(serverobj) {
@@ -18,11 +18,12 @@ exports.testRPC_secure1 = function (test) {
     test.expect(1);
     bonescript.startClient({ // this should throw an  authentication error
         address: '127.0.0.1',
-        port: 8000
+        port: 8000,
+        password: 'tdestpass'
     }, function () {});
     process.on('uncaughtException', function (err) {
         console.log(err.toString());
-        test.equals(err.toString(), 'Error: user not logged in!!check username or password');
+        test.equals(err.toString(), 'Error: Authentication Failed : incorrect passphrase !!');
         myserver.close();
         test.done();
     });
@@ -33,7 +34,6 @@ exports.testRPC_secure2 = function (test) {
     bonescript.startClient({
         address: '127.0.0.1',
         port: 8000,
-        username: 'testuser',
         password: 'testpass' // will not throw any error
     }, function () {
         var b = bonescript.require('bonescript');

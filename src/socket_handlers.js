@@ -9,21 +9,6 @@ var winston = require('winston');
 var socketio = require('socket.io');
 var debug = process.env.DEBUG ? true : false;
 
-var expressSession = require('express-session');
-var auth = require('basic-auth');
-var sessionStore = new expressSession.MemoryStore();
-
-var session = expressSession({
-    name: "connect.sid",
-    secret: "secretkey",
-    cookie: {
-        httpOnly: true
-    },
-    saveUninitialized: true,
-    resave: true,
-    store: sessionStore
-});
-
 var socketJSReqHandler = function (req, res) {
     function sendFile(err, file) {
         if (err) {
@@ -47,44 +32,32 @@ var socketJSReqHandler = function (req, res) {
     }
 }
 
-var addSocketListeners = function (server, serverEmitter, credentials) {
+var addSocketListeners = function (server, serverEmitter, passphrase_hash) {
     var io = socketio(server);
-    io.use(function (socket, next) { //use the session middleware
-        session(socket.request, socket.request.res, function () {
-            var user = auth(socket.request);
-            if (socket.request.sessionID) {
-                if (credentials) {
-                    if (user)
-                        socket.request.session.isLoggedIn = (user.name == credentials.username && user.pass == credentials.password);
-                    socket.request.session.isSecure = true;
+    if (passphrase_hash) { //attach middleware to handle authentication
+        io.use(function (socket, next) {
+            socket.auth = false; //consider the all sockets initially as unauthorized 
+            if (socket.handshake.headers.authorization) {
+                if (socket.handshake.headers.authorization == passphrase_hash) {
+                    socket.auth = true; //authorize the socket
+                    next();
                 } else
-                    socket.request.session.isSecure = false;
-                sessionStore.get(socket.request.sessionID, function (err, session) {
-                    if (!session)
-                        socket.request.session.save(); //store the session only if not already existing
-                    authenticateSession();
-                });
-            } else
-                next(new Error('no cookie data sent!!'));
-
-            function authenticateSession() {
-                sessionStore.get(socket.request.sessionID, function (err, session) {
-                    if (!session)
-                        next(new Error('session not found!!'));
-                    else if (session.isLoggedIn || !session.isSecure)
-                        next();
-                    else
-                        next(new Error('user not logged in!!check username or password'));
-                });
+                    next(new Error("Authentication Failed : incorrect passphrase !!"));
+            } else {
+                next(new Error("Authentication data not send !!"));
             }
         });
-    });
+    }
     if (debug) winston.debug('Listening for new socket.io clients');
-    io.on('connection', onconnect);
+    io.on('connection', function (socket) {
+        if (socket.auth || !passphrase_hash)
+            onconnect(socket);
+        else
+            socket.disconnect('unauthorized');
+    });
 
     function onconnect(socket) {
         winston.debug('Client connected');
-
         serverEmitter.emit('socket$connect', socket);
 
         // on disconnect

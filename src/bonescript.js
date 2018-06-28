@@ -18,24 +18,14 @@ _bonescript.on.initialized = function () {};
 (function () {
     if (typeof document == 'undefined') {
         var io = require('socket.io-client');
-        var request = require('request');
-        var jar = request.jar();
+        var crypto = require('crypto');
         module.exports.startClient = function (host, callback) {
-            //get the cookie string to be send with the socket connection
-            var authUrl = 'http://' + host.address + ':' + host.port;
-            request.get({
-                url: authUrl,
-                jar: jar
-            }, function () {
-                const cookies = jar.getCookieString(authUrl);
-                _bonescript.on.initialized = callback;
-                var socket = _onSocketIOLoaded(host.address, host.port, io, {
-                    cookies: cookies,
-                    credentials: 'Basic ' + new Buffer(host.username + ':' + host.password).toString('base64')
-                });
-            });
+            var passphrase_hash;
+            if (host.password)
+                passphrase_hash = crypto.createHash('sha256').update(host.password).digest("hex"); //generate sha256 hash for supplied password
+            _bonescript.on.initialized = callback;
+            var socket = _onSocketIOLoaded(host.address, host.port, io, passphrase_hash);
         }
-
         return;
     }
     require = myrequire;
@@ -48,7 +38,7 @@ _bonescript.on.initialized = function () {};
     scriptObj.onload = _onSocketIOLoaded;
 }());
 
-function _onSocketIOLoaded(host, port, socketio, headers) {
+function _onSocketIOLoaded(host, port, socketio, passphrase_hash) {
     //console.log("socket.io loaded");
     if (typeof host == 'undefined') host = '___INSERT_HOST___';
     if (typeof port == 'undefined') port = 80;
@@ -57,8 +47,7 @@ function _onSocketIOLoaded(host, port, socketio, headers) {
     if (typeof host == 'string')
         socket = socketio('http://' + host + ':' + port, {
             extraHeaders: {
-                'Cookie': headers.cookies,
-                'Authorization': headers.credentials
+                'Authorization': typeof passphrase_hash != 'undefined' ? passphrase_hash : null //send passphrase_has as Authorization extraheader
             }
         });
     else
