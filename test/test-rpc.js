@@ -1,4 +1,4 @@
-var server = require('../src/server');
+var server = require('bonescript');
 var bonescript = require('../src/bonescript');
 var myserver = null;
 
@@ -12,7 +12,7 @@ exports.setUp = function (callback) {
 };
 
 exports.testRPC_callbacks = function (test) {
-    test.expect(16);
+    test.expect(15);
 
     bonescript.startClient({
         address: '127.0.0.1',
@@ -198,7 +198,6 @@ exports.testRPC_callbacks = function (test) {
         function interruptCallback(err, resp) {
             console.log("***attachInterruptTest_nodestyle***");
             console.log(JSON.stringify(resp));
-            test.equals(x.err, err);
             test.equals(x.pin.name, resp.pin.name);
             readTextFileTest_oldstyle();
         }

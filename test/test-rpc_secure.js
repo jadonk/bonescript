@@ -1,4 +1,4 @@
-var server = require('../src/server');
+var server = require('bonescript');
 var bonescript = require('../src/bonescript');
 var myserver = null;
 
