@@ -561,12 +561,16 @@ f.analogWrite = function (pin, value, freq, callback) {
         //handle analogWrite() on digital OUTPUT
         if (typeof pin.gpio != 'undefined') {
             if (value >= 0.5) {
-                resp = f.digitalWrite(pin, g.HIGH, callback);
-                if (callback) callback(resp);
+                if (callback)
+                    f.digitalWrite(pin, g.HIGH, callback);
+                else
+                    f.digitalWrite(pin, g.HIGH);
                 return (true);
             } else {
-                resp = f.digitalWrite(pin, g.LOW, callback);
-                if (callback) callback(resp);
+                if (callback)
+                    f.digitalWrite(pin, g.LOW, callback);
+                else
+                    f.digitalWrite(pin, g.LOW);
                 return (true);
             }
         }
