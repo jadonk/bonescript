@@ -19,3 +19,13 @@ exports.testdigitalwrite1 = function (test) {
     }
     test.done();
 }
+exports.testdigitalwrite2 = function (test) {
+    test.expect(pinKeys.length);
+    for (var x in pinKeys) {
+        b.digitalWrite(pinKeys[x], b.LOW, function () {
+            test.ok(true);
+        });
+        if (x == pinKeys.length - 1)
+            test.done();
+    }
+}
