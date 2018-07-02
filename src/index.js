@@ -265,7 +265,7 @@ f.digitalWrite = function (pin, value, callback) {
         var gpioEnabled = (7 == f.getPinMode(pin).mux); //check whether pin set as gpio
         if (!gpioEnabled) {
             winston.debug([pin.key, value] + ' set as ANALOG_OUTPUT modifying duty cycle according to value');
-            f.analogWrite(pin, value, myCallback); //write duty cycle as per value
+            f.analogWrite(pin, value, 2000, myCallback); //write duty cycle as per value
             return (true);
         }
     }
