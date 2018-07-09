@@ -1,19 +1,23 @@
-var server = require('../src/server');
+var server = require('bonescript');
 var bonescript = require('../src/bonescript');
-var serverEmitter = null;
+var myserver = null;
 
 exports.setUp = function (callback) {
-    server.serverStart(8000, process.cwd(), mycb);
+    server.serverStart(8000, process.cwd(), null, mycb);
 
-    function mycb(emitter) {
+    function mycb(serverObj) {
+        myserver = serverObj.server;
         callback();
     }
 };
 
 exports.testRPC_callbacks = function (test) {
-    test.expect(16);
+    test.expect(15);
 
-    bonescript.startClient('127.0.0.1', 8000, getPlatformTest_oldstyle);
+    bonescript.startClient({
+        address: '127.0.0.1',
+        port: 8000
+    }, getPlatformTest_oldstyle);
 
     function getPlatformTest_oldstyle() {
         var b = bonescript.require('bonescript');
@@ -194,7 +198,6 @@ exports.testRPC_callbacks = function (test) {
         function interruptCallback(err, resp) {
             console.log("***attachInterruptTest_nodestyle***");
             console.log(JSON.stringify(resp));
-            test.equals(x.err, err);
             test.equals(x.pin.name, resp.pin.name);
             readTextFileTest_oldstyle();
         }
@@ -222,6 +225,7 @@ exports.testRPC_callbacks = function (test) {
             console.log('x.err = ' + err);
             test.equals(x.data, data);
             test.equals(x.err, err);
+            myserver.close();
             test.done();
         }
     }

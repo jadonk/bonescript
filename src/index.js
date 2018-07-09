@@ -148,7 +148,7 @@ f.pinMode = function (pin, direction, mux, pullup, slew, callback) {
         ) {
             var err = 'pinMode only supports ANALOG_OUTPUT for PWM pins: ' + pin.key;
             winston.info(err);
-            if (callback) {
+            if (callback) { //support both nodestyle and oldstyle callbacks based on arguments length
                 if (callback.length == 1) {
                     winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
                     callback({
@@ -265,7 +265,7 @@ f.digitalWrite = function (pin, value, callback) {
         var gpioEnabled = (7 == f.getPinMode(pin).mux); //check whether pin set as gpio
         if (!gpioEnabled) {
             winston.debug([pin.key, value] + ' set as ANALOG_OUTPUT modifying duty cycle according to value');
-            f.analogWrite(pin, value, myCallback); //write duty cycle as per value
+            f.analogWrite(pin, value, 2000, myCallback); //write duty cycle as per value
             return (true);
         }
     }
@@ -558,14 +558,19 @@ f.analogWrite = function (pin, value, freq, callback) {
 
     // Make sure the pin has a PWM associated
     if (typeof pin.pwm == 'undefined') {
+        //handle analogWrite() on digital OUTPUT
         if (typeof pin.gpio != 'undefined') {
             if (value >= 0.5) {
-                resp = f.digitalWrite(pin, g.HIGH, callback);
-                if (callback) callback(resp);
+                if (callback)
+                    f.digitalWrite(pin, g.HIGH, callback);
+                else
+                    f.digitalWrite(pin, g.HIGH);
                 return (true);
             } else {
-                resp = f.digitalWrite(pin, g.LOW, callback);
-                if (callback) callback(resp);
+                if (callback)
+                    f.digitalWrite(pin, g.LOW, callback);
+                else
+                    f.digitalWrite(pin, g.LOW);
                 return (true);
             }
         }

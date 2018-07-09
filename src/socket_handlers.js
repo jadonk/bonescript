@@ -7,7 +7,6 @@ var url = require('url');
 var child_process = require('child_process');
 var winston = require('winston');
 var socketio = require('socket.io');
-
 var debug = process.env.DEBUG ? true : false;
 
 var socketJSReqHandler = function (req, res) {
@@ -33,14 +32,32 @@ var socketJSReqHandler = function (req, res) {
     }
 }
 
-var addSocketListeners = function (server, serverEmitter) {
+var addSocketListeners = function (server, serverEmitter, passphrase_hash) {
     var io = socketio(server);
+    if (passphrase_hash) { //attach middleware to handle authentication
+        io.use(function (socket, next) {
+            socket.auth = false; //consider the all sockets initially as unauthorized 
+            if (socket.handshake.headers.authorization) {
+                if (socket.handshake.headers.authorization == passphrase_hash) {
+                    socket.auth = true; //authorize the socket
+                    next();
+                } else
+                    next(new Error("Authentication Failed : incorrect passphrase !!"));
+            } else {
+                next(new Error("Authentication data not send !!"));
+            }
+        });
+    }
     if (debug) winston.debug('Listening for new socket.io clients');
-    io.on('connection', onconnect);
+    io.on('connection', function (socket) {
+        if (socket.auth || !passphrase_hash)
+            onconnect(socket);
+        else
+            socket.disconnect('unauthorized');
+    });
 
     function onconnect(socket) {
         winston.debug('Client connected');
-
         serverEmitter.emit('socket$connect', socket);
 
         // on disconnect
@@ -139,7 +156,6 @@ var addSocketListeners = function (server, serverEmitter) {
 
     return (io);
 }
-
 // most heavily borrowed from https://github.com/itchyny/browsershell
 function spawn(socket) {
     var stream = '';

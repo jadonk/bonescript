@@ -2,7 +2,9 @@ var b = require('bonescript');
 var fs = require('fs');
 var testDir = '/tmp/ffi-test';
 var Cfile = testDir + '/ffi-test';
+var Cfile1 = testDir + '/ffi-test1';
 var txtFile = testDir + '/txt-test.txt'
+var txtFile1 = testDir + '/txt-test1.txt'
 var args = {
     'dummy': ['int', ['void']]
 };
@@ -17,7 +19,7 @@ int dummy()
 `
 module.exports.testFFI = function (test) {
 
-    test.expect(5);
+    test.expect(8);
     if (!fs.existsSync(testDir)) {
         fs.mkdirSync(testDir);
     }
@@ -28,7 +30,7 @@ module.exports.testFFI = function (test) {
         test.ok(true);
     }
     //test readtxtFile
-    if (b.readTextFile(txtFile, text) == text) {
+    if (b.readTextFile(txtFile) == text) {
         console.log("Read Text File Successful");
         test.ok(true);
     }
@@ -54,6 +56,26 @@ module.exports.testFFI = function (test) {
         //returns 0
         console.log("Load C Module Succesful, returned: " + moduleRetVal);
         test.ok(moduleRetVal == 0);
+    } //test writetxtFile with callback
+    b.writeTextFile(txtFile1, text, function (x) {
+        if (!x.err)
+            test.ok(true);
+        onWriteTextFile();
+    });
+    //test readtxtFile with callback
+    function onWriteTextFile() {
+        b.readTextFile(txtFile1, function (err, data) {
+            if (!err && data == text)
+                test.ok(true);
+            onReadTextFile()
+        })
     }
-    test.done();
+    //test writeCModule with callback
+    function onReadTextFile() {
+        b.writeCModule(Cfile1, cCode, function (x) {
+            if (!x.err)
+                test.ok(true);
+            test.done();
+        });
+    }
 }

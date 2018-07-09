@@ -7,7 +7,9 @@ _bonescript.on.connect = function () {};
 _bonescript.on.connecting = function () {};
 _bonescript.on.disconnect = function () {};
 _bonescript.on.connect_failed = function () {};
-_bonescript.on.error = function () {};
+_bonescript.on.error = function (err) {
+    throw (new Error(err))
+};
 _bonescript.on.reconnect = function () {};
 _bonescript.on.reconnect_failed = function () {};
 _bonescript.on.reconnecting = function () {};
@@ -16,9 +18,13 @@ _bonescript.on.initialized = function () {};
 (function () {
     if (typeof document == 'undefined') {
         var io = require('socket.io-client');
-        module.exports.startClient = function (host, port, callback) {
+        var crypto = require('crypto');
+        module.exports.startClient = function (host, callback) {
+            var passphrase_hash;
+            if (host.password)
+                passphrase_hash = crypto.createHash('sha256').update(host.password).digest("hex"); //generate sha256 hash for supplied password
             _bonescript.on.initialized = callback;
-            var socket = _onSocketIOLoaded(host, port, io);
+            var socket = _onSocketIOLoaded(host.address, host.port, io, passphrase_hash);
         }
         return;
     }
@@ -32,14 +38,18 @@ _bonescript.on.initialized = function () {};
     scriptObj.onload = _onSocketIOLoaded;
 }());
 
-function _onSocketIOLoaded(host, port, socketio) {
+function _onSocketIOLoaded(host, port, socketio, passphrase_hash) {
     //console.log("socket.io loaded");
     if (typeof host == 'undefined') host = '___INSERT_HOST___';
     if (typeof port == 'undefined') port = 80;
     if (typeof socketio == 'undefined' && typeof io != 'undefined') socketio = io;
     var socket;
     if (typeof host == 'string')
-        socket = socketio('http://' + host + ':' + port);
+        socket = socketio('http://' + host + ':' + port, {
+            extraHeaders: {
+                'Authorization': typeof passphrase_hash != 'undefined' ? passphrase_hash : null //send passphrase_has as Authorization extraheader
+            }
+        });
     else
         socket = socketio('___INSERT_HOST___', {
             port: port

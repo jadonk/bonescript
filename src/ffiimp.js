@@ -6,7 +6,7 @@ var my = require('./my');
 var ffi = my.require('ffi');
 
 var debug = process.env.DEBUG ? true : false;
-
+//function to convert bonescript pin identifier to MRAA's format
 var mraaGPIO = function (pin) {
     var pinObject = bone.getPinObject(pin);
     var pinNo;
@@ -21,7 +21,7 @@ var mraaGPIO = function (pin) {
     }
     return '0x' + pinNo.toString(16);
 };
-
+// function to write a .c file at path , similar to writeTextFile
 var writeCModule = function (filename, data, callback) {
     if (filename.indexOf(".c") == -1)
         filename += ".c";
@@ -41,12 +41,12 @@ var writeCModule = function (filename, data, callback) {
         }
     }
 };
-
+//load C module from shared object at path
 var loadCModule = function (path, args, mraa) {
-    //compile at the path if shared object does not exist 
+    //compile at the path if shared object does not exist
     if (path.indexOf('.c') != -1)
         path = path.replace('.c', '');
-    mraa = mraa || false; // link mraa 
+    mraa = mraa || false; // link mraa
     var inPath = path + '.c';
     var shellCmd = 'gcc -shared -fpic ' + inPath + ' -o ' + path + '.so';
     if (mraa) shellCmd += ' -lmraa';
