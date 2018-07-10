@@ -12,70 +12,68 @@ export const bone: BoneObj;
 // FUNCTIONS - TODO obliterate all "any" types where possible! --- TWW
 // https://github.com/jadonk/bonescript#system
 
-export function getPlatform(callback?: (error: ErrorType, platform: any) => void): any;
+export function getPlatform(callback?: (error: ErrorType, platform: PlatformObj) => void): any;
 
-export function getEeproms(callback?: (error: ErrorType, eeproms: any) => void): any;
+export function echo(data: string, callback?: (error: ErrorType, data: string) => void): any;
 
-export function echo(data: any, callback?: (error: ErrorType, data: any) => void): any;
+export function readTextFile(filename: string, callback?: (error: ErrorType, data: string) => void): string;
 
-export function readTextFile(filename: string, callback?: (error: ErrorType, data: any) => void): any;
+export function writeTextFile(filename: string, data: any, callback?: (error: ErrorType) => void): any;
 
-export function writeTextFile(filename: string, data: any, callback?: (error: ErrorType, data: any) => void): void;
+export function writeCModule(filename: string, data: any, callback?: (error: ErrorType) => void): any;
 
-export function writeCModule(filename: string, data: any, callback?: (error: ErrorType, data: any) => void): void;
-
-export function setDate(date: any, callback?: (error: ErrorType, data: any) => void): void;
+export function setDate(date: string, callback?: (error: ErrorType) => void): any;
 
 export function analogRead(pin: string, callback?: (err: ErrorType, value: number) => void): any;
 
-export function analogWrite(pin: string, value: number, freq?: number, callback?: ErrorCb): void;
+export function analogWrite(pin: string, value: number, freq?: number, callback?: ErrorCb): any;
 
 export function attachInterrupt(
     pin: string,
     handler: InterruptFn,
     mode: InterruptType,
     callback?: AttachIntCb
-): void;
+): any;
 
-export function detachInterrupt(pin: string, callback?: DetachIntCb): void;
+export function detachInterrupt(pin: string, callback?: DetachIntCb): any;
 
 export function digitalRead(pin: string, callback?: (err: ErrorType, value: number) => void): any;
 
-export function digitalWrite(pin: string, value: PinStateType, callback?: DigitalWriteCb): void;
+export function digitalWrite(pin: string, value: PinStateType, callback?: DigitalWriteCb): any;
 
 export function pinMode(
     pin: string,
-    direction: any,
-    mux?: any,
-    pullup?: any,
-    slew?: any,
+    direction: 'in' | 'out' | 'analog_out' | 'in_pullup',
+    mux?: string,
+    pullup?: 'disabled' | 'pullup' | 'pulldown',
+    slew?: 'fast' | 'slow',
     callback?: PinModeCb
-): void;
+): any;
 
 export function getPinMode(pin: string, callback?: (err: ErrorType, mode: PinModeObj) => void): any;
 
-export function shiftOut(dataPin: any, clockPin: any, bitOrder: any, val: any, callback?: ErrorCb): void;
+export function shiftOut(dataPin: string, clockPin: string, bitOrder: BitOrderType, val: number, callback?: ErrorCb): any;
 
 // https://github.com/jadonk/bonescript#serial
-export function serialOpen(port: any, options: any, callback?: ErrorCb): void;
+export function serialOpen(port: any, options: any, callback?: ErrorCb): any;
 
-export function serialWrite(port: any, data: any, callback?: ErrorCb): void;
+export function serialWrite(port: any, data: any, callback?: ErrorCb): any;
 
 export const serialParsers: typeof SerialPort.parsers;
 
-export function i2cOpen(port: any, address: any, options: any, callback?: ErrorCb): void;
+export function i2cOpen(port: any, address: any, options: any, callback?: ErrorCb): any;
 
-export function i2cScan(port: any, callback?: ErrorCb): void;
+export function i2cScan(port: any, callback?: ErrorCb): any;
 
-export function i2cWriteByte(port: any, byte: any, callback?: ErrorCb): void;
+export function i2cWriteByte(port: any, byte: any, callback?: ErrorCb): any;
 
-export function i2cWriteBytes(port: any, command: any, bytes: any, callback?: ErrorCb): void;
+export function i2cWriteBytes(port: any, command: any, bytes: any, callback?: ErrorCb): any;
 
-export function i2cReadByte(port: any, callback?: ErrorCb): void;
+export function i2cReadByte(port: any, callback?: ErrorCb): any;
 
-export function i2cReadBytes(port: any, command: any, length: any, callback?: ErrorCb): void;
+export function i2cReadBytes(port: any, command: any, length: any, callback?: ErrorCb): any;
 
-export function i2cStream(port: any, command: any, length: any, callback?: ErrorCb): void;
+export function i2cStream(port: any, command: any, length: any, callback?: ErrorCb): any;
 // ffi
 export function loadCModule(filename: string, data: any, isMRAA?: boolean): any;
 
@@ -113,7 +111,7 @@ export function cos(radians: number): number;
 
 export function tan(radians: number): number;
 
-export function randomSeed(x: number): number;
+export function randomSeed(x: number): void;
 
 export function random(min: number, max?: number): number;
 
@@ -143,6 +141,25 @@ export const RISING: 'rising';
 export const FALLING: 'falling';
 
 // INTERFACES - adjusted based on observation / testing
+interface PlatformObj {
+    name: string;
+    platform: BoneObj;
+    bonescript: string;
+    serialNumber?: string;
+    dogtag?: string;
+    os: {
+        hostname: string,
+        type: string,
+        arch: string,
+        release: string,
+        uptime: number,
+        loadavg: number[],
+        totalmem: number,
+        freemem: number,
+        networkInterfaces?: any
+    };
+}
+
 export interface PinModeObj {
     gpio?: {
         active: boolean,
@@ -154,7 +171,7 @@ export interface PinModeObj {
     name: string;
     pin: string;
     pinState: string;
-    pullup?: 'diabled' | 'pullup' | 'pulldown';
+    pullup?: 'disabled' | 'pullup' | 'pulldown';
     pwm?: {
         freq: number,
         value: number,
@@ -163,7 +180,7 @@ export interface PinModeObj {
     slew?: 'fast' | 'slow';
 }
 
-export interface BoneObj {
+interface BoneObj {
     i2c: i2cObj;
     uarts: UartsObj;
     getPinKeys(): string[];
@@ -171,15 +188,15 @@ export interface BoneObj {
     naturalCompare(): any;
 }
 
-export interface PinsObj {
+interface PinsObj {
     [i: string]: PinInfo;
 }
 
-export interface UartsObj {
+interface UartsObj {
     [i: string]: UartInfo;
 }
 
-export interface i2cObj {
+interface i2cObj {
     [i: string]: i2cInfo;
 }
 
@@ -204,7 +221,7 @@ export interface PinInfo {
     universalName?: string;
 }
 
-export interface PwmInfo {
+interface PwmInfo {
     addr: string;
     chip: string;
     index: number;
@@ -215,13 +232,13 @@ export interface PwmInfo {
     sysfs: number;
 }
 
-export interface UartInfo {
+interface UartInfo {
     devicetree?: string;
     rx?: string;
     tx?: string;
 }
 
-export interface i2cInfo {
+interface i2cInfo {
     devicetree?: string;
     path?: string;
     scl?: string;
@@ -229,28 +246,29 @@ export interface i2cInfo {
 }
 
 // TYPES - adjusted based on observation / testing
-export type PinStateType = typeof HIGH | typeof LOW;
-export type PinModeType = typeof ANALOG_OUTPUT | typeof INPUT | typeof INPUT_PULLUP | typeof OUTPUT;
-export type InterruptType = typeof RISING | typeof FALLING | typeof CHANGE;
-export type ErrorCb = (err: ErrorType) => void;
-export type InterruptFn = (resp: {
+type PinStateType = typeof HIGH | typeof LOW;
+type PinModeType = typeof ANALOG_OUTPUT | typeof INPUT | typeof INPUT_PULLUP | typeof OUTPUT;
+type InterruptType = typeof RISING | typeof FALLING | typeof CHANGE;
+type BitOrderType = typeof LSBFIRST | typeof MSBFIRST;
+type ErrorCb = (err: ErrorType) => void;
+type InterruptFn = (resp: {
     pin: PinInfo,
     value: number
 }) => void;
-export type AttachIntCb = (resp: {
+type AttachIntCb = (resp: {
     pin: PinInfo,
     attached: boolean
 }) => void;
-export type DetachIntCb = (resp: {
+type DetachIntCb = (resp: {
     pin: PinInfo,
     detached: boolean
 }) => void;
-export type PinModeCb = (resp: {
+type PinModeCb = (resp: {
     value: number,
     err: VError
 }) => void;
-export type DigitalWriteCb = (resp: {
+type DigitalWriteCb = (resp: {
     data: any,
     err: VError
 }) => void;
-export type ErrorType = VError;
+type ErrorType = VError;
