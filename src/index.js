@@ -18,7 +18,7 @@ var autorun = require('./autorun');
 var server = require('./server');
 var socketHandlers = require('./socket_handlers');
 var ffi = require('./ffiimp');
-//var rc = require('./rc');
+var rc = require('./rc');
 
 var debug = process.env.DEBUG ? true : false;
 
@@ -773,9 +773,9 @@ for (var x in socketHandlers) {
 for (var x in ffi) {
     f[x] = ffi[x];
 }
-/*for(var x in rc) {
-    exports[x] = rc[x];
-}*/
+for (var x in rc) {
+    f[x] = rc[x];
+}
 
 
 var alreadyRan = false;
