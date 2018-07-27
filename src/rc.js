@@ -47,14 +47,44 @@ if (rc.exists) {
     rcOn.args = ['event', 'callback'];
 
     var rcMotor = function (motor, value, callback) {
-        if (typeof motor !== 'undefined') {
+        if (typeof value !== 'undefined') {
             rc.motor(motor, value);
         } else {
-            rc.motor(value);
+            rc.motor(motor);
         }
         if (callback) callback();
     };
     rcMotor.args = ['motor', 'value', 'callback'];
+
+    var rcServo = function (option, value, callback) {
+        if (typeof value !== 'undefined') {
+            rc.servo(option, value);
+        } else {
+            rc.servo(option);
+        }
+        if (callback) callback();
+    };
+    rcServo.args = ['option', 'value', 'callback'];
+
+    var rcBMP = function (option, callback) {
+        var value
+        if (typeof option !== 'undefined') {
+            value = rc.bmp(option);
+        }
+        if (callback) callback(null, value);
+        else return value;
+    };
+    rcBMP.args = ['option', 'callback'];
+
+    var rcIMU = function (option, callback) {
+        var value
+        if (typeof option !== 'undefined') {
+            value = rc.imu(option);
+        }
+        if (callback) callback(null, value);
+        else return value;
+    };
+    rcIMU.args = ['option', 'callback'];
 
     var rcEncoder = function (encoder, value, callback) {
         var x = {};
@@ -76,6 +106,9 @@ if (rc.exists) {
         rcLED: rcLED,
         rcOn: rcOn,
         rcMotor: rcMotor,
+        rcServo: rcServo,
+        rcBMP: rcBMP,
+        rcIMU: rcIMU,
         rcEncoder: rcEncoder
     };
 }
