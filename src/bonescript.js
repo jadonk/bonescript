@@ -129,7 +129,7 @@ function _seqcall(data) {
 // Require must be synchronous to be able to return data structures and
 // functions and therefore cannot call socket.io. All exported modules must
 // be exported ahead of time.
-var myrequire = function (module) {
+function myrequire(module) {
     if (typeof _bonescript == 'undefined')
         throw 'No BoneScript modules are not currently available';
     if (typeof _bonescript.modules[module] == 'undefined')
