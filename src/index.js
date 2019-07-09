@@ -735,6 +735,52 @@ f.setDate = function (date, callback) {
 };
 f.setDate.args = ['date', 'callback'];
 
+f.insclick = function (click,port, callback) {
+    child_process.exec('sudo insclick ' +click + ' ' +port, insclickResponse);
+
+    function insclickResponse(error, stdout, stderr) {
+        if (typeof callback != 'function') return;
+        else {
+            if (callback.length == 1) {
+                winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+                callback({
+                    'error': error,
+                    'stdout': stdout,
+                    'stderr': stderr
+                });
+            } else
+                callback({
+                    'error': error,
+                    'stderr': stderr
+                }, stdout);
+        }
+    }
+};
+f.insclick.args = ['click', 'port','callback'];
+
+f.rmclick = function (click, callback) {
+    child_process.exec('sudo rmclick ' + click, rmclickResponse);
+
+    function rmclickResponse(error, stdout, stderr) {
+        if (typeof callback != 'function') return;
+        else {
+            if (callback.length == 1) {
+                winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+                callback({
+                    'error': error,
+                    'stdout': stdout,
+                    'stderr': stderr
+                });
+            } else
+                callback({
+                    'error': error,
+                    'stderr': stderr
+                }, stdout);
+        }
+    }
+};
+f.rmclick.args = ['click', 'callback'];
+
 f.delay = function (ms) {
     var fiber = fibers.current;
     if (typeof fiber == 'undefined') {
