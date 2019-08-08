@@ -11,14 +11,15 @@ m.events = {
     'data': ['data']
 };
 m.openPorts = {};
-m.doOpen = function(args) {
+m.doOpen = function (args) {
     var path = args.port;
-    if(m.ports[args.port].path) path = m.ports[args.port].path;
+    if (m.ports[args.port].path) path = m.ports[args.port].path;
     var openPort = new m.module.SerialPort(path, args.options);
-    return(openPort);
+    return (openPort);
 };
+module.exports = {
+    serialOpen: my.wrapOpen(m, ['options']),
+    serialWrite: my.wrapCall(m, 'write', ['data'], ['err', 'results']),
 
-exports.serialOpen = my.wrapOpen(m, ['options']);
-exports.serialWrite = my.wrapCall(m, 'write', ['data'], ['err', 'results']);
-
-exports.serialParsers = m.module.exists ? m.module.parsers : {};
+    serialParsers: m.module.exists ? m.module.parsers : {}
+}

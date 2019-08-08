@@ -1,13 +1,14 @@
 // Copyright (C) 2013 - Texas Instruments, Jason Kridner
-
-exports.OUTPUT = "out";
-exports.INPUT = "in";
-exports.INPUT_PULLUP = "in_pullup";
-exports.HIGH = 1;
-exports.LOW = 0;
-exports.LSBFIRST = 1;  // used in: shiftOut(dataPin, clockPin, bitOrder, val)
-exports.MSBFIRST = 0;
-exports.CHANGE = "both";
-exports.RISING = "rising";
-exports.FALLING = "falling";
-exports.ANALOG_OUTPUT = "analog_out";
+module.exports = {
+    OUTPUT: "out",
+    INPUT: "in",
+    INPUT_PULLUP: "in_pullup",
+    HIGH: 1,
+    LOW: 0,
+    LSBFIRST: 1, // used in: shiftOut(dataPin, clockPin, bitOrder, val)
+    MSBFIRST: 0,
+    CHANGE: "both",
+    RISING: "rising",
+    FALLING: "falling",
+    ANALOG_OUTPUT: "analog_out"
+}

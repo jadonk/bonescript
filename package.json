@@ -15,7 +15,7 @@
     "gpio",
     "arduino"
   ],
-  "version": "0.6.1",
+  "version": "0.7.1",
   "homepage": "http://beagleboard.org/bonescript",
   "license": "MIT",
   "repository": {
@@ -23,31 +23,39 @@
     "url": "git://github.com/jadonk/bonescript"
   },
   "main": "main",
+  "types": "./src/index.d.ts",
   "engines": {
-    "node": ">= 0.12.1"
+    "node": ">= 6.0.0"
   },
   "dependencies": {
-    "socket.io": "1.4.5",
-    "systemd": "0.2.6",
-    "winston": "2.1.1",
+    "chokidar": "2.0.3",
     "express": "4.13.4",
-    "ffi": "2.0.0"
+    "socket.io": "1.4.5",
+    "systemd": "0.3.1",
+    "winston": "2.1.1",
+    "@types/verror": "latest",
+    "shelljs": "0.8.2"
   },
   "optionalDependencies": {
-    "serialport": "3.1.2",
+    "serialport": "6.0.5",
+    "@types/serialport": "latest",
     "i2c": "0.2.3",
     "epoll": "0.1.18",
-    "pi-spi": "1.0.1",
-    "roboticscape": "0.0.2"
+    "pi-spi": "1.0.2",
+    "roboticscape": "0.0.8",
+    "ffi": "2.2.0"
   },
   "devDependencies": {
-    "jscoverage": "~0.5.1",
-    "nodeunit": "~0.9.0",
-    "coveralls": "~2.10.0"
+    "coveralls": "~3.0.1",
+    "js-beautify": "^1.7.5",
+    "jscoverage": "~0.6.0",
+    "nodeunit": "^0.11.2",
+    "socket.io-client": "1.4.5"
   },
   "scripts": {
     "start": "node server.js",
     "test": "NODE_PATH=.. nodeunit test",
+    "beautify": "NODE_PATH=.. js-beautify --config lint-config.json -r -f *.js src/*.js test/*.js",
     "coveralls": "NODE_PATH=.. jscoverage src && NODE_PATH=.. BONESCRIPT_COV=1 nodeunit --reporter=lcov test | coveralls"
   }
 }

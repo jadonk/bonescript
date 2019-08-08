@@ -3,96 +3,106 @@ var winston = require('winston');
 
 var gpioFile = {};
 
-exports.logfile = 'bonescript.log';
-exports.readPWMFreqAndValue = function(pin, pwm) {
+var logfile = 'bonescript.log';
+var readPWMFreqAndValue = function (pin, pwm) {
     winston.info('readPWMFreqAndValue(' + [pin.key, pwm.key] + ')');
     var mode = {};
     mode.freq = pwm.freq;
     mode.value = pwm.value;
-    return(mode);
+    return (mode);
 };
 
-exports.readGPIODirection = function(n, gpio) {
+var readGPIODirection = function (n, gpio) {
     winston.info('readGPIODirection(' + [n] + ')');
     var mode = {};
-    if(typeof gpio[n] != 'undefined') {
-        if(gpio[n].active) {
+    if (typeof gpio[n] != 'undefined') {
+        if (gpio[n].active) {
             mode.active = true;
         } else {
             mode.active = false;
         }
         mode.direction = gpio[n].direction;
     }
-    return(mode);
+    return (mode);
 };
 
-exports.readPinMux = function(pin, mode, callback) {
+var readPinMux = function (pin, mode, callback) {
     winston.info('readPinMux(' + [pin.key] + ')');
-    if(callback) {
-        callback(mode);
+    if (callback) {
+        if (callback.length == 1)
+            callback(mode);
+        else
+            callback(null, mode);
     }
-    return(mode);
+    return (mode);
 };
 
-exports.setPinMode = function(pin, pinData, template, resp) {
+var setPinMode = function (pin, pinData, template, resp) {
     winston.info('setPinMode(' + [pin.key, pinData, template] + ')');
     gpioFile[pin.key] = true;
-    return(resp);
+    return (resp);
 };
 
-exports.setLEDPinToGPIO = function(pin, resp) {
+var setLEDPinToGPIO = function (pin, resp) {
     winston.info('setLEDPinToGPIO(' + [pin.key] + ')');
-    return(resp);
+    return (resp);
 };
 
-exports.exportGPIOControls = function(pin, direction, resp) {
+var exportGPIOControls = function (pin, direction, resp) {
     winston.info('expertGPIOControls(' + [pin.key, direction] + ')');
-    return(resp);
+    return (resp);
 };
 
-exports.writeGPIOValue = function(pin, value, callback) {
+var writeGPIOValue = function (pin, value, callback) {
     winston.info('writeGPIOValue(' + [pin.key, value] + ')');
-    if(callback) {
+    if (callback) {
         callback();
     }
 };
 
-exports.readGPIOValue = function(pin, resp, callback) {
+var readGPIOValue = function (pin, resp, callback) {
     winston.info('readGPIOValue(' + [pin.key] + ')');
-    if(callback) {
-        callback(0);
-        return(true);
+    if (callback) {
+        resp.value = 0;
+        if (callback.length == 1)
+            callback(resp);
+        else
+            callback(null, resp.value);
+        return (true);
     }
     resp.value = 0;
-    return(resp);
+    return (resp);
 };
 
-exports.enableAIN = function() {
+var enableAIN = function () {
     winston.info('enableAIN()');
-    return(true);
+    return (true);
 };
 
-exports.readAIN = function(pin, resp, callback) {
+var readAIN = function (pin, resp, callback) {
     winston.info('readAIN(' + [pin.key] + ')');
     resp.value = 0;
-    if(callback) {
-        callback(resp);
+    if (callback) {
+        if (callback.length == 1)
+            callback(resp);
+        else
+            callback(null, resp.value);
     }
-    return(resp);
+    return (resp);
 };
 
-exports.writeGPIOEdge = function(pin, mode) {
+var writeGPIOEdge = function (pin, mode) {
     winston.info('writeGPIOEdge(' + [pin.key, mode] + ')');
     var resp = {};
-    return(resp);
+    return (resp);
 };
 
-exports.writePWMFreqAndValue = function(pin, pwm, freq, value, resp) {
+var writePWMFreqAndValue = function (pin, pwm, freq, value, resp) {
     winston.info('writePWMFreqAndValue(' + [pin.key, pwm.name, freq, value] + ')');
-    return(resp);
+    return (resp);
 };
 
-exports.readEeproms = function(eeproms) {
+var readEeproms = function (eeproms) {
     winston.info('readEeproms()');
     var boardName = 'A335BNLT';
     var version = '';
@@ -101,11 +111,29 @@ exports.readEeproms = function(eeproms) {
     eeproms['/sys/bus/i2c/drivers/at24/1-0050/eeprom'].boardName = boardName;
     eeproms['/sys/bus/i2c/drivers/at24/1-0050/eeprom'].version = version;
     eeproms['/sys/bus/i2c/drivers/at24/1-0050/eeprom'].serialNumber = serialNumber;
-    return(eeproms);
+    return (eeproms);
 };
 
-exports.readPlatform = function(platform) {
+var readPlatform = function (platform) {
     winston.info('readPlatform()');
     platform.name = 'BeagleBone Simulator';
-    return(platform);
+    return (platform);
 };
+
+module.exports = {
+    logfile: logfile,
+    readPWMFreqAndValue: readPWMFreqAndValue,
+    readGPIODirection: readGPIODirection,
+    readPinMux: readPinMux,
+    setPinMode: setPinMode,
+    setLEDPinToGPIO: setLEDPinToGPIO,
+    exportGPIOControls: exportGPIOControls,
+    writeGPIOValue: writeGPIOValue,
+    readGPIOValue: readGPIOValue,
+    enableAIN: enableAIN,
+    readAIN: readAIN,
+    writeGPIOEdge: writeGPIOEdge,
+    writePWMFreqAndValue: writePWMFreqAndValue,
+    readEeproms: readEeproms,
+    readPlatform: readPlatform
+}

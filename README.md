@@ -23,37 +23,30 @@ and to further provide support for rapidly creating GUIs for your embedded
 applications through the use of HTML5/JavaScript web pages.
 
 
-Installation
-------------
-BoneScript comes installed on your BeagleBone. To update
-to the latest revision or install it on another distribution, use 'npm':
-
+Global Installation
+-------------------
+BoneScript comes installed on your BeagleBone. To update to the latest revision, use 'npm'
+on a recent BeagleBoard.org Debian image from https://beagleboard.org/latest-images
+and perform:
 ````sh
-TERM=none npm install -g bonescript
+TERM=none sudo npm cache clear
+TERM=none sudo npm install -g --prefix /usr/local --unsafe-perm bonescript
+sudo shutdown -r now
 ````
 
-Angstrom prerequisites:
-````sh
-opkg update
-opkg install python-misc python-modules
-````
+Testing on other distributions is limited.
 
-Debian and Ubuntu prerequisites:
-* Credit to http://learn.adafruit.com/introduction-to-the-beaglebone-black-device-tree/compiling-an-overlay
+There are some additional installation steps that can be performed, but are typically
+installed by other mechanisms on the BeagleBoard.org Debian images. These setup
+background services (bone101 webserver with bonescript RPC and bonescript autorun
+service) as well as configure environment variables for these services and other
+globally run scripts.
 ````sh
-sudo apt-get install -y build-essential g++ python-setuptools python2.7-dev
-wget -c https://raw.github.com/RobertCNelson/tools/master/pkgs/dtc.sh
-chmod +x dtc.sh
-./dtc.sh
-````
-
-Some steps to consider:
-````sh
-cp bonescript/etc/default/node /etc/default/node
-cp bonescript/etc/profile.d/node.sh /etc/profile.d/node.sh
-cp bonescript/systemd/\* /lib/systemd/system
-systemctl enable bonescript.socket
-systemctl enable bonescript-autorun.service
+sudo cp bonescript/etc/default/node /etc/default/node
+sudo cp bonescript/etc/profile.d/node.sh /etc/profile.d/node.sh
+sudo cp bonescript/systemd/\* /lib/systemd/system
+sudo systemctl enable bonescript.socket
+sudo systemctl enable bonescript-autorun.service
 ````
 
 Launching applications persistently
@@ -83,7 +76,7 @@ Directory layout
 
 Template
 ========
-For a Bonescript application, you must currently manually 'require' the
+For a BoneScript application, you must currently manually 'require' the
 bonescript library.  Functions are then referenced through the object
 provided back from require.
 
@@ -159,6 +152,19 @@ Uses https://github.com/korevec/node-i2c
 * i2cReadBytes(port, command, length, [callback])
 * i2cStream(port, command, length, [callback])
 
+Robot Control
+-------------
+__new in 0.7.0__ Runs on BeagleBone Blue; or BeagleBone Black or BeagleBone Black Wireless with BeagleBoard.org Robotics Cape
+* rcInitialize([callback])
+* rcState([state], [callback]) -> state
+* rcLED(led, [value], [callback]) -> value
+* rcOn(event, [callback])
+* rcMotor(motor, value, [callback])
+* rcServo(option, value, [callback])
+* rcBMP([option], [callback]) -> value
+* rcIMU([option], [callback]) -> value
+* rcEncoder(encoder, [value], [callback]) -> value
+
 Bits/Bytes, Math, Trigonometry and Random Numbers
 -------------------------------------------------
 * lowByte(value)
@@ -209,6 +215,16 @@ embedded systems, this is especially useful for performing low-latency tasks
 that respond to events in the system.  What makes JavaScript so much easier
 than other languages for doing this is that it keeps the full context around
 the handler, so you don't have to worry about it.
+
+What's New
+==========
+
+0.7.0 key updates
+-----------------
+Most of these fixes came from a [Google Summer of Code 2018 project](https://github.com/vaishnav98/bone101/wiki/BeagleBoard-GSoC'18:-Fixing-Bugs-in-BoneScript-and-Improving-BeagleBone-User-Interface)
+* Fixes in PWM output during analogWrite updates
+* Added function calls for Robot Control library support on BeagleBone Blue or Robotics Cape
+* Added support for node-style callbacks with error and data separated (optional)
 
 Plans
 =====
