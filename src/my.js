@@ -33,8 +33,12 @@ var myRequire = function (packageName, onfail) {
     }
 
     var y = new Proxy(proxyFunction, proxyHandler);
-    y.exists = require.resolve(packageName);
-    if (!y.exists && onfail) onfail();
+    try {
+        y.exists = require.resolve(packageName);
+    } catch (ex) {
+        if (debug) winston.debug("Optional package '" + packageName + "' not loaded");
+        if (onfail) onfail();
+    }
     return (y);
 };
 
