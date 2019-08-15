@@ -13,7 +13,7 @@ var sysfsFiles = {};
 
 // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
 var myRequire = function (packageName, onfail) {
-    var module, y;
+    var module;
     var exists;
     var proxyHandler = {};
 
