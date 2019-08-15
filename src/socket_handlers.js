@@ -5,8 +5,9 @@ var b = require('../main');
 var fs = require('fs');
 var url = require('url');
 var child_process = require('child_process');
-var winston = require('winston');
-var socketio = require('socket.io');
+var my = require('./my');
+var winston = my.require('winston');
+var socketio = my.require('socket.io');
 var debug = process.env.DEBUG ? true : false;
 
 var socketJSReqHandler = function (req, res) {
