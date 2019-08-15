@@ -11,16 +11,30 @@ var g = require('./constants');
 var debug = process.env.DEBUG ? true : false;
 var sysfsFiles = {};
 
+// See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
 var myRequire = function (packageName, onfail) {
-    var y = {};
-    try {
-        y = require(packageName);
-        y.exists = true;
-    } catch (ex) {
-        y.exists = false;
-        if (debug) winston.debug("Optional package '" + packageName + "' not loaded");
-        if (onfail) onfail();
+    var module, y;
+    var proxyHandler = {};
+    
+    function proxyGet(target, name) {
+        if(!module && y.exists) {
+            module = require(packageName);
+        }
+        return module[name];
     }
+
+    proxyHandler.get = proxyGet;
+    
+    function proxyFunction() {
+        if(!module && y.exists) {
+            module = require(packageName);
+        }
+        return module.apply(this, arguments);
+    }
+    
+    var y = new Proxy(proxyFunction, proxyHandler);
+    y.exists = require.resolve(packageName);
+    if(!y.exists && onfail) onfail();
     return (y);
 };
 
