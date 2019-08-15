@@ -15,26 +15,26 @@ var sysfsFiles = {};
 var myRequire = function (packageName, onfail) {
     var module, y;
     var proxyHandler = {};
-    
+
     function proxyGet(target, name) {
-        if(!module && y.exists) {
+        if (!module && y.exists) {
             module = require(packageName);
         }
         return module[name];
     }
 
     proxyHandler.get = proxyGet;
-    
+
     function proxyFunction() {
-        if(!module && y.exists) {
+        if (!module && y.exists) {
             module = require(packageName);
         }
         return module.apply(this, arguments);
     }
-    
+
     var y = new Proxy(proxyFunction, proxyHandler);
     y.exists = require.resolve(packageName);
-    if(!y.exists && onfail) onfail();
+    if (!y.exists && onfail) onfail();
     return (y);
 };
 
