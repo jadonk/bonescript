@@ -3,22 +3,22 @@
 //
 var fs = require('fs');
 var child_process = require('child_process');
-var winston = require('winston');
 var os = require('os');
 var bone = require('./bone'); // Database of pins
 var functions = require('./functions'); // functions.js defines several math/bit functions that are handy
-var serial = require('./serial');
-var iic = require('./iic');
-var my = require('./my');
 var package_json = require('../package.json');
 var g = require('./constants');
+var my = require('./my');
+var serial = my.require('./serial');
+var iic = my.require('./iic');
+var winston = my.require('winston');
 var fibers = my.require('fibers');
 var epoll = my.require('epoll');
-var autorun = require('./autorun');
-var server = require('./server');
-var socketHandlers = require('./socket_handlers');
-var ffi = require('./ffiimp');
-var rc = require('./rc');
+var autorun = my.require('./autorun');
+var server = my.require('./server');
+var socketHandlers = my.require('./socket_handlers');
+var ffi = my.require('./ffiimp');
+var rc = my.require('./rc');
 
 var debug = process.env.DEBUG ? true : false;
 

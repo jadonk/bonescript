@@ -3,9 +3,10 @@
 //
 var fs = require('fs');
 var child_process = require('child_process');
-var winston = require('winston');
 var events = require('events');
-var chokidar = require('chokidar');
+var my = require('./my');
+var winston = my.require('winston');
+var chokidar = my.require('chokidar');
 
 var debug = process.env.DEBUG ? true : false;
 var apps = {};
