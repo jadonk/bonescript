@@ -346,8 +346,8 @@ var writePWMFreqAndValue = function (pin, pwm, freq, value, resp, callback) {
                 try {
                     if (debug) winston.debug('Stopping PWM');
                     fs.writeFileSync(path + '/enable', "0\n");
-                    callback(null); //if no error
                     tryAgain = false; //do not try again
+                    callback(null); //if no error
                 } catch (ex2) {
                     if (debug) winston.debug('Error stopping PWM: ' + ex2);
                     if (ex2.code == 'EACCES') {
