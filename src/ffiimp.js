@@ -1,8 +1,8 @@
 var bone = require('./bone');
 var fs = require('fs');
-var shell = require('shelljs');
-var winston = require('winston');
 var my = require('./my');
+var shell = my.require('shelljs');
+var winston = my.require('winston');
 var ffi = my.require('ffi');
 
 var debug = process.env.DEBUG ? true : false;
