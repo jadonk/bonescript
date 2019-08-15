@@ -15,7 +15,7 @@ var serverEmitter = new events.EventEmitter();
 var debug = process.env.DEBUG ? true : false;
 
 var systemd = my.require('systemd');
-if(!systemd.exists) {
+if (!systemd.exists) {
     if (debug) winston.debug("Startup as socket-activated service under systemd not enabled");
 }
 
