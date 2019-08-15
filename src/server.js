@@ -3,19 +3,21 @@
 //
 var fs = require('fs');
 var http = require('http');
-var winston = require('winston');
-var express = require('express');
 var events = require('events');
 var crypto = require('crypto');
-var socketHandlers = require('./socket_handlers');
+var my = require('./my');
+var winston = my.require('winston');
+var express = my.require('express');
+var socketHandlers = my.require('./socket_handlers');
 
 var serverEmitter = new events.EventEmitter();
 
 var debug = process.env.DEBUG ? true : false;
 
-myrequire('systemd', function () {
+var systemd = my.require('systemd');
+if(!systemd.exists) {
     if (debug) winston.debug("Startup as socket-activated service under systemd not enabled");
-});
+}
 
 var serverStart = function (port, directory, passphrase, callback) {
     if (port === undefined) {
@@ -65,19 +67,6 @@ function mylisten(port, directory, passphrase_hash) {
     socketHandlers.addSocketListeners(server, serverEmitter, passphrase_hash);
     server.listen(port);
     return (server);
-}
-
-function myrequire(packageName, onfail) {
-    var y = {};
-    try {
-        y = require(packageName);
-        y.exists = true;
-    } catch (ex) {
-        y.exists = false;
-        if (debug) winston.debug("Optional package '" + packageName + "' not loaded");
-        if (onfail) onfail();
-    }
-    return (y);
 }
 
 module.exports = {
