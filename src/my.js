@@ -14,10 +14,14 @@ var sysfsFiles = {};
 // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
 var myRequire = function (packageName, onfail) {
     var module, y;
+    var exists;
     var proxyHandler = {};
 
     function proxyGet(target, name) {
-        if (!module && y.exists) {
+        if (name === "exists") {
+            return exists;
+        }
+        if (!module && exists) {
             module = require(packageName);
         }
         return module[name];
@@ -26,7 +30,7 @@ var myRequire = function (packageName, onfail) {
     proxyHandler.get = proxyGet;
 
     function proxyFunction() {
-        if (!module && y.exists) {
+        if (!module && exists) {
             module = require(packageName);
         }
         return module.apply(this, arguments);
@@ -34,8 +38,9 @@ var myRequire = function (packageName, onfail) {
 
     var y = new Proxy(proxyFunction, proxyHandler);
     try {
-        y.exists = require.resolve(packageName);
+        exists = require.resolve(packageName);
     } catch (ex) {
+        exists = false;
         if (debug) winston.debug("Optional package '" + packageName + "' not loaded");
         if (onfail) onfail();
     }
