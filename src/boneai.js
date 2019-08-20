@@ -1,5 +1,4 @@
-var pinIndexAI = [
-    {
+var pinIndexAI = [{
         "key": "P8_3",
         "gpio": 24,
         "ball": {
