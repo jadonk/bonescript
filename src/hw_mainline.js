@@ -47,7 +47,7 @@ var readGPIODirection = function (n, gpio) {
 };
 
 var readPinMux = function (pin, mode, callback) {
-    var pinctrlFile = '/sys/kernel/debug/pinctrl/44e10800.pinmux/pins';
+    var pinctrlFile = '/sys/kernel/debug/pinctrl/4a003400.pinmux/pins';
     var muxRegOffset = parseInt(pin.muxRegOffset, 16);
     //handle the case when debugfs not mounted
     if (!my.file_existsSync(pinctrlFile)) {
@@ -264,9 +264,11 @@ var enableAIN = function (callback) {
     return (ainPrefix);
 };
 
+// HACK to work on AI.
+const aimap = [0, 1, 3, 2, 7, 6, 4];  // Fixes AI's AIN mapping.
 var readAIN = function (pin, resp, callback) {
     var maxValue = 4095;
-    var ainFile = ainPrefix + '/in_voltage' + pin.ain.toString() + '_raw';
+    var ainFile = ainPrefix + '/in_voltage' + aimap[pin.ain].toString() + '_raw';
     if (debug) winston.debug("readAIN: ainFile=" + ainFile);
     if (callback) {
         var readFile = function (err, data) {

@@ -1,3 +1,5 @@
+console.log("Loading boneai.js");
+
 var pinIndexAI = [{
         "key": "P8_3",
         "gpio": 24,
@@ -3549,5 +3551,266 @@ var pinIndexAI = [{
             "",
             ""
         ]
+    },    {
+        "name": "VDD_ADC",
+        "key": ["P9_32", "ADC_2", "P1_17"],
+        "ball": {
+            "ZCZ": "A9",
+            "BSM": "B9"
+        }
+    },
+    {
+        "name": "AIN4",
+        "ain": 4,
+        "eeprom": 71,
+        "scale": 4096,
+        "key": ["P9_33", "P1_27"],
+        "ball": {
+            "ZCZ": "C8",
+            "BSM": "C7"
+        }
+    },
+    {
+        "name": "GNDA_ADC",
+        "key": ["P9_34", "ADC_1", "P1_18"],
+        "ball": {
+            "ZCZ": "B9",
+            "BSM": "B7"
+        }
+    },
+    {
+        "name": "AIN6",
+        "ain": 6,
+        "eeprom": 73,
+        "scale": 4096,
+        "key": ["P9_35", "P1_2"],
+        "ball": {
+            "ZCZ": "A8",
+            "BSM": "C9"
+        }
+    },
+    {
+        "name": "AIN5",
+        "ain": 5,
+        "eeprom": 72,
+        "scale": 4096,
+        "key": ["P9_36", "P2_35"],
+        "ball": {
+            "ZCZ": "B8",
+            "BSM": "C8"
+        }
+    },
+    {
+        "name": "AIN2",
+        "ain": 2,
+        "eeprom": 69,
+        "scale": 4096,
+        "key": ["P9_37", "ADC_5", "P1_23"],
+        "ball": {
+            "ZCZ": "B7",
+            "BSM": "B6"
+        }
+    },
+    {
+        "name": "AIN3",
+        "ain": 3,
+        "eeprom": 70,
+        "scale": 4096,
+        "key": ["P9_38", "ADC_6", "P1_25"],
+        "ball": {
+            "ZCZ": "A7",
+            "BSM": "C6"
+        }
+    },
+    {
+        "name": "AIN0",
+        "ain": 0,
+        "eeprom": 67,
+        "scale": 4096,
+        "key": ["P9_39", "ADC_3", "P1_19"],
+        "ball": {
+            "ZCZ": "B6",
+            "BSM": "A8"
+        }
+    },
+    {
+        "name": "AIN1",
+        "ain": 1,
+        "eeprom": 68,
+        "scale": 4096,
+        "key": ["P9_40", "ADC_4", "P1_21"],
+        "ball": {
+            "ZCZ": "C7",
+            "BSM": "B8"
+        }
+    },
+    {
+        "name": "AIN7",
+        "ain": 7,
+        "eeprom": null,
+        "scale": 4096,
+        "key": "P2_36",
+        "ball": {
+            "ZCZ": "C9",
+            "BSM": "D7"
+        }
     }
 ];
+
+var pins = {};
+for (var i in pinIndexAI) {
+    if (Array.isArray(pinIndexAI[i].key)) {
+        for (var j = 0; j < pinIndexAI[i].key.length; j++) {
+            var myKey = pinIndexAI[i].key[j];
+            //console.log("key[" + j + "].[" + myKey + "]: " + i);
+            pins[myKey] = i;
+        }
+    } else if (typeof pinIndexAI[i] != 'undefined') {
+        pins[pinIndexAI[i].key] = i;
+    }
+    if (typeof pinIndexAI[i].gpio == 'number') {
+        pins["GPIO_" + pinIndexAI[i].gpio] = i;
+    }
+    if (typeof pinIndexAI[i].eeprom == 'number') {
+        pins["EEPROM_" + pinIndexAI[i].eeprom] = i;
+    }
+    if (typeof pinIndexAI[i].ain == 'number') {
+        pins["A" + pinIndexAI[i].ain] = i;
+    }
+    if (typeof pinIndexAI[i].muxRegOffset == 'string') {
+        var offset = pinIndexAI[i].muxRegOffset.toUpperCase();
+        pins["MUX_" + offset] = i;
+    }
+}
+
+var uarts = {
+    "/dev/ttyO0": {},
+    "/dev/ttyO1": {
+        "devicetree": "BB-UART1",
+        "rx": "P9_26",
+        "tx": "P9_24"
+    },
+    "/dev/ttyO2": {
+        "devicetree": "BB-UART2",
+        "rx": "P9_22",
+        "tx": "P9_21"
+    },
+    "/dev/ttyO3": {},
+    "/dev/ttyO4": {
+        "devicetree": "BB-UART4",
+        "rx": "P9_11",
+        "tx": "P9_13"
+    },
+    "/dev/ttyO5": {
+        "devicetree": "BB-UART5",
+        "rx": "P8_38",
+        "tx": "P8_37"
+    }
+};
+
+var i2c = {
+    "/dev/i2c-0": {},
+    "/dev/i2c-1": {
+        "devicetree": "BB-I2C1",
+        "path": "/dev/i2c-2",
+        "sda": "P9_18",
+        "scl": "P9_17"
+    },
+    "/dev/i2c-1a": {
+        "devicetree": "BB-I2C1A",
+        "path": "/dev/i2c-2",
+        "sda": "P9_26",
+        "scl": "P9_24"
+    },
+    "/dev/i2c-2": {
+        "path": "/dev/i2c-1",
+        "sda": "P9_20",
+        "scl": "P9_19"
+    }
+};
+
+var getPinObject = function (key) {
+    if (typeof key == "string") {
+        // Ignore case
+        key = key.toUpperCase();
+        // Replace alternate separators and leading zeros
+        key = key.replace(/[\.\-_ ]0*/g, "_");
+    }
+    if (typeof key == "number") {
+        key = "GPIO_" + key;
+    }
+    // console.log(key);
+    // console.log(pins[key]);
+    if (typeof pinIndexAI[pins[key]] == "object") {
+        var pinObject = Object.assign({}, pinIndexAI[pins[key]]);
+
+        // Only keep the matching index led
+        if (pinObject.led) {
+            // console.log("pinObject[" + key + "]: " + JSON.stringify(pinObject));
+            if (Array.isArray(pinObject.led)) {
+                // console.log("pinObject.key: " + pinObject.key);
+                var i = pinObject.key.indexOf(key);
+                if (i >= 0) {
+                    var led = pinObject.led[i];
+                    pinObject.led = led;
+                    // console.log("pinObject.led[" + i + "]: " + led);
+                } else {
+                    pinObject.led = null;
+                }
+            }
+        }
+
+        // Remove other keys
+        pinObject.key = key;
+    } else {
+        return (null);
+    }
+
+    return (pinObject);
+};
+
+var getPinKeys = function (filter) {
+    var keys = [];
+    for (var key in pins) {
+        if (typeof filter != 'undefined') {
+            if (key.search(filter) >= 0) {
+                keys.push(key);
+            }
+        } else {
+            keys.push(key);
+        }
+    }
+    return (keys);
+};
+
+// from https://stackoverflow.com/questions/15478954/sort-array-elements-string-with-numbers-natural-sort
+var naturalCompare = function (a, b) {
+    var ax = [],
+        bx = [];
+
+    a.replace(/(\d+)|(\D+)/g, function (_, $1, $2) {
+        ax.push([$1 || Infinity, $2 || ""])
+    });
+    b.replace(/(\d+)|(\D+)/g, function (_, $1, $2) {
+        bx.push([$1 || Infinity, $2 || ""])
+    });
+
+    while (ax.length && bx.length) {
+        var an = ax.shift();
+        var bn = bx.shift();
+        var nn = (an[0] - bn[0]) || an[1].localeCompare(bn[1]);
+        if (nn) return nn;
+    }
+
+    return ax.length - bx.length;
+}
+
+
+
+module.exports = {
+    getPinObject: getPinObject,
+    getPinKeys: getPinKeys,
+    naturalCompare: naturalCompare,
+    uarts: uarts,
+    i2c: i2c
+}

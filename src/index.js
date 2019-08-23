@@ -4,7 +4,7 @@
 var fs = require('fs');
 var child_process = require('child_process');
 var os = require('os');
-var bone = require('./bone'); // Database of pins
+var bone = require('./boneai'); // Database of pins
 var functions = require('./functions'); // functions.js defines several math/bit functions that are handy
 var package_json = require('../package.json');
 var g = require('./constants');
@@ -21,6 +21,8 @@ var ffi = require('./ffiimp');
 var rc = require('./rc');
 
 var debug = process.env.DEBUG ? true : false;
+
+console.log("DEBUG = " + debug);
 
 // Detect if we are on a Beagle
 var hw;
@@ -58,6 +60,7 @@ if (debug) {
         level: 'debug'
     });
     winston.level = 'debug';
+    console.log("winston file: ", hw.logfile);
 } else {
     winston.setLevels(winston.config.syslog.levels);
 }
@@ -206,7 +209,6 @@ f.pinMode = function (pin, direction, mux, pullup, slew, callback) {
 
     if (typeof resp.err != 'undefined') {
         if (debug) winston.debug('Unable to configure mux for pin ' + pin + ': ' + resp.err);
-        // It might work if the pin is already muxed to desired mode
         var currentMode = f.getPinMode(pin);
         if (currentMode.mux != mux) {
             resp.value = false;
@@ -219,13 +221,16 @@ f.pinMode = function (pin, direction, mux, pullup, slew, callback) {
                 } else
                     callback(resp.err, resp.value);
             }
-            return (resp.value);
+            // Move on for now.
+            // return (resp.value);
         }
     }
 
     // Enable GPIO and set direction
+    console.log('pinMode:  mux=', mux);
     if (mux == 7) {
         // Export the GPIO controls
+        console.log('pinMode:  exportGPIO');
         resp = hw.exportGPIOControls(pin, direction, resp);
         if (typeof resp.err != 'undefined') {
             if (typeof gpio[n] == 'undefined') {
@@ -318,6 +323,7 @@ f.digitalRead = function (pin, callback) {
 f.digitalRead.args = ['pin', 'callback'];
 
 f.analogRead = function (pin, callback) {
+    // console.log("analogRead pin = ", pin);
     pin = my.getpin(pin);
     if (debug) winston.debug('analogRead(' + [pin.key] + ');');
     var resp = {};
@@ -437,7 +443,7 @@ f.attachInterrupt = function (pin, handler, mode, callback) {
                 callback(err, resp);
             }
         }
-        return (resp);
+        // return (resp);       // Move on for now
     }
 
     // Check if someone already has a handler configured

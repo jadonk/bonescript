@@ -5,7 +5,7 @@
 var fs = require('fs');
 var winston = require('winston');
 var child_process = require('child_process');
-var bone = require('./bone');
+var bone = require('./boneai');
 var g = require('./constants');
 
 var debug = process.env.DEBUG ? true : false;
@@ -382,6 +382,8 @@ var myeval = function (x) {
 };
 
 var getpin = function (pin) {
+    // console.log("getpin pin = " + pin);
+    // console.log("typeof pin = " + typeof pin);
     if (typeof pin == 'object') return (pin);
     else {
         var pinObject = bone.getPinObject(pin);
