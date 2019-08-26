@@ -161,7 +161,7 @@ f.pinMode = function (pin, direction, mux, pullup, slew, callback) {
                 } else
                     callback(err, false);
             }
-            return (false);
+            // return (false);		// Continue for now
         }
         direction = g.OUTPUT;
         mux = pin.pwm.muxmode;
