@@ -20,8 +20,20 @@ var pwmPrefix = {};
 var ainPrefix = "/sys/bus/iio/devices/iio:device0";
 var SLOTS = "/sys/devices/platform/bone_capemgr/slots";
 var AINdts = "BB-ADC";
+var isAI = false;
+var AI_vdd_adc_mV = 1800;
 
 var logfile = '/var/lib/cloud9/bonescript.log';
+
+// TODO: This runs when 'require' is executed
+// and more thought should go into what happens
+// when it is run via RPC
+if (fs.existsSync("/proc/device-tree/model")) {
+    var model = fs.readFileSync('/proc/device-tree/model', 'ascii').trim().replace(/\0/g, '');
+    if (model == "BeagleBoard.org BeagleBone AI") {
+        isAI = true;
+    }
+}
 
 var readPWMFreqAndValue = function (pin, pwm) {
     var mode = {};
@@ -47,7 +59,9 @@ var readGPIODirection = function (n, gpio) {
 };
 
 var readPinMux = function (pin, mode, callback) {
-    var pinctrlFile = '/sys/kernel/debug/pinctrl/44e10800.pinmux/pins';
+    var pinctrlFile =
+        isAI ? '/sys/kernel/debug/pinctrl/4a003400.pinmux/pins' :
+        '/sys/kernel/debug/pinctrl/44e10800.pinmux/pins';
     var muxRegOffset = parseInt(pin.muxRegOffset, 16);
     //handle the case when debugfs not mounted
     if (!my.file_existsSync(pinctrlFile)) {
@@ -102,6 +116,10 @@ var readPinMux = function (pin, mode, callback) {
 
 var setPinMode = function (pin, pinData, template, resp, callback) {
     if (debug) winston.debug('hw.setPinMode(' + [pin.key, pinData, template, JSON.stringify(resp)] + ');');
+    if (isAI) {
+        if (callback) callback(resp);
+        return (resp);
+    }
     var p = "ocp:" + pin.key + "_pinmux";
     if (!pin.universalName) {
         pin.universalName = [p];
@@ -265,8 +283,9 @@ var enableAIN = function (callback) {
 };
 
 var readAIN = function (pin, resp, callback) {
-    var maxValue = 4095;
-    var ainFile = ainPrefix + '/in_voltage' + pin.ain.toString() + '_raw';
+    var maxValue = (isAI && (AI_vdd_adc_mV == 1800)) ? 2234 : 4095;
+    var ainFile = ainPrefix + '/in_voltage' +
+        (isAI ? pin.ai.ain.toString() : pin.ain.toString()) + '_raw';
     if (debug) winston.debug("readAIN: ainFile=" + ainFile);
     if (callback) {
         var readFile = function (err, data) {
