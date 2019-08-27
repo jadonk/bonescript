@@ -126,7 +126,8 @@ var setPinMode = function (pin, pinData, template, resp, callback) {
         if (pin.ball && pin.ball.ZCZ) pin.universalName.push("ocp:" + pin.ball.ZCZ + "_pinmux");
     }
     var pinmux = my.find_sysfsFile(p, my.is_ocp(), pin.universalName);
-    gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
+    gpioFile[pin.key] = '/sys/class/gpio/gpio' +
+        (isAI ? pin.ai.gpio[0] : pin.gpio) + '/value';
     if (pinmux) {
         var state = undefined;
         if ((pinData & 7) == 7) {
@@ -208,7 +209,7 @@ var setLEDPinToGPIO = function (pin, resp) {
 
 var exportGPIOControls = function (pin, direction, resp, callback) {
     if (debug) winston.debug('hw.exportGPIOControls(' + [pin.key, direction, resp] + ');');
-    var n = pin.gpio;
+    var n = isAI ? pin.ai.gpio[0] : pin.gpio;
     var exists = my.file_existsSync(gpioFile[pin.key]);
 
     if (!exists) {
@@ -224,7 +225,8 @@ var exportGPIOControls = function (pin, direction, resp, callback) {
 
 var writeGPIOValue = function (pin, value, callback) {
     if (typeof gpioFile[pin.key] == 'undefined') {
-        gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
+        gpioFile[pin.key] = '/sys/class/gpio/gpio' +
+            (isAI ? pin.ai.gpio[0] : pin.gpio) + '/value';
         if (pin.led) {
             gpioFile[pin.key] = "/sys/class/leds/" + pin.led + "/brightness";
         }
@@ -245,7 +247,8 @@ var writeGPIOValue = function (pin, value, callback) {
 };
 
 var readGPIOValue = function (pin, resp, callback) {
-    var gpioFile = '/sys/class/gpio/gpio' + pin.gpio + '/value';
+    var gpioFile = '/sys/class/gpio/gpio' +
+        (isAI ? pin.ai.gpio[0] : pin.gpio) + '/value';
     if (callback) {
         var readFile = function (err, data) {
             if (err) {
@@ -317,10 +320,12 @@ var readAIN = function (pin, resp, callback) {
 };
 
 var writeGPIOEdge = function (pin, mode) {
-    fs.writeFileSync('/sys/class/gpio/gpio' + pin.gpio + '/edge', mode);
+    fs.writeFileSync('/sys/class/gpio/gpio' +
+        (isAI ? pin.ai.gpio[0] : pin.gpio) + '/edge', mode);
 
     var resp = {};
-    resp.gpioFile = '/sys/class/gpio/gpio' + pin.gpio + '/value';
+    resp.gpioFile = '/sys/class/gpio/gpio' +
+        (isAI ? pin.ai.gpio[0] : pin.gpio) + '/value';
     resp.valuefd = fs.openSync(resp.gpioFile, 'r');
     resp.value = new Buffer(1);
 
