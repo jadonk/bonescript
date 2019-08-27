@@ -18,6 +18,53 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "V15",
             "BSM": "P13"
+        },
+        "ai": {
+            "gpio": 81,
+            "ball": {
+                "abc": [
+                    "AF6",
+                    ""
+                ]
+            },
+            "muxRegOffset": [
+                "0x1528",
+                ""
+            ],
+            "option": [
+                "vin1a_d13",
+                "vin1b_d2",
+                "",
+                "",
+                "vout3_d10",
+                "gpmc_a25",
+                "",
+                "",
+                "",
+                "kbd_row7",
+                "pr1_edc_sync1_out",
+                "",
+                "pr1_pru0_gpi10",
+                "pr1_pru0_gpo10",
+                "gpio3_17",
+                "Driver off",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+            ]
         }
     },
     {
@@ -40,6 +87,53 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "U15",
             "BSM": "T14"
+        },
+        "ai": {
+            "gpio": 133,
+            "ball": {
+                "abc": [
+                    "J11",
+                    ""
+                ]
+            },
+            "muxRegOffset": [
+                "0x16C0",
+                ""
+            ],
+            "option": [
+                "mcasp1_axr3",
+                "mcasp6_axr3",
+                "",
+                "uart6_rtsn",
+                "",
+                "",
+                "vout2_d3",
+                "",
+                "vin4a_d3",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "gpio5_5",
+                "Driver off",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+            ]
         }
     },
     {
@@ -62,6 +156,53 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "T15",
             "BSM": "R14"
+        },
+        "ai": {
+            "gpio": 79,
+            "ball": {
+                "abc": [
+                    "AG5",
+                    ""
+                ]
+            },
+            "muxRegOffset": [
+                "0x1520",
+                ""
+            ],
+            "option": [
+                "vin1a_d11",
+                "vin1b_d4",
+                "",
+                "",
+                "vout3_d12",
+                "gpmc_a23",
+                "",
+                "",
+                "",
+                "kbd_row5",
+                "pr1_edc_latch1_in",
+                "",
+                "pr1_pru0_gpi8",
+                "pr1_pru0_gpo8",
+                "gpio3_15",
+                "Driver off",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+            ]
         }
     },
     {
@@ -84,14 +225,138 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "V16",
             "BSM": "P14"
+        },
+        "ai": {
+            "gpio": 78,
+            "ball": {
+                "abc": [
+                    "AG3",
+                    ""
+                ]
+            },
+            "muxRegOffset": [
+                "0x151C",
+                ""
+            ],
+            "option": [
+                "vin1a_d10",
+                "vin1b_d5",
+                "",
+                "",
+                "vout3_d13",
+                "",
+                "",
+                "",
+                "",
+                "kbd_row4",
+                "pr1_edc_latch0_in",
+                "",
+                "pr1_pru0_gpi7",
+                "pr1_pru0_gpo7",
+                "gpio3_14",
+                "Driver off",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+            ]
+        }
+    },
+    {
+        "name": "USR4",
+        "led": "beaglebone:green:usr4",
+        "key": "USR4",
+        "ai": {
+            "gpio": 71,
+            "ball": {
+                "abc": [
+                    "AH6",
+                    ""
+                ]
+            },
+            "muxRegOffset": [
+                "0x1500",
+                ""
+            ],
+            "option": [
+                "vin1a_d3",
+                "",
+                "",
+                "vout3_d4",
+                "vout3_d20",
+                "uart8_rtsn",
+                "",
+                "",
+                "",
+                "",
+                "eCAP1_in_PWM1_out",
+                "",
+                "pr1_pru0_gpi0",
+                "pr1_pru0_gpo0",
+                "gpio3_7",
+                "Driver off",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+            ]
         }
     },
     {
         "name": "DGND",
-        "key": ["P8_1", "P8_2", "P9_1", "P9_2", "P9_43", "P9_44", "P9_45", "P9_46",
-            "P1_15", "P1_16", "P1_22", "P2_15", "P2_21",
-            "E1_1", "E2_1", "E3_1", "E4_1", "S1_1_1", "S1_2_1", "UT0_1", "UT1_1", "UT5_1",
-            "DSM2_2", "I2C_1", "GPS_2", "GPS_6", "GP0_1", "GP1_1"
+        "key": [
+            "P8_1",
+            "P8_2",
+            "P9_1",
+            "P9_2",
+            "P9_43",
+            "P9_44",
+            "P9_45",
+            "P9_46",
+            "P1_15",
+            "P1_16",
+            "P1_22",
+            "P2_15",
+            "P2_21",
+            "E1_1",
+            "E2_1",
+            "E3_1",
+            "E4_1",
+            "S1_1_1",
+            "S1_2_1",
+            "UT0_1",
+            "UT1_1",
+            "UT5_1",
+            "DSM2_2",
+            "I2C_1",
+            "GPS_2",
+            "GPS_6",
+            "GP0_1",
+            "GP1_1"
         ]
     },
     {
@@ -100,7 +365,9 @@ var pinIndex = [{
         "mux": "gpmc_ad6",
         "eeprom": 26,
         "key": "P8_3",
-        "universalName": ["ocp:P8_03_pinmux"],
+        "universalName": [
+            "ocp:P8_03_pinmux"
+        ],
         "muxRegOffset": "0x018",
         "options": [
             "gpmc_ad6",
@@ -115,6 +382,53 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "R9",
             "BSM": "P4"
+        },
+        "ai": {
+            "gpio": 24,
+            "ball": {
+                "abc": [
+                    "AB8",
+                    ""
+                ]
+            },
+            "muxRegOffset": [
+                "0x179C",
+                ""
+            ],
+            "option": [
+                "mmc3_dat6",
+                "spi4_d0",
+                "uart10_ctsn",
+                "",
+                "vin2b_de1",
+                "",
+                "",
+                "",
+                "",
+                "vin5a_hsync0",
+                "ehrpwm3_tripzone_input",
+                "pr2_mii1_rxd1",
+                "pr2_pru0_gpi10",
+                "pr2_pru0_gpo10",
+                "gpio1_24",
+                "Driver off",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+            ]
         }
     },
     {
@@ -123,7 +437,9 @@ var pinIndex = [{
         "mux": "gpmc_ad7",
         "eeprom": 27,
         "key": "P8_4",
-        "universalName": ["ocp:P8_04_pinmux"],
+        "universalName": [
+            "ocp:P8_04_pinmux"
+        ],
         "muxRegOffset": "0x01c",
         "options": [
             "gpmc_ad7",
@@ -138,6 +454,53 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "T9",
             "BSM": "R4"
+        },
+        "ai": {
+            "gpio": 25,
+            "ball": {
+                "abc": [
+                    "AB5",
+                    ""
+                ]
+            },
+            "muxRegOffset": [
+                "0x17A0",
+                ""
+            ],
+            "option": [
+                "mmc3_dat7",
+                "spi4_cs0",
+                "uart10_rtsn",
+                "",
+                "vin2b_clk1",
+                "",
+                "",
+                "",
+                "",
+                "vin5a_vsync0",
+                "eCAP3_in_PWM3_out",
+                "pr2_mii1_rxd0",
+                "pr2_pru0_gpi11",
+                "pr2_pru0_gpo11",
+                "gpio1_25",
+                "Driver off",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+            ]
         }
     },
     {
@@ -146,7 +509,9 @@ var pinIndex = [{
         "mux": "gpmc_ad2",
         "eeprom": 22,
         "key": "P8_5",
-        "universalName": ["ocp:P8_05_pinmux"],
+        "universalName": [
+            "ocp:P8_05_pinmux"
+        ],
         "muxRegOffset": "0x008",
         "options": [
             "gpmc_ad2",
@@ -161,6 +526,53 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "R8",
             "BSM": "R1"
+        },
+        "ai": {
+            "gpio": 193,
+            "ball": {
+                "abc": [
+                    "AC9",
+                    ""
+                ]
+            },
+            "muxRegOffset": [
+                "0x178C",
+                ""
+            ],
+            "option": [
+                "mmc3_dat2",
+                "spi3_cs0",
+                "uart5_ctsn",
+                "",
+                "vin2b_d3",
+                "",
+                "",
+                "",
+                "",
+                "vin5a_d3",
+                "eQEP3_index",
+                "pr2_mii_mr1_clk",
+                "pr2_pru0_gpi6",
+                "pr2_pru0_gpo6",
+                "gpio7_1",
+                "Driver off",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+            ]
         }
     },
     {
@@ -169,7 +581,9 @@ var pinIndex = [{
         "mux": "gpmc_ad3",
         "eeprom": 23,
         "key": "P8_6",
-        "universalName": ["ocp:P8_06_pinmux"],
+        "universalName": [
+            "ocp:P8_06_pinmux"
+        ],
         "muxRegOffset": "0x00c",
         "options": [
             "gpmc_ad3",
@@ -184,6 +598,53 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "T8",
             "BSM": "T3"
+        },
+        "ai": {
+            "gpio": 194,
+            "ball": {
+                "abc": [
+                    "AC3",
+                    ""
+                ]
+            },
+            "muxRegOffset": [
+                "0x1790",
+                ""
+            ],
+            "option": [
+                "mmc3_dat3",
+                "spi3_cs1",
+                "uart5_rtsn",
+                "",
+                "vin2b_d2",
+                "",
+                "",
+                "",
+                "",
+                "vin5a_d2",
+                "eQEP3_strobe",
+                "pr2_mii1_rxdv",
+                "pr2_pru0_gpi7",
+                "pr2_pru0_gpo7",
+                "gpio7_2",
+                "Driver off",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+            ]
         }
     },
     {
@@ -191,9 +652,19 @@ var pinIndex = [{
         "gpio": 66,
         "mux": "gpmc_advn_ale",
         "eeprom": 41,
-        "key": ["P8_7", "RED", "GP1_5"],
-        "led": [null, "red", "red"],
-        "universalName": ["ocp:P8_07_pinmux"],
+        "key": [
+            "P8_7",
+            "RED",
+            "GP1_5"
+        ],
+        "led": [
+            null,
+            "red",
+            "red"
+        ],
+        "universalName": [
+            "ocp:P8_07_pinmux"
+        ],
         "muxRegOffset": "0x090",
         "options": [
             "gpmc_advn_ale",
@@ -215,9 +686,19 @@ var pinIndex = [{
         "gpio": 67,
         "mux": "gpmc_oen_ren",
         "eeprom": 44,
-        "key": ["P8_8", "GREEN", "GP1_6"],
-        "led": [null, "green", "green"],
-        "universalName": ["ocp:P8_08_pinmux"],
+        "key": [
+            "P8_8",
+            "GREEN",
+            "GP1_6"
+        ],
+        "led": [
+            null,
+            "green",
+            "green"
+        ],
+        "universalName": [
+            "ocp:P8_08_pinmux"
+        ],
         "muxRegOffset": "0x094",
         "options": [
             "gpmc_oen_ren",
@@ -239,8 +720,13 @@ var pinIndex = [{
         "gpio": 69,
         "mux": "gpmc_ben0_cle",
         "eeprom": 42,
-        "key": ["P8_9", "PAUSE"],
-        "universalName": ["ocp:P8_09_pinmux"],
+        "key": [
+            "P8_9",
+            "PAUSE"
+        ],
+        "universalName": [
+            "ocp:P8_09_pinmux"
+        ],
         "muxRegOffset": "0x09c",
         "options": [
             "gpmc_ben0_cle",
@@ -262,7 +748,10 @@ var pinIndex = [{
         "gpio": 68,
         "mux": "gpmc_wen",
         "eeprom": 43,
-        "key": ["P8_10", "MODE"],
+        "key": [
+            "P8_10",
+            "MODE"
+        ],
         "muxRegOffset": "0x098",
         "options": [
             "gpmc_wen",
@@ -284,7 +773,11 @@ var pinIndex = [{
         "gpio": 45,
         "mux": "gpmc_ad13",
         "eeprom": 29,
-        "key": ["P8_11", "E3_4", "P2_33"],
+        "key": [
+            "P8_11",
+            "E3_4",
+            "P2_33"
+        ],
         "muxRegOffset": "0x034",
         "options": [
             "gpmc_ad13",
@@ -306,7 +799,11 @@ var pinIndex = [{
         "gpio": 44,
         "mux": "gpmc_ad12",
         "eeprom": 28,
-        "key": ["P8_12", "E3_3", "P2_24"],
+        "key": [
+            "P8_12",
+            "E3_3",
+            "P2_24"
+        ],
         "muxRegOffset": "0x030",
         "options": [
             "gpmc_ad12",
@@ -340,8 +837,14 @@ var pinIndex = [{
             "chip": "48304000",
             "addr": "48304200"
         },
-        "key": ["P8_13", "P2_3"],
-        "universalName": ["ocp:P8_13_pinmux", "ocp:P2_03_pinmux"],
+        "key": [
+            "P8_13",
+            "P2_3"
+        ],
+        "universalName": [
+            "ocp:P8_13_pinmux",
+            "ocp:P2_03_pinmux"
+        ],
         "muxRegOffset": "0x024",
         "options": [
             "gpmc_ad9",
@@ -363,8 +866,16 @@ var pinIndex = [{
         "gpio": 26,
         "mux": "gpmc_ad10",
         "eeprom": 16,
-        "key": ["P8_14", "BAT100", "P1_34"],
-        "led": [null, "bat100", null],
+        "key": [
+            "P8_14",
+            "BAT100",
+            "P1_34"
+        ],
+        "led": [
+            null,
+            "bat100",
+            null
+        ],
         "muxRegOffset": "0x028",
         "options": [
             "gpmc_ad10",
@@ -386,7 +897,11 @@ var pinIndex = [{
         "gpio": 47,
         "mux": "gpmc_ad15",
         "eeprom": 31,
-        "key": ["P8_15", "E4_4", "P2_18"],
+        "key": [
+            "P8_15",
+            "E4_4",
+            "P2_18"
+        ],
         "muxRegOffset": "0x03c",
         "options": [
             "gpmc_ad15",
@@ -408,7 +923,11 @@ var pinIndex = [{
         "gpio": 46,
         "mux": "gpmc_ad14",
         "eeprom": 30,
-        "key": ["P8_16", "E4_3", "P2_22"],
+        "key": [
+            "P8_16",
+            "E4_3",
+            "P2_22"
+        ],
         "muxRegOffset": "0x038",
         "options": [
             "gpmc_ad14",
@@ -430,8 +949,16 @@ var pinIndex = [{
         "gpio": 27,
         "mux": "gpmc_ad11",
         "eeprom": 17,
-        "key": ["P8_17", "BAT25", "P2_19"],
-        "led": [null, "bat25", null],
+        "key": [
+            "P8_17",
+            "BAT25",
+            "P2_19"
+        ],
+        "led": [
+            null,
+            "bat25",
+            null
+        ],
         "muxRegOffset": "0x02c",
         "options": [
             "gpmc_ad11",
@@ -453,7 +980,10 @@ var pinIndex = [{
         "gpio": 65,
         "mux": "gpmc_clk",
         "eeprom": 40,
-        "key": ["P8_18", "P2_17"],
+        "key": [
+            "P8_18",
+            "P2_17"
+        ],
         "muxRegOffset": "0x08c",
         "options": [
             "gpmc_clk",
@@ -502,6 +1032,53 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "U10",
             "BSM": "T4"
+        },
+        "ai": {
+            "gpio": 106,
+            "ball": {
+                "abc": [
+                    "E6",
+                    ""
+                ]
+            },
+            "muxRegOffset": [
+                "0x158C",
+                ""
+            ],
+            "option": [
+                "vin2a_d9",
+                "",
+                "",
+                "",
+                "vout2_d14",
+                "emu19",
+                "",
+                "",
+                "mii1_rxd0",
+                "kbd_col6",
+                "ehrpwm2A",
+                "pr1_mii1_txd2",
+                "pr1_pru1_gpi6",
+                "pr1_pru1_gpo6",
+                "gpio4_10",
+                "Driver off",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+            ]
         }
     },
     {
@@ -524,6 +1101,53 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "V9",
             "BSM": "P1"
+        },
+        "ai": {
+            "gpio": 190,
+            "ball": {
+                "abc": [
+                    "AC4",
+                    ""
+                ]
+            },
+            "muxRegOffset": [
+                "0x1780",
+                ""
+            ],
+            "option": [
+                "mmc3_cmd",
+                "spi3_sclk",
+                "",
+                "",
+                "vin2b_d6",
+                "",
+                "",
+                "",
+                "",
+                "vin5a_d6",
+                "eCAP2_in_PWM2_out",
+                "pr2_mii1_txd2",
+                "pr2_pru0_gpi3",
+                "pr2_pru0_gpo3",
+                "gpio6_30",
+                "Driver off",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+            ]
         }
     },
     {
@@ -546,6 +1170,53 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "U9",
             "BSM": "P2"
+        },
+        "ai": {
+            "gpio": 189,
+            "ball": {
+                "abc": [
+                    "AD4",
+                    ""
+                ]
+            },
+            "muxRegOffset": [
+                "0x177C",
+                ""
+            ],
+            "option": [
+                "mmc3_clk",
+                "",
+                "",
+                "",
+                "vin2b_d7",
+                "",
+                "",
+                "",
+                "",
+                "vin5a_d7",
+                "ehrpwm2_tripzone_input",
+                "pr2_mii1_txd3",
+                "pr2_pru0_gpi2",
+                "pr2_pru0_gpo2",
+                "gpio6_29",
+                "Driver off",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+            ]
         }
     },
     {
@@ -568,6 +1239,53 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "V8",
             "BSM": "T1"
+        },
+        "ai": {
+            "gpio": 23,
+            "ball": {
+                "abc": [
+                    "AD6",
+                    ""
+                ]
+            },
+            "muxRegOffset": [
+                "0x1798",
+                ""
+            ],
+            "option": [
+                "mmc3_dat5",
+                "spi4_d1",
+                "uart10_txd",
+                "",
+                "vin2b_d0",
+                "",
+                "",
+                "",
+                "",
+                "vin5a_d0",
+                "ehrpwm3B",
+                "pr2_mii1_rxd2",
+                "pr2_pru0_gpi9",
+                "pr2_pru0_gpo9",
+                "gpio1_23",
+                "Driver off",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+            ]
         }
     },
     {
@@ -590,6 +1308,53 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "U8",
             "BSM": "T2"
+        },
+        "ai": {
+            "gpio": 22,
+            "ball": {
+                "abc": [
+                    "AC8",
+                    ""
+                ]
+            },
+            "muxRegOffset": [
+                "0x1794",
+                ""
+            ],
+            "option": [
+                "mmc3_dat4",
+                "spi4_sclk",
+                "uart10_rxd",
+                "",
+                "vin2b_d1",
+                "",
+                "",
+                "",
+                "",
+                "vin5a_d1",
+                "ehrpwm3A",
+                "pr2_mii1_rxd3",
+                "pr2_pru0_gpi8",
+                "pr2_pru0_gpo8",
+                "gpio1_22",
+                "Driver off",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+            ]
         }
     },
     {
@@ -612,6 +1377,53 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "V7",
             "BSM": "R2"
+        },
+        "ai": {
+            "gpio": 192,
+            "ball": {
+                "abc": [
+                    "AC6",
+                    ""
+                ]
+            },
+            "muxRegOffset": [
+                "0x1788",
+                ""
+            ],
+            "option": [
+                "mmc3_dat1",
+                "spi3_d0",
+                "uart5_txd",
+                "",
+                "vin2b_d4",
+                "",
+                "",
+                "",
+                "",
+                "vin5a_d4",
+                "eQEP3B_in",
+                "pr2_mii1_txd0",
+                "pr2_pru0_gpi5",
+                "pr2_pru0_gpo5",
+                "gpio7_0",
+                "Driver off",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+            ]
         }
     },
     {
@@ -634,6 +1446,53 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "U7",
             "BSM": "R3"
+        },
+        "ai": {
+            "gpio": 191,
+            "ball": {
+                "abc": [
+                    "AC7",
+                    ""
+                ]
+            },
+            "muxRegOffset": [
+                "0x1784",
+                ""
+            ],
+            "option": [
+                "mmc3_dat0",
+                "spi3_d1",
+                "uart5_rxd",
+                "",
+                "vin2b_d5",
+                "",
+                "",
+                "",
+                "",
+                "vin5a_d5",
+                "eQEP3A_in",
+                "pr2_mii1_txd1",
+                "pr2_pru0_gpi4",
+                "pr2_pru0_gpo4",
+                "gpio6_31",
+                "Driver off",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+            ]
         }
     },
     {
@@ -641,8 +1500,14 @@ var pinIndex = [{
         "gpio": 61,
         "mux": "gpmc_csn0",
         "eeprom": 37,
-        "key": ["P8_26", "BAT75"],
-        "led": [null, "bat75"],
+        "key": [
+            "P8_26",
+            "BAT75"
+        ],
+        "led": [
+            null,
+            "bat75"
+        ],
         "muxRegOffset": "0x07c",
         "options": [
             "gpmc_csn0",
@@ -664,8 +1529,14 @@ var pinIndex = [{
         "gpio": 19,
         "mux": "xdma_event_intr0",
         "eeprom": 37,
-        "key": ["WIFI", "P2_31"],
-        "led": ["wifi", null],
+        "key": [
+            "WIFI",
+            "P2_31"
+        ],
+        "led": [
+            "wifi",
+            null
+        ],
         "muxRegOffset": "0x1b0",
         "options": [
             "xdma_event_intr0",
@@ -687,7 +1558,11 @@ var pinIndex = [{
         "gpio": 86,
         "mux": "lcd_vsync",
         "eeprom": 57,
-        "key": ["P8_27", "SERVO_1", "P2_35"],
+        "key": [
+            "P8_27",
+            "SERVO_1",
+            "P2_35"
+        ],
         "muxRegOffset": "0x0e0",
         "options": [
             "lcd_vsync",
@@ -709,7 +1584,12 @@ var pinIndex = [{
         "gpio": 88,
         "mux": "lcd_pclk",
         "eeprom": 59,
-        "key": ["P8_28", "SERVO_2", "P1_35", "PRU1_10"],
+        "key": [
+            "P8_28",
+            "SERVO_2",
+            "P1_35",
+            "PRU1_10"
+        ],
         "muxRegOffset": "0x0e8",
         "options": [
             "lcd_pclk",
@@ -731,7 +1611,11 @@ var pinIndex = [{
         "gpio": 87,
         "mux": "lcd_hsync",
         "eeprom": 58,
-        "key": ["P8_29", "SERVO_3", "P1_2"],
+        "key": [
+            "P8_29",
+            "SERVO_3",
+            "P1_2"
+        ],
         "muxRegOffset": "0x0e4",
         "options": [
             "lcd_hsync",
@@ -753,7 +1637,12 @@ var pinIndex = [{
         "gpio": 89,
         "mux": "lcd_ac_bias_en",
         "eeprom": 60,
-        "key": ["P8_30", "SERVO_4", "P1_4", "PRU1_11"],
+        "key": [
+            "P8_30",
+            "SERVO_4",
+            "P1_4",
+            "PRU1_11"
+        ],
         "muxRegOffset": "0x0ec",
         "options": [
             "lcd_ac_bias_en",
@@ -790,6 +1679,53 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "V4",
             "BSM": "L1"
+        },
+        "ai": {
+            "gpio": 238,
+            "ball": {
+                "abc": [
+                    "C8",
+                    "G16"
+                ]
+            },
+            "muxRegOffset": [
+                "0x1614",
+                "0x173C"
+            ],
+            "option": [
+                "vout1_d14",
+                "",
+                "emu13",
+                "vin4a_d14",
+                "vin3a_d14",
+                "obs9",
+                "obs25",
+                "",
+                "",
+                "",
+                "pr2_uart0_txd",
+                "",
+                "pr2_pru0_gpi11",
+                "pr2_pru0_gpo11",
+                "gpio8_14",
+                "Driver off",
+                "mcasp4_axr0",
+                "",
+                "spi3_d0",
+                "uart8_ctsn",
+                "uart4_rxd",
+                "",
+                "vout2_d18",
+                "",
+                "vin4a_d18",
+                "vin5a_d13",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "Driver off"
+            ]
         }
     },
     {
@@ -797,8 +1733,14 @@ var pinIndex = [{
         "gpio": 11,
         "mux": "lcd_data15",
         "eeprom": 8,
-        "key": ["P8_32", "BAT50"],
-        "led": [null, "bat50"],
+        "key": [
+            "P8_32",
+            "BAT50"
+        ],
+        "led": [
+            null,
+            "bat50"
+        ],
         "muxRegOffset": "0x0dc",
         "options": [
             "lcd_data15",
@@ -820,7 +1762,10 @@ var pinIndex = [{
         "gpio": 9,
         "mux": "lcd_data13",
         "eeprom": 6,
-        "key": ["P8_33", "E2_4"],
+        "key": [
+            "P8_33",
+            "E2_4"
+        ],
         "muxRegOffset": "0x0d4",
         "options": [
             "lcd_data13",
@@ -869,15 +1814,64 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "V3",
             "BSM": "K1"
+        },
+        "ai": {
+            "gpio": 235,
+            "ball": {
+                "abc": [
+                    "D8",
+                    "G6"
+                ]
+            },
+            "muxRegOffset": [
+                "0x1608",
+                "0x1564"
+            ],
+            "option": [
+                "vout1_d11",
+                "",
+                "emu10",
+                "vin4a_d11",
+                "vin3a_d11",
+                "obs6",
+                "obs22",
+                "obs_dmarq2",
+                "",
+                "",
+                "pr2_uart0_cts_n",
+                "",
+                "pr2_pru0_gpi8",
+                "pr2_pru0_gpo8",
+                "gpio8_11",
+                "Driver off",
+                "vin2a_vsync0",
+                "",
+                "",
+                "vin2b_vsync1",
+                "vout2_vsync",
+                "emu9",
+                "",
+                "uart9_txd",
+                "spi4_d1",
+                "kbd_row3",
+                "ehrpwm1A",
+                "pr1_uart0_rts_n",
+                "pr1_edio_data_in4",
+                "pr1_edio_data_out4",
+                "gpio4_0",
+                "Driver off"
+            ]
         }
-
     },
     {
         "name": "UART4_CTSN",
         "gpio": 8,
         "mux": "lcd_data12",
         "eeprom": 5,
-        "key": ["P8_35", "E2_3"],
+        "key": [
+            "P8_35",
+            "E2_3"
+        ],
         "muxRegOffset": "0x0d0",
         "options": [
             "lcd_data12",
@@ -893,7 +1887,6 @@ var pinIndex = [{
             "ZCZ": "V2",
             "BSM": "L3"
         }
-
     },
     {
         "name": "UART3_CTSN",
@@ -912,7 +1905,10 @@ var pinIndex = [{
             "chip": "48302000",
             "addr": "48302200"
         },
-        "key": ["P8_36", "SERVO_PWR_EN"],
+        "key": [
+            "P8_36",
+            "SERVO_PWR_EN"
+        ],
         "muxRegOffset": "0x0c8",
         "options": [
             "lcd_data10",
@@ -928,14 +1924,16 @@ var pinIndex = [{
             "ZCZ": "U3",
             "BSM": "K2"
         }
-
     },
     {
         "name": "UART5_TXD",
         "gpio": 78,
         "mux": "lcd_data8",
         "eeprom": 53,
-        "key": ["P8_37", "UT5_4"],
+        "key": [
+            "P8_37",
+            "UT5_4"
+        ],
         "muxRegOffset": "0x0c0",
         "options": [
             "lcd_data8",
@@ -951,14 +1949,16 @@ var pinIndex = [{
             "ZCZ": "U1",
             "BSM": "J1"
         }
-
     },
     {
         "name": "UART5_RXD",
         "gpio": 79,
         "mux": "lcd_data9",
         "eeprom": 54,
-        "key": ["P8_38", "UT5_3"],
+        "key": [
+            "P8_38",
+            "UT5_3"
+        ],
         "muxRegOffset": "0x0c4",
         "options": [
             "lcd_data9",
@@ -974,14 +1974,16 @@ var pinIndex = [{
             "ZCZ": "U2",
             "BSM": "K3"
         }
-
     },
     {
         "name": "GPIO2_12",
         "gpio": 76,
         "mux": "lcd_data6",
         "eeprom": 51,
-        "key": ["P8_39", "SERVO_5"],
+        "key": [
+            "P8_39",
+            "SERVO_5"
+        ],
         "muxRegOffset": "0x0b8",
         "options": [
             "lcd_data6",
@@ -997,14 +1999,16 @@ var pinIndex = [{
             "ZCZ": "T3",
             "BSM": "J3"
         }
-
     },
     {
         "name": "GPIO2_13",
         "gpio": 77,
         "mux": "lcd_data7",
         "eeprom": 52,
-        "key": ["P8_40", "SERVO_6"],
+        "key": [
+            "P8_40",
+            "SERVO_6"
+        ],
         "muxRegOffset": "0x0bc",
         "options": [
             "lcd_data7",
@@ -1020,14 +2024,16 @@ var pinIndex = [{
             "ZCZ": "T4",
             "BSM": "J2"
         }
-
     },
     {
         "name": "GPIO2_10",
         "gpio": 74,
         "mux": "lcd_data4",
         "eeprom": 49,
-        "key": ["P8_41", "SERVO_7"],
+        "key": [
+            "P8_41",
+            "SERVO_7"
+        ],
         "muxRegOffset": "0x0b0",
         "options": [
             "lcd_data4",
@@ -1043,14 +2049,16 @@ var pinIndex = [{
             "ZCZ": "T1",
             "BSM": "H2"
         }
-
     },
     {
         "name": "GPIO2_11",
         "gpio": 75,
         "mux": "lcd_data5",
         "eeprom": 50,
-        "key": ["P8_42", "SERVO_8"],
+        "key": [
+            "P8_42",
+            "SERVO_8"
+        ],
         "muxRegOffset": "0x0b4",
         "options": [
             "lcd_data5",
@@ -1066,7 +2074,6 @@ var pinIndex = [{
             "ZCZ": "T2",
             "BSM": "H1"
         }
-
     },
     {
         "name": "GPIO2_8",
@@ -1088,8 +2095,54 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "R3",
             "BSM": "G1"
+        },
+        "ai": {
+            "gpio": 226,
+            "ball": {
+                "abc": [
+                    "F10",
+                    ""
+                ]
+            },
+            "muxRegOffset": [
+                "0x15E4",
+                ""
+            ],
+            "option": [
+                "vout1_d2",
+                "",
+                "emu2",
+                "vin4a_d18",
+                "vin3a_d18",
+                "obs0",
+                "obs16",
+                "obs_irq1",
+                "",
+                "",
+                "pr1_uart0_rxd",
+                "",
+                "pr2_pru1_gpi20",
+                "pr2_pru1_gpo20",
+                "gpio8_2",
+                "Driver off",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+            ]
         }
-
     },
     {
         "name": "GPIO2_9",
@@ -1111,8 +2164,54 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "R4",
             "BSM": "H3"
+        },
+        "ai": {
+            "gpio": 227,
+            "ball": {
+                "abc": [
+                    "G11",
+                    ""
+                ]
+            },
+            "muxRegOffset": [
+                "0x15E8",
+                ""
+            ],
+            "option": [
+                "vout1_d3",
+                "",
+                "emu5",
+                "vin4a_d19",
+                "vin3a_d19",
+                "obs1",
+                "obs17",
+                "obs_dmarq1",
+                "",
+                "",
+                "pr1_uart0_txd",
+                "",
+                "pr2_pru0_gpi0",
+                "pr2_pru0_gpo0",
+                "gpio8_3",
+                "Driver off",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+            ]
         }
-
     },
     {
         "name": "GPIO2_6",
@@ -1146,8 +2245,54 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "R1",
             "BSM": "G3"
+        },
+        "ai": {
+            "gpio": 224,
+            "ball": {
+                "abc": [
+                    "F11",
+                    "B7"
+                ]
+            },
+            "muxRegOffset": [
+                "0x15DC",
+                "0x161C"
+            ],
+            "option": [
+                "vout1_d0",
+                "",
+                "uart5_rxd",
+                "vin4a_d16",
+                "vin3a_d16",
+                "",
+                "",
+                "",
+                "spi3_cs2",
+                "",
+                "pr1_uart0_cts_n",
+                "",
+                "pr2_pru1_gpi18",
+                "pr2_pru1_gpo18",
+                "gpio8_0",
+                "Driver off",
+                "vout1_d16",
+                "",
+                "uart7_rxd",
+                "vin4a_d0",
+                "vin3a_d0",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "pr2_edio_data_in0",
+                "pr2_edio_data_out0",
+                "pr2_pru0_gpi13",
+                "pr2_pru0_gpo13",
+                "gpio8_16",
+                "Driver off"
+            ]
         }
-
     },
     {
         "name": "GPIO2_7",
@@ -1181,34 +2326,111 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "R2",
             "BSM": "G2"
+        },
+        "ai": {
+            "gpio": 225,
+            "ball": {
+                "abc": [
+                    "G10",
+                    "A10"
+                ]
+            },
+            "muxRegOffset": [
+                "0x15E0",
+                "0x1638"
+            ],
+            "option": [
+                "vout1_d1",
+                "",
+                "uart5_txd",
+                "vin4a_d17",
+                "vin3a_d17",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "pr1_uart0_rts_n",
+                "",
+                "pr2_pru1_gpi19",
+                "pr2_pru1_gpo19",
+                "gpio8_1",
+                "Driver off",
+                "vout1_d23",
+                "",
+                "emu19",
+                "vin4a_d7",
+                "vin3a_d7",
+                "",
+                "",
+                "",
+                "spi3_cs3",
+                "",
+                "pr2_edio_data_in7",
+                "pr2_edio_data_out7",
+                "pr2_pru0_gpi20",
+                "pr2_pru0_gpo20",
+                "gpio8_23",
+                "Driver off"
+            ]
         }
-
     },
     {
         "name": "VDD_3V3",
-        "key": ["P9_3", "P9_4", "P1_14", "P2_23",
-            "E1_2", "E2_2", "E3_2", "E4_2", "GP0_2", "GP1_2", "S1_1_2", "S1_2_2",
-            "UT0_2", "UT1_2", "UT5_2", "DSM2_1", "I2C_2"
+        "key": [
+            "P9_3",
+            "P9_4",
+            "P1_14",
+            "P2_23",
+            "E1_2",
+            "E2_2",
+            "E3_2",
+            "E4_2",
+            "GP0_2",
+            "GP1_2",
+            "S1_1_2",
+            "S1_2_2",
+            "UT0_2",
+            "UT1_2",
+            "UT5_2",
+            "DSM2_1",
+            "I2C_2"
         ]
     },
     {
         "name": "VDD_5V",
-        "key": ["P9_5", "P9_6", "P1_1"]
+        "key": [
+            "P9_5",
+            "P9_6",
+            "P1_1"
+        ]
     },
     {
         "name": "SYS_5V",
-        "key": ["P9_7", "P9_8", "P1_24", "P2_13", "GPS_5"]
+        "key": [
+            "P9_7",
+            "P9_8",
+            "P1_24",
+            "P2_13",
+            "GPS_5"
+        ]
     },
     {
         "name": "PWR_BUT",
-        "key": ["P9_9", "P2_12"],
+        "key": [
+            "P9_9",
+            "P2_12"
+        ],
         "ball": {
             "BSM": "T11"
         }
     },
     {
         "name": "SYS_RESETn",
-        "key": ["P9_10", "P2_26"],
+        "key": [
+            "P9_10",
+            "P2_26"
+        ],
         "ball": {
             "ZCZ": "A10",
             "BSM": "R11"
@@ -1219,7 +2441,11 @@ var pinIndex = [{
         "gpio": 30,
         "mux": "gpmc_wait0",
         "eeprom": 18,
-        "key": ["P9_11", "DSM2_3", "P2_5"],
+        "key": [
+            "P9_11",
+            "DSM2_3",
+            "P2_5"
+        ],
         "muxRegOffset": "0x070",
         "options": [
             "gpmc_wait0",
@@ -1241,7 +2467,10 @@ var pinIndex = [{
         "gpio": 60,
         "mux": "gpmc_ben1",
         "eeprom": 36,
-        "key": ["P9_12", "P2_8"],
+        "key": [
+            "P9_12",
+            "P2_8"
+        ],
         "muxRegOffset": "0x078",
         "options": [
             "gpmc_ben1",
@@ -1257,14 +2486,16 @@ var pinIndex = [{
             "ZCZ": "U18",
             "BSM": "N14"
         }
-
     },
     {
         "name": "UART4_TXD",
         "gpio": 31,
         "mux": "gpmc_wpn",
         "eeprom": 19,
-        "key": ["P9_13", "P2_7"],
+        "key": [
+            "P9_13",
+            "P2_7"
+        ],
         "muxRegOffset": "0x074",
         "options": [
             "gpmc_wpn",
@@ -1280,7 +2511,6 @@ var pinIndex = [{
             "ZCZ": "U17",
             "BSM": "R16"
         }
-
     },
     {
         "name": "EHRPWM1A",
@@ -1299,8 +2529,15 @@ var pinIndex = [{
             "chip": "48302000",
             "addr": "48302200"
         },
-        "key": ["P9_14", "P2_1"],
-        "universalName": ["ocp:P9_14_pinmux", "ocp:P2_01_pinmux", "ocp:PWM_pinmux"],
+        "key": [
+            "P9_14",
+            "P2_1"
+        ],
+        "universalName": [
+            "ocp:P9_14_pinmux",
+            "ocp:P2_01_pinmux",
+            "ocp:PWM_pinmux"
+        ],
         "muxRegOffset": "0x048",
         "options": [
             "gpmc_a2",
@@ -1316,7 +2553,6 @@ var pinIndex = [{
             "ZCZ": "U14",
             "BSM": "P12"
         }
-
     },
     {
         "name": "GPIO1_16",
@@ -1338,15 +2574,64 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "R13",
             "BSM": "T12"
+        },
+        "ai": {
+            "gpio": 76,
+            "ball": {
+                "abc": [
+                    "AG4",
+                    ""
+                ]
+            },
+            "muxRegOffset": [
+                "0x1514",
+                ""
+            ],
+            "option": [
+                "vin1a_d8",
+                "vin1b_d7",
+                "",
+                "",
+                "vout3_d15",
+                "",
+                "",
+                "",
+                "",
+                "kbd_row2",
+                "eQEP2_index",
+                "",
+                "pr1_pru0_gpi5",
+                "pr1_pru0_gpo5",
+                "gpio3_12",
+                "Driver off",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+            ]
         }
-
     },
     {
         "name": "GPIO1_16",
         "gpio": 64,
         "mux": "gpmc_csn3",
         "eeprom": null,
-        "key": ["P9_15B", "P2_20"],
+        "key": [
+            "P9_15B",
+            "P2_20"
+        ],
         "muxRegOffset": "0x088",
         "options": [
             "gpmc_csn3",
@@ -1394,6 +2679,53 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "T14",
             "BSM": "T13"
+        },
+        "ai": {
+            "gpio": 122,
+            "ball": {
+                "abc": [
+                    "C5",
+                    ""
+                ]
+            },
+            "muxRegOffset": [
+                "0x15B0",
+                ""
+            ],
+            "option": [
+                "vin2a_d18",
+                "",
+                "vin2b_d5",
+                "rgmii1_rxc",
+                "vout2_d5",
+                "",
+                "vin3a_d10",
+                "",
+                "mii1_txd3",
+                "",
+                "ehrpwm3B",
+                "pr1_mii1_rxd1",
+                "pr1_pru1_gpi15",
+                "pr1_pru1_gpo15",
+                "gpio4_26",
+                "Driver off",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+            ]
         }
     },
     {
@@ -1401,7 +2733,11 @@ var pinIndex = [{
         "gpio": 5,
         "mux": "spi0_cs0",
         "eeprom": 3,
-        "key": ["P9_17", "I2C_3", "P1_6"],
+        "key": [
+            "P9_17",
+            "I2C_3",
+            "P1_6"
+        ],
         "muxRegOffset": "0x15c",
         "options": [
             "spi0_cs0",
@@ -1423,7 +2759,11 @@ var pinIndex = [{
         "gpio": 4,
         "mux": "spi0_d1",
         "eeprom": 2,
-        "key": ["P9_18", "I2C_4", "P1_12"],
+        "key": [
+            "P9_18",
+            "I2C_4",
+            "P1_12"
+        ],
         "muxRegOffset": "0x158",
         "options": [
             "spi0_d1",
@@ -1445,7 +2785,10 @@ var pinIndex = [{
         "gpio": 13,
         "mux": "uart1_rtsn",
         "eeprom": 9,
-        "key": ["P9_19", "P1_28"],
+        "key": [
+            "P9_19",
+            "P1_28"
+        ],
         "muxRegOffset": "0x17c",
         "options": [
             "uart1_rtsn",
@@ -1467,7 +2810,10 @@ var pinIndex = [{
         "gpio": 12,
         "mux": "uart1_ctsn",
         "eeprom": 10,
-        "key": ["P9_20", "P1_26"],
+        "key": [
+            "P9_20",
+            "P1_26"
+        ],
         "muxRegOffset": "0x178",
         "options": [
             "uart1_ctsn",
@@ -1501,7 +2847,11 @@ var pinIndex = [{
             "chip": "48300000",
             "addr": "48300200"
         },
-        "key": ["P9_21", "GPS_4", "P1_10"],
+        "key": [
+            "P9_21",
+            "GPS_4",
+            "P1_10"
+        ],
         "muxRegOffset": "0x154",
         "options": [
             "spi0_d0",
@@ -1535,7 +2885,11 @@ var pinIndex = [{
             "chip": "48300000",
             "addr": "48300200"
         },
-        "key": ["P9_22", "GPS_3", "P1_8"],
+        "key": [
+            "P9_22",
+            "GPS_3",
+            "P1_8"
+        ],
         "muxRegOffset": "0x150",
         "options": [
             "spi0_sclk",
@@ -1557,7 +2911,10 @@ var pinIndex = [{
         "gpio": 49,
         "mux": "gpmc_a1",
         "eeprom": 33,
-        "key": ["P9_23", "GP0_4"],
+        "key": [
+            "P9_23",
+            "GP0_4"
+        ],
         "muxRegOffset": "0x044",
         "options": [
             "gpmc_a1",
@@ -1579,7 +2936,10 @@ var pinIndex = [{
         "gpio": 57,
         "mux": "gpmc_wpn",
         "eeprom": null,
-        "key": ["GP0_3", "P2_6"],
+        "key": [
+            "GP0_3",
+            "P2_6"
+        ],
         "muxRegOffset": "0x064",
         "options": [
             "gpmc_wpn",
@@ -1639,14 +2999,17 @@ var pinIndex = [{
             "ZCZ": "H17",
             "BSM": "F14"
         }
-
     },
     {
         "name": "UART1_TXD",
         "gpio": 15,
         "mux": "uart1_txd",
         "eeprom": 12,
-        "key": ["P9_24", "UT1_4", "P2_9"],
+        "key": [
+            "P9_24",
+            "UT1_4",
+            "P2_9"
+        ],
         "muxRegOffset": "0x184",
         "options": [
             "uart1_txd",
@@ -1668,7 +3031,11 @@ var pinIndex = [{
         "gpio": 117,
         "mux": "mcasp0_ahclkx",
         "eeprom": 66,
-        "key": ["P9_25", "P1_29", "PRU0_7"],
+        "key": [
+            "P9_25",
+            "P1_29",
+            "PRU0_7"
+        ],
         "muxRegOffset": "0x1ac",
         "options": [
             "mcasp0_ahclkx",
@@ -1690,7 +3057,11 @@ var pinIndex = [{
         "gpio": 14,
         "mux": "uart1_rxd",
         "eeprom": 11,
-        "key": ["P9_26", "UT1_3", "P2_11"],
+        "key": [
+            "P9_26",
+            "UT1_3",
+            "P2_11"
+        ],
         "muxRegOffset": "0x180",
         "options": [
             "uart1_rxd",
@@ -1712,7 +3083,12 @@ var pinIndex = [{
         "gpio": 115,
         "mux": "mcasp0_fsr",
         "eeprom": 64,
-        "key": ["P9_27", "P2_34", "PRU0_5", "E1_4"],
+        "key": [
+            "P9_27",
+            "P2_34",
+            "PRU0_5",
+            "E1_4"
+        ],
         "muxRegOffset": "0x1a4",
         "options": [
             "mcasp0_fsr",
@@ -1747,7 +3123,12 @@ var pinIndex = [{
             "chip": "48304000",
             "addr": "48304100"
         },
-        "key": ["P9_28", "GP0_6", "P2_30", "PRU0_3"],
+        "key": [
+            "P9_28",
+            "GP0_6",
+            "P2_30",
+            "PRU0_3"
+        ],
         "muxRegOffset": "0x19c",
         "options": [
             "mcasp0_ahclkr",
@@ -1781,7 +3162,13 @@ var pinIndex = [{
             "chip": "48300000",
             "addr": "48300200"
         },
-        "key": ["P9_29", "S1_1_4", "S1_2_4", "P1_33", "PRU0_1"],
+        "key": [
+            "P9_29",
+            "S1_1_4",
+            "S1_2_4",
+            "P1_33",
+            "PRU0_1"
+        ],
         "muxRegOffset": "0x194",
         "options": [
             "mcasp0_fsx",
@@ -1803,7 +3190,13 @@ var pinIndex = [{
         "gpio": 112,
         "mux": "mcasp0_axr0",
         "eeprom": 62,
-        "key": ["P9_30", "S1_1_3", "S1_2_3", "P2_32", "PRU0_2"],
+        "key": [
+            "P9_30",
+            "S1_1_3",
+            "S1_2_3",
+            "P2_32",
+            "PRU0_2"
+        ],
         "muxRegOffset": "0x198",
         "options": [
             "mcasp0_axr0",
@@ -1837,7 +3230,12 @@ var pinIndex = [{
             "chip": "48300000",
             "addr": "48300200"
         },
-        "key": ["P9_31", "S1_1_5", "S1_2_5", "P1_36"],
+        "key": [
+            "P9_31",
+            "S1_1_5",
+            "S1_2_5",
+            "P1_36"
+        ],
         "muxRegOffset": "0x190",
         "options": [
             "mcasp0_aclkx",
@@ -1856,10 +3254,46 @@ var pinIndex = [{
     },
     {
         "name": "VDD_ADC",
-        "key": ["P9_32", "ADC_2", "P1_17"],
+        "key": [
+            "P9_32",
+            "ADC_2",
+            "P1_17"
+        ],
         "ball": {
             "ZCZ": "A9",
             "BSM": "B9"
+        },
+        "ai": {
+            // 0 = 1.8V, 1 = 3.3V
+            "gpio": 91,
+            "ball": {
+                "abc": [
+                    "AD3",
+                    ""
+                ]
+            },
+            "muxRegOffset": [
+                "0x1550",
+                ""
+            ],
+            "option": [
+                "vin1a_d23",
+                "vin1b_d0",
+                "",
+                "",
+                "vout3_d0",
+                "",
+                "vin3a_d7",
+                "",
+                "",
+                "kbd_col8",
+                "pr1_edio_data_in7",
+                "pr1_edio_data_out7",
+                "pr1_pru0_gpi20",
+                "pr1_pru0_gpo20",
+                "gpio3_27",
+                "Driver off"
+            ]
         }
     },
     {
@@ -1867,15 +3301,26 @@ var pinIndex = [{
         "ain": 4,
         "eeprom": 71,
         "scale": 4096,
-        "key": ["P9_33", "P1_27"],
+        "key": [
+            "P9_33",
+            "P1_27"
+        ],
         "ball": {
             "ZCZ": "C8",
             "BSM": "C7"
+        },
+        "ai": {
+            "ain": 7,
+            "gpio": 503
         }
     },
     {
         "name": "GNDA_ADC",
-        "key": ["P9_34", "ADC_1", "P1_18"],
+        "key": [
+            "P9_34",
+            "ADC_1",
+            "P1_18"
+        ],
         "ball": {
             "ZCZ": "B9",
             "BSM": "B7"
@@ -1886,10 +3331,17 @@ var pinIndex = [{
         "ain": 6,
         "eeprom": 73,
         "scale": 4096,
-        "key": ["P9_35", "P1_2"],
+        "key": [
+            "P9_35",
+            "P1_2"
+        ],
         "ball": {
             "ZCZ": "A8",
             "BSM": "C9"
+        },
+        "ai": {
+            "ain": 4,
+            "gpio": 500
         }
     },
     {
@@ -1897,10 +3349,17 @@ var pinIndex = [{
         "ain": 5,
         "eeprom": 72,
         "scale": 4096,
-        "key": ["P9_36", "P2_35"],
+        "key": [
+            "P9_36",
+            "P2_35"
+        ],
         "ball": {
             "ZCZ": "B8",
             "BSM": "C8"
+        },
+        "ai": {
+            "ain": 6,
+            "gpio": 502
         }
     },
     {
@@ -1908,10 +3367,18 @@ var pinIndex = [{
         "ain": 2,
         "eeprom": 69,
         "scale": 4096,
-        "key": ["P9_37", "ADC_5", "P1_23"],
+        "key": [
+            "P9_37",
+            "ADC_5",
+            "P1_23"
+        ],
         "ball": {
             "ZCZ": "B7",
             "BSM": "B6"
+        },
+        "ai": {
+            "ain": 3,
+            "gpio": 498
         }
     },
     {
@@ -1919,10 +3386,18 @@ var pinIndex = [{
         "ain": 3,
         "eeprom": 70,
         "scale": 4096,
-        "key": ["P9_38", "ADC_6", "P1_25"],
+        "key": [
+            "P9_38",
+            "ADC_6",
+            "P1_25"
+        ],
         "ball": {
             "ZCZ": "A7",
             "BSM": "C6"
+        },
+        "ai": {
+            "ain": 2,
+            "gpio": 497
         }
     },
     {
@@ -1930,10 +3405,18 @@ var pinIndex = [{
         "ain": 0,
         "eeprom": 67,
         "scale": 4096,
-        "key": ["P9_39", "ADC_3", "P1_19"],
+        "key": [
+            "P9_39",
+            "ADC_3",
+            "P1_19"
+        ],
         "ball": {
             "ZCZ": "B6",
             "BSM": "A8"
+        },
+        "ai": {
+            "ain": 0,
+            "gpio": 496
         }
     },
     {
@@ -1941,10 +3424,18 @@ var pinIndex = [{
         "ain": 1,
         "eeprom": 68,
         "scale": 4096,
-        "key": ["P9_40", "ADC_4", "P1_21"],
+        "key": [
+            "P9_40",
+            "ADC_4",
+            "P1_21"
+        ],
         "ball": {
             "ZCZ": "C7",
             "BSM": "B8"
+        },
+        "ai": {
+            "ain": 1,
+            "gpio": 497
         }
     },
     {
@@ -1963,7 +3454,12 @@ var pinIndex = [{
         "gpio": 116,
         "mux": "mcasp0_axr1",
         "eeprom": null,
-        "key": ["P9_41", "GP0_5", "P2_28", "PRU0_6"],
+        "key": [
+            "P9_41",
+            "GP0_5",
+            "P2_28",
+            "PRU0_6"
+        ],
         "muxRegOffset": "0x1a8",
         "options": [
             "mcasp0_axr1",
@@ -1985,7 +3481,10 @@ var pinIndex = [{
         "gpio": 20,
         "mux": "xdma_event_intr1",
         "eeprom": 13,
-        "key": ["P9_41B", "P1_20"],
+        "key": [
+            "P9_41B",
+            "P1_20"
+        ],
         "muxRegOffset": "0x1b4",
         "options": [
             "xdma_event_intr1",
@@ -2019,7 +3518,11 @@ var pinIndex = [{
             "chip": "48300000",
             "addr": "48300100"
         },
-        "key": ["P9_42", "S1_2_6", "P2_29"],
+        "key": [
+            "P9_42",
+            "S1_2_6",
+            "P2_29"
+        ],
         "muxRegOffset": "0x164",
         "options": [
             "eCAP0_in_PWM0_out",
@@ -2041,7 +3544,12 @@ var pinIndex = [{
         "gpio": 114,
         "mux": "ecap0_in_pwm0_out",
         "eeprom": null,
-        "key": ["P9_42B", "E1_3", "P1_31", "PRU0_4"],
+        "key": [
+            "P9_42B",
+            "E1_3",
+            "P1_31",
+            "PRU0_4"
+        ],
         "muxRegOffset": "0x1a0",
         "options": [
             "mcasp0_aclkr",
@@ -2093,8 +3601,12 @@ var pinIndex = [{
         "name": "VIN_USB",
         "key": "P1_7",
         "ball": {
-            "BSM": ["P9", "R9", "T9"]
-        },
+            "BSM": [
+                "P9",
+                "R9",
+                "T9"
+            ]
+        }
     },
     {
         "name": "USB1_DN",
@@ -2127,22 +3639,29 @@ var pinIndex = [{
         "name": "VIN_BAT",
         "key": "P2_14",
         "ball": {
-            "BSM": ["P8", "R8", "T8"]
-        },
+            "BSM": [
+                "P8",
+                "R8",
+                "T8"
+            ]
+        }
     },
     {
         "name": "BAT_TEMP",
         "key": "P2_16",
         "ball": {
             "BSM": "N6"
-        },
+        }
     },
     {
         "name": "UART0_RXD",
         "gpio": 42,
         "mux": "uart0_rxd",
         "eeprom": null,
-        "key": ["UT0_3", "P1_32"],
+        "key": [
+            "UT0_3",
+            "P1_32"
+        ],
         "muxRegOffset": "0x170",
         "options": [
             "uart0_rxd",
@@ -2164,7 +3683,10 @@ var pinIndex = [{
         "gpio": 43,
         "mux": "uart0_txd",
         "eeprom": null,
-        "key": ["UT0_4", "P1_30"],
+        "key": [
+            "UT0_4",
+            "P1_30"
+        ],
         "muxRegOffset": "0x174",
         "options": [
             "uart0_rxd",
@@ -2942,7 +4464,7 @@ var pinIndex = [{
             "ZCZ": "L18",
             "BSM": "E16"
         }
-    },
+    }
 ];
 
 
@@ -6502,13 +8024,18 @@ var pinIndexAI = [{
 
 for (var i in pinIndex) {
     for (var j in pinIndexAI) {
-        if (pinIndex[i].key == pinIndexAI[j].key) {
-            pinIndex[i].ai = {
-                "gpio": pinIndexAI[j].gpio,
-                "ball": pinIndexAI[j].ball,
-                "muxRegOffset": pinIndexAI[j].muxRegOffset,
-                "option": pinIndexAI[j].option
-            };
+        if (typeof pinIndex[i].key == "object") {
+            //console.log(pinIndex[i].key + " is an object");
+            for (var k in pinIndex[i].key) {
+                if (pinIndex[i].key[k] == pinIndexAI[j].key) {
+                    pinIndex[i].ai = {
+                        "gpio": pinIndexAI[j].gpio,
+                        "ball": pinIndexAI[j].ball,
+                        "muxRegOffset": pinIndexAI[j].muxRegOffset,
+                        "option": pinIndexAI[j].option
+                    };
+                }
+            }
         }
     }
 }
