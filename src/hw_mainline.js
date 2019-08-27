@@ -20,8 +20,20 @@ var pwmPrefix = {};
 var ainPrefix = "/sys/bus/iio/devices/iio:device0";
 var SLOTS = "/sys/devices/platform/bone_capemgr/slots";
 var AINdts = "BB-ADC";
+var isAI = false;
+var AI_vdd_adc_mV = 1800;
 
 var logfile = '/var/lib/cloud9/bonescript.log';
+
+// TODO: This runs when 'require' is executed
+// and more thought should go into what happens
+// when it is run via RPC
+if (fs.existsSync("/proc/device-tree/model")) {
+    var model = fs.readFileSync('/proc/device-tree/model', 'ascii').trim().replace(/\0/g, '');
+    if (model == "BeagleBoard.org BeagleBone AI") {
+        isAI = true;
+    }
+}
 
 var readPWMFreqAndValue = function (pin, pwm) {
     var mode = {};
@@ -47,8 +59,14 @@ var readGPIODirection = function (n, gpio) {
 };
 
 var readPinMux = function (pin, mode, callback) {
-    var pinctrlFile = '/sys/kernel/debug/pinctrl/4a003400.pinmux/pins';
-    var muxRegOffset = parseInt(pin.muxRegOffset, 16);
+    var pinctrlFile =
+        isAI ? '/sys/kernel/debug/pinctrl/4a003400.pinmux/pins' :
+        '/sys/kernel/debug/pinctrl/44e10800.pinmux/pins';
+    // This does not handle the case where 2 balls are tied
+    // to the same header pin. Just grabbing first one for now.
+    var muxRegOffset =
+        isAI ? parseInt(pin.ai.muxRegOffset[0], 16) :
+        parseInt(pin.muxRegOffset, 16);
     //handle the case when debugfs not mounted
     if (!my.file_existsSync(pinctrlFile)) {
         //exit code is 1 if /sys/kernel/debug not mounted
@@ -102,13 +120,18 @@ var readPinMux = function (pin, mode, callback) {
 
 var setPinMode = function (pin, pinData, template, resp, callback) {
     if (debug) winston.debug('hw.setPinMode(' + [pin.key, pinData, template, JSON.stringify(resp)] + ');');
+    if (isAI) {
+        if (callback) callback(resp);
+        return (resp);
+    }
     var p = "ocp:" + pin.key + "_pinmux";
     if (!pin.universalName) {
         pin.universalName = [p];
         if (pin.ball && pin.ball.ZCZ) pin.universalName.push("ocp:" + pin.ball.ZCZ + "_pinmux");
     }
     var pinmux = my.find_sysfsFile(p, my.is_ocp(), pin.universalName);
-    gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
+    gpioFile[pin.key] = '/sys/class/gpio/gpio' +
+        (isAI ? pin.ai.gpio : pin.gpio) + '/value';
     if (pinmux) {
         var state = undefined;
         if ((pinData & 7) == 7) {
@@ -190,7 +213,7 @@ var setLEDPinToGPIO = function (pin, resp) {
 
 var exportGPIOControls = function (pin, direction, resp, callback) {
     if (debug) winston.debug('hw.exportGPIOControls(' + [pin.key, direction, resp] + ');');
-    var n = pin.gpio;
+    var n = isAI ? pin.ai.gpio : pin.gpio;
     var exists = my.file_existsSync(gpioFile[pin.key]);
 
     if (!exists) {
@@ -206,7 +229,8 @@ var exportGPIOControls = function (pin, direction, resp, callback) {
 
 var writeGPIOValue = function (pin, value, callback) {
     if (typeof gpioFile[pin.key] == 'undefined') {
-        gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
+        gpioFile[pin.key] = '/sys/class/gpio/gpio' +
+            (isAI ? pin.ai.gpio : pin.gpio) + '/value';
         if (pin.led) {
             gpioFile[pin.key] = "/sys/class/leds/" + pin.led + "/brightness";
         }
@@ -227,7 +251,8 @@ var writeGPIOValue = function (pin, value, callback) {
 };
 
 var readGPIOValue = function (pin, resp, callback) {
-    var gpioFile = '/sys/class/gpio/gpio' + pin.gpio + '/value';
+    var gpioFile = '/sys/class/gpio/gpio' +
+        (isAI ? pin.ai.gpio : pin.gpio) + '/value';
     if (callback) {
         var readFile = function (err, data) {
             if (err) {
@@ -267,8 +292,9 @@ var enableAIN = function (callback) {
 // HACK to work on AI.
 const aimap = [0, 1, 3, 2, 7, 6, 4];  // Fixes AI's AIN mapping.
 var readAIN = function (pin, resp, callback) {
-    var maxValue = 4095;
-    var ainFile = ainPrefix + '/in_voltage' + aimap[pin.ain].toString() + '_raw';
+    var maxValue = (isAI && (AI_vdd_adc_mV == 1800)) ? 2234 : 4095;
+    var ainFile = ainPrefix + '/in_voltage' +
+        (isAI ? pin.ai.ain.toString() : pin.ain.toString()) + '_raw';
     if (debug) winston.debug("readAIN: ainFile=" + ainFile);
     if (callback) {
         var readFile = function (err, data) {
@@ -300,10 +326,12 @@ var readAIN = function (pin, resp, callback) {
 };
 
 var writeGPIOEdge = function (pin, mode) {
-    fs.writeFileSync('/sys/class/gpio/gpio' + pin.gpio + '/edge', mode);
+    fs.writeFileSync('/sys/class/gpio/gpio' +
+        (isAI ? pin.ai.gpio : pin.gpio) + '/edge', mode);
 
     var resp = {};
-    resp.gpioFile = '/sys/class/gpio/gpio' + pin.gpio + '/value';
+    resp.gpioFile = '/sys/class/gpio/gpio' +
+        (isAI ? pin.ai.gpio : pin.gpio) + '/value';
     resp.valuefd = fs.openSync(resp.gpioFile, 'r');
     resp.value = new Buffer(1);
 
