@@ -219,6 +219,19 @@ the handler, so you don't have to worry about it.
 What's New
 ==========
 
+0.7.3 key updates
+-----------------
+Big speed-up on loading by lazy-loading infrequently used modules
+
+0.7.2 key updates
+-----------------
+* https://github.com/beagleboard/bonescript/issues/52
+* https://github.com/beagleboard/bonescript/issues/53
+
+0.7.1 key updates
+-----------------
+Very minor update on a function scope
+
 0.7.0 key updates
 -----------------
 Most of these fixes came from a [Google Summer of Code 2018 project](https://github.com/vaishnav98/bone101/wiki/BeagleBoard-GSoC'18:-Fixing-Bugs-in-BoneScript-and-Improving-BeagleBone-User-Interface)
