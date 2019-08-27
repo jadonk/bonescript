@@ -833,6 +833,8 @@ var pinIndex = [{
         "gpio": 23,
         "mux": "gpmc_ad9",
         "eeprom": 15,
+        // From am335x technical manual, p.183
+        // http://www.ti.com/lit/ug/spruh73n/spruh73n.pdf
         "pwm": {
             "module": "ehrpwm2",
             "sysfs": 6,
@@ -1011,6 +1013,8 @@ var pinIndex = [{
         "gpio": 22,
         "mux": "gpmc_ad8",
         "eeprom": 14,
+        // From am335x technical manual, p.183
+        // http://www.ti.com/lit/ug/spruh73n/spruh73n.pdf
         "pwm": {
             "module": "ehrpwm2",
             "sysfs": 5,
@@ -1791,6 +1795,8 @@ var pinIndex = [{
         "gpio": 81,
         "mux": "lcd_data11",
         "eeprom": 56,
+        // From am335x technical manual, p.183
+        // http://www.ti.com/lit/ug/spruh73n/spruh73n.pdf
         "pwm": {
             "module": "ehrpwm1",
             "sysfs": 4,
@@ -1895,6 +1901,8 @@ var pinIndex = [{
         "gpio": 80,
         "mux": "lcd_data10",
         "eeprom": 55,
+        // From am335x technical manual, p.183
+        // http://www.ti.com/lit/ug/spruh73n/spruh73n.pdf
         "pwm": {
             "module": "ehrpwm1",
             "sysfs": 3,
@@ -2218,6 +2226,8 @@ var pinIndex = [{
         "gpio": 70,
         "mux": "lcd_data0",
         "eeprom": 45,
+        // From am335x technical manual, p.183
+        // http://www.ti.com/lit/ug/spruh73n/spruh73n.pdf
         "pwm": {
             "module": "ehrpwm2",
             "sysfs": 5,
@@ -2297,6 +2307,8 @@ var pinIndex = [{
         "gpio": 71,
         "mux": "lcd_data1",
         "eeprom": 46,
+        // From am335x technical manual, p.183
+        // http://www.ti.com/lit/ug/spruh73n/spruh73n.pdf
         "pwm": {
             "module": "ehrpwm2",
             "sysfs": 6,
@@ -2513,6 +2525,8 @@ var pinIndex = [{
         "gpio": 50,
         "mux": "gpmc_a2",
         "eeprom": 34,
+        // From am335x technical manual, p.183
+        // http://www.ti.com/lit/ug/spruh73n/spruh73n.pdf
         "pwm": {
             "module": "ehrpwm1",
             "sysfs": 3,
@@ -2646,6 +2660,8 @@ var pinIndex = [{
         "gpio": 51,
         "mux": "gpmc_a3",
         "eeprom": 35,
+        // From am335x technical manual, p.183
+        // http://www.ti.com/lit/ug/spruh73n/spruh73n.pdf
         "pwm": {
             "module": "ehrpwm1",
             "sysfs": 4,
@@ -2827,6 +2843,8 @@ var pinIndex = [{
         "gpio": 3,
         "mux": "spi0_d0",
         "eeprom": 1,
+        // From am335x technical manual, p.183
+        // http://www.ti.com/lit/ug/spruh73n/spruh73n.pdf
         "pwm": {
             "module": "ehrpwm0",
             "sysfs": 1,
@@ -2863,6 +2881,8 @@ var pinIndex = [{
         "gpio": 2,
         "mux": "spi0_sclk",
         "eeprom": 0,
+        // From am335x technical manual, p.183
+        // http://www.ti.com/lit/ug/spruh73n/spruh73n.pdf
         "pwm": {
             "module": "ehrpwm0",
             "sysfs": 0,
@@ -3098,6 +3118,8 @@ var pinIndex = [{
         "gpio": 113,
         "mux": "mcasp0_ahclkr",
         "eeprom": 63,
+        // From am335x technical manual, p.183
+        // http://www.ti.com/lit/ug/spruh73n/spruh73n.pdf
         "pwm": {
             "module": "ecap2",
             "sysfs": 7,
@@ -3136,6 +3158,8 @@ var pinIndex = [{
         "gpio": 111,
         "mux": "mcasp0_fsx",
         "eeprom": 61,
+        // From am335x technical manual, p.183
+        // http://www.ti.com/lit/ug/spruh73n/spruh73n.pdf
         "pwm": {
             "module": "ehrpwm0",
             "sysfs": 1,
@@ -3202,6 +3226,8 @@ var pinIndex = [{
         "gpio": 110,
         "mux": "mcasp0_aclkx",
         "eeprom": 65,
+        // From am335x technical manual, p.183
+        // http://www.ti.com/lit/ug/spruh73n/spruh73n.pdf
         "pwm": {
             "module": "ehrpwm0",
             "sysfs": 0,
@@ -3244,6 +3270,38 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "A9",
             "BSM": "B9"
+        },
+        "ai": {
+            // 0 = 1.8V, 1 = 3.3V
+            "gpio": 91,
+            "ball": {
+                "abc": [
+                    "AD3",
+                    ""
+                ]
+            },
+            "muxRegOffset": [
+                "0x1550",
+                ""
+            ],
+            "option": [
+                "vin1a_d23",
+                "vin1b_d0",
+                "",
+                "",
+                "vout3_d0",
+                "",
+                "vin3a_d7",
+                "",
+                "",
+                "kbd_col8",
+                "pr1_edio_data_in7",
+                "pr1_edio_data_out7",
+                "pr1_pru0_gpi20",
+                "pr1_pru0_gpo20",
+                "gpio3_27",
+                "Driver off"
+            ]
         }
     },
     {
@@ -3258,6 +3316,10 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "C8",
             "BSM": "C7"
+        },
+        "ai": {
+            "ain": 7,
+            "gpio": 503
         }
     },
     {
@@ -3284,6 +3346,10 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "A8",
             "BSM": "C9"
+        },
+        "ai": {
+            "ain": 4,
+            "gpio": 500
         }
     },
     {
@@ -3298,6 +3364,10 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "B8",
             "BSM": "C8"
+        },
+        "ai": {
+            "ain": 6,
+            "gpio": 502
         }
     },
     {
@@ -3313,6 +3383,10 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "B7",
             "BSM": "B6"
+        },
+        "ai": {
+            "ain": 3,
+            "gpio": 498
         }
     },
     {
@@ -3328,6 +3402,10 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "A7",
             "BSM": "C6"
+        },
+        "ai": {
+            "ain": 2,
+            "gpio": 497
         }
     },
     {
@@ -3343,6 +3421,10 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "B6",
             "BSM": "A8"
+        },
+        "ai": {
+            "ain": 0,
+            "gpio": 496
         }
     },
     {
@@ -3358,6 +3440,10 @@ var pinIndex = [{
         "ball": {
             "ZCZ": "C7",
             "BSM": "B8"
+        },
+        "ai": {
+            "ain": 1,
+            "gpio": 497
         }
     },
     {
@@ -3428,6 +3514,8 @@ var pinIndex = [{
         "gpio": 7,
         "mux": "ecap0_in_pwm0_out",
         "eeprom": 4,
+        // From am335x technical manual, p.183
+        // http://www.ti.com/lit/ug/spruh73n/spruh73n.pdf
         "pwm": {
             "module": "ecap0",
             "sysfs": 2,
