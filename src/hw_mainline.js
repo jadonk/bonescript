@@ -62,7 +62,11 @@ var readPinMux = function (pin, mode, callback) {
     var pinctrlFile =
         isAI ? '/sys/kernel/debug/pinctrl/4a003400.pinmux/pins' :
         '/sys/kernel/debug/pinctrl/44e10800.pinmux/pins';
-    var muxRegOffset = parseInt(pin.muxRegOffset, 16);
+    // This does not handle the case where 2 balls are tied
+    // to the same header pin. Just grabbing first one for now.
+    var muxRegOffset =
+        isAI ? parseInt(pin.ai.muxRegOffset[0], 16) :
+        parseInt(pin.muxRegOffset, 16);
     //handle the case when debugfs not mounted
     if (!my.file_existsSync(pinctrlFile)) {
         //exit code is 1 if /sys/kernel/debug not mounted
