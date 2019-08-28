@@ -4,7 +4,7 @@
 var fs = require('fs');
 var child_process = require('child_process');
 var os = require('os');
-var bone = require('./boneai'); // Database of pins
+var bone = require('./bone'); // Database of pins
 var functions = require('./functions'); // functions.js defines several math/bit functions that are handy
 var package_json = require('../package.json');
 var g = require('./constants');

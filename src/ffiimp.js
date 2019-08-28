@@ -1,4 +1,4 @@
-var bone = require('./boneai');
+var bone = require('./bone');
 var fs = require('fs');
 var my = require('./my');
 var shell = my.require('shelljs');

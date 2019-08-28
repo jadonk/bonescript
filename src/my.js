@@ -5,7 +5,7 @@
 var fs = require('fs');
 var winston = require('winston');
 var child_process = require('child_process');
-var bone = require('./boneai');
+var bone = require('./bone');
 var g = require('./constants');
 
 var debug = process.env.DEBUG ? true : false;

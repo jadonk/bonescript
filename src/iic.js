@@ -1,5 +1,5 @@
 // Copyright (C) 2013 - Texas Instruments, Jason Kridner
-var bone = require('./boneai');
+var bone = require('./bone');
 var my = require('./my');
 
 var m = {};
