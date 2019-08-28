@@ -215,8 +215,10 @@ var exportGPIOControls = function (pin, direction, resp, callback) {
     if (debug) winston.debug('hw.exportGPIOControls(' + [pin.key, direction, resp] + ');');
     var n = isAI ? pin.ai.gpio : pin.gpio;
     var exists = my.file_existsSync(gpioFile[pin.key]);
+    console.log("exportGPIOControls, pin.key:", pin.key, gpioFile[pin.key]);
 
     if (!exists) {
+        console.log("exporting gpio: ", n);
         if (debug) winston.debug("exporting gpio: " + n);
         fs.writeFileSync("/sys/class/gpio/export", "" + n, null);
     }
