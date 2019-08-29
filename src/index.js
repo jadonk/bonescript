@@ -22,6 +22,8 @@ var rc = require('./rc');
 
 var debug = process.env.DEBUG ? true : false;
 
+var cbWarn = false;
+
 // Detect if we are on a Beagle
 var hw;
 if (os.type() == 'Linux' && os.arch() == 'arm') {
@@ -150,7 +152,8 @@ f.pinMode = function (pin, direction, mux, pullup, slew, callback) {
             winston.info(err);
             if (callback) { //support both nodestyle and oldstyle callbacks based on arguments length
                 if (callback.length == 1) {
-                    winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+                    if (!cbWarn) winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+                    cbWarn = true;
                     callback({
                         value: false,
                         err: err
@@ -190,7 +193,8 @@ f.pinMode = function (pin, direction, mux, pullup, slew, callback) {
         }
         if (callback) {
             if (callback.length == 1) {
-                winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+                if (!cbWarn) winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+                cbWarn = true;
                 callback(resp);
             } else
                 callback(resp.err, resp.value);
@@ -214,7 +218,8 @@ f.pinMode = function (pin, direction, mux, pullup, slew, callback) {
             delete gpio[n];
             if (callback) {
                 if (callback.length == 1) {
-                    winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+                    if (!cbWarn) winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+                    cbWarn = true;
                     callback(resp);
                 } else
                     callback(resp.err, resp.value);
@@ -240,7 +245,8 @@ f.pinMode = function (pin, direction, mux, pullup, slew, callback) {
 
     if (callback) {
         if (callback.length == 1) {
-            winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+            if (!cbWarn) winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+            cbWarn = true;
             callback(resp);
         } else
             callback(resp.err, resp.value);
@@ -297,7 +303,8 @@ f.digitalRead = function (pin, callback) {
 
     function analogCallback(x) {
         if (callback.length == 1) {
-            winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+            if (!cbWarn) winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+            cbWarn = true;
             callback(analogValue(x));
         } else
             callback(x.err, analogValue(x).value);
@@ -410,7 +417,8 @@ f.attachInterrupt = function (pin, handler, mode, callback) {
         if (debug) winston.debug(resp.err);
         if (callback) {
             if (callback.length == 1) {
-                winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+                if (!cbWarn) winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+                cbWarn = true;
                 callback(resp);
             } else {
                 var err = resp.err;
@@ -429,7 +437,8 @@ f.attachInterrupt = function (pin, handler, mode, callback) {
         resp.configured = false;
         if (callback) {
             if (callback.length == 1) {
-                winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+                if (!cbWarn) winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+                cbWarn = true;
                 callback(resp);
             } else {
                 var err = resp.err;
@@ -448,7 +457,8 @@ f.attachInterrupt = function (pin, handler, mode, callback) {
         resp.configured = true;
         if (callback) {
             if (callback.length == 1) {
-                winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+                if (!cbWarn) winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+                cbWarn = true;
                 callback(resp);
             } else {
                 var err = resp.err;
@@ -475,7 +485,8 @@ f.attachInterrupt = function (pin, handler, mode, callback) {
         };
         if (m.output && (typeof callback == 'function')) {
             if (callback.length == 1) {
-                winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+                if (!cbWarn) winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+                cbWarn = true;
                 callback(m);
             } else {
                 var err = m.err;
@@ -497,7 +508,8 @@ f.attachInterrupt = function (pin, handler, mode, callback) {
     }
     if (callback) {
         if (callback.length == 1) {
-            winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+            if (!cbWarn) winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+            cbWarn = true;
             callback(resp);
         } else {
             var err = resp.err;
@@ -516,7 +528,7 @@ f.detachInterrupt = function (pin, callback) {
     if (typeof gpio[n] == 'undefined' || typeof gpioInt[n] == 'undefined') {
         if (callback) {
             if (callback.length == 1) {
-                winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+                if (!cbWarn) winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
                 callback({
                     'pin': pin,
                     'detached': false
@@ -533,7 +545,7 @@ f.detachInterrupt = function (pin, callback) {
     delete gpioInt[n];
     if (callback) {
         if (callback.length == 1) {
-            winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+            if (!cbWarn) winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
             callback({
                 'pin': pin,
                 'detached': true
@@ -622,7 +634,7 @@ f.getEeproms = function (callback) {
     }
     if (callback) {
         if (callback.length == 1) {
-            winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+            if (!cbWarn) winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
             callback(eeproms);
         } else
             callback(eeproms == {} ? 'No valid EEPROM contents found' : null, eeproms);
@@ -640,7 +652,7 @@ f.readTextFile = function (filename, callback) {
             });
         };
         if (callback.length == 1) {
-            winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+            if (!cbWarn) winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
             fs.readFile(filename, 'ascii', cb);
         } else
             fs.readFile(filename, 'ascii', callback);
@@ -688,7 +700,7 @@ f.getPlatform = function (callback) {
     platform = hw.readPlatform(platform);
     if (callback) {
         if (callback.length == 1) {
-            winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+            if (!cbWarn) winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
             callback(platform);
         } else
             callback(null, platform);
@@ -701,7 +713,7 @@ f.echo = function (data, callback) {
     winston.info(data);
     if (callback) {
         if (callback.length == 1) {
-            winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+            if (!cbWarn) winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
             callback({
                 'data': data
             });
@@ -719,7 +731,7 @@ f.setDate = function (date, callback) {
         if (typeof callback != 'function') return;
         else {
             if (callback.length == 1) {
-                winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+                if (!cbWarn) winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
                 callback({
                     'error': error,
                     'stdout': stdout,
