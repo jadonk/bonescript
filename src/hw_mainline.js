@@ -120,18 +120,18 @@ var readPinMux = function (pin, mode, callback) {
 
 var setPinMode = function (pin, pinData, template, resp, callback) {
     if (debug) winston.debug('hw.setPinMode(' + [pin.key, pinData, template, JSON.stringify(resp)] + ');');
+    var p = "ocp:" + pin.key + "_pinmux";
+    gpioFile[pin.key] = '/sys/class/gpio/gpio' +
+        (isAI ? pin.ai.gpio : pin.gpio) + '/value';
     if (isAI) {
         if (callback) callback(resp);
         return (resp);
     }
-    var p = "ocp:" + pin.key + "_pinmux";
     if (!pin.universalName) {
         pin.universalName = [p];
         if (pin.ball && pin.ball.ZCZ) pin.universalName.push("ocp:" + pin.ball.ZCZ + "_pinmux");
     }
     var pinmux = my.find_sysfsFile(p, my.is_ocp(), pin.universalName);
-    gpioFile[pin.key] = '/sys/class/gpio/gpio' +
-        (isAI ? pin.ai.gpio : pin.gpio) + '/value';
     if (pinmux) {
         var state = undefined;
         if ((pinData & 7) == 7) {
