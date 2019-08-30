@@ -4,8 +4,6 @@
 // pins is an object whose keys are the pinIndex keys, e.g. P9_14.
 // uarts and i2c are objects describing the serial ports and i2c buses.
 
-console.log("Loading bone.js");
-
 var pinIndex = [{
         "name": "USR0",
         "gpio": 53,

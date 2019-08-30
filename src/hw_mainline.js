@@ -122,6 +122,10 @@ var setPinMode = function (pin, pinData, template, resp, callback) {
     if (debug) winston.debug('hw.setPinMode(' + [pin.key, pinData, template, JSON.stringify(resp)] + ');');
     if (isAI) {
         if (callback) callback(resp);
+        // Hack so gpioFile is defined
+        gpioFile[pin.key] = '/sys/class/gpio/gpio' +
+            (isAI ? pin.ai.gpio : pin.gpio) + '/value';
+
         return (resp);
     }
     var p = "ocp:" + pin.key + "_pinmux";
@@ -215,10 +219,8 @@ var exportGPIOControls = function (pin, direction, resp, callback) {
     if (debug) winston.debug('hw.exportGPIOControls(' + [pin.key, direction, resp] + ');');
     var n = isAI ? pin.ai.gpio : pin.gpio;
     var exists = my.file_existsSync(gpioFile[pin.key]);
-    console.log("exportGPIOControls, pin.key:", pin.key, gpioFile[pin.key]);
 
     if (!exists) {
-        console.log("exporting gpio: ", n);
         if (debug) winston.debug("exporting gpio: " + n);
         fs.writeFileSync("/sys/class/gpio/export", "" + n, null);
     }
@@ -292,7 +294,6 @@ var enableAIN = function (callback) {
 };
 
 // HACK to work on AI.
-const aimap = [0, 1, 3, 2, 7, 6, 4];  // Fixes AI's AIN mapping.
 var readAIN = function (pin, resp, callback) {
     var maxValue = (isAI && (AI_vdd_adc_mV == 1800)) ? 2234 : 4095;
     var ainFile = ainPrefix + '/in_voltage' +

@@ -382,8 +382,6 @@ var myeval = function (x) {
 };
 
 var getpin = function (pin) {
-    // console.log("getpin pin = " + pin);
-    // console.log("typeof pin = " + typeof pin);
     if (typeof pin == 'object') return (pin);
     else {
         var pinObject = bone.getPinObject(pin);

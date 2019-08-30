@@ -22,8 +22,6 @@ var rc = require('./rc');
 
 var debug = process.env.DEBUG ? true : false;
 
-console.log("DEBUG = " + debug);
-
 // Detect if we are on a Beagle
 var hw;
 if (os.type() == 'Linux' && os.arch() == 'arm') {
@@ -60,7 +58,6 @@ if (debug) {
         level: 'debug'
     });
     winston.level = 'debug';
-    console.log("winston file: ", hw.logfile);
 } else {
     winston.setLevels(winston.config.syslog.levels);
 }
@@ -161,7 +158,7 @@ f.pinMode = function (pin, direction, mux, pullup, slew, callback) {
                 } else
                     callback(err, false);
             }
-            // return (false);		// Continue for now
+            return (false);
         }
         direction = g.OUTPUT;
         mux = pin.pwm.muxmode;
@@ -221,16 +218,13 @@ f.pinMode = function (pin, direction, mux, pullup, slew, callback) {
                 } else
                     callback(resp.err, resp.value);
             }
-            // Move on for now.
-            // return (resp.value);
+            return (resp.value);
         }
     }
 
     // Enable GPIO and set direction
-    console.log('pinMode:  mux=', mux);
     if (mux == 7) {
         // Export the GPIO controls
-        console.log('pinMode:  exportGPIO');
         resp = hw.exportGPIOControls(pin, direction, resp);
         if (typeof resp.err != 'undefined') {
             if (typeof gpio[n] == 'undefined') {
@@ -323,7 +317,6 @@ f.digitalRead = function (pin, callback) {
 f.digitalRead.args = ['pin', 'callback'];
 
 f.analogRead = function (pin, callback) {
-    // console.log("analogRead pin = ", pin);
     pin = my.getpin(pin);
     if (debug) winston.debug('analogRead(' + [pin.key] + ');');
     var resp = {};
