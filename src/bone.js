@@ -39,7 +39,7 @@ var pinIndex = [{
                 "0x1528",
                 ""
             ],
-            "option": [
+            "options": [
                 "vin1a_d13",
                 "vin1b_d2",
                 "",
@@ -108,7 +108,7 @@ var pinIndex = [{
                 "0x16C0",
                 ""
             ],
-            "option": [
+            "options": [
                 "mcasp1_axr3",
                 "mcasp6_axr3",
                 "",
@@ -177,7 +177,7 @@ var pinIndex = [{
                 "0x1520",
                 ""
             ],
-            "option": [
+            "options": [
                 "vin1a_d11",
                 "vin1b_d4",
                 "",
@@ -246,7 +246,7 @@ var pinIndex = [{
                 "0x151C",
                 ""
             ],
-            "option": [
+            "options": [
                 "vin1a_d10",
                 "vin1b_d5",
                 "",
@@ -298,7 +298,7 @@ var pinIndex = [{
                 "0x1500",
                 ""
             ],
-            "option": [
+            "options": [
                 "vin1a_d3",
                 "",
                 "",
@@ -403,7 +403,7 @@ var pinIndex = [{
                 "0x179C",
                 ""
             ],
-            "option": [
+            "options": [
                 "mmc3_dat6",
                 "spi4_d0",
                 "uart10_ctsn",
@@ -475,7 +475,7 @@ var pinIndex = [{
                 "0x17A0",
                 ""
             ],
-            "option": [
+            "options": [
                 "mmc3_dat7",
                 "spi4_cs0",
                 "uart10_rtsn",
@@ -547,7 +547,7 @@ var pinIndex = [{
                 "0x178C",
                 ""
             ],
-            "option": [
+            "options": [
                 "mmc3_dat2",
                 "spi3_cs0",
                 "uart5_ctsn",
@@ -619,7 +619,7 @@ var pinIndex = [{
                 "0x1790",
                 ""
             ],
-            "option": [
+            "options": [
                 "mmc3_dat3",
                 "spi3_cs1",
                 "uart5_rtsn",
@@ -700,7 +700,7 @@ var pinIndex = [{
                 "0x16EC",
                 ""
             ],
-            "option": [
+            "options": [
                 "mcasp1_axr14",
                 "mcasp7_aclkx",
                 "mcasp7_aclkr",
@@ -781,7 +781,7 @@ var pinIndex = [{
                 "0x16F0",
                 ""
             ],
-            "option": [
+            "options": [
                 "mcasp1_axr15",
                 "mcasp7_fsx",
                 "mcasp7_fsr",
@@ -856,7 +856,7 @@ var pinIndex = [{
                 "0x1698",
                 ""
             ],
-            "option": [
+            "options": [
                 "xref_clk1",
                 "mcasp2_axr9",
                 "mcasp1_axr5",
@@ -928,7 +928,7 @@ var pinIndex = [{
                 "0x16E8",
                 ""
             ],
-            "option": [
+            "options": [
                 "mcasp1_axr13",
                 "mcasp7_axr1",
                 "",
@@ -1001,7 +1001,7 @@ var pinIndex = [{
                 "0x1510",
                 ""
             ],
-            "option": [
+            "options": [
                 "vin1a_d7",
                 "",
                 "",
@@ -1074,7 +1074,7 @@ var pinIndex = [{
                 "0x150C",
                 ""
             ],
-            "option": [
+            "options": [
                 "vin1a_d6",
                 "",
                 "",
@@ -1162,7 +1162,7 @@ var pinIndex = [{
                 "0x1590",
                 ""
             ],
-            "option": [
+            "options": [
                 "vin2a_d10",
                 "",
                 "",
@@ -1240,7 +1240,7 @@ var pinIndex = [{
                 "0x1598",
                 ""
             ],
-            "option": [
+            "options": [
                 "vin2a_d12",
                 "",
                 "",
@@ -1313,7 +1313,7 @@ var pinIndex = [{
                 "0x1570",
                 "0x15B4"
             ],
-            "option": [
+            "options": [
                 "vin2a_d2",
                 "",
                 "",
@@ -1386,7 +1386,7 @@ var pinIndex = [{
                 "0x15BC",
                 ""
             ],
-            "option": [
+            "options": [
                 "vin2a_d21",
                 "",
                 "vin2b_d2",
@@ -1464,7 +1464,7 @@ var pinIndex = [{
                 "0x1624",
                 ""
             ],
-            "option": [
+            "options": [
                 "vout1_d18",
                 "",
                 "emu4",
@@ -1536,7 +1536,7 @@ var pinIndex = [{
                 "0x1588",
                 ""
             ],
-            "option": [
+            "options": [
                 "vin2a_d8",
                 "",
                 "",
@@ -1617,7 +1617,7 @@ var pinIndex = [{
                 "0x158C",
                 ""
             ],
-            "option": [
+            "options": [
                 "vin2a_d9",
                 "",
                 "",
@@ -1686,7 +1686,7 @@ var pinIndex = [{
                 "0x1780",
                 ""
             ],
-            "option": [
+            "options": [
                 "mmc3_cmd",
                 "spi3_sclk",
                 "",
@@ -1755,7 +1755,7 @@ var pinIndex = [{
                 "0x177C",
                 ""
             ],
-            "option": [
+            "options": [
                 "mmc3_clk",
                 "",
                 "",
@@ -1824,7 +1824,7 @@ var pinIndex = [{
                 "0x1798",
                 ""
             ],
-            "option": [
+            "options": [
                 "mmc3_dat5",
                 "spi4_d1",
                 "uart10_txd",
@@ -1893,7 +1893,7 @@ var pinIndex = [{
                 "0x1794",
                 ""
             ],
-            "option": [
+            "options": [
                 "mmc3_dat4",
                 "spi4_sclk",
                 "uart10_rxd",
@@ -1962,7 +1962,7 @@ var pinIndex = [{
                 "0x1788",
                 ""
             ],
-            "option": [
+            "options": [
                 "mmc3_dat1",
                 "spi3_d0",
                 "uart5_txd",
@@ -2031,7 +2031,7 @@ var pinIndex = [{
                 "0x1784",
                 ""
             ],
-            "option": [
+            "options": [
                 "mmc3_dat0",
                 "spi3_d1",
                 "uart5_rxd",
@@ -2107,7 +2107,7 @@ var pinIndex = [{
                 "0x15B8",
                 ""
             ],
-            "option": [
+            "options": [
                 "vin2a_d20",
                 "",
                 "vin2b_d3",
@@ -2209,7 +2209,7 @@ var pinIndex = [{
                 "0x15D8",
                 "0x1628"
             ],
-            "option": [
+            "options": [
                 "vout1_vsync",
                 "",
                 "",
@@ -2283,7 +2283,7 @@ var pinIndex = [{
                 "0x15C8",
                 "0x162C"
             ],
-            "option": [
+            "options": [
                 "vout1_clk",
                 "",
                 "",
@@ -2356,7 +2356,7 @@ var pinIndex = [{
                 "0x15D4",
                 "0x1630"
             ],
-            "option": [
+            "options": [
                 "vout1_hsync",
                 "",
                 "",
@@ -2430,7 +2430,7 @@ var pinIndex = [{
                 "0x15CC",
                 "0x1634"
             ],
-            "option": [
+            "options": [
                 "vout1_de",
                 "",
                 "",
@@ -2499,7 +2499,7 @@ var pinIndex = [{
                 "0x1614",
                 "0x173C"
             ],
-            "option": [
+            "options": [
                 "vout1_d14",
                 "",
                 "emu13",
@@ -2575,7 +2575,7 @@ var pinIndex = [{
                 "0x1618",
                 "0x1740"
             ],
-            "option": [
+            "options": [
                 "vout1_d15",
                 "",
                 "emu14",
@@ -2647,7 +2647,7 @@ var pinIndex = [{
                 "0x1610",
                 "0x14E8"
             ],
-            "option": [
+            "options": [
                 "vout1_d13",
                 "",
                 "emu12",
@@ -2728,7 +2728,7 @@ var pinIndex = [{
                 "0x1608",
                 "0x1564"
             ],
-            "option": [
+            "options": [
                 "vout1_d11",
                 "",
                 "emu10",
@@ -2800,7 +2800,7 @@ var pinIndex = [{
                 "0x160C",
                 "0x14E4"
             ],
-            "option": [
+            "options": [
                 "vout1_d12",
                 "",
                 "emu11",
@@ -2884,7 +2884,7 @@ var pinIndex = [{
                 "0x1604",
                 "0x1568"
             ],
-            "option": [
+            "options": [
                 "vout1_d10",
                 "",
                 "emu3",
@@ -2956,7 +2956,7 @@ var pinIndex = [{
                 "0x15FC",
                 "0x1738"
             ],
-            "option": [
+            "options": [
                 "vout1_d8",
                 "",
                 "uart6_rxd",
@@ -3028,7 +3028,7 @@ var pinIndex = [{
                 "0x1600",
                 "0x1734"
             ],
-            "option": [
+            "options": [
                 "vout1_d9",
                 "",
                 "uart6_txd",
@@ -3100,7 +3100,7 @@ var pinIndex = [{
                 "0x15F4",
                 ""
             ],
-            "option": [
+            "options": [
                 "vout1_d6",
                 "",
                 "emu8",
@@ -3172,7 +3172,7 @@ var pinIndex = [{
                 "0x15F8",
                 ""
             ],
-            "option": [
+            "options": [
                 "vout1_d7",
                 "",
                 "emu9",
@@ -3244,7 +3244,7 @@ var pinIndex = [{
                 "0x15EC",
                 ""
             ],
-            "option": [
+            "options": [
                 "vout1_d4",
                 "",
                 "emu6",
@@ -3316,7 +3316,7 @@ var pinIndex = [{
                 "0x15F0",
                 ""
             ],
-            "option": [
+            "options": [
                 "vout1_d5",
                 "",
                 "emu7",
@@ -3385,7 +3385,7 @@ var pinIndex = [{
                 "0x15E4",
                 ""
             ],
-            "option": [
+            "options": [
                 "vout1_d2",
                 "",
                 "emu2",
@@ -3454,7 +3454,7 @@ var pinIndex = [{
                 "0x15E8",
                 ""
             ],
-            "option": [
+            "options": [
                 "vout1_d3",
                 "",
                 "emu5",
@@ -3535,7 +3535,7 @@ var pinIndex = [{
                 "0x15DC",
                 "0x161C"
             ],
-            "option": [
+            "options": [
                 "vout1_d0",
                 "",
                 "uart5_rxd",
@@ -3616,7 +3616,7 @@ var pinIndex = [{
                 "0x15E0",
                 "0x1638"
             ],
-            "option": [
+            "options": [
                 "vout1_d1",
                 "",
                 "uart5_txd",
@@ -3713,7 +3713,7 @@ var pinIndex = [{
                 "",
                 ""
             ],
-            "option": [
+            "options": [
                 "",
                 "",
                 "",
@@ -3771,7 +3771,7 @@ var pinIndex = [{
                 "0x1864",
                 ""
             ],
-            "option": [
+            "options": [
                 "rstoutn",
                 "",
                 "",
@@ -3844,7 +3844,7 @@ var pinIndex = [{
                 "0x172C",
                 "0x1620"
             ],
-            "option": [
+            "options": [
                 "mcasp3_axr0",
                 "",
                 "mcasp2_axr14",
@@ -3916,7 +3916,7 @@ var pinIndex = [{
                 "0x16AC",
                 ""
             ],
-            "option": [
+            "options": [
                 "mcasp1_aclkr",
                 "mcasp7_axr2",
                 "",
@@ -3988,7 +3988,7 @@ var pinIndex = [{
                 "0x1730",
                 "0x1680"
             ],
-            "option": [
+            "options": [
                 "mcasp3_axr1",
                 "",
                 "mcasp2_axr15",
@@ -4077,7 +4077,7 @@ var pinIndex = [{
                 "0x15AC",
                 ""
             ],
-            "option": [
+            "options": [
                 "vin2a_d17",
                 "",
                 "vin2b_d6",
@@ -4146,7 +4146,7 @@ var pinIndex = [{
                 "0x1514",
                 ""
             ],
-            "option": [
+            "options": [
                 "vin1a_d8",
                 "vin1b_d7",
                 "",
@@ -4251,7 +4251,7 @@ var pinIndex = [{
                 "0x15B0",
                 ""
             ],
-            "option": [
+            "options": [
                 "vin2a_d18",
                 "",
                 "vin2b_d5",
@@ -4324,7 +4324,7 @@ var pinIndex = [{
                 "0x17CC",
                 "0x16B8"
             ],
-            "option": [
+            "options": [
                 "spi2_cs0",
                 "uart3_rtsn",
                 "uart5_txd",
@@ -4397,7 +4397,7 @@ var pinIndex = [{
                 "0x17C8",
                 "0x16B4"
             ],
-            "option": [
+            "options": [
                 "spi2_d0",
                 "uart3_ctsn",
                 "uart5_rxd",
@@ -4469,7 +4469,7 @@ var pinIndex = [{
                 "0x1440",
                 "0x157C"
             ],
-            "option": [
+            "options": [
                 "gpmc_a0",
                 "",
                 "vin3a_d16",
@@ -4541,7 +4541,7 @@ var pinIndex = [{
                 "0x1444",
                 "0x1578"
             ],
-            "option": [
+            "options": [
                 "gpmc_a1",
                 "",
                 "vin3a_d17",
@@ -4626,7 +4626,7 @@ var pinIndex = [{
                 "0x14F0",
                 "0x17C4"
             ],
-            "option": [
+            "options": [
                 "vin1a_vsync0",
                 "vin1b_de1",
                 "",
@@ -4711,7 +4711,7 @@ var pinIndex = [{
                 "0x169C",
                 "0x17C0"
             ],
-            "option": [
+            "options": [
                 "xref_clk2",
                 "mcasp2_axr10",
                 "mcasp1_axr6",
@@ -4783,7 +4783,7 @@ var pinIndex = [{
                 "0x17B4",
                 ""
             ],
-            "option": [
+            "options": [
                 "spi1_cs1",
                 "",
                 "sata1_led",
@@ -4925,7 +4925,7 @@ var pinIndex = [{
                 "0x168C",
                 ""
             ],
-            "option": [
+            "options": [
                 "gpio6_15",
                 "mcasp1_axr9",
                 "dcan2_rx",
@@ -4998,7 +4998,7 @@ var pinIndex = [{
                 "0x1694",
                 ""
             ],
-            "option": [
+            "options": [
                 "xref_clk0",
                 "mcasp2_axr8",
                 "mcasp1_axr4",
@@ -5071,7 +5071,7 @@ var pinIndex = [{
                 "0x1688",
                 "0x1544"
             ],
-            "option": [
+            "options": [
                 "gpio6_14",
                 "mcasp1_axr8",
                 "dcan2_tx",
@@ -5145,7 +5145,7 @@ var pinIndex = [{
                 "0x15A0",
                 "0x16B0"
             ],
-            "option": [
+            "options": [
                 "vin2a_d14",
                 "",
                 "",
@@ -5232,7 +5232,7 @@ var pinIndex = [{
                 "0x16E0",
                 ""
             ],
-            "option": [
+            "options": [
                 "mcasp1_axr11",
                 "mcasp6_fsx",
                 "mcasp6_fsr",
@@ -5319,7 +5319,7 @@ var pinIndex = [{
                 "0x16D8",
                 "0x16A8"
             ],
-            "option": [
+            "options": [
                 "mcasp1_axr9",
                 "mcasp6_axr1",
                 "",
@@ -5394,7 +5394,7 @@ var pinIndex = [{
                 "0x16DC",
                 ""
             ],
-            "option": [
+            "options": [
                 "mcasp1_axr10",
                 "mcasp6_aclkx",
                 "mcasp6_aclkr",
@@ -5480,7 +5480,7 @@ var pinIndex = [{
                 "0x16D4",
                 "0x16A4"
             ],
-            "option": [
+            "options": [
                 "mcasp1_axr8",
                 "mcasp6_axr0",
                 "",
@@ -5540,7 +5540,7 @@ var pinIndex = [{
                 "0x1550",
                 ""
             ],
-            "option": [
+            "options": [
                 "vin1a_d23",
                 "vin1b_d0",
                 "",
@@ -5751,7 +5751,7 @@ var pinIndex = [{
                 "0x16A0",
                 "0x1580"
             ],
-            "option": [
+            "options": [
                 "xref_clk3",
                 "mcasp2_axr11",
                 "mcasp1_axr7",
@@ -5861,7 +5861,7 @@ var pinIndex = [{
                 "0x16E4",
                 "0x159C"
             ],
-            "option": [
+            "options": [
                 "mcasp1_axr12",
                 "mcasp7_axr0",
                 "",

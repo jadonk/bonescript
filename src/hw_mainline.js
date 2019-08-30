@@ -15,6 +15,8 @@ if (debug) {
     });
 }
 
+var cbWarn = false;
+
 var gpioFile = {};
 var pwmPrefix = {};
 var ainPrefix = "/sys/bus/iio/devices/iio:device0";
@@ -64,9 +66,11 @@ var readPinMux = function (pin, mode, callback) {
         '/sys/kernel/debug/pinctrl/44e10800.pinmux/pins';
     // This does not handle the case where 2 balls are tied
     // to the same header pin. Just grabbing first one for now.
-    var muxRegOffset =
-        isAI ? parseInt(pin.ai.muxRegOffset[0], 16) :
-        parseInt(pin.muxRegOffset, 16);
+    var muxRegOffset = null;
+    try {
+        muxRegOffset = isAI ? parseInt(pin.muxRegOffset[0], 16) :
+            parseInt(pin.muxRegOffset, 16);
+    } catch (ex) {}
     //handle the case when debugfs not mounted
     if (!my.file_existsSync(pinctrlFile)) {
         //exit code is 1 if /sys/kernel/debug not mounted
@@ -86,9 +90,10 @@ var readPinMux = function (pin, mode, callback) {
             } else
                 callback(mode.err, data);
         }
-        mode = parse.modeFromPinctrl(data, muxRegOffset, 0x44e10800, mode);
+        mode = parse.modeFromPinctrl(data, muxRegOffset, isAI ? 0x4a002000 : 0x44e10800, mode, isAI);
         if (callback.length == 1) {
-            winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+            if (!cbWarn) winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+            cbWarn = true;
             callback(mode);
         } else
             callback(null, mode);
@@ -99,7 +104,8 @@ var readPinMux = function (pin, mode, callback) {
         } else {
             if (debug) winston.debug('getPinMode(' + pin.key + '): no valid mux data');
             if (callback.length == 1) {
-                winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+                if (!cbWarn) winston.warning("single argument callbacks will be deprecated.please use node-style error-first callbacks: callback(err,response)");
+                cbWarn = true;
                 callback(mode);
             } else
                 callback('readPinMux error: no valid mux data', mode);
@@ -110,7 +116,7 @@ var readPinMux = function (pin, mode, callback) {
     } else {
         try {
             var data2 = fs.readFileSync(pinctrlFile, 'utf8');
-            mode = parse.modeFromPinctrl(data2, muxRegOffset, 0x44e10800, mode);
+            mode = parse.modeFromPinctrl(data2, muxRegOffset, isAI ? 0x4a002000 : 0x44e10800, mode, isAI);
         } catch (ex) {
             if (debug) winston.debug('getPinMode(' + pin.key + '): ' + ex);
         }
@@ -121,8 +127,7 @@ var readPinMux = function (pin, mode, callback) {
 var setPinMode = function (pin, pinData, template, resp, callback) {
     if (debug) winston.debug('hw.setPinMode(' + [pin.key, pinData, template, JSON.stringify(resp)] + ');');
     var p = "ocp:" + pin.key + "_pinmux";
-    gpioFile[pin.key] = '/sys/class/gpio/gpio' +
-        (isAI ? pin.ai.gpio : pin.gpio) + '/value';
+    gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
     if (isAI) {
         if (callback) callback(resp);
         return (resp);
@@ -213,7 +218,7 @@ var setLEDPinToGPIO = function (pin, resp) {
 
 var exportGPIOControls = function (pin, direction, resp, callback) {
     if (debug) winston.debug('hw.exportGPIOControls(' + [pin.key, direction, resp] + ');');
-    var n = isAI ? pin.ai.gpio : pin.gpio;
+    var n = pin.gpio;
     var exists = my.file_existsSync(gpioFile[pin.key]);
 
     if (!exists) {
@@ -229,8 +234,7 @@ var exportGPIOControls = function (pin, direction, resp, callback) {
 
 var writeGPIOValue = function (pin, value, callback) {
     if (typeof gpioFile[pin.key] == 'undefined') {
-        gpioFile[pin.key] = '/sys/class/gpio/gpio' +
-            (isAI ? pin.ai.gpio : pin.gpio) + '/value';
+        gpioFile[pin.key] = '/sys/class/gpio/gpio' + pin.gpio + '/value';
         if (pin.led) {
             gpioFile[pin.key] = "/sys/class/leds/" + pin.led + "/brightness";
         }
@@ -251,8 +255,7 @@ var writeGPIOValue = function (pin, value, callback) {
 };
 
 var readGPIOValue = function (pin, resp, callback) {
-    var gpioFile = '/sys/class/gpio/gpio' +
-        (isAI ? pin.ai.gpio : pin.gpio) + '/value';
+    var gpioFile = '/sys/class/gpio/gpio' + pin.gpio + '/value';
     if (callback) {
         var readFile = function (err, data) {
             if (err) {
@@ -291,8 +294,7 @@ var enableAIN = function (callback) {
 
 var readAIN = function (pin, resp, callback) {
     var maxValue = (isAI && (AI_vdd_adc_mV == 1800)) ? 2234 : 4095;
-    var ainFile = ainPrefix + '/in_voltage' +
-        (isAI ? pin.ai.ain.toString() : pin.ain.toString()) + '_raw';
+    var ainFile = ainPrefix + '/in_voltage' + pin.ain.toString() + '_raw';
     if (debug) winston.debug("readAIN: ainFile=" + ainFile);
     if (callback) {
         var readFile = function (err, data) {
@@ -324,12 +326,10 @@ var readAIN = function (pin, resp, callback) {
 };
 
 var writeGPIOEdge = function (pin, mode) {
-    fs.writeFileSync('/sys/class/gpio/gpio' +
-        (isAI ? pin.ai.gpio : pin.gpio) + '/edge', mode);
+    fs.writeFileSync('/sys/class/gpio/gpio' + pin.gpio + '/edge', mode);
 
     var resp = {};
-    resp.gpioFile = '/sys/class/gpio/gpio' +
-        (isAI ? pin.ai.gpio : pin.gpio) + '/value';
+    resp.gpioFile = '/sys/class/gpio/gpio' + pin.gpio + '/value';
     resp.valuefd = fs.openSync(resp.gpioFile, 'r');
     resp.value = new Buffer(1);
 
@@ -476,6 +476,16 @@ var readPlatform = function (platform) {
     return (platform);
 };
 
+var getPin = function (pin) {
+    pin = my.getpin(pin);
+    if (isAI && typeof pin.ai == "object") {
+        Object.assign(pin, pin.ai);
+        delete pin.ai;
+    }
+    if (debug) winston.debug('hw.getPin(): pin=' + JSON.stringify(pin) + ' iAI=' + isAI);
+    return (pin);
+};
+
 module.exports = {
     logfile: logfile,
     readPWMFreqAndValue: readPWMFreqAndValue,
@@ -491,5 +501,6 @@ module.exports = {
     writeGPIOEdge: writeGPIOEdge,
     writePWMFreqAndValue: writePWMFreqAndValue,
     readEeproms: readEeproms,
-    readPlatform: readPlatform
+    readPlatform: readPlatform,
+    getPin: getPin
 }

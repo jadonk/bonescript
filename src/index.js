@@ -90,7 +90,7 @@ var ain = false;
 //    allocated: boolean for if it is allocated by this application
 //    direction: 'in' or 'out' (allocated might be false)
 f.getPinMode = function (pin, callback) {
-    pin = my.getpin(pin);
+    pin = hw.getPin(pin);
     if (debug) winston.debug('getPinMode(' + pin.key + ');');
     var mode = {
         'pin': pin.key,
@@ -127,7 +127,7 @@ f.getPinMode = function (pin, callback) {
 f.getPinMode.args = ['pin', 'callback'];
 
 f.pinMode = function (pin, direction, mux, pullup, slew, callback) {
-    pin = my.getpin(pin);
+    pin = hw.getPin(pin);
     if (debug) winston.debug('pinMode(' + [pin.key, direction, mux, pullup, slew] + ');');
     if (direction == g.INPUT_PULLUP) pullup = 'pullup';
     pullup = pullup || ((direction == g.INPUT) ? 'pulldown' : 'disabled');
@@ -263,7 +263,7 @@ f.digitalWrite = function (pin, value, callback) {
         };
         callback(resp);
     }
-    pin = my.getpin(pin);
+    pin = hw.getPin(pin);
     if (debug) winston.debug('digitalWrite(' + [pin.key, value] + ');');
     value = parseInt(Number(value), 2) ? 1 : 0;
     //handle case digitalWrite() on Analog_Out
@@ -283,7 +283,7 @@ f.digitalWrite = function (pin, value, callback) {
 f.digitalWrite.args = ['pin', 'value', 'callback'];
 
 f.digitalRead = function (pin, callback) {
-    pin = my.getpin(pin);
+    pin = hw.getPin(pin);
     if (debug) winston.debug('digitalRead(' + [pin.key] + ');');
     var resp = {};
     if (typeof pin.ain != 'undefined') {
@@ -325,7 +325,7 @@ f.digitalRead = function (pin, callback) {
 f.digitalRead.args = ['pin', 'callback'];
 
 f.analogRead = function (pin, callback) {
-    pin = my.getpin(pin);
+    pin = hw.getPin(pin);
     if (debug) winston.debug('analogRead(' + [pin.key] + ');');
     var resp = {};
     if (!ain) {
@@ -342,8 +342,8 @@ f.analogRead = function (pin, callback) {
 f.analogRead.args = ['pin', 'callback'];
 
 f.shiftOut = function (dataPin, clockPin, bitOrder, val, callback) {
-    dataPin = my.getpin(dataPin);
-    clockPin = my.getpin(clockPin);
+    dataPin = hw.getPin(dataPin);
+    clockPin = hw.getPin(clockPin);
     if (debug) winston.debug('shiftOut(' + [dataPin.key, clockPin.key, bitOrder, val] + ');');
     var i = 0;
     var bit;
@@ -403,7 +403,7 @@ f.shiftOut = function (dataPin, clockPin, bitOrder, val, callback) {
 f.shiftOut.args = ['dataPin', 'clockPin', 'bitOrder', 'val', 'callback'];
 
 f.attachInterrupt = function (pin, handler, mode, callback) {
-    pin = my.getpin(pin);
+    pin = hw.getPin(pin);
     if (debug) winston.debug('attachInterrupt(' + [pin.key, handler, mode] + ');');
     var n = pin.gpio;
     var resp = {
@@ -522,7 +522,7 @@ f.attachInterrupt = function (pin, handler, mode, callback) {
 f.attachInterrupt.args = ['pin', 'handler', 'mode', 'callback'];
 
 f.detachInterrupt = function (pin, callback) {
-    pin = my.getpin(pin);
+    pin = hw.getPin(pin);
     if (debug) winston.debug('detachInterrupt(' + [pin.key] + ');');
     var n = pin.gpio;
     if (typeof gpio[n] == 'undefined' || typeof gpioInt[n] == 'undefined') {
@@ -563,7 +563,7 @@ f.detachInterrupt.args = ['pin', 'callback'];
 // See http://processors.wiki.ti.com/index.php/AM335x_PWM_Driver's_Guide
 // That guide isn't useful for the new pwm_test interface
 f.analogWrite = function (pin, value, freq, callback) {
-    pin = my.getpin(pin);
+    pin = hw.getPin(pin);
     if (debug) winston.debug('analogWrite(' + [pin.key, value, freq] + ');');
     freq = freq || 2000.0;
     var resp = {};

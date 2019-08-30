@@ -3,12 +3,12 @@ var winston = require('winston');
 var debug = process.env.PARSE_DEBUG ? true : false;
 
 // This parses pinmux data from the register value
-var modeFromStatus = function (pinData, mode) {
+var modeFromStatus = function (pinData, mode, isAI) {
     mode = mode || {};
-    mode.mux = (pinData & 0x07);
-    mode.slew = (pinData & 0x40) ? 'slow' : 'fast';
-    mode.rx = (pinData & 0x20) ? 'enabled' : 'disabled';
-    var pullup = (pinData & 0x18) >> 3;
+    mode.mux = isAI ? (pinData & 0x0f) : (pinData & 0x07);
+    mode.slew = (isAI ? (pinData & (1 << 19)) : (pinData & (1 << 6))) ? 'slow' : 'fast';
+    mode.rx = (isAI ? (pinData & (1 << 18)) : (pinData & (1 << 5))) ? 'enabled' : 'disabled';
+    var pullup = isAI ? ((pinData & (3 << 16)) >> 16) : ((pinData & (3 << 3)) >> 3);
     switch (pullup) {
     case 1:
         mode.pullup = 'disabled';
@@ -67,7 +67,7 @@ var modeFromOmapMux = function (readout, mode) {
     return (mode);
 };
 
-var modeFromPinctrl = function (pins, muxRegOffset, muxBase, mode) {
+var modeFromPinctrl = function (pins, muxRegOffset, muxBase, mode, isAI) {
     if (debug) winston.debug('' + pins);
     muxBase = muxBase || 0x44e10800;
     mode = mode || {};
@@ -95,7 +95,7 @@ var modeFromPinctrl = function (pins, muxRegOffset, muxBase, mode) {
         var address = parseInt(parsedFields[3], 16);
         var status = parseInt(parsedFields[4], 16);
         if (address == muxAddress) {
-            mode = modeFromStatus(status, mode);
+            mode = modeFromStatus(status, mode, isAI);
             return (mode);
         }
     }
