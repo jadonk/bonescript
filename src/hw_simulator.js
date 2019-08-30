@@ -122,7 +122,7 @@ var readPlatform = function (platform) {
 };
 
 var getPin = function (pin) {
-    my.getpin(pin);
+    return (my.getpin(pin));
 };
 
 module.exports = {
