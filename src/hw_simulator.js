@@ -1,6 +1,6 @@
 var fs = require('fs');
 var winston = require('winston');
-var my = require(my);
+var my = require('./my');
 
 var gpioFile = {};
 
