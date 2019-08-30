@@ -1,5 +1,6 @@
 var fs = require('fs');
 var winston = require('winston');
+var my = require(my);
 
 var gpioFile = {};
 
@@ -120,6 +121,10 @@ var readPlatform = function (platform) {
     return (platform);
 };
 
+var getPin = function (pin) {
+    my.getpin(pin);
+};
+
 module.exports = {
     logfile: logfile,
     readPWMFreqAndValue: readPWMFreqAndValue,
@@ -135,5 +140,6 @@ module.exports = {
     writeGPIOEdge: writeGPIOEdge,
     writePWMFreqAndValue: writePWMFreqAndValue,
     readEeproms: readEeproms,
-    readPlatform: readPlatform
+    readPlatform: readPlatform,
+    getPin: getPin
 }
