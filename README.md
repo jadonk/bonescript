@@ -219,6 +219,10 @@ the handler, so you don't have to worry about it.
 What's New
 ==========
 
+0.7.4 key updates
+-----------------
+* Enabled BeagleBone AI GPIO functions (digitalRead/digitalWrite/getPinMode)
+
 0.7.3 key updates
 -----------------
 Big speed-up on loading by lazy-loading infrequently used modules
