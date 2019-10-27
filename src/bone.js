@@ -4458,7 +4458,7 @@ var pinIndex = [{
             "BSM": "A10"
         },
         "ai": {
-            "gpio": 195,
+            "gpio": 102,
             "ball": {
                 "abc": [
                     "R6",
@@ -4530,7 +4530,7 @@ var pinIndex = [{
             "BSM": "B10"
         },
         "ai": {
-            "gpio": 196,
+            "gpio": 101,
             "ball": {
                 "abc": [
                     "T9",
