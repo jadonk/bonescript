@@ -5060,7 +5060,7 @@ var pinIndex = [{
             "BSM": "A11"
         },
         "ai": {
-            "gpio": 174,
+            "gpio": 88,
             "ball": {
                 "abc": [
                     "E21",
