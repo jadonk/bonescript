@@ -725,7 +725,7 @@ f.echo = function (data, callback) {
 f.echo.args = ['data', 'callback'];
 
 f.setDate = function (date, callback) {
-    child_process.exec('date -s "' + date + '"', dateResponse);
+    child_process.execFile('date', ['-s', date], dateResponse)
 
     function dateResponse(error, stdout, stderr) {
         if (typeof callback != 'function') return;
